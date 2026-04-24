@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ Панель - Барбершоп</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Import DB Layer -->
+    <script src="assets/db.js"></script>
+
+    <style>
+        :root { --bg-dark: #000000; --surface: #0a0a0e; --surface-hover: #12121a; --accent: #ffffff; --accent-hover: #cccccc; --text-main: #ffffff; --text-muted: #888888; --border: rgba(255,255,255,0.2); --danger: #ef4444; --success: #10b981; --font-sans: 'Inter', sans-serif; --font-serif: 'Syncopate', sans-serif; --overlay-light: rgba(255,255,255,0.05); --overlay-heavy: rgba(255,255,255,0.3); --overlay-mid: rgba(255,255,255,0.15); --header-grad: rgba(20,20,24,1); --transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .pulse { animation: pulseAnim 2s infinite; }
+        @keyframes pulseAnim { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); } 70% { box-shadow: 0 0 0 10px rgba(255,255,255,0); } 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); } }
+        
+        .timeline-card.dragging { opacity: 0.5; cursor: grabbing; box-shadow: 0 5px 15px rgba(0,0,0,0.5); border: 2px solid var(--accent); }
+        .timeline-cell.drag-over { background: rgba(255,255,255,0.1); border-color: var(--accent); }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        ::selection { background: var(--accent); color: var(--bg-dark); }
+        ::-moz-selection { background: var(--accent); color: var(--bg-dark); }
+        body { background-color: var(--bg-dark); background-image: radial-gradient(circle at 50% 0%, var(--overlay-mid) 0%, transparent 40%), radial-gradient(circle at 50% 100%, var(--overlay-light) 0%, transparent 50%); background-attachment: fixed; color: var(--text-main); font-family: var(--font-sans); min-height: 100vh; }
+        h2, h3, h4 { font-family: var(--font-serif); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px; }
+        .accent-text { color: var(--accent); }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; padding: clamp(10px, 4vw, 20px) clamp(15px, 5vw, 40px); background: var(--surface);  border-bottom: 1px solid var(--border); overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .tabs { display: flex; gap: 10px; white-space: nowrap; padding-bottom: 5px; }
+        .tab { padding: 8px 16px; cursor: pointer; color: var(--text-muted); border-radius: 999px; border: 1px solid transparent; font-weight: 500; font-family: var(--font-sans); font-size: 0.85rem; }
+        .tab.active { color: var(--bg-dark); background: var(--accent); border-color: var(--accent); }
+        .admin-container { max-width: 1000px; margin: clamp(20px, 5vh, 40px) auto; padding: 0 15px; }
+        .tab-content { display: none; opacity: 0; }
+        .tab-content.active { display: block; animation: popIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes popIn { 0% { opacity: 0; transform: scale(0.9) translateY(15px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+        .booking-item { background: var(--surface);  border: 1px solid var(--border); padding: 20px; border-radius: 6px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .booking-details h4 { color: var(--accent); margin-bottom: 5px; font-size: 1.1rem; }
+        .booking-details p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2px; }
+        .empty-state { text-align: center; padding: 50px; color: var(--text-muted); }
+        .admin-card { background: var(--surface);  border: 1px solid var(--border); padding: 30px; border-radius: 6px; margin-bottom: 20px; }
+        .flex-row { display: flex; gap: 15px; align-items: flex-end; }
+        .tag { display: inline-flex; align-items: center; background: var(--bg-dark); border: 1px solid var(--border); padding: 8px 12px; border-radius: 6px; margin: 5px; font-size: 0.9rem; }
+        .tag button { background: transparent; border: none; color: var(--danger); margin-left: 10px; cursor: pointer; font-size: 1.1rem; }
+        .form-group { margin-bottom: 20px; }
+        .form-control { width: 100%; background: var(--bg-dark); border: 1px solid var(--border); padding: 16px 24px; border-radius: 999px; color: var(--text-main); font-family: var(--font-sans); font-size: 1rem; }
+        .form-control:focus { outline: none; border-color: var(--accent); }
+        .btn { background: var(--accent); color: var(--bg-dark); border: none; padding: 16px 30px; border-radius: 999px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; cursor: pointer; transition: var(--transition); }
+        .btn:hover { background: var(--accent-hover); transform: translateY(-2px); }
+        .btn-danger { background: rgba(255, 71, 87, 0.1); color: var(--danger); border: 1px solid var(--danger); padding: 8px 16px; font-size: 0.9rem; border-radius: 6px; cursor: pointer; }
+        .btn-danger:hover { background: var(--danger); color: var(--text-main); }
+        details summary::-webkit-details-marker { display: none; }
+        details summary { list-style: none; user-select: none; }
+        details[open] summary { color: var(--accent-hover); }
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; } 
+        .stat-card { background: var(--surface);  border: 1px solid var(--border); border-radius: 6px; padding: clamp(15px, 5vw, 25px); text-align: center; } 
+        .stat-num { font-size: clamp(1.8rem, 8vw, 2.5rem); color: var(--accent); font-family: var(--font-serif); margin-bottom: 10px; }
+        #calendar-grid th, #calendar-grid td { border: 1px solid var(--border); padding: clamp(4px, 1vw, 10px); font-size: 0.8rem; }
+        #calendar-grid th { background: rgba(255,255,255,0.02); color: var(--text-muted); font-weight: 500; }
+        #calendar-grid td { height: 60px; vertical-align: middle; transition: background 0.2s; }
+        #calendar-grid .grid-cell-empty { cursor: pointer; color: rgba(255,255,255,0.1); }
+        #calendar-grid .grid-cell-empty:hover { background: var(--overlay-light); color: var(--accent); }
+        #calendar-grid .grid-cell-booked { background: linear-gradient(135deg, rgba(94,106,210,0.15), var(--overlay-light)); border: 1px solid var(--accent); border-radius: 6px; cursor: default; display: flex; flex-direction: column; justify-content: center; height: 100%; min-height: 50px; }
+        #calendar-grid .grid-cell-booked-inner { color: var(--text-main); font-size: 0.9rem; font-weight: 500; }
+        #calendar-grid .grid-cell-booked-sub { color: var(--accent); font-size: 0.75rem; margin-top: 2px; }
+    
+        [data-theme="light"] {
+            --bg-dark: #ffffff;
+            --surface: #f4f4f5;
+            --surface-hover: #e4e4e7;
+            --accent: #000000;
+            --accent-hover: #333333;
+            --text-main: #000000;
+            --text-muted: #777777;
+            --border: rgba(0,0,0,0.2);
+            --overlay-light: rgba(0,0,0,0.05);
+            --overlay-mid: rgba(0,0,0,0.15);
+            --overlay-heavy: rgba(0,0,0,0.3);
+            --header-grad: transparent;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        (function() {
+            const t = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const target = current === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', target);
+            localStorage.setItem('theme', target);
+            updateThemeIcon();
+        }
+        function updateThemeIcon() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const icon = document.getElementById('theme-icon');
+            if (icon) {
+                icon.setAttribute('data-lucide', current === 'light' ? 'moon' : 'sun');
+                if (window.lucide) lucide.createIcons();
+            }
+        }
+        document.addEventListener('DOMContentLoaded', updateThemeIcon);
+    </script>
+</head>
+<body>
+    <div id="auth-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg-dark); z-index:9999; display:flex; align-items:center; justify-content:center;">
+        <div class="admin-card" style="width:300px; text-align:center;">
+            <h3>Вход в панель</h3>
+            <input type="password" id="pin-input" class="form-control" placeholder="Введите PIN" style="margin-bottom:10px;">
+            <button class="btn" onclick="checkPin()">Войти</button>
+            <p id="pin-error" style="color:var(--danger); margin-top:10px; display:none;">Неверный PIN</p>
+        </div>
+    </div>
+
+    <header class="admin-header">
+        <h2 style="margin: 0;" data-i18n="admin_title"><span class="accent-text">Админ</span> Панель</h2>
+        <div class="tabs">
+            <div class="tab active" onclick="switchAdminTab('stats', this)" data-i18n="tab_stats">Статистика</div>
+            <div class="tab" onclick="switchAdminTab('bookings', this)" data-i18n="tab_bookings">Записи</div>
+            <div class="tab" onclick="switchAdminTab('masters', this)" data-i18n="tab_masters">Мастера</div>
+            <div class="tab" onclick="switchAdminTab('services', this)" data-i18n="tab_services">Услуги и Цены</div>
+            <div class="tab" onclick="switchAdminTab('products', this)" data-i18n="tab_products">Склад (Товары)</div>
+            <div class="tab" onclick="switchAdminTab('clients', this)" data-i18n="tab_clients">Клиенты (CRM)</div>
+            <div class="tab" onclick="switchAdminTab('reviews', this)" data-i18n="tab_reviews">Отзывы</div>
+            <div class="tab" onclick="switchAdminTab('settings', this)" data-i18n="tab_settings">Настройки и Время</div>
+        </div>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <select class="form-control" id="lang-select" onchange="changeLanguage(this.value)" style="width:auto; padding: 6px 25px 6px 12px; border-radius:6px; font-size:0.8rem; height: auto;">
+                <option value="ru">Русский</option><option value="en">English</option><option value="uz">O'zbek</option><option value="kg">Кыргызча</option>
+            </select>
+            <button onclick="toggleTheme()" style="background: transparent; color: var(--text-main); border: 1px solid var(--border); padding: 6px 10px; border-radius: 6px; cursor: pointer; display:inline-flex; align-items:center; transition: var(--transition);"><i data-lucide="sun" id="theme-icon" style="width:18px;height:18px;"></i></button>
+            <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; white-space:nowrap;" data-i18n="nav_back">На сайт записи</a>
+        </div>
+    </header>
+
+    <main class="admin-container">
+        <!-- STATS -->
+        <div id="admin-tab-stats" class="tab-content active">
+            <h3 style="margin-bottom: 20px;">Обзор бизнеса</h3>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-num" id="stat-today-count">0</div>
+                    <div style="color: var(--text-muted)">Записей на сегодня</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="stat-today-rev">0 ₽</div>
+                    <div style="color: var(--text-muted)">Примерная выручка за сегодня</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="stat-total-rev">0 ₽</div>
+                    <div style="color: var(--text-muted)">Общая выручка всех времен</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="stat-total-count">0</div>
+                    <div style="color: var(--text-muted)">Всего записей в базе</div>
+                </div>
+            </div>
+            
+            <div class="stat-grid" style="margin-top: 30px;">
+                <div class="admin-card">
+                    <h4 style="color: var(--accent); margin-bottom: 15px;">Динамика выручки (Последние дни)</h4>
+                    <canvas id="revenueChart"></canvas>
+                </div>
+                <div class="admin-card">
+                    <h4 style="color: var(--accent); margin-bottom: 15px;">Доля мастеров в выручке (Все время)</h4>
+                    <div style="max-height: 250px; display: flex; justify-content: center;"><canvas id="mastersChart"></canvas></div>
+                </div>
+            </div>
+
+            <div class="admin-card" style="margin-top: 30px;">
+                <h3 style="color: var(--accent); margin-bottom: 20px;">Зарплаты и выручка салона (из завершенных записей)</h3>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.02);">
+                                <th style="padding: 15px; color: var(--accent); font-weight: 500;">Мастер</th>
+                                <th style="padding: 15px; color: var(--text-muted); font-weight: 500;">Доля (%)</th>
+                                <th style="padding: 15px; color: var(--text-muted); font-weight: 500;">Общая выручка</th>
+                                <th style="padding: 15px; color: #2ed573; font-weight: 500;">ЗП Мастера</th>
+                                <th style="padding: 15px; color: var(--accent); font-weight: 500;">В кассу салона</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-salaries-list">
+                        </tbody>
+                        <tfoot id="admin-salaries-total" style="font-weight: bold; background: var(--overlay-light);">
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOOKINGS -->
+        <div id="admin-tab-bookings" class="tab-content">
+            
+            <!-- CALENDAR GRID -->
+            <div class="admin-card" style="padding: 0; overflow: hidden; margin-bottom: 30px;">
+                <div style="padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="margin: 0; padding-bottom: 0;">Сетка на сегодня (<span id="grid-today-date" style="color:var(--accent);"></span>)</h3>
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">Кликните на пустое окно, чтобы быстро записать</div>
+                </div>
+                <div style="overflow-x: auto; padding: 20px;">
+                    <table style="width: 100%; border-collapse: separate; border-spacing: 5px; text-align: center; min-width: 600px;" id="calendar-grid">
+                        <!-- Generated by JS -->
+                    </table>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <h3>Добавить запись вручную</h3>
+                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">Используйте эту форму, если клиент позвонил по телефону или пришел в салон без онлайн-записи.</p>
+                <div class="flex-row" style="margin-bottom: 15px;">
+                    <div class="form-group" style="margin: 0; flex: 1;">
+                        <label style="display:block; margin-bottom:5px; color:var(--text-muted); font-size:0.9rem;">Имя клиента</label>
+                        <input type="text" id="manual_client_name" class="form-control" placeholder="Имя">
+                    </div>
+                    <div class="form-group" style="margin: 0; flex: 1;">
+                        <label style="display:block; margin-bottom:5px; color:var(--text-muted); font-size:0.9rem;">Телефон</label>
+                        <input type="tel" id="manual_client_phone" class="form-control" placeholder="+7 (999) ...">
+                    </div>
+                </div>
+                <div class="flex-row" style="margin-bottom: 15px;">
+                    <div class="form-group" style="margin: 0; flex: 1;">
+                        <label style="display:block; margin-bottom:5px; color:var(--text-muted); font-size:0.9rem;">Дата</label>
+                        <input type="date" id="manual_date" class="form-control">
+                    </div>
+                    <div class="form-group" style="margin: 0; flex: 1;">
+                        <label style="display:block; margin-bottom:5px; color:var(--text-muted); font-size:0.9rem;">Время</label>
+                        <input type="time" id="manual_time" class="form-control">
+                    </div>
+                </div>
+                <div class="flex-row" style="margin-bottom: 20px;">
+                    <div class="form-group" style="margin: 0; flex: 1;">
+                        <label style="display:block; margin-bottom:5px; color:var(--text-muted); font-size:0.9rem;">Услуга</label>
+                        <select id="manual_service" class="form-control" style="appearance: auto;"></select>
+                    </div>
+                    <div class="form-group" style="margin: 0; flex: 1;">
+                        <label style="display:block; margin-bottom:5px; color:var(--text-muted); font-size:0.9rem;">Мастер</label>
+                        <select id="manual_master" class="form-control" style="appearance: auto;"></select>
+                    </div>
+                </div>
+                <button class="btn" style="width: auto; padding: 14px 30px; display:inline-flex; align-items:center; gap:8px;" onclick="addManualBooking()"><i data-lucide="file-plus" style="width:18px;height:18px;"></i> Добавить запись</button>
+            </div>
+
+            <h3 style="margin-top: 30px;">Список всех записей</h3>
+            <div id="admin-bookings-list"></div>
+        </div>
+
+        <!-- MASTERS -->
+        <div id="admin-tab-masters" class="tab-content">
+            <div class="admin-card">
+                <h3>Управление мастерами</h3>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Добавьте ваших барберов, чтобы клиенты могли записываться к конкретному человеку.</p>
+                <div class="flex-row" style="margin-bottom: 15px;">
+                    <div class="form-group" style="margin: 0; flex: 2;">
+                        <input type="text" id="new_master_name" class="form-control" placeholder="Имя мастера (напр. Иван)">
+                    </div>
+                    <div class="form-group" style="margin: 0; flex: 1;">
+                        <input type="number" id="new_master_share" class="form-control" placeholder="Доля за услуги (%)" value="50">
+                    </div>
+                    <div class="form-group" style="margin: 0; flex: 1;">
+                        <input type="number" id="new_master_product_share" class="form-control" placeholder="Бонус с инвентаря (%)" value="10">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label style="display:block; margin-bottom:10px; color:var(--text-muted); font-size:0.9rem;">Рабочие дни мастера:</label>
+                    <div style="display:flex; gap:10px; flex-wrap: wrap;" id="new_master_days">
+                        <label><input type="checkbox" value="1" checked> ПН</label>
+                        <label><input type="checkbox" value="2" checked> ВТ</label>
+                        <label><input type="checkbox" value="3" checked> СР</label>
+                        <label><input type="checkbox" value="4" checked> ЧТ</label>
+                        <label><input type="checkbox" value="5" checked> ПТ</label>
+                        <label><input type="checkbox" value="6" checked> СБ</label>
+                        <label><input type="checkbox" value="0" checked> ВС</label>
+                    </div>
+                </div>
+                <button class="btn" style="padding: 14px 30px; width: auto;" onclick="addMaster()">+ Добавить мастера</button>
+                <div id="admin-masters-list"></div>
+            </div>
+        </div>
+
+        <!-- SERVICES -->
+        <div id="admin-tab-services" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                <h3>Управление услугами</h3>
+                <button class="btn" style="width: auto; padding: 10px 20px;" onclick="addService()">+ Добавить услугу</button>
+            </div>
+            <p style="color: var(--text-muted); margin-bottom: 25px;">Измените название, описание или стоимость. Изменения тут же появятся на клиентском сайте.</p>
+            <div id="admin-services-list"></div>
+        </div>
+
+        <!-- PRODUCTS -->
+        <div id="admin-tab-products" class="tab-content">
+            <h3 style="margin-bottom: 20px;">Склад и Товары</h3>
+            <p style="color: var(--text-muted); margin-bottom: 25px;">Управляйте остатками баночек, парфюма и укладочных средств. Проданные товары можно добавлять к чеку клиента в Записях.</p>
+            
+            <div class="admin-card">
+                <h4 style="color: var(--accent); margin-bottom: 15px;">Добавить новый товар</h4>
+                <div class="flex-row">
+                    <div class="form-group" style="margin: 0; flex: 2;"><label>Название</label><input type="text" id="add_prod_name" class="form-control" placeholder="Напр. Паста Lock Stock"></div>
+                    <div class="form-group" style="margin: 0; flex: 1;"><label>Закупка (₽)</label><input type="number" id="add_prod_buy" class="form-control"></div>
+                    <div class="form-group" style="margin: 0; flex: 1;"><label>Продажа (₽)</label><input type="number" id="add_prod_sell" class="form-control"></div>
+                    <div class="form-group" style="margin: 0; flex: 1;"><label>Кол-во (шт)</label><input type="number" id="add_prod_cnt" class="form-control"></div>
+                    <button class="btn" style="margin: 0; padding: 14px 20px; width: auto;" onclick="addNewProduct()">+ Добавить</button>
+                </div>
+            </div>
+
+            <div class="admin-card" style="padding: 0; overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.02);">
+                            <th style="padding: 15px; color: var(--accent); font-weight: 500;">Название</th>
+                            <th style="padding: 15px; color: var(--text-muted); font-weight: 500;">В закупе (₽)</th>
+                            <th style="padding: 15px; color: #2ed573; font-weight: 500;">Для клиента (₽)</th>
+                            <th style="padding: 15px; color: var(--text-muted); font-weight: 500;">Остаток</th>
+                            <th style="padding: 15px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-products-list"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- CLIENTS -->
+        <div id="admin-tab-clients" class="tab-content">
+            <h3>Смарт-База Клиентов (CRM)</h3>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Автоматическая сводка по всем вашим клиентам. Наверху — те, кто принес вам больше всего денег.</p>
+            <div class="admin-card" style="padding: 0; overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.02);">
+                            <th style="padding: 15px; color: var(--accent); font-weight: 500;">Имя клиента</th>
+                            <th style="padding: 15px; color: var(--text-muted); font-weight: 500;">Телефон</th>
+                            <th style="padding: 15px; color: var(--text-muted); font-weight: 500;">Всего визитов</th>
+                            <th style="padding: 15px; color: var(--text-muted); font-weight: 500;">Крайний визит</th>
+                            <th style="padding: 15px; color: var(--accent); font-weight: 500;">Принес(ла) выручки</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-clients-list">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- REVIEWS -->
+        <div id="admin-tab-reviews" class="tab-content">
+            <h3 style="margin-bottom: 20px;">Модерация отзывов</h3>
+            <p style="color: var(--text-muted); margin-bottom: 25px;">Здесь вы можете просматривать отзывы клиентов и удалять некорректные.</p>
+            <div class="admin-card" id="admin-reviews-stats" style="display: flex; gap: 20px; margin-bottom: 30px; background: var(--overlay-light); border: 1px solid rgba(94,106,210,0.2);">
+                <!-- Review stats here -->
+            </div>
+            <div id="admin-reviews-list"></div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div id="admin-tab-settings" class="tab-content">
+            <div class="admin-card">
+                <h3>Резервное копирование и Бухгалтерия</h3>
+                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">Скачайте всю историю записей в формате CSV (открывается в Excel) себе на ПК.</p>
+                <button class="btn" style="width: auto; padding: 14px 30px; background: rgba(46, 213, 115, 0.1); color: #2ed573; border: 1px solid #2ed573; display:inline-flex; align-items:center; gap:8px;" onclick="exportToCSV()"><i data-lucide="download" style="width:18px;height:18px;"></i> Скачать базу записей (.csv)</button>
+            </div>
+            
+            <div class="admin-card">
+                <h3>Рабочие часы (Открытие и закрытие салона)</h3>
+                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">Общие часы, когда салон может принимать клиентов.</p>
+                <div class="flex-row">
+                    <div class="form-group" style="margin: 0; flex: 1;"><label>Открытие</label><input type="time" id="set_open" class="form-control"></div>
+                    <div class="form-group" style="margin: 0; flex: 1;"><label>Закрытие</label><input type="time" id="set_close" class="form-control"></div>
+                </div>
+                <div class="form-group" style="margin: 0; flex: 1;"><label>Telegram Bot Token (для уведомлений)</label><input type="text" id="set_tg_token" class="form-control"></div>
+                <button class="btn" style="margin-top: 20px; width: auto; padding: 14px 30px; display:inline-flex; align-items:center; gap:8px;" onclick="saveSettings()"><i data-lucide="save" style="width:18px;height:18px;"></i> Сохранить настройки</button>
+            </div>
+
+            <div class="admin-card">
+                <h3>Отключить конкретную дату полностью</h3>
+                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">В этот день клиенты вовсе не смогут записаться.</p>
+                <div class="flex-row">
+                    <div class="form-group" style="margin: 0; flex: 1;"><input type="date" id="disable-date-input" class="form-control"></div>
+                    <button class="btn" style="margin: 0; padding: 14px 30px;" onclick="addDisabledDate()">Отключить</button>
+                </div>
+                <div style="margin-top: 20px;" id="disabled-dates-list"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // DB_* constants are defined in assets/db.js (loaded above)
+
+        const defaultServices = [
+            { id: 'haircut', price: 1500, duration: 60, strings: { ru: { title: "Мужская стрижка", desc: "Мытье головы, стрижка, укладка" }, en: { title: "Men's Haircut", desc: "Hair wash, haircut, styling" }, uz: { title: "Erkaklar soch turmagi", desc: "Soch yuvish, soch kesish, turmaklash" }, kg: { title: "Эркектердин чач кыркуусу", desc: "Чач жуу, чач кыркуу, жасалгалоо" } } },
+            { id: 'beard', price: 1000, duration: 30, strings: { ru: { title: "Оформление бороды", desc: "Распаривание, коррекция формы, масло" }, en: { title: "Beard Styling", desc: "Steaming, shaping, oil" }, uz: { title: "Soqol olish", desc: "Bug'lash, shakl berish, yog'" }, kg: { title: "Сакал коюу", desc: "Буулоо, форма берүү, май" } } }
+        ];
+
+        const defaultMasters = [
+            { id: 'm1', name: 'Мастер Алексей', share: 50, productShare: 10, workingDays: [1,2,3,4,5,6,0] },
+            { id: 'm2', name: 'Мастер Иван', share: 50, productShare: 10, workingDays: [1,2,3,4,5,6,0] }
+        ];
+
+        const defaultSettings = { openTime: '10:00', closeTime: '21:00' };
+        
+        const defaultProducts = [
+            { id: 'p1', name: 'Масло для бороды', buyPrice: 300, sellPrice: 1200, count: 10 },
+            { id: 'p2', name: 'Матовая пудра', buyPrice: 500, sellPrice: 1500, count: 5 }
+        ];
+
+        function getAdminPin() { return localStorage.getItem('admin_pin') || '1234'; }
+
+        const store = {
+            bookings: [], reviews: [], disabledDates: [],
+            services: defaultServices, masters: defaultMasters, settings: defaultSettings, products: defaultProducts
+        };
+
+        async function initAdmin() {
+            if(sessionStorage.getItem('adminAuth') !== 'true') {
+                document.getElementById('auth-overlay').style.display = 'flex';
+                return;
+            } else {
+                document.getElementById('auth-overlay').style.display = 'none';
+            }
+            fetchAndRender();
+        }
+
+        async function checkPin() {
+            if(document.getElementById('pin-input').value === getAdminPin()) {
+                sessionStorage.setItem('adminAuth', 'true');
+                document.getElementById('auth-overlay').style.opacity = '0';
+                setTimeout(() => document.getElementById('auth-overlay').style.display = 'none', 500);
+                fetchAndRender();
+            } else {
+                document.getElementById('pin-error').style.display = 'block';
+            }
+        }
+
+        async function fetchAndRender() {
+            // Real-time db.js hooks
+            window.appDB.subscribe('barber_bookings', data => { loadAdminData(); });
+            window.appDB.subscribe('barber_services', data => { loadAdminData(); });
+            window.appDB.subscribe('barber_masters', data => { loadAdminData(); });
+            window.appDB.subscribe('barber_products', data => { loadAdminData(); });
+            window.appDB.subscribe('barber_reviews', data => { loadAdminData(); });
+            loadAdminData();
+        }
+
+        async function loadAdminData() {
+            const bookings = await window.appDB.getBookings();
+            const services = store.services;
+            const masters = store.masters;
+            const products = store.products;
+            const reviews = store.reviews;
+            
+            // Render basic stats
+            const list = document.getElementById('admin-bookings-list');
+            let sorted = bookings.slice().sort((a,b) => new Date(a.date) - new Date(b.date));
+
+            let today = new Date().toISOString().split('T')[0];
+            let tRev = 0, todayRev = 0, todayCnt = 0;
+
+            list.innerHTML = '';
+            if(sorted.length === 0) { list.innerHTML = '<div class="empty-state">Пока нет ни одной записи.</div>'; }
+            else {
+                sorted.forEach(b => {
+                    let st = b.status || 'pending';
+                    let isCancelled = st === 'cancelled';
+                    let isCompleted = st === 'completed';
+                    let isProg = st === 'in_progress';
+                    let stColor = isCompleted ? '#2ed573' : (isCancelled ? '#ff4757' : (isProg ? '#1e90ff' : '#f1c40f'));
+                    
+                    if (!isCancelled) {
+                        if(b.date === today) todayCnt++; 
+                    }
+                    if (isCompleted) {
+                        tRev += parseInt(b.price || 0);
+                        if(b.date === today) todayRev += parseInt(b.price || 0);
+                    }
+                    
+                    list.innerHTML += `<div class="booking-item" style="${isCancelled ? 'opacity: 0.5;' : ''} align-items: stretch; flex-direction: column;"><div style="display: flex; justify-content: space-between; align-items: flex-start;"><div class="booking-details" style="flex: 1;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 5px;"><h4 style="margin:0;">${b.date} в ${b.time}</h4><select onchange="updateBookingStatus('${b.id}', this.value)" style="background:var(--bg-dark); color:${stColor}; border:1px solid var(--border); padding:4px 8px; border-radius:6px; outline:none; font-size:0.85rem; font-weight:600; cursor:pointer;"><option value="pending" style="color:#f1c40f;" ${st === 'pending' ? 'selected' : ''}>🟡 Ожидается</option><option value="in_progress" style="color:#1e90ff;" ${st === 'in_progress' ? 'selected' : ''}>🔵 В кресле</option><option value="completed" style="color:#2ed573;" ${st === 'completed' ? 'selected' : ''}>🟢 Завершено</option><option value="cancelled" style="color:#ff4757;" ${st === 'cancelled' ? 'selected' : ''}>🔴 Отменено</option></select></div><p><strong style="color: var(--text-main);">КЛИЕНТ:</strong> ${b.name} (${b.phone})</p><p><strong style="color: var(--text-main);">УСЛУГА:</strong> ${b.service} - ${b.price} ₽</p><p><strong style="color: var(--text-main);">МАСТЕР:</strong> ${b.masterName || 'Любой'}</p></div><div style="display: flex; flex-direction: column; justify-content: flex-end; margin-left: 15px; gap: 5px;"><button class="btn-danger" onclick="deleteBooking('${b.id}')">Удалить</button></div></div></div>`;
+                });
+            }
+
+            let eRev = document.getElementById('stat-total-rev'); if(eRev) eRev.innerText = tRev + ' ₽';
+            let eTodRev = document.getElementById('stat-today-rev'); if(eTodRev) eTodRev.innerText = todayRev + ' ₽';
+            let eCnt = document.getElementById('stat-today-count'); if(eCnt) eCnt.innerText = todayCnt;
+            let eTotClass = document.getElementById('stat-total-count'); if(eTotClass) eTotClass.innerText = bookings.length;
+
+            renderSalaries(bookings, masters);
+            renderProductsList(products);
+            renderMastersList(masters, reviews);
+            renderAdminReviews(reviews);
+            renderServicesEditor(services);
+            renderManualOptions(services, masters);
+            renderCalendarGrid(bookings);
+            renderCharts(bookings);
+            renderClientsTab(bookings);
+            lucide.createIcons();
+        }
+
+
+        document.addEventListener('DOMContentLoaded', initAdmin);
+
+        function switchAdminTab(tabName, element) {
+            document.querySelectorAll('.admin-header .tab').forEach(t => t.classList.remove('active'));
+            element.classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(`admin-tab-${tabName}`).classList.add('active');
+            if (tabName === 'settings') renderSettingsTab();
+        }
+
+        async function changeProductCount(id, delta) {
+            let p = store.products.find(x => x.id === id);
+            if (p) { p.count = Math.max(0, p.count + delta); await window.appDB.saveProducts(store.products); }
+        }
+
+        function toggleProductPanel(panelId) {
+            let el = document.getElementById(panelId);
+            if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        async function addProductToBooking(bookingId) {
+            let selEl = document.getElementById('prod_sel_' + bookingId);
+            if (!selEl) return;
+            let prodId = selEl.value;
+            let prod = store.products.find(p => p.id === prodId);
+            if (!prod) return;
+            if (prod.count <= 0) { alert('Товар закончился на складе!'); return; }
+
+            prod.count -= 1;
+            await window.appDB.saveProducts(store.products);
+
+            let bIdx = store.bookings.findIndex(b => b.id === bookingId);
+            if (bIdx !== -1) {
+                if (!store.bookings[bIdx].purchases) store.bookings[bIdx].purchases = [];
+                store.bookings[bIdx].purchases.push({ id: prod.id, name: prod.name, sellPrice: prod.sellPrice, buyPrice: prod.buyPrice });
+                await window.appDB.saveBookings(store.bookings);
+            }
+        }
+
+        // SETTINGS & SCHEDULE
+        async function renderSettingsTab() {
+            let set = await window.appDB.getSettings();
+            Object.assign(store.settings, set);
+            document.getElementById('set_open').value = set.openTime || '10:00';
+            document.getElementById('set_close').value = set.closeTime || '21:00';
+            document.getElementById('set_tg_token').value = set.telegram_bot_token || '';
+            const dDates = store.disabledDates || [];
+            document.getElementById('disabled-dates-list').innerHTML = dDates.map(d => `<span class="tag">${d} <button onclick="removeDisabledDate('${d}')">&times;</button></span>`).join('');
+        }
+        async function saveSettings() {
+            store.settings.openTime = document.getElementById('set_open').value || '10:00';
+            store.settings.closeTime = document.getElementById('set_close').value || '21:00';
+            store.settings.telegram_bot_token = document.getElementById('set_tg_token').value;
+            await window.appDB.saveSettings(store.settings);
+            let btn = event.currentTarget; let o = btn.innerHTML; btn.innerHTML = '<i data-lucide="check" style="width:18px;height:18px;"></i> Сохранено'; lucide.createIcons(); setTimeout(() => { btn.innerHTML = o; lucide.createIcons(); }, 1500);
+        }
+        function saveAIKey() {
+            const key = document.getElementById('set_ai_key').value.trim();
+            localStorage.setItem('openrouter_api_key', key);
+            localStorage.setItem('chatbot_api_key', key);
+            let btn = event.currentTarget; 
+            let o = btn.innerHTML; 
+            btn.innerHTML = '<i data-lucide="check" style="width:18px;height:18px;"></i> Сохранено';
+            lucide.createIcons();
+            setTimeout(() => { btn.innerHTML = o; lucide.createIcons(); }, 2000);
+        }
+        function addDisabledDate() {
+            let val = document.getElementById('disable-date-input').value; if(!val) return;
+            if(!store.disabledDates) store.disabledDates = [];
+            if(!store.disabledDates.includes(val)) { store.disabledDates.push(val); localStorage.setItem(DB_DISABLED_DATES, JSON.stringify(store.disabledDates)); renderSettingsTab(); }
+        }
+        function removeDisabledDate(val) {
+            store.disabledDates = (store.disabledDates || []).filter(d => d !== val); localStorage.setItem(DB_DISABLED_DATES, JSON.stringify(store.disabledDates)); renderSettingsTab();
+        }
+
+        // SERVICES (from before)
+        function renderServicesEditor() {
+            let html = '';
+            store.services.forEach(s => {
+                let dur = s.duration || 60;
+                html += `
+                <div class="admin-card" style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h4 style="margin: 0; color: var(--accent);">${s.strings.ru.title}</h4>
+                        <button class="btn-danger" style="width: auto; padding: 6px 12px; font-size: 0.8rem;" onclick="deleteService('${s.id}')">Удалить</button>
+                    </div>
+                    <div style="display: flex; gap: 15px; margin-bottom: 15px; align-items: flex-end; flex-wrap: wrap;">
+                        <div class="form-group" style="margin:0; flex: 2; min-width: 250px;"><label>Название на сайт (RU)</label><input type="text" id="title_ru_${s.id}" class="form-control" value="${s.strings.ru.title}"></div>
+                        <div class="form-group" style="margin:0; flex: 1; min-width: 150px;"><label>Цена (₽)</label><input type="number" id="price_${s.id}" class="form-control" value="${s.price}"></div>
+                        <div class="form-group" style="margin:0; flex: 1; min-width: 150px;">
+                            <label>Длительность (мин)</label>
+                            <select id="duration_${s.id}" class="form-control" style="appearance:auto;">
+                                <option value="30" ${dur==30?'selected':''}>30 мин</option>
+                                <option value="60" ${dur==60?'selected':''}>1 час</option>
+                                <option value="90" ${dur==90?'selected':''}>1.5 часа</option>
+                                <option value="120" ${dur==120?'selected':''}>2 часа</option>
+                                <option value="180" ${dur==180?'selected':''}>3 часа</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group"><label>Описание снизу (RU)</label><input type="text" id="desc_ru_${s.id}" class="form-control" value="${s.strings.ru.desc}"></div>
+                    <details style="margin-bottom: 15px; cursor: pointer; color: var(--text-muted);">
+                        <summary style="outline: none; display:flex; align-items:center; gap:6px;"><i data-lucide="globe" style="width:16px;height:16px; color:var(--accent);"></i> Нажать тут для изменения переводов интерфейса (EN, UZ, KG)</summary>
+                        <div style="padding-top: 15px; border-top: 1px solid var(--border); margin-top:10px;">
+                            <strong style="color: var(--text-main); display:block; margin-bottom:5px;">English (EN):</strong>
+                            <div style="display:flex; gap:10px; margin-bottom: 15px;"><input type="text" id="title_en_${s.id}" class="form-control" value="${s.strings.en.title}"><input type="text" id="desc_en_${s.id}" class="form-control" value="${s.strings.en.desc}"></div>
+                            <strong style="color: var(--text-main); display:block; margin-bottom:5px;">O'zbek (UZ):</strong>
+                            <div style="display:flex; gap:10px; margin-bottom: 15px;"><input type="text" id="title_uz_${s.id}" class="form-control" value="${s.strings.uz.title}"><input type="text" id="desc_uz_${s.id}" class="form-control" value="${s.strings.uz.desc}"></div>
+                            <strong style="color: var(--text-main); display:block; margin-bottom:5px;">Кыргызча (KG):</strong>
+                            <div style="display:flex; gap:10px;"><input type="text" id="title_kg_${s.id}" class="form-control" value="${s.strings.kg.title}"><input type="text" id="desc_kg_${s.id}" class="form-control" value="${s.strings.kg.desc}"></div>
+                        </div>
+                    </details>
+                    <button class="btn" style="padding: 10px 20px; font-size: 0.9rem; width: auto;" onclick="saveService('${s.id}')">💾 Сохранить изменения для "${s.strings.ru.title}"</button>
+                </div>`;
+            });
+            document.getElementById('admin-services-list').innerHTML = html;
+        }
+
+        async function addService() {
+            let sId = 's_' + Date.now();
+            let newS = {
+                id: sId,
+                price: 1000,
+                duration: 60,
+                strings: {
+                    ru: { title: "Новая Услуга", desc: "Описание" },
+                    en: { title: "New Service", desc: "Description" },
+                    uz: { title: "Yangi Xizmat", desc: "Tavsifi" },
+                    kg: { title: "Жаңы Кызмат", desc: "Сүрөттөмөсү" }
+                }
+            };
+            store.services.push(newS);
+            await window.appDB.saveServices(store.services);
+            renderServicesEditor();
+            alert('Услуга создана! Отредактируйте её в списке.');
+        }
+
+        async function deleteService(id) {
+            if(!confirm('Удалить эту услугу навсегда?')) return;
+            store.services = store.services.filter(s => s.id !== id);
+            await window.appDB.saveServices(store.services);
+            renderServicesEditor();
+        }
+
+        async function saveService(id) {
+            let s = store.services.find(x => x.id === id);
+            if(s) {
+                s.price = document.getElementById(`price_${id}`).value;
+                s.duration = parseInt(document.getElementById(`duration_${id}`).value);
+                ['ru', 'en', 'uz', 'kg'].forEach(l => {
+                    s.strings[l].title = document.getElementById(`title_${l}_${id}`).value;
+                    s.strings[l].desc = document.getElementById(`desc_${l}_${id}`).value;
+                });
+                await window.appDB.saveServices(store.services);
+                let btn = event.currentTarget; let o = btn.innerHTML; btn.innerHTML = "✓ Сохранено"; setTimeout(() => btn.innerHTML = o, 1500);
+            }
+        }
+
+        let notificationsEnabled = false;
+        // Более приятный и короткий одиночный звук (стеклянный "Дзинь" / "Туут")
+        const NOTIFICATION_SOUND_URL = 'https://cdnjs.cloudflare.com/ajax/libs/ion-sound/3.0.1/sounds/glass.mp3';
+        let lastCheckedFlag = localStorage.getItem('barber_new_booking_flag');
+        
+        function enableNotifications() {
+            notificationsEnabled = true;
+            let audio = new Audio(NOTIFICATION_SOUND_URL);
+            audio.play().catch(e => console.log('Audio error:', e));
+
+            try {
+                if ("Notification" in window && window.location.protocol !== 'file:') {
+                    let promise = Notification.requestPermission();
+                    if (promise) {
+                        promise.then(permission => {
+                            alert(permission === "granted" ? 'Всплывающие уведомления и звук включены!' : 'Звук включен. Всплывающие окна заблокированы браузером.');
+                        }).catch(e => alert('Звук включен.'));
+                    } else {
+                        alert('Звук включен.');
+                    }
+                } else {
+                    alert('Звук включен (при открытии с ПК всплывающие окна обычно не работают, но звук будет).');
+                }
+            } catch (err) {
+                alert('Звуковые уведомления включены.');
+            }
+        }
+
+        function checkNewBookings() {
+            let currentFlag = localStorage.getItem('barber_new_booking_flag');
+            if (currentFlag && currentFlag !== lastCheckedFlag) {
+                // Если флаг поменялся (кто-то записался)
+                if (lastCheckedFlag !== null && notificationsEnabled) {
+                    let audio = new Audio(NOTIFICATION_SOUND_URL);
+                    audio.play().catch(err => console.log('Не удалось воспроизвести звук:', err));
+                    
+                    if ("Notification" in window && Notification.permission === "granted") {
+                        try {
+                            new Notification("Новая запись!", {
+                                body: "Только что поступила новая онлайн-запись.",
+                                icon: "https://cdn-icons-png.flaticon.com/512/3050/3050267.png"
+                            });
+                        } catch(e){}
+                    }
+                }
+                
+                // Обновляем данные на экране не зависимо от звука
+                if (lastCheckedFlag !== null) {
+                    loadAdminData(); 
+                }
+                
+                lastCheckedFlag = currentFlag;
+            }
+        }
+
+        // --- APGRADE LOGIC ---
+
+        function renderClientsTab() {
+            let bookings = store.bookings;
+            let clients = {};
+            bookings.forEach(b => {
+                let st = b.status || 'pending';
+                if(st === 'cancelled') return; // Игнорируем отмененных вообще для визитов
+                
+                let p = b.phone.trim();
+                if(!clients[p]) clients[p] = { name: b.name, phone: p, visits: 0, revenue: 0, lastVisit: b.date };
+                
+                clients[p].visits++;
+                if (st === 'completed') {
+                    clients[p].revenue += parseInt(b.price || 0);
+                }
+                
+                if (b.date > clients[p].lastVisit) clients[p].lastVisit = b.date;
+                clients[p].name = b.name; // обновляем имя на более свежее
+            });
+            let arr = Object.values(clients).sort((a,b) => b.revenue - a.revenue);
+            document.getElementById('admin-clients-list').innerHTML = arr.map(c => `
+                <tr style="border-bottom: 1px solid var(--border);">
+                    <td style="padding: 15px; font-weight: 500;">${c.name}</td>
+                    <td style="padding: 15px; color: var(--text-muted);">${c.phone}</td>
+                    <td style="padding: 15px;">${c.visits}</td>
+                    <td style="padding: 15px; color: var(--text-muted);">${c.lastVisit}</td>
+                    <td style="padding: 15px; color: var(--accent); font-weight: 600;">${c.revenue} ₽</td>
+                </tr>
+            `).join('');
+        }
+
+        function exportToCSV() {
+            let bookings = store.bookings;
+            if(bookings.length === 0) { alert('Нет данных для выгрузки!'); return; }
+            
+            let csv = '\uFEFF'; // BOM for Excel UTF-8
+            csv += 'Дата;Время;Имя клиента;Телефон;Услуга;Цена(RUB);Мастер\n';
+            bookings.forEach(b => {
+                let mName = b.masterName === 'any' ? 'Любой' : (b.masterName || 'Любой');
+                csv += `${b.date};${b.time};${b.name};${b.phone};${b.service};${b.price || 0};${mName}\n`;
+            });
+            
+            let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            let link = document.createElement("a");
+            let url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `barbershop_base_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        let revenueChartInstance = null;
+        let mastersChartInstance = null;
+
+        function renderCharts() {
+            let bookings = store.bookings;
+            
+            // 7 Days Revenue
+            let todayObj = new Date();
+            let labels7Days = [];
+            let data7Days = [];
+            for (let i=6; i>=0; i--) {
+                let d = new Date(todayObj); d.setDate(d.getDate() - i);
+                let iso = d.toISOString().split('T')[0];
+                labels7Days.push(d.toLocaleDateString('ru-RU', {day:'numeric', month:'short'}));
+                let dayRev = bookings.filter(b => b.date === iso && b.status === 'completed').reduce((sum, b) => sum + parseInt(b.price || 0), 0);
+                data7Days.push(dayRev);
+            }
+
+            if(revenueChartInstance) revenueChartInstance.destroy();
+            let ctxRev = document.getElementById('revenueChart').getContext('2d');
+            revenueChartInstance = new Chart(ctxRev, {
+                type: 'bar',
+                data: { labels: labels7Days, datasets: [{ label: 'Доход Завершено (₽)', data: data7Days, backgroundColor: '#2ed573', borderRadius: 4 }] },
+                options: { responsive: true, scales: { y: { beginAtZero: true, grid: { color: 'var(--overlay-light)' } }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
+            });
+
+            // Master shares
+            let mastersRev = {};
+            bookings.forEach(b => {
+                if (b.status !== 'completed') return; // Только завершенные стрижки!
+                let m = b.masterName === 'any' ? 'Без мастера' : (b.masterName || 'Удаленный мастер');
+                if(!mastersRev[m]) mastersRev[m] = 0;
+                mastersRev[m] += parseInt(b.price || 0);
+            });
+            let mLabels = Object.keys(mastersRev);
+            let mData = Object.values(mastersRev);
+            
+            if(mastersChartInstance) mastersChartInstance.destroy();
+            let ctxMast = document.getElementById('mastersChart').getContext('2d');
+            mastersChartInstance = new Chart(ctxMast, {
+                type: 'doughnut',
+                data: { labels: mLabels, datasets: [{ data: mData, backgroundColor: ['#d4af37', '#1e90ff', '#2ed573', '#ff4757', '#9b59b6'], borderWidth: 0, hoverOffset: 4 }] },
+                options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#f0f0f0' } } } }
+            });
+        }
+
+        function renderCalendarGrid() {
+            let container = document.getElementById('calendar-grid');
+            let todayObjDate = new Date();
+            let today = todayObjDate.toISOString().split('T')[0];
+            let dayOfWeek = todayObjDate.getDay();
+            
+            document.getElementById('grid-today-date').innerText = todayObjDate.toLocaleDateString('ru-RU', {day:'numeric', month:'long'});
+            
+            let settings = store.settings;
+            let masters = store.masters;
+            let allServices = store.services;
+            // В календарь выводим только НЕ отмененные записи
+            let bookings = store.bookings.filter(b => b.date === today && b.status !== 'cancelled');
+            
+            let html = '<tr><th style="width: 80px;">Время</th>';
+            masters.forEach(m => { html += `<th>${m.name}</th>`; });
+            html += '</tr>';
+            
+            let tObj = new Date(`2000-01-01T${settings.openTime}:00`);
+            let eObj = new Date(`2000-01-01T${settings.closeTime}:00`);
+
+            // To handle rowspans, track skip counts per master
+            let skipCells = {};
+            masters.forEach(m => skipCells[m.id] = 0);
+            
+            while(tObj < eObj) {
+                let ts = tObj.toTimeString().substring(0,5);
+                html += `<tr><td style="color:var(--text-muted); font-size:0.9rem;">${ts}</td>`;
+
+                masters.forEach(m => {
+                    let mDays = m.workingDays || [1,2,3,4,5,6,0];
+                    let isWorking = mDays.includes(dayOfWeek);
+
+                    if (!isWorking) {
+                        html += `<td style="background: rgba(255,255,255,0.02); color: var(--text-muted); opacity: 0.5;">ВЫХОДНОЙ</td>`;
+                        return;
+                    }
+
+                    if (skipCells[m.id] > 0) {
+                        skipCells[m.id]--;
+                        return; // Cell covered by rowspan
+                    }
+
+                    let b = bookings.find(x => x.time === ts && (x.masterId === m.id || x.masterId === 'any'));
+                    if (b) {
+                        // Calculate duration in 30-min chunks
+                        let serv = allServices.find(s => s.id === b.serviceKey || s.strings.ru.title === b.service) || {};
+                        // If it's manual "ОБЕД" or no duration, default to 60 (2 blocks of 30min)
+                        let duration = serv.duration || 60; 
+                        let rowSpan = Math.max(1, duration / 30);
+                        
+                        skipCells[m.id] = rowSpan - 1;
+
+                        let st = b.status || 'pending';
+                        let bdCol = 'var(--accent)'; let icon = '<i data-lucide="clock" style="width:14px;height:14px;color:var(--accent);"></i>';
+                        if (st === 'completed') { bdCol = '#2ed573'; icon = '<i data-lucide="check-circle" style="width:14px;height:14px;color:#2ed573;"></i>'; }
+                        else if (st === 'in_progress') { bdCol = '#1e90ff'; icon = '<i data-lucide="play-circle" style="width:14px;height:14px;color:#1e90ff;"></i>'; }
+                        
+                        html += `<td rowspan="${rowSpan}" draggable="true" ondragstart="dragBooking(event, '${b.id}')" class="grid-cell-booked timeline-card" style="border-color:${bdCol}; cursor: grab;" ondragend="this.classList.remove('dragging')"><div class="grid-cell-booked-inner" style="display:flex;align-items:center;justify-content:center;gap:4px;">${icon} ${b.name}</div><div class="grid-cell-booked-sub">${b.service}</div></td>`;
+                    } else {
+                        html += `<td class="grid-cell-empty timeline-cell" onclick="fastBook('${ts}', '${m.id}')" ondragover="event.preventDefault()" ondragenter="this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropBooking(event, '${ts}', '${m.id}')">+ ${ts}</td>`;
+                    }
+                });
+                
+                html += '</tr>';
+                tObj.setMinutes(tObj.getMinutes() + 30); // 30 Minute step!
+            }
+            container.innerHTML = html;
+        }
+
+        // DRAG AND DROP HANDLERS
+        function dragBooking(ev, id) {
+            ev.dataTransfer.setData('text/plain', id);
+            ev.currentTarget.classList.add('dragging');
+        }
+
+        async function dropBooking(ev, newTime, newMasterId) {
+            ev.preventDefault();
+            ev.currentTarget.classList.remove('drag-over');
+            let id = ev.dataTransfer.getData('text/plain');
+            if(!id) return;
+
+            let booking = store.bookings.find(x => x.id === id);
+            if(!booking) return;
+
+            // Optional: Prevent drag if completed or cancelled?
+            if(booking.status === 'completed' || booking.status === 'cancelled') {
+                alert('Нельзя переносить завершенные или отмененные записи!'); 
+                return;
+            }
+
+            let confirmMove = confirm(`Перенести запись клиента ${booking.name} на ${newTime}?`);
+            if(!confirmMove) return;
+
+            let today = new Date().toISOString().split('T')[0];
+            booking.date = today;
+            booking.time = newTime;
+            booking.masterId = newMasterId;
+            let mObj = store.masters.find(m => m.id === newMasterId);
+            booking.masterName = mObj ? mObj.name : 'Любой';
+
+            await window.appDB.saveBookings(store.bookings);
+        }
+
+        function renderProductsList(products) {
+            const list = document.getElementById('admin-products-list');
+            if(!list || !products) return;
+            list.innerHTML = '';
+            products.forEach(p => {
+                list.innerHTML += `<div class="card" style="margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                    <div><h4 style="margin:0">${p.name}</h4><small style="color:var(--text-muted);">В наличии: ${p.count} | ${p.sellPrice} ₽</small></div>
+                </div>`;
+            });
+        }
+
+        function renderSalaries(bookings, masters) {
+            const list = document.getElementById('admin-salaries-list');
+            if(!list) return;
+            list.innerHTML = '';
+            
+            let mRev = {};
+            masters.forEach(m => mRev[m.id] = { total: 0, salary: 0 });
+            
+            bookings.filter(b => b.status === 'completed').forEach(b => {
+                let mId = (b.masterId === 'any' || !b.masterId) ? 'any' : b.masterId;
+                if(mId !== 'any' && mRev[mId]) {
+                    let val = parseInt(b.price || 0);
+                    mRev[mId].total += val;
+                    let share = masters.find(m => m.id === mId).share || 50;
+                    mRev[mId].salary += val * (share / 100);
+                }
+            });
+
+            let grandTotal = 0, grandSalary = 0;
+            masters.forEach(m => {
+                let share = m.share || 50;
+                let total = mRev[m.id].total;
+                let salary = Math.round(mRev[m.id].salary);
+                let salon = total - salary;
+                grandTotal += total; grandSalary += salary;
+                list.innerHTML += `<tr>
+                    <td style="padding:15px; border-bottom:1px solid var(--border);">${m.name}</td>
+                    <td style="padding:15px; border-bottom:1px solid var(--border); color:var(--text-muted);">${share}%</td>
+                    <td style="padding:15px; border-bottom:1px solid var(--border);">${total} ₽</td>
+                    <td style="padding:15px; border-bottom:1px solid var(--border); color:#2ed573; font-weight:600;">${salary} ₽</td>
+                    <td style="padding:15px; border-bottom:1px solid var(--border); color:var(--accent); font-weight:600;">${salon} ₽</td>
+                </tr>`;
+            });
+            const tfoot = document.getElementById('admin-salaries-total');
+            if (tfoot) tfoot.innerHTML = `<tr>
+                <td style="padding:15px;" colspan="2">Итого</td>
+                <td style="padding:15px;">${grandTotal} ₽</td>
+                <td style="padding:15px; color:#2ed573;">${grandSalary} ₽</td>
+                <td style="padding:15px; color:var(--accent);">${grandTotal - grandSalary} ₽</td>
+            </tr>`;
+        }
+
+        function renderAdminReviews(reviews) {
+            const list = document.getElementById('admin-reviews-list');
+            if(!list || !reviews) return;
+            list.innerHTML = '';
+            if(reviews.length === 0) list.innerHTML = '<p class="empty-state">Отзывов пока нет</p>';
+            reviews.forEach(r => {
+                list.innerHTML += `<div class="card" style="margin-bottom:10px;"><p>"${r.text}"</p><small style="color:var(--accent);">Оценка: ${'⭐'.repeat(r.rating)}</small></div>`;
+            });
+        }
+
+        function renderManualOptions(services, masters) {
+            const mService = document.getElementById('manual_service');
+            const mMaster = document.getElementById('manual_master');
+            if(mService && services) {
+                mService.innerHTML = '';
+                services.forEach(s => mService.innerHTML += `<option value="${s.id}">${s.strings.ru.title} - ${s.price} ₽</option>`);
+            }
+            if(mMaster && masters) {
+                mMaster.innerHTML = '<option value="any">Любой мастер</option>';
+                masters.forEach(m => mMaster.innerHTML += `<option value="${m.id}">${m.name}</option>`);
+            }
+        }
+
+        function renderMastersList(masters, reviews) {
+            const list = document.getElementById('admin-masters-list');
+            if(!list || !masters) return;
+            list.innerHTML = '';
+            masters.forEach(m => {
+                list.innerHTML += `<div class="card" style="margin-bottom:15px; display:flex; justify-content:space-between; align-items:center;">
+                    <div><h4 style="margin:0">${m.name}</h4><small style="color:var(--text-muted);">Доля от услуг: ${m.share}% | От товаров: ${m.productShare || 0}%</small></div>
+                    <button class="btn-danger" onclick="deleteMaster('${m.id}')" style="padding: 8px 16px; width:auto;">Удалить</button>
+                </div>`;
+            });
+        }
+
+        async function addMaster() {
+            const nameEl = document.getElementById('new_master_name');
+            const shareEl = document.getElementById('new_master_share');
+            const pShareEl = document.getElementById('new_master_product_share');
+            
+            const name = nameEl.value.trim();
+            const share = parseInt(shareEl.value || 50);
+            const pShare = parseInt(pShareEl.value || 10);
+            
+            if(!name) return alert('Введите имя мастера!');
+            
+            let days = [];
+            document.querySelectorAll('#new_master_days input[type="checkbox"]:checked').forEach(el => days.push(parseInt(el.value)));
+            if(days.length === 0) days = [1,2,3,4,5,6,0];
+
+            let m = {
+                id: 'm_' + Date.now(),
+                name: name,
+                share: share,
+                productShare: pShare,
+                workingDays: days
+            };
+            store.masters.push(m);
+            await window.appDB.saveMasters(store.masters);
+            
+            // Clear inputs
+            nameEl.value = ''; shareEl.value = '50'; pShareEl.value = '10';
+            document.querySelectorAll('#new_master_days input[type="checkbox"]').forEach(el => el.checked = true);
+            
+            alert('Мастер ' + name + ' успешно добавлен!');
+        }
+
+        async function deleteMaster(id) {
+            if(!confirm('Вы уверены, что хотите удалить этого мастера?')) return;
+            store.masters = store.masters.filter(m => m.id !== id);
+            await window.appDB.saveMasters(store.masters);
+        }
+
+        async function updateBookingStatus(id, newStatus) {
+            let b = store.bookings.find(x => x.id === id);
+            if(b) {
+                b.status = newStatus;
+                await window.appDB.saveBookings(store.bookings);
+                renderCalendarGrid(store.bookings);
+                renderCharts(store.bookings); // Refresh stats
+            }
+        }
+
+        async function deleteBooking(id) {
+            if(!confirm('Точно удалить запись? Это действие необратимо.')) return;
+            store.bookings = store.bookings.filter(b => b.id !== id);
+            await window.appDB.saveBookings(store.bookings);
+        }
+
+        async function addManualBooking() {
+            let name = document.getElementById('manual_client_name').value.trim();
+            let phone = document.getElementById('manual_client_phone').value.trim();
+            let date = document.getElementById('manual_date').value;
+            let time = document.getElementById('manual_time').value;
+            let servId = document.getElementById('manual_service').value;
+            let mastId = document.getElementById('manual_master').value;
+
+            if(!name || !time || !date) return alert('Введите имя, дату и время!');
+
+            let srv = store.services.find(s => s.id === servId);
+            let srvName = srv ? srv.strings.ru.title : '';
+            let srvPrice = srv ? srv.price : 0;
+            
+            let mObj = store.masters.find(m => m.id === mastId);
+            let mName = mObj ? mObj.name : 'Любой';
+
+            let newBooking = {
+                id: 'b_' + Date.now(),
+                date: date,
+                time: time,
+                name: name,
+                phone: phone,
+                serviceKey: servId,
+                service: srvName,
+                price: srvPrice,
+                masterId: mastId,
+                masterName: mName,
+                status: 'pending'
+            };
+
+            store.bookings.push(newBooking);
+            await window.appDB.saveBookings(store.bookings);
+
+            // Clear inputs
+            document.getElementById('manual_client_name').value = '';
+            document.getElementById('manual_client_phone').value = '';
+            
+            alert('Ручная запись успешно добавлена!');
+            renderCalendarGrid(store.bookings);
+            renderCharts(store.bookings);
+        }
+
+        function fastBook(time, masterId) {
+            document.getElementById('manual_date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('manual_time').value = time;
+            document.getElementById('manual_master').value = masterId;
+            document.getElementById('manual_client_name').focus();
+            // Скроллим до формы (если нужно)
+            document.getElementById('manual_client_name').scrollIntoView({behavior: "smooth", block: "center"});
+        }
+
+        // Fallback for document load (already handled by initAdmin but explicitly just in case)
+        if(typeof initAdmin === 'undefined') document.addEventListener('DOMContentLoaded', () => { changeLanguage(currentLang); loadAdminData(); });
+    </script>
+
+    <!-- 3D BACKGROUND EXPORTED ENGINE -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+    <script src="assets/engine.js"></script>
+
+</body>
+</html>

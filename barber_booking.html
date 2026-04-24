@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Брутальный Барбершоп - Онлайн Запись</title>
+    <meta name="description" content="Премиальный барбершоп. Запись на стрижку онлайн.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0c;
+            --surface: #141418;
+            --surface-hover: #1f1f26;
+            --gold: #d4af37;
+            --gold-hover: #f1c40f;
+            --text-main: #f0f0f0;
+            --text-muted: #888891;
+            --border: rgba(255,255,255,0.08);
+            --danger: #ff4757;
+            --font-sans: 'Inter', sans-serif;
+            --font-serif: 'Playfair Display', serif;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Views */
+        .app-view {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            flex: 1;
+            padding-bottom: 60px;
+        }
+        .app-view.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Typography */
+        h1, h2, h3 { font-family: var(--font-serif); font-weight: 600; letter-spacing: 0.5px; }
+        .gold-text { color: var(--gold); }
+
+        /* Client View */
+        .header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            background: linear-gradient(180deg, rgba(20,20,24,1) 0%, rgba(10,10,12,0) 100%);
+        }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .header p { color: var(--text-muted); font-size: 1.1rem; max-width: 400px; margin: 0 auto; }
+
+        .booking-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--surface);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        /* Stepper */
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .stepper::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--border);
+            z-index: 1;
+            transform: translateY(-50%);
+        }
+        .step {
+            position: relative;
+            z-index: 2;
+            background: var(--surface);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--border);
+            color: var(--text-muted);
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        .step.completed { background: var(--gold); border-color: var(--gold); color: var(--bg-dark); }
+        .step.active { border-color: var(--gold); color: var(--gold); }
+
+        /* Step Contents */
+        .step-content {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+        .step-content.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Services */
+        .service-list {
+            display: grid;
+            gap: 15px;
+        }
+        .service-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .service-card:hover { border-color: var(--gold); background: var(--surface-hover); }
+        .service-card.selected { border-color: var(--gold); background: rgba(212, 175, 55, 0.05); }
+        
+        .service-info h3 { font-family: var(--font-sans); font-size: 1.1rem; margin-bottom: 5px; }
+        .service-info p { color: var(--text-muted); font-size: 0.9rem; }
+        .service-price { font-weight: 600; color: var(--gold); font-size: 1.1rem; }
+
+        /* Dates & Times */
+        .date-picker { margin-bottom: 25px; }
+        .dates-scroll {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding-bottom: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border) transparent;
+        }
+        .dates-scroll::-webkit-scrollbar { height: 6px; }
+        .dates-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+        
+        .date-card {
+            min-width: 70px;
+            padding: 15px 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--bg-dark);
+        }
+        .date-card.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+        .date-card:hover:not(.disabled) { border-color: var(--gold); }
+        .date-card.selected { background: var(--gold); color: var(--bg-dark); border-color: var(--gold); }
+        .date-card .day { font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px; opacity: 0.8; }
+        .date-card .num { font-size: 1.3rem; font-weight: 600; }
+
+        .time-picker h3 { margin-bottom: 15px; font-family: var(--font-sans); }
+        .time-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+        }
+        .time-slot {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+        .time-slot.disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; background: #000; text-decoration: line-through; }
+        .time-slot:hover:not(.disabled) { border-color: var(--gold); color: var(--gold); }
+        .time-slot.selected { background: var(--gold); color: var(--bg-dark); border-color: var(--gold); }
+
+        /* Form */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 0.9rem; }
+        .form-control {
+            width: 100%;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 8px;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        .form-control:focus { outline: none; border-color: var(--gold); }
+        
+        .btn {
+            width: 100%;
+            background: var(--gold);
+            color: var(--bg-dark);
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+            margin-top: 20px;
+        }
+        .btn:hover { background: var(--gold-hover); transform: translateY(-2px); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .btn-outline {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            margin-top: 10px;
+        }
+        .btn-outline:hover { border-color: var(--text-main); background: rgba(255,255,255,0.05); }
+
+        .btn-danger { background: rgba(255, 71, 87, 0.1); color: var(--danger); border: 1px solid var(--danger); width: auto; padding: 8px 16px; font-size: 0.9rem; margin-top:0; }
+        .btn-danger:hover { background: var(--danger); color: #fff; }
+
+        /* Admin Trigger */
+        .admin-trigger {
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+            opacity: 0.3;
+            transition: opacity 0.3s;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .admin-trigger:hover { opacity: 1; color: var(--gold); }
+
+        /* Admin View */
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+        .tabs { display: flex; gap: 20px; }
+        .tab {
+            padding: 10px 0;
+            cursor: pointer;
+            color: var(--text-muted);
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+        }
+        .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+        .admin-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s; }
+
+        /* Admin Tables/Lists */
+        .booking-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .booking-details h4 { color: var(--gold); margin-bottom: 5px; font-size: 1.1rem; }
+        .booking-details p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2px; }
+        
+        .empty-state { text-align: center; padding: 50px; color: var(--text-muted); }
+
+        /* Admin Controls */
+        .admin-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .admin-card h3 { margin-bottom: 20px; font-family: var(--font-sans); }
+        .flex-row { display: flex; gap: 15px; align-items: flex-end; }
+        
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin: 5px;
+            font-size: 0.9rem;
+        }
+        .tag button {
+            background: transparent;
+            border: none;
+            color: var(--danger);
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        /* Success screen */
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(46, 213, 115, 0.1);
+            color: var(--success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CLIENT VIEW -->
+    <div id="client-view" class="app-view active">
+        <header class="header">
+            <h1>Брутальный Барбершоп</h1>
+            <p>Запишись онлайн к лучшим мастерам города за пару кликов.</p>
+        </header>
+
+        <main class="booking-container">
+            <div class="stepper" id="stepper">
+                <div class="step active" data-step="1">1</div>
+                <div class="step" data-step="2">2</div>
+                <div class="step" data-step="3">3</div>
+            </div>
+
+            <!-- STEP 1: Services -->
+            <div class="step-content active" id="step-1">
+                <h2 style="margin-bottom: 20px; font-family: var(--font-sans); font-size: 1.3rem;">Выберите услугу</h2>
+                <div class="service-list">
+                    <div class="service-card" onclick="selectService('Стрижка', 1500)">
+                        <div class="service-info">
+                            <h3>Мужская стрижка</h3>
+                            <p>Мытье головы, стрижка, укладка</p>
+                        </div>
+                        <div class="service-price">1500 ₽</div>
+                    </div>
+                    <div class="service-card" onclick="selectService('Оформление бороды', 1000)">
+                        <div class="service-info">
+                            <h3>Оформление бороды</h3>
+                            <p>Распаривание, коррекция формы, масло</p>
+                        </div>
+                        <div class="service-price">1000 ₽</div>
+                    </div>
+                    <div class="service-card" onclick="selectService('Стрижка + Борода', 2200)">
+                        <div class="service-info">
+                            <h3>Комплекс: Стрижка + Борода</h3>
+                            <p>Идеальный образ за один визит</p>
+                        </div>
+                        <div class="service-price">2200 ₽</div>
+                    </div>
+                    <div class="service-card" onclick="selectService('Детская стрижка', 1000)">
+                        <div class="service-info">
+                            <h3>Детская стрижка</h3>
+                            <p>Стильно и аккуратно (до 12 лет)</p>
+                        </div>
+                        <div class="service-price">1000 ₽</div>
+                    </div>
+                </div>
+                <button class="btn" id="btn-next-1" disabled onclick="nextStep(2)">Далее</button>
+            </div>
+
+            <!-- STEP 2: Date & Time -->
+            <div class="step-content" id="step-2">
+                <div class="date-picker">
+                    <h2 style="margin-bottom: 15px; font-family: var(--font-sans); font-size: 1.3rem;">Выберите дату</h2>
+                    <div class="dates-scroll" id="dates-container">
+                        <!-- Dates JS Injected -->
+                    </div>
+                </div>
+
+                <div class="time-picker" id="time-picker" style="display: none;">
+                    <h2 style="margin-bottom: 15px; font-family: var(--font-sans); font-size: 1.3rem;">Выберите время</h2>
+                    <div class="time-grid" id="times-container">
+                        <!-- Times JS Injected -->
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 30px;">
+                    <button class="btn btn-outline" style="margin-top: 0; width: 30%;" onclick="nextStep(1)">Назад</button>
+                    <button class="btn" id="btn-next-2" style="margin-top: 0;" disabled onclick="nextStep(3)">Далее</button>
+                </div>
+            </div>
+
+            <!-- STEP 3: Contacts -->
+            <div class="step-content" id="step-3">
+                <h2 style="margin-bottom: 20px; font-family: var(--font-sans); font-size: 1.3rem;">Ваши контакты</h2>
+                <div class="form-group">
+                    <label>Ваше имя</label>
+                    <input type="text" id="client-name" class="form-control" placeholder="Иван Иванов" oninput="validateForm()">
+                </div>
+                <div class="form-group">
+                    <label>Номер телефона</label>
+                    <input type="tel" id="client-phone" class="form-control" placeholder="+7 (999) 000-00-00" oninput="validateForm()">
+                </div>
+                
+                <div style="background: var(--bg-dark); padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border);">
+                    <h4 style="color: var(--text-muted); margin-bottom: 10px; font-size: 0.9rem;">Детали записи:</h4>
+                    <div id="summary-service" style="font-weight: 500; margin-bottom: 5px;"></div>
+                    <div id="summary-datetime" style="color: var(--gold);"></div>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-outline" style="margin-top: 0; width: 30%;" onclick="nextStep(2)">Назад</button>
+                    <button class="btn" id="btn-submit" style="margin-top: 0;" disabled onclick="submitBooking()">Записаться</button>
+                </div>
+            </div>
+
+            <!-- SUCCESS -->
+            <div class="step-content" id="step-success" style="text-align: center; padding: 40px 0;">
+                <div class="success-icon">✓</div>
+                <h2 style="margin-bottom: 10px;">Вы успешно записаны!</h2>
+                <p style="color: var(--text-muted); margin-bottom: 30px;">Ждем вас в назначенное время. Мы свяжемся с вами для подтверждения.</p>
+                <button class="btn btn-outline" onclick="location.reload()">На главную</button>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ADMIN VIEW -->
+    <div id="admin-view" class="app-view">
+        <header class="admin-header">
+            <h2><span class="gold-text">Админ</span> Панель</h2>
+            <div class="tabs">
+                <div class="tab active" onclick="switchAdminTab('bookings', this)">Записи</div>
+                <div class="tab" onclick="switchAdminTab('settings', this)">Настройка времени</div>
+            </div>
+            <button class="btn-outline" style="padding: 8px 16px; border-radius: 6px; font-size: 0.9rem;" onclick="logoutAdmin()">Выйти</button>
+        </header>
+
+        <main class="admin-container">
+            <!-- TAB: Bookings -->
+            <div id="admin-tab-bookings" class="tab-content active">
+                <h3 style="margin-bottom: 25px;">Список всех записей</h3>
+                <div id="admin-bookings-list">
+                    <!-- JS Injected -->
+                </div>
+            </div>
+
+            <!-- TAB: Settings (Disable dates/times) -->
+            <div id="admin-tab-settings" class="tab-content">
+                <div class="admin-card">
+                    <h3>Отключить конкретную дату полностью</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">В этот день клиенты не смогут записаться.</p>
+                    <div class="flex-row">
+                        <div class="form-group" style="margin: 0; flex: 1;">
+                            <input type="date" id="disable-date-input" class="form-control">
+                        </div>
+                        <button class="btn" style="width: auto; margin: 0; padding: 15px 30px;" onclick="addDisabledDate()">Отключить</button>
+                    </div>
+                    <div style="margin-top: 20px;" id="disabled-dates-list"></div>
+                </div>
+
+                <div class="admin-card">
+                    <h3>Отключить время в конкретный день</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">Клиенты не смогут выбрать этот слот.</p>
+                    <div class="flex-row">
+                        <div class="form-group" style="margin: 0; flex: 1;">
+                            <input type="date" id="disable-slot-date" class="form-control">
+                        </div>
+                        <div class="form-group" style="margin: 0; flex: 1;">
+                            <select id="disable-slot-time" class="form-control">
+                                <option value="10:00">10:00</option>
+                                <option value="11:00">11:00</option>
+                                <option value="12:00">12:00</option>
+                                <option value="13:00">13:00</option>
+                                <option value="14:00">14:00</option>
+                                <option value="15:00">15:00</option>
+                                <option value="16:00">16:00</option>
+                                <option value="17:00">17:00</option>
+                                <option value="18:00">18:00</option>
+                                <option value="19:00">19:00</option>
+                                <option value="20:00">20:00</option>
+                            </select>
+                        </div>
+                        <button class="btn" style="width: auto; margin: 0; padding: 15px 30px;" onclick="addDisabledTime()">Отключить</button>
+                    </div>
+                    <div style="margin-top: 20px;" id="disabled-times-list"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Admin Trigger -->
+    <div class="admin-trigger" id="admin-trigger" onclick="promptAdmin()">
+        🔒 Доступ для администратора
+    </div>
+
+    <script>
+        // --- DATABASE MOCK (LocalStorage) ---
+        const DB_BOOKINGS = 'barber_bookings';
+        const DB_DISABLED_DATES = 'barber_disabled_dates';
+        const DB_DISABLED_TIMES = 'barber_disabled_times';
+
+        function getDB(key) { return JSON.parse(localStorage.getItem(key)) || []; }
+        function saveDB(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+
+        // --- APP STATE ---
+        let currentStep = 1;
+        let bookingData = {
+            id: null,
+            service: null,
+            price: null,
+            date: null,
+            time: null,
+            name: '',
+            phone: '',
+            timestamp: null
+        };
+
+        const availableTimes = ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"];
+
+        // --- CLIENT LOGIC ---
+
+        function selectService(name, price) {
+            bookingData.service = name;
+            bookingData.price = price;
+            
+            document.querySelectorAll('.service-card').forEach(card => card.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            
+            document.getElementById('btn-next-1').disabled = false;
+        }
+
+        function nextStep(step) {
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(`step-${step}`).classList.add('active');
+            
+            document.querySelectorAll('.step').forEach(el => {
+                let s = parseInt(el.dataset.step);
+                el.classList.remove('active', 'completed');
+                if (s < step) el.classList.add('completed');
+                if (s === step) el.classList.add('active');
+            });
+
+            currentStep = step;
+
+            if (step === 2) {
+                renderDates();
+            }
+            if (step === 3) {
+                document.getElementById('summary-service').innerText = `${bookingData.service} (${bookingData.price} ₽)`;
+                
+                // Format Date nicely
+                const d = new Date(bookingData.date);
+                const options = { day: 'numeric', month: 'long' };
+                const formattedDate = d.toLocaleDateString('ru-RU', options);
+                
+                document.getElementById('summary-datetime').innerText = `${formattedDate} в ${bookingData.time}`;
+            }
+        }
+
+        function renderDates() {
+            const container = document.getElementById('dates-container');
+            container.innerHTML = '';
+            
+            const today = new Date();
+            const disabledDates = getDB(DB_DISABLED_DATES);
+
+            for(let i=0; i<14; i++) {
+                let d = new Date(today);
+                d.setDate(d.getDate() + i);
+                
+                let isoDate = d.toISOString().split('T')[0];
+                let dayName = d.toLocaleDateString('ru-RU', { weekday: 'short' });
+                let dayNum = d.getDate();
+
+                let isDateDisabled = disabledDates.includes(isoDate);
+
+                let card = document.createElement('div');
+                card.className = `date-card ${isDateDisabled ? 'disabled' : ''}`;
+                card.innerHTML = `<div class="day">${dayName}</div><div class="num">${dayNum}</div>`;
+                
+                if (!isDateDisabled) {
+                    card.onclick = () => selectDate(isoDate, card);
+                }
+                
+                // Keep selected state if going back
+                if (bookingData.date === isoDate) {
+                    card.classList.add('selected');
+                    selectDate(isoDate, card);
+                }
+
+                container.appendChild(card);
+            }
+        }
+
+        function selectDate(isoDate, element) {
+            bookingData.date = isoDate;
+            bookingData.time = null; // reset time
+            
+            document.querySelectorAll('.date-card').forEach(c => c.classList.remove('selected'));
+            element.classList.add('selected');
+
+            document.getElementById('btn-next-2').disabled = true;
+            renderTimes();
+        }
+
+        function renderTimes() {
+            const container = document.getElementById('times-container');
+            const picker = document.getElementById('time-picker');
+            container.innerHTML = '';
+            picker.style.display = 'block';
+
+            const allBookings = getDB(DB_BOOKINGS);
+            const disabledTimes = getDB(DB_DISABLED_TIMES);
+
+            availableTimes.forEach(time => {
+                // Check if booked
+                let isBooked = allBookings.some(b => b.date === bookingData.date && b.time === time);
+                // Check if admin disabled
+                let slotKey = `${bookingData.date}_${time}`;
+                let isAdminDisabled = disabledTimes.includes(slotKey);
+
+                let disabled = isBooked || isAdminDisabled;
+
+                let slot = document.createElement('div');
+                slot.className = `time-slot ${disabled ? 'disabled' : ''}`;
+                slot.innerText = time;
+
+                if (!disabled) {
+                    slot.onclick = () => selectTime(time, slot);
+                }
+
+                if (bookingData.time === time) {
+                    slot.classList.add('selected');
+                }
+
+                container.appendChild(slot);
+            });
+        }
+
+        function selectTime(time, element) {
+            bookingData.time = time;
+            document.querySelectorAll('.time-slot').forEach(c => c.classList.remove('selected'));
+            element.classList.add('selected');
+            document.getElementById('btn-next-2').disabled = false;
+        }
+
+        function validateForm() {
+            bookingData.name = document.getElementById('client-name').value;
+            bookingData.phone = document.getElementById('client-phone').value;
+
+            let valid = bookingData.name.trim().length > 2 && bookingData.phone.trim().length > 6;
+            document.getElementById('btn-submit').disabled = !valid;
+        }
+
+        function submitBooking() {
+            let allBookings = getDB(DB_BOOKINGS);
+            
+            bookingData.id = Date.now().toString();
+            bookingData.timestamp = new Date().toISOString();
+            
+            allBookings.push(bookingData);
+            saveDB(DB_BOOKINGS, allBookings);
+
+            // Show success
+            document.getElementById('stepper').style.display = 'none';
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('step-success').classList.add('active');
+        }
+
+        // --- ADMIN LOGIC ---
+
+        function promptAdmin() {
+            let pass = prompt("Введите пароль:");
+            if(pass === "1234") {
+                document.getElementById('client-view').classList.remove('active');
+                document.getElementById('admin-view').classList.add('active');
+                document.getElementById('admin-trigger').style.display = 'none';
+                loadAdminData();
+            } else if(pass !== null) {
+                alert("Неверный пароль");
+            }
+        }
+
+        function logoutAdmin() {
+            document.getElementById('admin-view').classList.remove('active');
+            document.getElementById('client-view').classList.add('active');
+            document.getElementById('admin-trigger').style.display = 'block';
+            // reset client state on logout
+            location.reload(); 
+        }
+
+        function switchAdminTab(tabName, element) {
+            document.querySelectorAll('.admin-header .tab').forEach(t => t.classList.remove('active'));
+            element.classList.add('active');
+            
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(`admin-tab-${tabName}`).classList.add('active');
+        }
+
+        function loadAdminData() {
+            // Load Bookings
+            const list = document.getElementById('admin-bookings-list');
+            let bookings = getDB(DB_BOOKINGS);
+            
+            // Sort bookings latest first or by date
+            bookings.sort((a,b) => new Date(a.date) - new Date(b.date));
+
+            list.innerHTML = '';
+            if(bookings.length === 0) {
+                list.innerHTML = '<div class="empty-state">Пока нет ни одной записи.</div>';
+            } else {
+                bookings.forEach(b => {
+                    list.innerHTML += `
+                        <div class="booking-item">
+                            <div class="booking-details">
+                                <h4>${b.date} в ${b.time}</h4>
+                                <p><strong style="color:#fff;">КЛИЕНТ:</strong> ${b.name} (${b.phone})</p>
+                                <p><strong style="color:#fff;">УСЛУГА:</strong> ${b.service} - ${b.price} ₽</p>
+                            </div>
+                            <button class="btn btn-danger" onclick="deleteBooking('${b.id}')">Удалить</button>
+                        </div>
+                    `;
+                });
+            }
+
+            // Load settings labels
+            renderDisabledSettings();
+        }
+
+        function deleteBooking(id) {
+            if(confirm("Вы уверены что хотите удалить эту запись?")) {
+                let bookings = getDB(DB_BOOKINGS).filter(b => b.id !== id);
+                saveDB(DB_BOOKINGS, bookings);
+                loadAdminData();
+            }
+        }
+
+        function renderDisabledSettings() {
+            const dDates = getDB(DB_DISABLED_DATES);
+            const dTimes = getDB(DB_DISABLED_TIMES);
+
+            const datesCont = document.getElementById('disabled-dates-list');
+            datesCont.innerHTML = dDates.map(d => `<span class="tag">${d} <button onclick="removeDisabledDate('${d}')">&times;</button></span>`).join('');
+
+            const timesCont = document.getElementById('disabled-times-list');
+            timesCont.innerHTML = dTimes.map(t => {
+                let [date, time] = t.split('_');
+                return `<span class="tag">${date} в ${time} <button onclick="removeDisabledTime('${t}')">&times;</button></span>`;
+            }).join('');
+        }
+
+        function addDisabledDate() {
+            let val = document.getElementById('disable-date-input').value;
+            if(!val) return;
+            let arr = getDB(DB_DISABLED_DATES);
+            if(!arr.includes(val)) {
+                arr.push(val);
+                saveDB(DB_DISABLED_DATES, arr);
+                renderDisabledSettings();
+                document.getElementById('disable-date-input').value = '';
+            }
+        }
+
+        function removeDisabledDate(val) {
+            let arr = getDB(DB_DISABLED_DATES).filter(d => d !== val);
+            saveDB(DB_DISABLED_DATES, arr);
+            renderDisabledSettings();
+        }
+
+        function addDisabledTime() {
+            let d = document.getElementById('disable-slot-date').value;
+            let t = document.getElementById('disable-slot-time').value;
+            if(!d || !t) return;
+            let key = `${d}_${t}`;
+            
+            let arr = getDB(DB_DISABLED_TIMES);
+            if(!arr.includes(key)) {
+                arr.push(key);
+                saveDB(DB_DISABLED_TIMES, arr);
+                renderDisabledSettings();
+            }
+        }
+
+        function removeDisabledTime(val) {
+            let arr = getDB(DB_DISABLED_TIMES).filter(d => d !== val);
+            saveDB(DB_DISABLED_TIMES, arr);
+            renderDisabledSettings();
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <title>SaaS Super Admin - Barber.uz</title>
+    <style>
+        :root {
+            --bg-dark: #000000;
+            --surface: #0a0a0e;
+            --accent: #ffffff;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --border: rgba(255,255,255,0.2);
+            --danger: #ff4757;
+            --success: #2ed573;
+            --font-sans: 'Inter', sans-serif;
+        }
+        body {
+            margin: 0;
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            padding: 40px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+        input, select, textarea {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 8px;
+            margin-bottom: 20px;
+            font-family: var(--font-sans);
+            box-sizing: border-box;
+        }
+        .btn {
+            background: var(--accent);
+            color: var(--bg-dark);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        pre { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; font-size: 13px; color: var(--success); white-space: pre-wrap; word-break: break-all;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SaaS Управление Сайтами (Super Admin)</h1>
+        <p style="color:var(--text-muted);">Эта панель управляет базой данных Firebase для всех проданных сайтов.</p>
+
+        <div class="card">
+            <h3>1. Ключи Firebase</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">Вставьте код конфигурации из консоли Firebase, чтобы сайты сохраняли данные в облако.</p>
+            <textarea id="fb-config" rows="6" placeholder='{"apiKey": "...", "authDomain": "...", ...}'></textarea>
+            <button class="btn" onclick="saveFirebase()">Сохранить конфигурацию</button>
+            <p id="fb-status" style="margin-top:10px; color:var(--success); display:none;">Подключено!</p>
+        </div>
+
+        <div class="card">
+            <h3>2. Настройки текущего салона (Tenant)</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">Для проверки базы данных конкретного клиента, введите его ID. Если вы открываете сайт локально, он будет работать под этим ID.</p>
+            <input type="text" id="tenant-id" placeholder="Например: shop_zara_1">
+            <button class="btn" onclick="saveTenant()">Установить ID Администратора</button>
+        </div>
+
+        <div class="card">
+            <h3>2. Настройки текущего салона (Tenant)</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">Для проверки базы данных конкретного клиента, введите его ID. Если вы открываете сайт локально, он будет работать под этим ID.</p>
+            <input type="text" id="tenant-id" placeholder="Например: shop_zara_1">
+            <button class="btn" onclick="saveTenant()">Установить ID Администратора</button>
+        </div>
+
+        <div class="card">
+            <h3>3. Интеграция: Telegram Авторизация</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">Введите Username вашего бота (например, BarberUzBot), чтобы включить вход по кнопке Telegram на сайте клиентов.</p>
+            <input type="text" id="tg-bot-name" placeholder="Без символа @. Например: BarberUzBot">
+            <button class="btn" onclick="saveTgBot()">Сохранить имя бота</button>
+        </div>
+
+        <div class="card">
+            <h3>4. Глобальные API ключи (OpenRouter ИИ)</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">Установите общий API ключ для ИИ-помощника и стилиста всех салонов.</p>
+            <input type="password" id="ai-key" placeholder="sk-or-v1-...">
+            <button class="btn" onclick="saveAIKey()">Сохранить ключ искусственного интеллекта</button>
+        </div>
+    </div>
+
+    <script>
+        function loadData() {
+            document.getElementById('fb-config').value = localStorage.getItem('firebase_config') || '';
+            document.getElementById('tenant-id').value = localStorage.getItem('tenant_id') || 'local_demo';
+            document.getElementById('tg-bot-name').value = localStorage.getItem('telegram_bot_name') || '';
+            document.getElementById('ai-key').value = localStorage.getItem('openrouter_api_key') || '';
+            
+            if(localStorage.getItem('firebase_config')) {
+                document.getElementById('fb-status').style.display = 'block';
+            }
+        }
+        
+        function saveFirebase() {
+            try {
+                const conf = document.getElementById('fb-config').value.trim();
+                JSON.parse(conf); // Validate JSON
+                localStorage.setItem('firebase_config', conf);
+                alert('Конфигурация Firebase успешно сохранена!');
+                location.reload();
+            } catch(e) {
+                alert('Ошибка! Пожалуйста, вставьте валидный JSON код конфигурации.');
+            }
+        }
+
+        function saveTenant() {
+            const t = document.getElementById('tenant-id').value.trim();
+            if(!t) return alert('Введите ID!');
+            localStorage.setItem('tenant_id', t);
+            alert('Установлен активный салон: ' + t);
+        }
+
+        function saveAIKey() {
+            const key = document.getElementById('ai-key').value.trim();
+            localStorage.setItem('openrouter_api_key', key);
+            localStorage.setItem('chatbot_api_key', key);
+            alert('Глобальный API ключ ИИ сохранен!');
+        }
+
+        function saveTgBot() {
+            const bot = document.getElementById('tg-bot-name').value.trim();
+            localStorage.setItem('telegram_bot_name', bot);
+            alert('Telegram Бот для авторизации сохранен!');
+        }
+
+        window.onload = loadData;
+    </script>
+</body>
+</html>
