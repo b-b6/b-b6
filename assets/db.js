@@ -139,6 +139,23 @@ class BarberDB {
     async saveSettings(data) { return this._save(this.collections.settings, data); }
     async saveProducts(data) { return this._save(this.collections.products, data); }
     async saveReviews(data) { return this._save(this.collections.reviews, data); }
+
+    // --- SaaS GLOBAL ARCHITECTURE ---
+    async getGlobalTenants() {
+        await this.initPromise;
+        if(!this.useFirebase) return JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
+        const docRef = this.fsTools.doc(this.fs, `global/saas`);
+        const snap = await this.fsTools.getDoc(docRef);
+        return snap.exists() ? (snap.data().tenants || []) : [];
+    }
+
+    async saveGlobalTenants(tenantsList) {
+        await this.initPromise;
+        if(!this.useFirebase) { localStorage.setItem('global_saas_tenants', JSON.stringify(tenantsList)); return true; }
+        const docRef = this.fsTools.doc(this.fs, `global/saas`);
+        await this.fsTools.setDoc(docRef, { tenants: tenantsList });
+        return true;
+    }
 }
 
 const db = new BarberDB();

@@ -103,16 +103,18 @@
 </head>
 <body>
     <div id="auth-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg-dark); z-index:9999; display:flex; align-items:center; justify-content:center;">
-        <div class="admin-card" style="width:300px; text-align:center;">
-            <h3>Вход в панель</h3>
-            <input type="password" id="pin-input" class="form-control" placeholder="Введите PIN" style="margin-bottom:10px;">
-            <button class="btn" onclick="checkPin()">Войти</button>
-            <p id="pin-error" style="color:var(--danger); margin-top:10px; display:none;">Неверный PIN</p>
+        <div class="admin-card" style="width:320px; text-align:center;">
+            <h3>Войти в свой салон</h3>
+            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:15px;">Введите email и PIN от владельца системы.</p>
+            <input type="email" id="email-input" class="form-control" placeholder="Email" style="margin-bottom:10px;">
+            <input type="password" id="pin-input" class="form-control" placeholder="PIN" style="margin-bottom:10px;">
+            <button class="btn" style="width:100%" onclick="checkPin()">Войти</button>
+            <p id="pin-error" style="color:var(--danger); margin-top:10px; display:none;">Неверный Email или PIN</p>
         </div>
     </div>
 
     <header class="admin-header">
-        <h2 style="margin: 0;" data-i18n="admin_title"><span class="accent-text">Админ</span> Панель</h2>
+        <h2 style="margin: 0;" data-i18n="admin_title"><span class="accent-text">Админ</span> Панель <span id="header-shop-name" style="font-size:0.8rem; color:var(--text-muted);"></span></h2>
         <div class="tabs">
             <div class="tab active" onclick="switchAdminTab('stats', this)" data-i18n="tab_stats">Статистика</div>
             <div class="tab" onclick="switchAdminTab('bookings', this)" data-i18n="tab_bookings">Записи</div>
@@ -359,6 +361,27 @@
             </div>
             
             <div class="admin-card">
+                <h3>Общие настройки салона (Мой Сайт)</h3>
+                <p style="color: var(--text-muted); margin-bottom: 5px; font-size: 0.9rem;">Ссылка на вашу онлайн-запись (отправьте ее клиентам):</p>
+                <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; margin-bottom: 15px; overflow-x: auto; white-space: nowrap;">
+                    <a href="#" id="my-booking-link" target="_blank" style="color:var(--success); font-weight:600; text-decoration: none;"></a>
+                </div>
+                <div class="form-group"><label>Название вашего сайта (Отображается клиентам)</label><input type="text" id="set_shop_name" class="form-control" placeholder="Мой Барбершоп"></div>
+            </div>
+
+            <div class="admin-card">
+                <h3>Безопасность (Изменить пароль)</h3>
+                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">Вы можете изменить выданный вам PIN-код для входа в эту админскую панель.</p>
+                <div class="form-group">
+                    <label>Ваш новый PIN-код</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="set_new_pin" class="form-control" placeholder="Например: 7777" style="margin-bottom:0;">
+                        <button class="btn" style="flex-shrink:0;" onclick="changeMyPin()">Изменить PIN</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-card">
                 <h3>Рабочие часы (Открытие и закрытие салона)</h3>
                 <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">Общие часы, когда салон может принимать клиентов.</p>
                 <div class="flex-row">
@@ -414,16 +437,27 @@
                 return;
             } else {
                 document.getElementById('auth-overlay').style.display = 'none';
+                document.getElementById('header-shop-name').innerText = `ID: ${window.appDB.tenantId}`;
+                let fullPath = window.location.origin + window.location.pathname.replace('admin.html', '') + `index.html?id=${window.appDB.tenantId}`;
+                let mbLink = document.getElementById('my-booking-link');
+                if(mbLink) { mbLink.href = fullPath; mbLink.innerText = fullPath; }
             }
             fetchAndRender();
         }
 
         async function checkPin() {
-            if(document.getElementById('pin-input').value === getAdminPin()) {
+            const email = document.getElementById('email-input').value.trim();
+            const pin = document.getElementById('pin-input').value.trim();
+            if(email === 'admin' && pin === getAdminPin()) { // Local dev fallback
                 sessionStorage.setItem('adminAuth', 'true');
-                document.getElementById('auth-overlay').style.opacity = '0';
-                setTimeout(() => document.getElementById('auth-overlay').style.display = 'none', 500);
-                fetchAndRender();
+                location.reload(); return;
+            }
+            const tenants = await window.appDB.getGlobalTenants();
+            const t = tenants.find(x => x.email === email && x.pin === pin);
+            if(t) {
+                localStorage.setItem('tenant_id', t.id);
+                sessionStorage.setItem('adminAuth', 'true');
+                location.reload(); // Re-init the app DB correctly!
             } else {
                 document.getElementById('pin-error').style.display = 'block';
             }
@@ -539,6 +573,7 @@
             document.getElementById('set_open').value = set.openTime || '10:00';
             document.getElementById('set_close').value = set.closeTime || '21:00';
             document.getElementById('set_tg_token').value = set.telegram_bot_token || '';
+            if(document.getElementById('set_shop_name')) document.getElementById('set_shop_name').value = set.shopName || '';
             const dDates = store.disabledDates || [];
             document.getElementById('disabled-dates-list').innerHTML = dDates.map(d => `<span class="tag">${d} <button onclick="removeDisabledDate('${d}')">&times;</button></span>`).join('');
         }
@@ -546,8 +581,27 @@
             store.settings.openTime = document.getElementById('set_open').value || '10:00';
             store.settings.closeTime = document.getElementById('set_close').value || '21:00';
             store.settings.telegram_bot_token = document.getElementById('set_tg_token').value;
+            if(document.getElementById('set_shop_name')) store.settings.shopName = document.getElementById('set_shop_name').value;
             await window.appDB.saveSettings(store.settings);
             let btn = event.currentTarget; let o = btn.innerHTML; btn.innerHTML = '<i data-lucide="check" style="width:18px;height:18px;"></i> Сохранено'; lucide.createIcons(); setTimeout(() => { btn.innerHTML = o; lucide.createIcons(); }, 1500);
+        }
+
+        async function changeMyPin() {
+            let newPin = document.getElementById('set_new_pin').value.trim();
+            if(!newPin) return alert('Введите новый PIN!');
+            if(!confirm('ВНИМАНИЕ! После изменения пароля вам нужно будет войти заново. Продолжить?')) return;
+            
+            let tenants = await window.appDB.getGlobalTenants();
+            let myT = tenants.find(t => t.id === window.appDB.tenantId);
+            if(myT) {
+                myT.pin = newPin;
+                await window.appDB.saveGlobalTenants(tenants);
+                alert('Пароль успешно изменен! Войдите в панель заново.');
+                sessionStorage.removeItem('adminAuth');
+                location.reload();
+            } else {
+                alert('Ошибка: ваш аккаунт не найден в глобальной базе.');
+            }
         }
         function saveAIKey() {
             const key = document.getElementById('set_ai_key').value.trim();

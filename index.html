@@ -500,6 +500,13 @@
             let msts = await window.appDB.getMasters(); if(msts.length) store.masters = msts;
             let sets = await window.appDB.getSettings(); if(Object.keys(sets).length) store.settings = sets;
 
+            if (store.settings.shopName) {
+                document.title = store.settings.shopName + " - Онлайн Запись";
+                Object.keys(i18n).forEach(lang => {
+                    if(i18n[lang]) i18n[lang].title = store.settings.shopName;
+                });
+            }
+
             // Subscribe to real-time events to auto-update UI magically without polling
             window.appDB.subscribe('barber_bookings', data => { store.bookings = data; renderLiveStats(); loadMyBookings(); if(currentStep===3) renderTimes(); });
             window.appDB.subscribe('barber_reviews', data => { store.reviews = data; renderLiveStats(); });
