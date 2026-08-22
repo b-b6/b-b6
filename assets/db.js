@@ -12,7 +12,16 @@ class BarberDB {
         
         // Multi-tenant configuration
         const urlParams = new URLSearchParams(window.location.search);
-        const urlTenant = urlParams.get('shop') || urlParams.get('id');
+        let urlTenant = urlParams.get('shop') || urlParams.get('id');
+
+        // Check Telegram WebApp start_param deep link fallback
+        if (!urlTenant && typeof window !== 'undefined' && window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
+            const tgStart = window.Telegram.WebApp.initDataUnsafe.start_param;
+            if (tgStart) {
+                urlTenant = tgStart.replace(/^shop_/, '');
+            }
+        }
+
         if (urlTenant) {
             localStorage.setItem('tenant_id', urlTenant);
         }
