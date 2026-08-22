@@ -1081,6 +1081,13 @@ JSON FORMAT:
             showError('Ошибка анализа: ' + lastAnalysisError);
         }
 
+        const FACE_SHAPE_NAMES = {
+            en: { 'овал': 'Oval Face', 'овальная': 'Oval Face', 'круг': 'Round Face', 'круглая': 'Round Face', 'квадрат': 'Square Face', 'квадратная': 'Square Face', 'прямоугольн': 'Oblong Face', 'прямоугольная': 'Oblong Face', 'сердц': 'Heart Face', 'сердцевидная': 'Heart Face', 'треугольн': 'Triangle Face', 'треугольная': 'Triangle Face', 'ромб': 'Diamond Face', 'ромбовидная': 'Diamond Face' },
+            ru: { 'oval': 'Овальная форма', 'round': 'Круглая форма', 'square': 'Квадратная форма', 'oblong': 'Прямоугольная форма', 'heart': 'Сердцевидная форма', 'triangle': 'Треугольная форма', 'diamond': 'Ромбовидная форма' },
+            uz: { 'oval': 'Oval yuz shakli', 'round': 'Dumaloq yuz', 'square': 'Kvadrat yuz', 'oblong': 'To\'rtburchak yuz', 'heart': 'Yuraksimon yuz', 'triangle': 'Uchburchak yuz', 'diamond': 'Romb yuz' },
+            kg: { 'oval': 'Овал жүз', 'round': 'Тегерек жүз', 'square': 'Квадрат жүз', 'oblong': 'Төрт бурчтук жүз' }
+        };
+
         function renderResults(data) {
             document.getElementById('loading-state').style.display = 'none';
             currentFaceData = data;
@@ -1089,8 +1096,15 @@ JSON FORMAT:
             let iconName = 'scan-face';
             for (let k in FACE_ICONS) { if (fl.includes(k)) { iconName = FACE_ICONS[k]; break; } }
 
+            let displayShape = data.faceShape;
+            if (FACE_SHAPE_NAMES[currentLang]) {
+                for (let k in FACE_SHAPE_NAMES[currentLang]) {
+                    if (fl.includes(k)) { displayShape = FACE_SHAPE_NAMES[currentLang][k]; break; }
+                }
+            }
+
             document.getElementById('result-emoji').innerHTML = `<i data-lucide="${iconName}" style="width:64px;height:64px;stroke-width:1;"></i>`;
-            document.getElementById('result-face-type').innerText = data.faceShape + (i18n[currentLang].face_shape_suffix || '');
+            document.getElementById('result-face-type').innerText = displayShape;
             document.getElementById('result-face-desc').innerText = data.faceDescription;
 
             const grid = document.getElementById('style-grid');
