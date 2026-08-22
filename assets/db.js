@@ -23,9 +23,11 @@ class BarberDB {
         }
 
         if (urlTenant) {
-            localStorage.setItem('tenant_id', urlTenant);
+            this.tenantId = urlTenant;
+            try { localStorage.setItem('tenant_id', urlTenant); } catch(e) {}
+        } else {
+            this.tenantId = localStorage.getItem('tenant_id') || 'markazibarbershop1';
         }
-        this.tenantId = localStorage.getItem('tenant_id') || 'shine_barbershop';
         this.useFirebase = false;
         this.fs = null; // Firestore reference
         
