@@ -1054,8 +1054,8 @@
 
         function getBookingUrl() {
             const tenantId = window.appDB.tenantId;
-            const base = window.location.origin;
-            return `${base}/index.html?shop=${tenantId}`;
+            const path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+            return `${window.location.origin}${path}/index.html?shop=${tenantId}`;
         }
 
         function downloadQR() {
