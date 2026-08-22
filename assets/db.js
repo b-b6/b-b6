@@ -12,7 +12,7 @@ class BarberDB {
         
         // Multi-tenant configuration
         const urlParams = new URLSearchParams(window.location.search);
-        const urlTenant = urlParams.get('id');
+        const urlTenant = urlParams.get('shop') || urlParams.get('id');
         if (urlTenant) {
             localStorage.setItem('tenant_id', urlTenant);
         }
