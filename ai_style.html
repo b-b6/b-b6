@@ -858,16 +858,10 @@
                         onerror="this.src='https://placehold.co/400x600/141418/a88b2b?text=Trending+Styles'">
                 </div>
             </div>
-            <button class="btn-save" style="margin-top:20px; width:100%;" onclick="closeCatalog()">Понятно</button>
         </div>
     </div>
 
     <script>
-        const FACE_ICONS = { 'овал': 'scan-face', 'овальн': 'scan-face', 'круг': 'circle', 'квадрат': 'square', 'прямоугольн': 'smartphone', 'сердц': 'heart', 'треугольн': 'triangle', 'ромб': 'diamond' };
-        const STYLE_ICONS = ['scissors', 'sparkles', 'crown', 'zap'];
-        let selectedImageBase64 = null;
-        let currentFaceData = null;
-
         const i18n = {
             ru: {
                 nav_back: "← На сайт записи", hero_title: "Подбор стрижки по лицу", hero_desc: "Загрузите своё фото — нейросеть определит форму вашего лица и подберёт идеальные стрижки специально для вас.", btn_catalog: "Посмотреть наш каталог идей",
@@ -876,7 +870,7 @@
                 btn_analyze: "Подобрать стрижку с помощью ИИ", loading_text: "ИИ анализирует форму вашего лица", loading_sub: "Обычно 5-10 секунд",
                 rec_title_1: "Идеальные стрижки", rec_title_2: "для вас", master_tip: "Совет мастера:", cta_title: "Готовы к новому образу?",
                 cta_desc: "Запишитесь — мастера воплотят вашу идеальную стрижку", btn_book_now: "Записаться онлайн", btn_retry: "Другое фото",
-                face_shape_suffix: ""
+                match_text: "Подходит на", find_master: "Записаться к мастеру", face_shape_suffix: ""
             },
             en: {
                 nav_back: "← Back to booking", hero_title: "AI Haircut Matcher", hero_desc: "Upload a photo — our AI will find your face shape and pick ideal haircuts just for you.", btn_catalog: "View style catalog",
@@ -885,7 +879,7 @@
                 btn_analyze: "Find a haircut using AI", loading_text: "AI is analyzing your face shape", loading_sub: "Usually 5-10 seconds",
                 rec_title_1: "Ideal haircuts", rec_title_2: "for you", master_tip: "Master's tip:", cta_title: "Ready for a new look?",
                 cta_desc: "Book an appointment — our masters will bring your ideal haircut to life", btn_book_now: "Book online", btn_retry: "Another photo",
-                face_shape_suffix: ""
+                match_text: "Match", find_master: "Book Master", face_shape_suffix: ""
             },
             uz: {
                 nav_back: "← Yozilish saytiga", hero_title: "Face shape orqali soch turmagi", hero_desc: "Rasmingizni yuklang — AI yuzingiz shaklini aniqlab, sizga eng mos soch turmaklarini tanlaydi.", btn_catalog: "Katalogimizni ko'rish",
@@ -894,10 +888,17 @@
                 btn_analyze: "AI yordamida soch turmagi tanlash", loading_text: "AI yuzingizni tahlil qilyapti", loading_sub: "Odatda 5-10 soniya",
                 rec_title_1: "Siz uchun", rec_title_2: "ideal soch turmaklari", master_tip: "Ustaning maslahati:", cta_title: "Yangi obrazga tayyormisiz?",
                 cta_desc: "Yoziling — ustalarimiz ideal soch turmagingizni yaratadilar", btn_book_now: "Onlayn yozilish", btn_retry: "Boshqa rasm",
-                face_shape_suffix: ""
+                match_text: "Moslik", find_master: "Ustaga yozilish", face_shape_suffix: ""
             },
             kg: {
                 nav_back: "← Башкы бетке", hero_title: "ЖИ аркылуу чач кыркуу", hero_desc: "Сүрөтүңүздү жүктөңүз — ЖИ жүзүңүздүн формасын аныктап, сизге идеалдуу чач кыркууларды тандайт.", btn_catalog: "Биздин каталог",
+                how_1_title: "Сүрөткө түшүңүз", how_1_desc: "Толук бет, жакшы жарык", how_2_title: "ЖИ Анализдейт", how_2_desc: "Форманы секундда табат", how_3_title: "Кыркуулар", how_3_desc: "4 идеалдуу вариант",
+                upload_title: "Сүрөтүңүздү жүктөңүз", upload_desc: "Бул жерди басыңыз же файлды сүйрөңүз<br><span style='font-size:0.8rem;opacity:0.6'>JPG, PNG — толук бет, жакшы жарык</span>",
+                btn_analyze: "ЖИ менен чач кыркууну тандоо", loading_text: "ЖИ жүзүңүздү анализдеп жатат", loading_sub: "Адатта 5-10 секунд",
+                rec_title_1: "Сиз үчүн", rec_title_2: "идеалдуу чач кыркуулар", master_tip: "Чебердин кеңеши:", cta_title: "Жаңы образга даярсызбы?",
+                cta_desc: "Жазылыңыз — биздин чеберлер идеалдуу чач кыркууңузду жасап беришет", btn_book_now: "Онлайн жазылуу", btn_retry: "Башка сүрөт",
+                match_text: "Туура келет", find_master: "Чеберге жазылуу", face_shape_suffix: ""
+            }
                 how_1_title: "Сүрөткө түшүңүз", how_1_desc: "Толук бет, жакшы жарык", how_2_title: "ЖИ Анализдейт", how_2_desc: "Форманы секундда табат", how_3_title: "Кыркуулар", how_3_desc: "4 идеалдуу вариант",
                 upload_title: "Сүрөтүңүздү жүктөңүз", upload_desc: "Бул жерди басыңыз же файлды сүйрөңүз<br><span style='font-size:0.8rem;opacity:0.6'>JPG, PNG — толук бет, жакшы жарык</span>",
                 btn_analyze: "ЖИ менен чач кыркууну тандоо", loading_text: "ЖИ жүзүңүздү анализдеп жатат", loading_sub: "Адатта 5-10 секунд",
@@ -1094,6 +1095,9 @@ JSON FORMAT:
 
             const grid = document.getElementById('style-grid');
             grid.innerHTML = '';
+            const matchText = i18n[currentLang].match_text || 'Match';
+            const findMasterText = i18n[currentLang].find_master || 'Book Master';
+
             (data.styles || []).forEach((s, i) => {
                 const card = document.createElement('div');
                 card.className = 'style-card';
@@ -1101,8 +1105,8 @@ JSON FORMAT:
                     <div class="style-icon" style="color:var(--accent);"><i data-lucide="${STYLE_ICONS[i] || 'scissors'}" style="width:32px;height:32px;"></i></div>
                     <h4>${s.name}</h4>
                     <p>${s.description}</p>
-                    <span class="match-badge">✓ Подходит на ${s.matchPercent}%</span>
-                    <a href="index.html?view=map&search=${encodeURIComponent(s.name)}" class="btn-book" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:15px; padding: 10px; font-size: 0.9rem; background: var(--surface-hover); color: var(--accent); border: 1px solid var(--accent);"><i data-lucide="map-pin" style="width:16px;"></i> Найти мастера</a>
+                    <span class="match-badge">✓ ${matchText} ${s.matchPercent}%</span>
+                    <a href="index.html" class="btn-book" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:15px; padding: 10px; font-size: 0.9rem; background: var(--surface-hover); color: var(--accent); border: 1px solid var(--accent);"><i data-lucide="scissors" style="width:16px;"></i> ${findMasterText}</a>
                 `;
                 grid.appendChild(card);
             });
