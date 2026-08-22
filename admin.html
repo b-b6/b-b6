@@ -3,14 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="apple-touch-icon" href="assets/pwa-icon-192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/pwa-icon-192.png">
     <title>Админ Панель - Барбершоп</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Jura:wght@400;500;600;700&family=Russo+One&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="assets/booking-logic.js"></script>
     <!-- Import DB Layer -->
     <script src="assets/db.js"></script>
+    <!-- QR Code Generator -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 
     <style>
-        :root { --bg-dark: #000000; --surface: #0a0a0e; --surface-hover: #12121a; --accent: #ffffff; --accent-hover: #cccccc; --text-main: #ffffff; --text-muted: #888888; --border: rgba(255,255,255,0.2); --danger: #ef4444; --success: #10b981; --font-sans: 'Inter', sans-serif; --font-serif: 'Syncopate', sans-serif; --overlay-light: rgba(255,255,255,0.05); --overlay-heavy: rgba(255,255,255,0.3); --overlay-mid: rgba(255,255,255,0.15); --header-grad: rgba(20,20,24,1); --transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        :root { --bg-dark: #030305; --surface: #101014; --surface-hover: #16161d; --accent: #5e6ad2; --accent-hover: #7b86e8; --text-main: #f4f4f5; --text-muted: #a1a1aa; --border: rgba(94, 106, 210, 0.2); --danger: #ef4444; --success: #10b981; --overlay-light: rgba(255,255,255,0.05); --overlay-mid: rgba(0,0,0,0.2); --overlay-heavy: rgba(0,0,0,0.5); --header-grad: rgba(20,20,24,1); --font-sans: 'Jura', sans-serif; --font-serif: 'Russo One', sans-serif; --transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .pulse { animation: pulseAnim 2s infinite; }
         @keyframes pulseAnim { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); } 70% { box-shadow: 0 0 0 10px rgba(255,255,255,0); } 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); } }
         
@@ -35,7 +44,7 @@
         .booking-details h4 { color: var(--accent); margin-bottom: 5px; font-size: 1.1rem; }
         .booking-details p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2px; }
         .empty-state { text-align: center; padding: 50px; color: var(--text-muted); }
-        .admin-card { background: var(--surface);  border: 1px solid var(--border); padding: 30px; border-radius: 6px; margin-bottom: 20px; }
+        .admin-card { background: var(--surface);  border: 1px solid var(--border); padding: 30px; box-shadow: 0 0 40px rgba(94, 106, 210, 0.05); box-shadow: 0 0 40px rgba(94, 106, 210, 0.05); box-shadow: 0 0 40px rgba(94, 106, 210, 0.05); box-shadow: 0 0 40px rgba(94, 106, 210, 0.05); box-shadow: 0 0 40px rgba(94, 106, 210, 0.05); box-shadow: 0 0 40px rgba(94, 106, 210, 0.05); box-shadow: 0 0 40px rgba(94, 106, 210, 0.05); border-radius: 6px; margin-bottom: 20px; }
         .flex-row { display: flex; gap: 15px; align-items: flex-end; }
         .tag { display: inline-flex; align-items: center; background: var(--bg-dark); border: 1px solid var(--border); padding: 8px 12px; border-radius: 6px; margin: 5px; font-size: 0.9rem; }
         .tag button { background: transparent; border: none; color: var(--danger); margin-left: 10px; cursor: pointer; font-size: 1.1rem; }
@@ -57,9 +66,9 @@
         #calendar-grid td { height: 60px; vertical-align: middle; transition: background 0.2s; }
         #calendar-grid .grid-cell-empty { cursor: pointer; color: rgba(255,255,255,0.1); }
         #calendar-grid .grid-cell-empty:hover { background: var(--overlay-light); color: var(--accent); }
-        #calendar-grid .grid-cell-booked { background: linear-gradient(135deg, rgba(94,106,210,0.15), var(--overlay-light)); border: 1px solid var(--accent); border-radius: 6px; cursor: default; display: flex; flex-direction: column; justify-content: center; height: 100%; min-height: 50px; }
-        #calendar-grid .grid-cell-booked-inner { color: var(--text-main); font-size: 0.9rem; font-weight: 500; }
-        #calendar-grid .grid-cell-booked-sub { color: var(--accent); font-size: 0.75rem; margin-top: 2px; }
+        #calendar-grid .grid-cell-booked { background: linear-gradient(135deg, rgba(94,106,210,0.15), var(--overlay-light)); border: 1px solid var(--accent); border-radius: 6px; cursor: default; vertical-align: middle; text-align: center; padding: 10px; }
+        #calendar-grid .grid-cell-booked-inner { color: var(--text-main); font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 4px; }
+        #calendar-grid .grid-cell-booked-sub { color: var(--accent); font-size: 0.75rem; margin-top: 5px; }
     
         [data-theme="light"] {
             --bg-dark: #ffffff;
@@ -74,6 +83,54 @@
             --overlay-mid: rgba(0,0,0,0.15);
             --overlay-heavy: rgba(0,0,0,0.3);
             --header-grad: transparent;
+        }
+
+        /* MOBILE RESPONSIVENESS */
+        @media(max-width: 768px) {
+            .admin-header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px;
+            }
+            .admin-header .tabs {
+                width: 100%;
+                overflow-x: auto;
+                white-space: nowrap;
+                padding-bottom: 5px;
+                margin-top: 15px;
+                margin-bottom: 15px; /* Added spacing */
+                -webkit-overflow-scrolling: touch;
+            }
+            .admin-container {
+                padding: 15px;
+                margin-top: 20px;
+            }
+            .stat-grid {
+                grid-template-columns: 1fr;
+            }
+            /* Table responsiveness */
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            .admin-card {
+                padding: 15px;
+            }
+            .booking-item {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 15px;
+            }
+            .booking-item > div:last-child {
+                flex-direction: row !important;
+                width: 100%;
+                margin-left: 0 !important;
+            }
+            .btn-danger {
+                width: 100%;
+                text-align: center;
+            }
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -105,11 +162,11 @@
     <div id="auth-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg-dark); z-index:9999; display:flex; align-items:center; justify-content:center;">
         <div class="admin-card" style="width:320px; text-align:center;">
             <h3>Войти в свой салон</h3>
-            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:15px;">Введите email и PIN от владельца системы.</p>
+            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:15px;" data-i18n="auth_desc">Введите email и PIN от владельца системы.</p>
             <input type="email" id="email-input" class="form-control" placeholder="Email" style="margin-bottom:10px;">
             <input type="password" id="pin-input" class="form-control" placeholder="PIN" style="margin-bottom:10px;">
-            <button class="btn" style="width:100%" onclick="checkPin()">Войти</button>
-            <p id="pin-error" style="color:var(--danger); margin-top:10px; display:none;">Неверный Email или PIN</p>
+            <button class="btn" style="width:100%" onclick="checkPin()" data-i18n="auth_btn">Войти</button>
+            <p id="pin-error" style="color:var(--danger); margin-top:10px; display:none;" data-i18n="auth_error">Неверный Email или PIN</p>
         </div>
     </div>
 
@@ -125,7 +182,8 @@
             <div class="tab" onclick="switchAdminTab('reviews', this)" data-i18n="tab_reviews">Отзывы</div>
             <div class="tab" onclick="switchAdminTab('settings', this)" data-i18n="tab_settings">Настройки и Время</div>
         </div>
-        <div style="display: flex; gap: 15px; align-items: center;">
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <button id="notif-toggle-btn" onclick="toggleNotifications()" style="border: 1px solid #ff475750; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: var(--transition); background: rgba(255,71,87,0.1); color: #ff4757;">🔕 ВЫКЛ</button>
             <select class="form-control" id="lang-select" onchange="changeLanguage(this.value)" style="width:auto; padding: 6px 25px 6px 12px; border-radius:6px; font-size:0.8rem; height: auto;">
                 <option value="ru">Русский</option><option value="en">English</option><option value="uz">O'zbek</option><option value="kg">Кыргызча</option>
             </select>
@@ -137,48 +195,48 @@
     <main class="admin-container">
         <!-- STATS -->
         <div id="admin-tab-stats" class="tab-content active">
-            <h3 style="margin-bottom: 20px;">Обзор бизнеса</h3>
+            <h3 style="margin-bottom: 20px;" data-i18n="stat_review">Обзор бизнеса</h3>
             <div class="stat-grid">
                 <div class="stat-card">
                     <div class="stat-num" id="stat-today-count">0</div>
-                    <div style="color: var(--text-muted)">Записей на сегодня</div>
+                    <div style="color: var(--text-muted)" data-i18n="stat_t_count">Записей на сегодня</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-num" id="stat-today-rev">0 ₽</div>
-                    <div style="color: var(--text-muted)">Примерная выручка за сегодня</div>
+                    <div style="color: var(--text-muted)" data-i18n="stat_t_rev">Примерная выручка за сегодня</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-num" id="stat-total-rev">0 ₽</div>
-                    <div style="color: var(--text-muted)">Общая выручка всех времен</div>
+                    <div style="color: var(--text-muted)" data-i18n="stat_total_rev">Общая выручка всех времен</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-num" id="stat-total-count">0</div>
-                    <div style="color: var(--text-muted)">Всего записей в базе</div>
+                    <div style="color: var(--text-muted)" data-i18n="stat_total_count">Всего записей в базе</div>
                 </div>
             </div>
             
             <div class="stat-grid" style="margin-top: 30px;">
                 <div class="admin-card">
-                    <h4 style="color: var(--accent); margin-bottom: 15px;">Динамика выручки (Последние дни)</h4>
+                    <h4 style="color: var(--accent); margin-bottom: 15px;" data-i18n="stat_chart_1">Динамика выручки (Последние дни)</h4>
                     <canvas id="revenueChart"></canvas>
                 </div>
                 <div class="admin-card">
-                    <h4 style="color: var(--accent); margin-bottom: 15px;">Доля мастеров в выручке (Все время)</h4>
+                    <h4 style="color: var(--accent); margin-bottom: 15px;" data-i18n="stat_chart_2">Доля мастеров в выручке (Все время)</h4>
                     <div style="max-height: 250px; display: flex; justify-content: center;"><canvas id="mastersChart"></canvas></div>
                 </div>
             </div>
 
             <div class="admin-card" style="margin-top: 30px;">
-                <h3 style="color: var(--accent); margin-bottom: 20px;">Зарплаты и выручка салона (из завершенных записей)</h3>
+                <h3 style="color: var(--accent); margin-bottom: 20px;" data-i18n="stat_salaries_title">Зарплаты и выручка салона (из завершенных записей)</h3>
                 <div style="overflow-x: auto;">
                     <table style="width: 100%; border-collapse: collapse; text-align: left;">
                         <thead>
                             <tr style="border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.02);">
-                                <th style="padding: 15px; color: var(--accent); font-weight: 500;">Мастер</th>
-                                <th style="padding: 15px; color: var(--text-muted); font-weight: 500;">Доля (%)</th>
-                                <th style="padding: 15px; color: var(--text-muted); font-weight: 500;">Общая выручка</th>
-                                <th style="padding: 15px; color: #2ed573; font-weight: 500;">ЗП Мастера</th>
-                                <th style="padding: 15px; color: var(--accent); font-weight: 500;">В кассу салона</th>
+                                <th style="padding: 15px; color: var(--accent); font-weight: 500;" data-i18n="table_master">Мастер</th>
+                                <th style="padding: 15px; color: var(--text-muted); font-weight: 500;" data-i18n="table_share">Доля (%)</th>
+                                <th style="padding: 15px; color: var(--text-muted); font-weight: 500;" data-i18n="table_rev">Общая выручка</th>
+                                <th style="padding: 15px; color: #2ed573; font-weight: 500;" data-i18n="table_salary">ЗП Мастера</th>
+                                <th style="padding: 15px; color: var(--accent); font-weight: 500;" data-i18n="table_net">В кассу салона</th>
                             </tr>
                         </thead>
                         <tbody id="admin-salaries-list">
@@ -196,8 +254,8 @@
             <!-- CALENDAR GRID -->
             <div class="admin-card" style="padding: 0; overflow: hidden; margin-bottom: 30px;">
                 <div style="padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
-                    <h3 style="margin: 0; padding-bottom: 0;">Сетка на сегодня (<span id="grid-today-date" style="color:var(--accent);"></span>)</h3>
-                    <div style="font-size: 0.85rem; color: var(--text-muted);">Кликните на пустое окно, чтобы быстро записать</div>
+                    <h3 style="margin: 0; padding-bottom: 0;"><span data-i18n="book_grid_title">Сетка на сегодня</span> (<span id="grid-today-date" style="color:var(--accent);"></span>)</h3>
+                    <div style="font-size: 0.85rem; color: var(--text-muted);" data-i18n="book_grid_sub">Кликните на пустое окно, чтобы быстро записать</div>
                 </div>
                 <div style="overflow-x: auto; padding: 20px;">
                     <table style="width: 100%; border-collapse: separate; border-spacing: 5px; text-align: center; min-width: 600px;" id="calendar-grid">
@@ -250,7 +308,7 @@
         <div id="admin-tab-masters" class="tab-content">
             <div class="admin-card">
                 <h3>Управление мастерами</h3>
-                <p style="color: var(--text-muted); margin-bottom: 20px;">Добавьте ваших барберов, чтобы клиенты могли записываться к конкретному человеку.</p>
+                <p style="color: var(--text-muted); margin-bottom: 20px;" data-i18n="mast_sub">Добавьте ваших барберов, чтобы клиенты могли записываться к конкретному человеку. Здесь же можно указать ссылку на их фото.</p>
                 <div class="flex-row" style="margin-bottom: 15px;">
                     <div class="form-group" style="margin: 0; flex: 2;">
                         <input type="text" id="new_master_name" class="form-control" placeholder="Имя мастера (напр. Иван)">
@@ -261,6 +319,20 @@
                     <div class="form-group" style="margin: 0; flex: 1;">
                         <input type="number" id="new_master_product_share" class="form-control" placeholder="Бонус с инвентаря (%)" value="10">
                     </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label style="display:block;margin-bottom:6px;color:var(--text-muted);font-size:0.85rem;">Фото мастера</label>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                        <input type="text" id="new_master_photo" class="form-control" placeholder="Ссылка на фото (URL)" style="flex:1;min-width:180px;">
+                        <label class="btn btn-outline" style="margin:0;padding:10px 16px;width:auto;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;">
+                            📁 С ПК
+                            <input type="file" accept="image/*" style="display:none;" onchange="handleMasterPhotoUpload(this,'new_master_photo','new_master_preview')">
+                        </label>
+                    </div>
+                    <img id="new_master_preview" style="display:none;margin-top:10px;width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);">
+                </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <input type="text" id="new_master_desc" class="form-control" placeholder="Специализация / описание (напр. Стрижки + борода, 5 лет опыта)">
                 </div>
                 <div class="form-group" style="margin-bottom: 20px;">
                     <label style="display:block; margin-bottom:10px; color:var(--text-muted); font-size:0.9rem;">Рабочие дни мастера:</label>
@@ -283,9 +355,34 @@
         <div id="admin-tab-services" class="tab-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                 <h3>Управление услугами</h3>
-                <button class="btn" style="width: auto; padding: 10px 20px;" onclick="addService()">+ Добавить услугу</button>
             </div>
             <p style="color: var(--text-muted); margin-bottom: 25px;">Измените название, описание или стоимость. Изменения тут же появятся на клиентском сайте.</p>
+            
+            <div class="admin-card" style="margin-bottom: 25px; display: flex; gap: 15px; align-items: center; background: rgba(0,0,0,0.1); border: 1px dashed var(--accent);">
+                <div style="flex: 1;">
+                    <label style="display:block; margin-bottom:8px; color:var(--text-main); font-weight: 500; font-size:0.95rem;">Быстрое добавление услуги</label>
+                    <select id="new_service_template" class="form-control" style="appearance: auto; cursor: pointer;">
+                        <option value="custom" data-i18n="option_serv_custom">-- Своя услуга (настроить с нуля) --</option>
+                        <option value="0">Мужская стрижка (1500 ₽, 1 час)</option>
+                        <option value="1">Детская стрижка до 10 лет (1000 ₽, 45 мин)</option>
+                        <option value="2">Моделирование бороды (800 ₽, 30 мин)</option>
+                        <option value="3">Стрижка под машинку - одна насадка (700 ₽, 30 мин)</option>
+                        <option value="4">Укладка / стайлинг (500 ₽, 30 мин)</option>
+                        <option value="5">Премиум моделирование бороды (1200 ₽, 45 мин)</option>
+                        <option value="6">Камуфляж седины (1000 ₽, 30 мин)</option>
+                        <option value="7">Коррекция воском (300 ₽, 15 мин)</option>
+                        <option value="8">Черная очищающая маска (500 ₽, 30 мин)</option>
+                        <option value="9">Премиум уход за кожей головы (1500 ₽, 30 мин)</option>
+                        <option value="10">Премиум уход за лицом (1500 ₽, 45 мин)</option>
+                        <option value="11">Патчи (300 ₽, 15 мин)</option>
+                        <option value="12">Комплекс Папа + Сын (2300 ₽, 1.5 часа)</option>
+                        <option value="13">Комплекс Стрижка + Моделирование бороды (2100 ₽, 1.5 часа)</option>
+                        <option value="14">Комплекс Стрижка + Премиум борода (2500 ₽, 1.5 часа)</option>
+                    </select>
+                </div>
+                <button class="btn" style="width: auto; padding: 14px 25px; margin-top: 25px;" onclick="addService()">+ Добавить</button>
+            </div>
+
             <div id="admin-services-list"></div>
         </div>
 
@@ -295,12 +392,12 @@
             <p style="color: var(--text-muted); margin-bottom: 25px;">Управляйте остатками баночек, парфюма и укладочных средств. Проданные товары можно добавлять к чеку клиента в Записях.</p>
             
             <div class="admin-card">
-                <h4 style="color: var(--accent); margin-bottom: 15px;">Добавить новый товар</h4>
+                <h4 style="color: var(--accent); margin-bottom: 15px;" data-i18n="prod_add_title">Добавить новый товар</h4>
                 <div class="flex-row">
-                    <div class="form-group" style="margin: 0; flex: 2;"><label>Название</label><input type="text" id="add_prod_name" class="form-control" placeholder="Напр. Паста Lock Stock"></div>
-                    <div class="form-group" style="margin: 0; flex: 1;"><label>Закупка (₽)</label><input type="number" id="add_prod_buy" class="form-control"></div>
-                    <div class="form-group" style="margin: 0; flex: 1;"><label>Продажа (₽)</label><input type="number" id="add_prod_sell" class="form-control"></div>
-                    <div class="form-group" style="margin: 0; flex: 1;"><label>Кол-во (шт)</label><input type="number" id="add_prod_cnt" class="form-control"></div>
+                    <div class="form-group" style="margin: 0; flex: 2;"><label data-i18n="label_prod_name">Название</label><input type="text" id="add_prod_name" class="form-control" placeholder="Напр. Паста Lock Stock"></div>
+                    <div class="form-group" style="margin: 0; flex: 1;"><label data-i18n="label_prod_buy">Закупка (₽)</label><input type="number" id="add_prod_buy" class="form-control"></div>
+                    <div class="form-group" style="margin: 0; flex: 1;"><label data-i18n="label_prod_sell">Продажа (₽)</label><input type="number" id="add_prod_sell" class="form-control"></div>
+                    <div class="form-group" style="margin: 0; flex: 1;"><label data-i18n="label_prod_count">Кол-во (шт)</label><input type="number" id="add_prod_cnt" class="form-control"></div>
                     <button class="btn" style="margin: 0; padding: 14px 20px; width: auto;" onclick="addNewProduct()">+ Добавить</button>
                 </div>
             </div>
@@ -309,8 +406,8 @@
                 <table style="width: 100%; border-collapse: collapse; text-align: left;">
                     <thead>
                         <tr style="border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.02);">
-                            <th style="padding: 15px; color: var(--accent); font-weight: 500;">Название</th>
-                            <th style="padding: 15px; color: var(--text-muted); font-weight: 500;">В закупе (₽)</th>
+                            <th style="padding: 15px; color: var(--accent); font-weight: 500;" data-i18n="table_prod_name">Название</th>
+                            <th style="padding: 15px; color: var(--text-muted); font-weight: 500;" data-i18n="table_prod_buy">В закупе (₽)</th>
                             <th style="padding: 15px; color: #2ed573; font-weight: 500;">Для клиента (₽)</th>
                             <th style="padding: 15px; color: var(--text-muted); font-weight: 500;">Остаток</th>
                             <th style="padding: 15px;"></th>
@@ -329,10 +426,10 @@
                 <table style="width: 100%; border-collapse: collapse; text-align: left;">
                     <thead>
                         <tr style="border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.02);">
-                            <th style="padding: 15px; color: var(--accent); font-weight: 500;">Имя клиента</th>
-                            <th style="padding: 15px; color: var(--text-muted); font-weight: 500;">Телефон</th>
+                            <th style="padding: 15px; color: var(--accent); font-weight: 500;" data-i18n="table_client_name">Имя клиента</th>
+                            <th style="padding: 15px; color: var(--text-muted); font-weight: 500;" data-i18n="table_client_phone">Телефон</th>
                             <th style="padding: 15px; color: var(--text-muted); font-weight: 500;">Всего визитов</th>
-                            <th style="padding: 15px; color: var(--text-muted); font-weight: 500;">Крайний визит</th>
+                            <th style="padding: 15px; color: var(--text-muted); font-weight: 500;" data-i18n="table_client_last">Крайний визит</th>
                             <th style="padding: 15px; color: var(--accent); font-weight: 500;">Принес(ла) выручки</th>
                         </tr>
                     </thead>
@@ -355,30 +452,106 @@
         <!-- SETTINGS -->
         <div id="admin-tab-settings" class="tab-content">
             <div class="admin-card">
-                <h3>Резервное копирование и Бухгалтерия</h3>
-                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">Скачайте всю историю записей в формате CSV (открывается в Excel) себе на ПК.</p>
-                <button class="btn" style="width: auto; padding: 14px 30px; background: rgba(46, 213, 115, 0.1); color: #2ed573; border: 1px solid #2ed573; display:inline-flex; align-items:center; gap:8px;" onclick="exportToCSV()"><i data-lucide="download" style="width:18px;height:18px;"></i> Скачать базу записей (.csv)</button>
+                <h3 data-i18n="set_bkp_title">Резервное копирование и Бухгалтерия</h3>
+                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;" data-i18n="set_bkp_desc">Скачайте всю историю записей в формате CSV (открывается в Excel) себе на ПК.</p>
+                <button class="btn" style="width: auto; padding: 14px 30px; background: rgba(46, 213, 115, 0.1); color: #2ed573; border: 1px solid #2ed573; display:inline-flex; align-items:center; gap:8px;" onclick="exportToCSV()"><i data-lucide="download" style="width:18px;height:18px;"></i> <span data-i18n="btn_export">Скачать базу записей (.csv)</span></button>
             </div>
             
+            
             <div class="admin-card">
-                <h3>Общие настройки салона (Мой Сайт)</h3>
-                <p style="color: var(--text-muted); margin-bottom: 5px; font-size: 0.9rem;">Ссылка на вашу онлайн-запись (отправьте ее клиентам):</p>
+                <h3 data-i18n="set_shop_title">Общие настройки салона (Мой Сайт)</h3>
+                <p style="color: var(--text-muted); margin-bottom: 5px; font-size: 0.9rem;" data-i18n="set_shop_link">Ссылка на вашу онлайн-запись (отправьте ее клиентам):</p>
                 <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; margin-bottom: 15px; overflow-x: auto; white-space: nowrap;">
                     <a href="#" id="my-booking-link" target="_blank" style="color:var(--success); font-weight:600; text-decoration: none;"></a>
                 </div>
-                <div class="form-group"><label>Название вашего сайта (Отображается клиентам)</label><input type="text" id="set_shop_name" class="form-control" placeholder="Мой Барбершоп"></div>
+                
+                <!-- QR CODE SECTION -->
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 6px; padding: 20px; margin-bottom: 20px;">
+                    <div style="display:flex; align-items:flex-start; gap:20px; flex-wrap: wrap;">
+                        <div id="qr-code-container" style="background: #fff; padding: 12px; border-radius: 8px; display:inline-block; flex-shrink:0;">
+                            <canvas id="qr-canvas" width="200" height="200"></canvas>
+                        </div>
+                        <div style="flex: 1; min-width: 200px;">
+                            <h4 style="margin: 0 0 8px 0; color: var(--accent);">📱 QR-код для записи</h4>
+                            <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0 0 15px 0;">
+                                Распечатайте и повесьте на стойку регистрации. Клиенты сканируют → попадают на вашу страницу записи.
+                            </p>
+                            <div style="display:flex; gap:10px; flex-wrap: wrap;">
+                                <button class="btn" style="width: auto; padding: 10px 20px; font-size: 0.85rem; display:inline-flex; align-items:center; gap:6px;" onclick="downloadQR()">
+                                    <i data-lucide="download" style="width:16px;height:16px;"></i> Скачать QR
+                                </button>
+                                <button class="btn btn-outline" style="width: auto; padding: 10px 20px; font-size: 0.85rem; display:inline-flex; align-items:center; gap:6px;" onclick="copyBookingLink()">
+                                    <i data-lucide="copy" style="width:16px;height:16px;"></i> Копировать ссылку
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group"><label data-i18n="label_shop_name">Название вашего сайта (Отображается клиентам)</label><input type="text" id="set_shop_name" class="form-control" placeholder="Мой Барбершоп"></div>
+                <button class="btn" style="margin-top: 5px; width: auto; padding: 10px 20px; display:inline-flex; align-items:center; gap:8px;" onclick="saveSettings(this)"><i data-lucide="check" style="width:18px;height:18px;"></i> <span data-i18n="btn_save_shop">Сохранить название сайта</span></button>
+            </div>
+
+            <div class="admin-card" id="design-settings-card">
+                <h3 data-i18n="set_design_title">Настройки Дизайна (White-Label)</h3>
+                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;" data-i18n="set_design_desc">Кастомизируйте внешний вид вашего сайта.</p>
+                <div class="flex-row">
+                    <div class="form-group" style="margin: 0; flex: 1;">
+                        <label data-i18n="label_accent">Акцентный цвет</label>
+                        <select id="set_theme_color" class="form-control">
+                            <option value="#ffffff">Классический белый</option>
+                            <option value="#5e6ad2">Техно-Синий</option>
+                            <option value="#eab308">Золотой Барбер</option>
+                            <option value="#ef4444">Малиновый / Красный</option>
+                            <option value="#10b981">Неоновый Зеленый</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin: 0; flex: 1;">
+                        <label data-i18n="label_font">Шрифт заголовков</label>
+                        <select id="set_theme_font" class="form-control">
+                            <option value="Syncopate, sans-serif">Брутальный (Syncopate)</option>
+                            <option value="Inter, sans-serif">Современный (Inter)</option>
+                            <option value="Georgia, serif">Классический (С засечками)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="margin-top: 15px;">
+                    <label data-i18n="label_bg">Фоновое изображение</label>
+                    <select id="set_theme_bg" class="form-control">
+                        <option value="assets/bg_1.jpg">Абстракция 1 (Стандарт)</option>
+                        <option value="assets/bg_2.jpg">Геометрия Хайтек</option>
+                        <option value="assets/bg_3.jpg">Абстрактный Дым</option>
+                        <option value="none">Без фона (Просто цвет)</option>
+                    </select>
+                </div>
+
+                <div style="margin-top: 15px; background: rgba(255,255,255,0.02); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
+                    <label style="display:flex; align-items:center; gap:10px; margin-bottom:10px; cursor:pointer;">
+                        <input type="checkbox" id="set_hide_ai" style="width:18px;height:18px;"> <span data-i18n="check_ai">Отключить рекламный баннер AI подбора</span>
+                    </label>
+                    <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                        <input type="checkbox" id="set_hide_stats" style="width:18px;height:18px;"> <span data-i18n="check_stat">Скрыть блок живой статистики (Записи сегодня)</span>
+                    </label>
+                </div>
+                
+                <button class="btn" style="margin-top: 20px; width: auto; padding: 10px 20px; display:inline-flex; align-items:center; gap:8px;" onclick="saveDesignSettings(this)"><i data-lucide="palette" style="width:18px;height:18px;"></i> <span data-i18n="btn_save_design">Сохранить дизайн</span></button>
             </div>
 
             <div class="admin-card">
-                <h3>Безопасность (Изменить пароль)</h3>
-                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">Вы можете изменить выданный вам PIN-код для входа в эту админскую панель.</p>
-                <div class="form-group">
-                    <label>Ваш новый PIN-код</label>
-                    <div style="display:flex; gap:10px;">
-                        <input type="text" id="set_new_pin" class="form-control" placeholder="Например: 7777" style="margin-bottom:0;">
-                        <button class="btn" style="flex-shrink:0;" onclick="changeMyPin()">Изменить PIN</button>
+                <h3 data-i18n="set_sec_title">Безопасность (Логин и Пароль)</h3>
+                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;" data-i18n="set_sec_desc">Измените свой логин (Email) и PIN-код для входа.</p>
+                <div class="flex-row">
+                    <div class="form-group" style="margin: 0; flex: 1;">
+                        <label>Ваш Логин (Email)</label>
+                        <input type="email" id="set_new_email" class="form-control" placeholder="admin@example.com" readonly style="opacity:0.6; cursor:not-allowed;">
+                    </div>
+                    <div class="form-group" style="margin: 0; flex: 1;">
+                        <label>Ваш PIN-код</label>
+                        <input type="text" id="set_new_pin" class="form-control" placeholder="1234">
                     </div>
                 </div>
+                <button class="btn" style="margin-top: 15px; width: auto;" onclick="changeMyCredentials()"><span data-i18n="btn_change_pin">Изменить PIN-код</span></button>
             </div>
 
             <div class="admin-card">
@@ -388,8 +561,108 @@
                     <div class="form-group" style="margin: 0; flex: 1;"><label>Открытие</label><input type="time" id="set_open" class="form-control"></div>
                     <div class="form-group" style="margin: 0; flex: 1;"><label>Закрытие</label><input type="time" id="set_close" class="form-control"></div>
                 </div>
-                <div class="form-group" style="margin: 0; flex: 1;"><label>Telegram Bot Token (для уведомлений)</label><input type="text" id="set_tg_token" class="form-control"></div>
-                <button class="btn" style="margin-top: 20px; width: auto; padding: 14px 30px; display:inline-flex; align-items:center; gap:8px;" onclick="saveSettings()"><i data-lucide="save" style="width:18px;height:18px;"></i> Сохранить настройки</button>
+                <button class="btn" style="margin-top: 20px; width: auto; padding: 14px 30px; display:inline-flex; align-items:center; gap:8px;" onclick="saveSettings(this)"><i data-lucide="save" style="width:18px;height:18px;"></i> Сохранить настройки</button>
+            </div>
+
+            <!-- TELEGRAM SETUP WIZARD -->
+            <div class="admin-card" id="telegram-setup-card">
+                <h3 style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:1.5rem;">🤖</span> Telegram Уведомления
+                </h3>
+                <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem;">
+                    Получайте мгновенные уведомления о новых записях прямо в Telegram. Настройка занимает 2 минуты.
+                </p>
+
+                <!-- Status indicator -->
+                <div id="tg-status" style="padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; display:none; font-weight: 500; display:flex; align-items:center; gap:10px;"></div>
+
+                <!-- Step 1: Create bot -->
+                <div class="tg-step" id="tg-step-1" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 15px;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom: 12px;">
+                        <span style="background: var(--accent); color: #000; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.85rem; flex-shrink:0;">1</span>
+                        <strong>Создайте своего бота</strong>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 12px;">
+                        Откройте <a href="https://t.me/BotFather" target="_blank" style="color:var(--accent); text-decoration:none; font-weight:600;">@BotFather</a> в Telegram → отправьте <code>/newbot</code> → придумайте имя (напр. <em>MoyBarbershop_Bot</em>) → скопируйте токен.
+                    </p>
+                    <div class="form-group" style="margin: 0;">
+                        <label>Токен вашего бота</label>
+                        <input type="text" id="tg_bot_token" class="form-control" placeholder="123456789:ABCdefGHIjklMNOpqrsTUVwxyz" style="font-family: monospace; font-size: 0.85rem;">
+                    </div>
+                    <button class="btn" style="margin-top: 12px; width: auto; padding: 10px 24px;" onclick="tgWizardStep2(this)">Далее →</button>
+                </div>
+
+                <!-- Step 2: Send /start -->
+                <div class="tg-step" id="tg-step-2" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 15px; display: none;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom: 12px;">
+                        <span style="background: var(--accent); color: #000; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.85rem; flex-shrink:0;">2</span>
+                        <strong>Активируйте бота</strong>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 12px;">
+                        Откройте своего бота в Telegram и отправьте ему команду <code>/start</code>. Затем нажмите кнопку ниже — система автоматически найдет ваш Chat ID.
+                    </p>
+                    <div style="display:flex; gap:10px; flex-wrap: wrap;">
+                        <a id="tg-bot-link" href="#" target="_blank" class="btn btn-outline" style="width: auto; padding: 10px 20px; display:inline-flex; align-items:center; gap:8px; text-decoration:none;">
+                            📱 Открыть бота в Telegram
+                        </a>
+                        <button class="btn" style="width: auto; padding: 10px 24px;" onclick="tgDetectChatId(this)">🔍 Найти Chat ID</button>
+                    </div>
+                    <div id="tg-detect-status" style="margin-top: 12px; font-size: 0.9rem; color: var(--text-muted);"></div>
+                </div>
+
+                <!-- Step 3: Test -->
+                <div class="tg-step" id="tg-step-3" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 15px; display: none;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom: 12px;">
+                        <span style="background: var(--accent); color: #000; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.85rem; flex-shrink:0;">3</span>
+                        <strong>Готово! Проверьте</strong>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 12px;">
+                        Chat ID найден: <strong id="tg-found-chatid" style="color:var(--accent);"></strong>. Нажмите кнопку, чтобы отправить тестовое уведомление.
+                    </p>
+                    <div style="display:flex; gap:10px; flex-wrap: wrap;">
+                        <button class="btn" style="width: auto; padding: 10px 24px;" onclick="tgSendTest(this)">📨 Отправить тестовое сообщение</button>
+                        <button class="btn" style="width: auto; padding: 10px 24px; background: rgba(94, 106, 210, 0.2); color: #7b86e8; border: 1px solid var(--accent);" onclick="tgSendMonthlyReminders(this)">✂️ Напомнить клиентам ("Прошел месяц")</button>
+                        <button class="btn btn-outline" style="width: auto; padding: 10px 24px; color: #ff4757; border-color: #ff4757;" onclick="tgDisconnect()">Отключить Telegram</button>
+                    </div>
+                    <div id="tg-monthly-status" style="margin-top: 12px; font-size: 0.9rem; color: var(--text-muted);"></div>
+                </div>
+
+                <!-- Hidden field for backward compatibility -->
+                <input type="hidden" id="set_tg_token">
+            </div>
+
+            <!-- SMS REMINDER CARD -->
+            <div class="admin-card">
+                <h3 style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:1.5rem;">📱</span> SMS Эслатмалар (Eskiz.uz)
+                </h3>
+                <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem;">
+                    Мижозларга учрашув куни 1 кун олдин автоматик SMS юборилади. Eskiz.uz сайтида рўйхатдан ўтинг ва логин/паролни киритинг.
+                </p>
+                <div class="flex-row" style="gap:15px; margin-bottom:15px;">
+                    <div class="form-group" style="margin:0; flex:1;">
+                        <label>Eskiz E-mail</label>
+                        <input type="email" id="sms_eskiz_email" class="form-control" placeholder="login@email.com">
+                    </div>
+                    <div class="form-group" style="margin:0; flex:1;">
+                        <label>Eskiz Пароль</label>
+                        <input type="password" id="sms_eskiz_password" class="form-control" placeholder="••••••••">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom:15px;">
+                    <label>SMS матни (шаблон)</label>
+                    <input type="text" id="sms_template" class="form-control" placeholder="Hurmatli {name}! Ertaga {time} da {master} bilan uchrashuvingiz bor. Manzil: {shop}" style="font-size:0.85rem;">
+                    <small style="color:var(--text-muted); margin-top:6px; display:block;">Теглар: {name} {phone} {master} {service} {date} {time} {shop}</small>
+                </div>
+                <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                    <button class="btn" style="width:auto; padding:12px 24px; display:inline-flex; align-items:center; gap:8px;" onclick="saveSmsSettings(this)">
+                        <i data-lucide="save" style="width:18px;height:18px;"></i> Сохранить
+                    </button>
+                    <button class="btn btn-outline" style="width:auto; padding:12px 24px; display:inline-flex; align-items:center; gap:8px;" onclick="sendSmsReminders(this)">
+                        <i data-lucide="send" style="width:18px;height:18px;"></i> Эслатма юбориш (эртага)
+                    </button>
+                </div>
+                <div id="sms-status" style="margin-top:12px; font-size:0.9rem; color:var(--text-muted);"></div>
             </div>
 
             <div class="admin-card">
@@ -405,7 +678,7 @@
     </main>
 
     <script>
-        // DB_* constants are defined in assets/db.js (loaded above)
+        const DB_DISABLED_DATES = 'barber_disabled_dates';
 
         const defaultServices = [
             { id: 'haircut', price: 1500, duration: 60, strings: { ru: { title: "Мужская стрижка", desc: "Мытье головы, стрижка, укладка" }, en: { title: "Men's Haircut", desc: "Hair wash, haircut, styling" }, uz: { title: "Erkaklar soch turmagi", desc: "Soch yuvish, soch kesish, turmaklash" }, kg: { title: "Эркектердин чач кыркуусу", desc: "Чач жуу, чач кыркуу, жасалгалоо" } } },
@@ -424,7 +697,112 @@
             { id: 'p2', name: 'Матовая пудра', buyPrice: 500, sellPrice: 1500, count: 5 }
         ];
 
-        function getAdminPin() { return localStorage.getItem('admin_pin') || '1234'; }
+        // Removed local getAdminPin to force Firebase validation
+
+        let currentAdminLang = localStorage.getItem('adminLang') || 'ru';
+        const adminI18n = {
+            ru: {
+                admin_title: '<span class="accent-text">Админ</span> Панель',
+                tab_stats: 'Статистика', tab_bookings: 'Записи', tab_masters: 'Мастера', tab_services: 'Услуги и Цены', tab_products: 'Склад (Товары)', tab_clients: 'Клиенты (CRM)', tab_reviews: 'Отзывы', tab_settings: 'Настройки и Время', nav_back: 'На сайт записи',
+                auth_desc: 'Введите email и PIN от владельца системы.', auth_btn: 'Войти', auth_error: 'Неверный Email или PIN',
+                stat_review: 'Обзор бизнеса', stat_t_count: 'Записей на сегодня', stat_t_rev: 'Примерная выручка за сегодня', stat_total_rev: 'Общая выручка всех времен', stat_total_count: 'Всего записей в базе',
+                stat_chart_1: 'Динамика выручки (Последние дни)', stat_chart_2: 'Доля мастеров в выручке (Все время)',
+                stat_salaries_title: 'Зарплаты и выручка салона (из завершенных записей)',
+                table_master: 'Мастер', table_share: 'Доля (%)', table_rev: 'Общая выручка', table_salary: 'ЗП Мастера', table_net: 'В кассу салона',
+                book_grid_title: 'Сетка на сегодня', book_grid_sub: 'Кликните на пустое окно, чтобы быстро записать',
+                mast_sub: 'Добавьте ваших барберов, чтобы клиенты могли записываться к конкретному человеку. Здесь же можно указать ссылку на их фото.',
+                option_serv_custom: '-- Своя услуга (настроить с нуля) --',
+                prod_add_title: 'Добавить новый товар', label_prod_name: 'Название', label_prod_buy: 'Закупка (₽)', label_prod_sell: 'Продажа (₽)', label_prod_count: 'Кол-во (шт)',
+                table_prod_name: 'Название', table_prod_buy: 'В закупе (₽)',
+                table_client_name: 'Имя клиента', table_client_phone: 'Телефон', table_client_last: 'Крайний визит',
+                set_bkp_title: 'Резервное копирование и Бухгалтерия', set_bkp_desc: 'Скачайте всю историю записей в формате CSV (открывается в Excel) себе на ПК.', btn_export: 'Скачать базу записей (.csv)',
+                set_shop_title: 'Общие настройки салона (Мой Сайт)', set_shop_link: 'Ссылка на вашу онлайн-запись (отправьте ее клиентам):', label_shop_name: 'Название вашего сайта (Отображается клиентам)', btn_save_shop: 'Сохранить название сайта',
+                set_design_title: 'Настройки Дизайна (White-Label)', set_design_desc: 'Кастомизируйте внешний вид вашего сайта.', label_accent: 'Акцентный цвет', label_font: 'Шрифт заголовков', label_bg: 'Фоновое изображение',
+                check_ai: 'Отключить рекламный баннер AI подбора', check_stat: 'Скрыть блок живой статистики (Записи сегодня)', btn_save_design: 'Сохранить дизайн',
+                set_sec_title: 'Безопасность (Логин и Пароль)', set_sec_desc: 'Измените свой логин (Email) и PIN-код для входа.', btn_change_pin: 'Изменить PIN-код',
+                msg_empty_bk: 'Пока нет ни одной записи.', msg_empty_rev: 'Отзывов пока нет', msg_no_data: 'Нет данных'
+            },
+            en: {
+                admin_title: '<span class="accent-text">Admin</span> Panel',
+                tab_stats: 'Stats', tab_bookings: 'Bookings', tab_masters: 'Staff', tab_services: 'Services & Prices', tab_products: 'Inventory', tab_clients: 'Clients (CRM)', tab_reviews: 'Reviews', tab_settings: 'Settings & Time', nav_back: 'To Website',
+                auth_desc: 'Enter the system owner\'s email and PIN.', auth_btn: 'Login', auth_error: 'Invalid Email or PIN',
+                stat_review: 'Business Overview', stat_t_count: 'Appointments today', stat_t_rev: 'Estimated revenue today', stat_total_rev: 'Total revenue all time', stat_total_count: 'Total records in database',
+                stat_chart_1: 'Revenue dynamics (Recent days)', stat_chart_2: 'Master revenue share (All time)',
+                stat_salaries_title: 'Salaries & salon revenue (from completed bookings)',
+                table_master: 'Master', table_share: 'Share (%)', table_rev: 'Total Revenue', table_salary: 'Master Salary', table_net: 'To Salon',
+                book_grid_title: "Today's schedule", book_grid_sub: 'Click an empty slot to quickly book',
+                mast_sub: 'Add your barbers so clients can book with a specific person.',
+                option_serv_custom: '-- Custom service (configure from scratch) --',
+                prod_add_title: 'Add new product', label_prod_name: 'Name', label_prod_buy: 'Purchase (₽)', label_prod_sell: 'Sale (₽)', label_prod_count: 'Qty (pcs)',
+                table_prod_name: 'Name', table_prod_buy: 'Purchase price (₽)',
+                table_client_name: 'Client Name', table_client_phone: 'Phone', table_client_last: 'Last visit',
+                set_bkp_title: 'Backup & Accounting', set_bkp_desc: 'Download the entire booking history in CSV format (opens in Excel).', btn_export: 'Download booking database (.csv)',
+                set_shop_title: 'General Salon Settings (My Site)', set_shop_link: 'Link to your online booking (send to clients):', label_shop_name: 'Your site name (Shown to clients)', btn_save_shop: 'Save site name',
+                set_design_title: 'Design Settings (White-Label)', set_design_desc: 'Customize the appearance of your website.', label_accent: 'Accent color', label_font: 'Heading font', label_bg: 'Background image',
+                check_ai: 'Disable AI selection promo banner', check_stat: 'Hide live stats block (Today\'s bookings)', btn_save_design: 'Save design',
+                set_sec_title: 'Security (Login & Password)', set_sec_desc: 'Change your login (Email) and PIN code.', btn_change_pin: 'Change PIN',
+                msg_empty_bk: 'No bookings yet.', msg_empty_rev: 'No reviews yet', msg_no_data: 'No data'
+            },
+            uz: {
+                admin_title: '<span class="accent-text">Admin</span> Panel',
+                tab_stats: 'Statistika', tab_bookings: 'Yozuvlar', tab_masters: 'Ustalar', tab_services: 'Xizmatlar va Narxlar', tab_products: 'Omborxona', tab_clients: 'Mijozlar (CRM)', tab_reviews: 'Sharhlar', tab_settings: 'Sozlamalar va Vaqt', nav_back: 'Saytga',
+                auth_desc: 'Tizim egasining email va PIN kodini kiriting.', auth_btn: 'Kirish', auth_error: 'Noto\'g\'ri Email yoki PIN',
+                stat_review: 'Biznes ko\'rinishi', stat_t_count: 'Bugungi yozuvlar', stat_t_rev: 'Bugungi taxminiy daromad', stat_total_rev: 'Barcha vaqtdagi umumiy daromad', stat_total_count: 'Bazadagi jami yozuvlar',
+                stat_chart_1: 'Daromad dinamikasi (So\'nggi kunlar)', stat_chart_2: 'Ustalar daromad ulushi (Barcha vaqt)',
+                stat_salaries_title: 'Maoshlar va salon daromadi (bajarilgan yozuvlardan)',
+                table_master: 'Usta', table_share: 'Ulush (%)', table_rev: 'Umumiy daromad', table_salary: 'Usta maoshi', table_net: 'Salonga',
+                book_grid_title: 'Bugungi jadval', book_grid_sub: 'Tezda yozish uchun bo\'sh oynani bosing',
+                mast_sub: 'Mijozlar muayyan ustaga yozilishi uchun barberlaringizni qo\'shing.',
+                option_serv_custom: '-- O\'z xizmat (noldan sozlash) --',
+                prod_add_title: 'Yangi tovar qo\'shish', label_prod_name: 'Nomi', label_prod_buy: 'Xarid (₽)', label_prod_sell: 'Sotuv (₽)', label_prod_count: 'Miqdor (dona)',
+                table_prod_name: 'Nomi', table_prod_buy: 'Xarid narxi (₽)',
+                table_client_name: 'Mijoz ismi', table_client_phone: 'Telefon', table_client_last: 'So\'nggi tashrif',
+                set_bkp_title: 'Zaxira nusxa va Buxgalteriya', set_bkp_desc: 'Barcha yozuvlar tarixini CSV formatida yuklab oling (Excelda ochiladi).', btn_export: 'Yozuvlar bazasini yuklab olish (.csv)',
+                set_shop_title: 'Umumiy salon sozlamalari (Mening saytim)', set_shop_link: 'Onlayn yozilish havolasi (mijozlarga yuboring):', label_shop_name: 'Saytingiz nomi (Mijozlarga ko\'rinadi)', btn_save_shop: 'Sayt nomini saqlash',
+                set_design_title: 'Dizayn sozlamalari (White-Label)', set_design_desc: 'Saytingizning ko\'rinishini moslang.', label_accent: 'Aksent rangi', label_font: 'Sarlavha shrifti', label_bg: 'Fon tasviri',
+                check_ai: 'AI tanlovi reklama bannerini o\'chirish', check_stat: 'Jonli statistika blokini yashirish', btn_save_design: 'Dizaynni saqlash',
+                set_sec_title: 'Xavfsizlik (Login va Parol)', set_sec_desc: 'Login (Email) va PIN kodingizni o\'zgartiring.', btn_change_pin: 'PIN kodni o\'zgartirish',
+                msg_empty_bk: 'Hozircha hech qanday yozuv yo\'q.', msg_empty_rev: 'Hozircha sharhlar yo\'q', msg_no_data: 'Ma\'lumot yo\'q'
+            },
+            kg: {
+                admin_title: '<span class="accent-text">Админ</span> Панель',
+                tab_stats: 'Статистика', tab_bookings: 'Жазуулар', tab_masters: 'Усталар', tab_services: 'Кызматтар жана Баалар', tab_products: 'Склад', tab_clients: 'Кардарлар (CRM)', tab_reviews: 'Сын-пикирлер', tab_settings: 'Жөндөөлөр', nav_back: 'Сайтка',
+                auth_desc: 'Система ээсинин email жана PIN кодун киргизиңиз.', auth_btn: 'Кирүү', auth_error: 'Туура эмес Email же PIN',
+                stat_review: 'Бизнестин жалпы көрүнүшү', stat_t_count: 'Бүгүнкү жазуулар', stat_t_rev: 'Бүгүнкү болжолдуу киреше', stat_total_rev: 'Бардык убакыттагы жалпы киреше', stat_total_count: 'Базадагы жалпы жазуулар',
+                stat_chart_1: 'Киреше динамикасы (Акыркы күндөр)', stat_chart_2: 'Усталардын киреше үлүшү (Бардык убакыт)',
+                stat_salaries_title: 'Айлыктар жана салон киресеси (аяктаган жазуулардан)',
+                table_master: 'Чебер', table_share: 'Үлүш (%)', table_rev: 'Жалпы киреше', table_salary: 'Чебердин айлыгы', table_net: 'Салонго',
+                book_grid_title: 'Бүгүнкү график', book_grid_sub: 'Тез жазуу үчүн бош терезеге басыңыз',
+                mast_sub: 'Кардарлар белгилүү бир адамга жазыла алуусу үчүн барберлериңизди кошуңуз.',
+                option_serv_custom: '-- Өз кызмат (нолдон жөндөө) --',
+                prod_add_title: 'Жаңы товар кошуу', label_prod_name: 'Аталышы', label_prod_buy: 'Сатып алуу (₽)', label_prod_sell: 'Сатуу (₽)', label_prod_count: 'Саны (дана)',
+                table_prod_name: 'Аталышы', table_prod_buy: 'Сатып алуу баасы (₽)',
+                table_client_name: 'Кардардын аты', table_client_phone: 'Телефон', table_client_last: 'Акыркы келүү',
+                set_bkp_title: 'Камдык көчүрмө жана Бухгалтерия', set_bkp_desc: 'Бардык жазуулар тарыхын CSV форматында жүктөп алыңыз.', btn_export: 'Жазуулар базасын жүктөп алуу (.csv)',
+                set_shop_title: 'Салондун жалпы жөндөөлөрү (Менин сайтым)', set_shop_link: 'Онлайн жазылуу шилтемеси (кардарларга жибериңиз):', label_shop_name: 'Сайтыңыздын аталышы (Кардарларга көрүнөт)', btn_save_shop: 'Сайттын атын сактоо',
+                set_design_title: 'Дизайн жөндөөлөрү (White-Label)', set_design_desc: 'Сайтыңыздын дизайнын ыңгайлаштырыңыз.', label_accent: 'Акцент түсү', label_font: 'Аталыш шрифти', label_bg: 'Фон сүрөтү',
+                check_ai: 'AI тандоо жарнак баннерин өчүрүү', check_stat: 'Жандуу статистика блогун жашыруу', btn_save_design: 'Дизайнды сактоо',
+                set_sec_title: 'Коопсуздук (Логин жана Сырсөз)', set_sec_desc: 'Логин (Email) жана PIN кодуңузду өзгөртүңүз.', btn_change_pin: 'PIN кодду өзгөртүү',
+                msg_empty_bk: 'Азырынча жазуулар жок.', msg_empty_rev: 'Азырынча пикирлер жок', msg_no_data: 'Маалымат жок'
+            }
+        };
+
+        window.changeLanguage = function(lang) {
+            currentAdminLang = lang;
+            window.currentLang = lang; // For compatibility
+            localStorage.setItem('adminLang', lang);
+            let sel = document.getElementById('lang-select');
+            if(sel) sel.value = lang;
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                let key = el.getAttribute('data-i18n');
+                if(adminI18n[lang] && adminI18n[lang][key]) el.innerHTML = adminI18n[lang][key];
+            });
+
+            if(document.getElementById('admin-services-list') && document.getElementById('admin-services-list').innerHTML !== '') {
+                renderServicesEditor();
+            }
+        };
 
         const store = {
             bookings: [], reviews: [], disabledDates: [],
@@ -437,10 +815,20 @@
                 return;
             } else {
                 document.getElementById('auth-overlay').style.display = 'none';
-                document.getElementById('header-shop-name').innerText = `ID: ${window.appDB.tenantId}`;
+                let set = await window.appDB.getSettings();
+                Object.assign(store.settings, set);
+                document.getElementById('header-shop-name').innerText = store.settings.shopName ? `— ${store.settings.shopName}` : `ID: ${window.appDB.tenantId}`;
                 let fullPath = window.location.origin + window.location.pathname.replace('admin.html', '') + `index.html?id=${window.appDB.tenantId}`;
                 let mbLink = document.getElementById('my-booking-link');
                 if(mbLink) { mbLink.href = fullPath; mbLink.innerText = fullPath; }
+
+                if(window.appDB.getGlobalSettings) {
+                    let gSet = await window.appDB.getGlobalSettings();
+                    if(gSet.aiKey) {
+                        localStorage.setItem('openrouter_api_key', gSet.aiKey);
+                        localStorage.setItem('chatbot_api_key', gSet.aiKey);
+                    }
+                }
             }
             fetchAndRender();
         }
@@ -448,10 +836,7 @@
         async function checkPin() {
             const email = document.getElementById('email-input').value.trim();
             const pin = document.getElementById('pin-input').value.trim();
-            if(email === 'admin' && pin === getAdminPin()) { // Local dev fallback
-                sessionStorage.setItem('adminAuth', 'true');
-                location.reload(); return;
-            }
+            
             const tenants = await window.appDB.getGlobalTenants();
             const t = tenants.find(x => x.email === email && x.pin === pin);
             if(t) {
@@ -465,16 +850,38 @@
 
         async function fetchAndRender() {
             // Real-time db.js hooks
-            window.appDB.subscribe('barber_bookings', data => { loadAdminData(); });
-            window.appDB.subscribe('barber_services', data => { loadAdminData(); });
-            window.appDB.subscribe('barber_masters', data => { loadAdminData(); });
-            window.appDB.subscribe('barber_products', data => { loadAdminData(); });
-            window.appDB.subscribe('barber_reviews', data => { loadAdminData(); });
+            // Track booking count for notification sound
+            let prevBookingCount = store.bookings.length;
+            let isFirstLoad = true;
+            
+            window.appDB.subscribe('barber_bookings', data => { 
+                store.bookings = data;
+                
+                // Play notification sound if new booking arrived (not on first load)
+                if (!isFirstLoad && data.length > prevBookingCount && notificationsEnabled) {
+                    playNewBookingAlert(data[data.length - 1]);
+                }
+                prevBookingCount = data.length;
+                isFirstLoad = false;
+                
+                loadAdminData(); 
+            });
+            window.appDB.subscribe('barber_services', data => { if(data.length) store.services = data; loadAdminData(); });
+            window.appDB.subscribe('barber_masters', data => { if(data.length) store.masters = data; loadAdminData(); });
+            window.appDB.subscribe('barber_products', data => { if(data.length) store.products = data; loadAdminData(); });
+            window.appDB.subscribe('barber_reviews', data => { store.reviews = data; loadAdminData(); });
+            
+            store.bookings = await window.appDB.getBookings();
+            let srv = await window.appDB.getServices(); if(srv.length) store.services = srv;
+            let mst = await window.appDB.getMasters(); if(mst.length) store.masters = mst;
+            let prd = await window.appDB.getProducts(); if(prd.length) store.products = prd;
+            store.reviews = await window.appDB.getReviews();
+            
             loadAdminData();
         }
 
         async function loadAdminData() {
-            const bookings = await window.appDB.getBookings();
+            const bookings = store.bookings;
             const services = store.services;
             const masters = store.masters;
             const products = store.products;
@@ -488,7 +895,7 @@
             let tRev = 0, todayRev = 0, todayCnt = 0;
 
             list.innerHTML = '';
-            if(sorted.length === 0) { list.innerHTML = '<div class="empty-state">Пока нет ни одной записи.</div>'; }
+            if(sorted.length === 0) { list.innerHTML = `<div class="empty-state">${adminI18n[currentAdminLang].msg_empty_bk}</div>`; }
             else {
                 sorted.forEach(b => {
                     let st = b.status || 'pending';
@@ -516,7 +923,7 @@
 
             renderSalaries(bookings, masters);
             renderProductsList(products);
-            renderMastersList(masters, reviews);
+            renderMastersList(masters);
             renderAdminReviews(reviews);
             renderServicesEditor(services);
             renderManualOptions(services, masters);
@@ -524,6 +931,7 @@
             renderCharts(bookings);
             renderClientsTab(bookings);
             lucide.createIcons();
+            updateNotifButton();
         }
 
 
@@ -573,23 +981,181 @@
             document.getElementById('set_open').value = set.openTime || '10:00';
             document.getElementById('set_close').value = set.closeTime || '21:00';
             document.getElementById('set_tg_token').value = set.telegram_bot_token || '';
+            if(set.telegram_bot_name) localStorage.setItem('telegram_bot_name', set.telegram_bot_name);
             if(document.getElementById('set_shop_name')) document.getElementById('set_shop_name').value = set.shopName || '';
+            if(document.getElementById('sms_eskiz_email')) document.getElementById('sms_eskiz_email').value = set.sms_eskiz_email || '';
+            if(document.getElementById('sms_eskiz_password')) document.getElementById('sms_eskiz_password').value = set.sms_eskiz_password || '';
+            if(document.getElementById('sms_template')) document.getElementById('sms_template').value = set.sms_template || 'Hurmatli {name}! Ertaga {time} da {master} bilan uchrashuvingiz bor.';
+            
+            if(set.design) {
+                if(document.getElementById('set_theme_color')) document.getElementById('set_theme_color').value = set.design.accentColor || '#ffffff';
+                if(document.getElementById('set_theme_font')) document.getElementById('set_theme_font').value = set.design.fontFamily || 'Syncopate, sans-serif';
+                if(document.getElementById('set_theme_bg')) document.getElementById('set_theme_bg').value = set.design.bgImage || 'assets/bg_1.jpg';
+                if(document.getElementById('set_hide_ai')) document.getElementById('set_hide_ai').checked = !!set.design.hideAi;
+                if(document.getElementById('set_hide_stats')) document.getElementById('set_hide_stats').checked = !!set.design.hideStats;
+            }
+            
+            let tenants = await window.appDB.getGlobalTenants();
+            let myT = tenants.find(t => t.id === window.appDB.tenantId);
+            if(myT) {
+                let emEl = document.getElementById('set_new_email');
+                let pinEl = document.getElementById('set_new_pin');
+                if(emEl && !emEl.value) emEl.value = myT.email || '';
+                if(pinEl && !pinEl.value) pinEl.value = myT.pin || '';
+            }
+
             const dDates = store.disabledDates || [];
             document.getElementById('disabled-dates-list').innerHTML = dDates.map(d => `<span class="tag">${d} <button onclick="removeDisabledDate('${d}')">&times;</button></span>`).join('');
+            
+            // Restore Telegram wizard state
+            tgRestoreWizardState();
+            
+            // Generate QR code for booking link
+            generateQR();
         }
-        async function saveSettings() {
+
+        // ═══ QR CODE FUNCTIONS ═══
+        function generateQR() {
+            const bookingUrl = getBookingUrl();
+            if (!bookingUrl) return;
+            
+            try {
+                const qr = qrcode(0, 'M');
+                qr.addData(bookingUrl);
+                qr.make();
+                
+                const canvas = document.getElementById('qr-canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const size = 200;
+                canvas.width = size;
+                canvas.height = size;
+                
+                const moduleCount = qr.getModuleCount();
+                const cellSize = size / moduleCount;
+                
+                // White background
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, size, size);
+                
+                // Draw QR modules
+                ctx.fillStyle = '#000000';
+                for (let row = 0; row < moduleCount; row++) {
+                    for (let col = 0; col < moduleCount; col++) {
+                        if (qr.isDark(row, col)) {
+                            ctx.fillRect(col * cellSize, row * cellSize, cellSize + 0.5, cellSize + 0.5);
+                        }
+                    }
+                }
+            } catch(e) {
+                console.warn('QR generation failed', e);
+            }
+        }
+
+        function getBookingUrl() {
+            const tenantId = window.appDB.tenantId;
+            const base = window.location.origin;
+            return `${base}/index.html?shop=${tenantId}`;
+        }
+
+        function downloadQR() {
+            const canvas = document.getElementById('qr-canvas');
+            if (!canvas) return;
+            
+            // Create a larger version for download (400x400)
+            const downloadCanvas = document.createElement('canvas');
+            downloadCanvas.width = 460;
+            downloadCanvas.height = 520;
+            const ctx = downloadCanvas.getContext('2d');
+            
+            // White background with padding
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, 460, 520);
+            
+            // Draw QR code centered
+            ctx.drawImage(canvas, 30, 30, 400, 400);
+            
+            // Add shop name text below
+            const shopName = store.settings.shopName || 'Барбершоп';
+            ctx.fillStyle = '#000000';
+            ctx.font = 'bold 22px Inter, Arial, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(shopName, 230, 460);
+            
+            ctx.font = '14px Inter, Arial, sans-serif';
+            ctx.fillStyle = '#666666';
+            ctx.fillText('Сканируйте для записи', 230, 490);
+            
+            // Download
+            const link = document.createElement('a');
+            link.download = `QR_${window.appDB.tenantId}.png`;
+            link.href = downloadCanvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function copyBookingLink() {
+            const url = getBookingUrl();
+            navigator.clipboard.writeText(url).then(() => {
+                alert('✅ Ссылка скопирована!');
+            }).catch(() => {
+                // Fallback for older browsers
+                const ta = document.createElement('textarea');
+                ta.value = url;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                alert('✅ Ссылка скопирована!');
+            });
+        }
+        async function saveSettings(btn) {
             store.settings.openTime = document.getElementById('set_open').value || '10:00';
             store.settings.closeTime = document.getElementById('set_close').value || '21:00';
             store.settings.telegram_bot_token = document.getElementById('set_tg_token').value;
             if(document.getElementById('set_shop_name')) store.settings.shopName = document.getElementById('set_shop_name').value;
-            await window.appDB.saveSettings(store.settings);
-            let btn = event.currentTarget; let o = btn.innerHTML; btn.innerHTML = '<i data-lucide="check" style="width:18px;height:18px;"></i> Сохранено'; lucide.createIcons(); setTimeout(() => { btn.innerHTML = o; lucide.createIcons(); }, 1500);
+            if(document.getElementById('sms_eskiz_email')) store.settings.sms_eskiz_email = document.getElementById('sms_eskiz_email').value;
+            if(document.getElementById('sms_eskiz_password')) store.settings.sms_eskiz_password = document.getElementById('sms_eskiz_password').value;
+            if(document.getElementById('sms_template')) store.settings.sms_template = document.getElementById('sms_template').value;
+            
+            try {
+                await window.appDB.saveSettings(store.settings);
+
+                let tenants = await window.appDB.getGlobalTenants();
+                let myT = tenants.find(t => t.id === window.appDB.tenantId);
+                if(myT && store.settings.shopName) {
+                    myT.shopName = store.settings.shopName;
+                    await window.appDB.saveGlobalTenants(tenants);
+                    document.getElementById('header-shop-name').innerText = `— ${myT.shopName}`;
+                }
+
+                if(btn) { let o = btn.innerHTML; btn.innerHTML = '<i data-lucide="check" style="width:18px;height:18px;"></i> Сохранено'; btn.style.background = 'rgba(46,213,115,0.2)'; lucide.createIcons(); setTimeout(() => { btn.innerHTML = o; btn.style.background = ''; lucide.createIcons(); }, 1500); }
+            } catch(e) {
+                console.error('saveSettings error:', e);
+                if(btn) { btn.innerHTML = '❌ Ошибка сохранения'; setTimeout(() => location.reload(), 2000); }
+            }
         }
 
-        async function changeMyPin() {
+        async function saveDesignSettings(btn) {
+            if(!store.settings.design) store.settings.design = {};
+            store.settings.design.accentColor = document.getElementById('set_theme_color').value;
+            store.settings.design.fontFamily = document.getElementById('set_theme_font').value;
+            store.settings.design.bgImage = document.getElementById('set_theme_bg').value;
+            store.settings.design.hideAi = document.getElementById('set_hide_ai').checked;
+            store.settings.design.hideStats = document.getElementById('set_hide_stats').checked;
+            
+            try {
+                await window.appDB.saveSettings(store.settings);
+                if(btn) { let o = btn.innerHTML; btn.innerHTML = '<i data-lucide="check" style="width:18px;height:18px;"></i> Сохранено'; btn.style.background = 'rgba(46,213,115,0.2)'; lucide.createIcons(); setTimeout(() => { btn.innerHTML = o; btn.style.background = ''; lucide.createIcons(); }, 1500); }
+            } catch(e) {
+                console.error('saveDesignSettings error:', e);
+                if(btn) { btn.innerHTML = '❌ Ошибка'; setTimeout(() => location.reload(), 2000); }
+            }
+        }
+
+        async function changeMyCredentials() {
             let newPin = document.getElementById('set_new_pin').value.trim();
-            if(!newPin) return alert('Введите новый PIN!');
-            if(!confirm('ВНИМАНИЕ! После изменения пароля вам нужно будет войти заново. Продолжить?')) return;
+            if(!newPin) return alert('Укажите новый PIN-код!');
+            if(!confirm('ВНИМАНИЕ! После изменения PIN-кода вам нужно будет войти заново. Продолжить?')) return;
             
             let tenants = await window.appDB.getGlobalTenants();
             let myT = tenants.find(t => t.id === window.appDB.tenantId);
@@ -603,23 +1169,400 @@
                 alert('Ошибка: ваш аккаунт не найден в глобальной базе.');
             }
         }
-        function saveAIKey() {
+        function saveAIKey(btn) {
             const key = document.getElementById('set_ai_key').value.trim();
             localStorage.setItem('openrouter_api_key', key);
             localStorage.setItem('chatbot_api_key', key);
-            let btn = event.currentTarget; 
-            let o = btn.innerHTML; 
-            btn.innerHTML = '<i data-lucide="check" style="width:18px;height:18px;"></i> Сохранено';
-            lucide.createIcons();
-            setTimeout(() => { btn.innerHTML = o; lucide.createIcons(); }, 2000);
+            if(btn) { 
+                let o = btn.innerHTML; 
+                btn.innerHTML = '<i data-lucide="check" style="width:18px;height:18px;"></i> Сохранено';
+                btn.style.background = 'rgba(46,213,115,0.2)';
+                lucide.createIcons();
+                setTimeout(() => { btn.innerHTML = o; btn.style.background = ''; lucide.createIcons(); }, 2000);
+            }
         }
+
+        // ═══ TELEGRAM SETUP WIZARD ═══
+        let tgWizardToken = '';
+        let tgWizardChatId = '';
+
+        function tgShowStatus(text, type) {
+            const el = document.getElementById('tg-status');
+            el.style.display = 'flex';
+            const colors = { success: '#2ed573', error: '#ff4757', info: '#5e6ad2' };
+            const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+            el.style.background = `${colors[type]}15`;
+            el.style.border = `1px solid ${colors[type]}40`;
+            el.style.color = colors[type];
+            el.innerHTML = `${icons[type]} ${text}`;
+        }
+
+        async function tgWizardStep2(btn) {
+            const token = document.getElementById('tg_bot_token').value.trim();
+            if (!token || !token.includes(':')) {
+                tgShowStatus('Неверный формат токена. Токен выглядит как: 123456789:ABCdefGHI...', 'error');
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Проверяю...';
+            
+            try {
+                // Validate token via getMe
+                const resp = await fetch(`https://api.telegram.org/bot${token}/getMe`);
+                const data = await resp.json();
+                
+                if (!data.ok) {
+                    tgShowStatus('Токен недействителен. Проверьте, что вы правильно скопировали его из @BotFather.', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = 'Далее →';
+                    return;
+                }
+                
+                const botUsername = data.result.username;
+                tgWizardToken = token;
+                
+                // Show step 2
+                document.getElementById('tg-step-1').style.display = 'none';
+                document.getElementById('tg-step-2').style.display = 'block';
+                document.getElementById('tg-bot-link').href = `https://t.me/${botUsername}`;
+                
+                tgShowStatus(`Бот @${botUsername} найден и работает!`, 'success');
+                
+                // Save bot username for Telegram widget
+                localStorage.setItem('telegram_bot_name', botUsername);
+                store.settings.telegram_bot_name = botUsername;
+                await window.appDB.saveSettings(store.settings);
+                
+            } catch(e) {
+                tgShowStatus('Ошибка сети. Проверьте интернет-соединение.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = 'Далее →';
+            }
+        }
+
+        async function tgDetectChatId(btn) {
+            if (!tgWizardToken) { tgShowStatus('Сначала введите токен бота.', 'error'); return; }
+            
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Ищу...';
+            const statusEl = document.getElementById('tg-detect-status');
+            statusEl.innerHTML = 'Опрашиваю бота... Убедитесь, что вы отправили ему /start';
+            
+            let attempts = 0;
+            const maxAttempts = 3;
+            
+            const tryDetect = async () => {
+                try {
+                    const resp = await fetch(`https://api.telegram.org/bot${tgWizardToken}/getUpdates?limit=10&offset=-10`);
+                    const data = await resp.json();
+                    
+                    if (data.ok && data.result.length > 0) {
+                        // Find the latest /start message or any message
+                        let chatId = null;
+                        let chatName = '';
+                        
+                        for (let i = data.result.length - 1; i >= 0; i--) {
+                            const msg = data.result[i].message;
+                            if (msg && msg.chat) {
+                                chatId = msg.chat.id;
+                                chatName = msg.chat.first_name || msg.chat.title || '';
+                                break;
+                            }
+                        }
+                        
+                        if (chatId) {
+                            tgWizardChatId = chatId.toString();
+                            
+                            // Save to settings
+                            const fullToken = `${tgWizardToken}@@${tgWizardChatId}`;
+                            document.getElementById('set_tg_token').value = fullToken;
+                            store.settings.telegram_bot_token = fullToken;
+                            await window.appDB.saveSettings(store.settings);
+                            
+                            // Show step 3
+                            document.getElementById('tg-step-2').style.display = 'none';
+                            document.getElementById('tg-step-3').style.display = 'block';
+                            document.getElementById('tg-found-chatid').textContent = tgWizardChatId;
+                            
+                            tgShowStatus(`Подключено! ${chatName ? 'Привет, ' + chatName + '!' : ''} Уведомления будут приходить сюда.`, 'success');
+                            return;
+                        }
+                    }
+                    
+                    attempts++;
+                    if (attempts < maxAttempts) {
+                        statusEl.innerHTML = `Попытка ${attempts + 1}/${maxAttempts}... Откройте бота и отправьте /start`;
+                        setTimeout(tryDetect, 3000);
+                    } else {
+                        statusEl.innerHTML = '⚠️ Не удалось найти сообщения. Откройте бота в Telegram, отправьте /start, и нажмите "Найти Chat ID" снова.';
+                        btn.disabled = false;
+                        btn.innerHTML = '🔍 Найти Chat ID';
+                    }
+                } catch(e) {
+                    statusEl.innerHTML = '⚠️ Ошибка сети: ' + e.message;
+                    btn.disabled = false;
+                    btn.innerHTML = '🔍 Найти Chat ID';
+                }
+            };
+            
+            await tryDetect();
+        }
+
+        async function tgSendTest(btn) {
+            if (!tgWizardToken || !tgWizardChatId) { tgShowStatus('Не настроено.', 'error'); return; }
+            
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Отправляю...';
+            
+            const shopName = store.settings.shopName || 'Ваш Барбершоп';
+            const msg = `✅ Тест успешен!\n\n🏪 ${shopName}\n📅 Теперь вы будете получать уведомления о каждой новой записи в этот чат.\n\n💈 Система уведомлений работает!`;
+            
+            try {
+                const resp = await fetch(`https://api.telegram.org/bot${tgWizardToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: tgWizardChatId, text: msg })
+                });
+                const data = await resp.json();
+                
+                if (data.ok) {
+                    tgShowStatus('Тестовое сообщение отправлено! Проверьте Telegram.', 'success');
+                } else {
+                    tgShowStatus('Ошибка: ' + (data.description || 'Неизвестная ошибка'), 'error');
+                }
+            } catch(e) {
+                tgShowStatus('Ошибка сети: ' + e.message, 'error');
+            }
+            
+            btn.disabled = false;
+            btn.innerHTML = '📨 Отправить тестовое сообщение';
+        }
+
+        async function tgSendMonthlyReminders(btn) {
+            const statusEl = document.getElementById('tg-monthly-status');
+            if (!tgWizardToken) {
+                statusEl.innerHTML = '❌ Бот Telegram не подключен.';
+                return;
+            }
+
+            if (btn) btn.disabled = true;
+            statusEl.innerHTML = '⏳ Поиск клиентов, не стригшихся 25+ дней...';
+
+            const bookings = await window.appDB.getBookings();
+            const now = new Date();
+            const nowTime = now.getTime();
+            const dayMs = 86400000;
+
+            const clientMap = {};
+            for (const b of bookings) {
+                if (b.status === 'cancelled') continue;
+                const key = b.telegramChatId || b.phone || b.name;
+                if (!key) continue;
+
+                if (!clientMap[key]) {
+                    clientMap[key] = {
+                        name: b.name,
+                        phone: b.phone,
+                        telegramChatId: b.telegramChatId,
+                        lastBookingDate: b.date,
+                        futureBooking: false
+                    };
+                }
+
+                const bDate = new Date(b.date);
+                if (bDate.getTime() > nowTime) {
+                    clientMap[key].futureBooking = true;
+                }
+                if (b.date > clientMap[key].lastBookingDate) {
+                    clientMap[key].lastBookingDate = b.date;
+                }
+            }
+
+            const eligibleClients = [];
+            for (const key in clientMap) {
+                const c = clientMap[key];
+                if (c.futureBooking || !c.telegramChatId) continue;
+
+                const lastDate = new Date(c.lastBookingDate);
+                const diffDays = Math.floor((nowTime - lastDate.getTime()) / dayMs);
+
+                if (diffDays >= 25) {
+                    eligibleClients.push(c);
+                }
+            }
+
+            if (eligibleClients.length === 0) {
+                statusEl.innerHTML = 'ℹ️ Нет подходящих клиентов (прошло меньше 25 дней или нет зарегистрированных Telegram ID).';
+                if (btn) btn.disabled = false;
+                return;
+            }
+
+            statusEl.innerHTML = `📤 Отправка личных напоминаний ${eligibleClients.length} клиентам...`;
+            let sent = 0, failed = 0;
+            const shopName = store.settings.shopName || 'Ваш Барбершоп';
+
+            for (const c of eligibleClients) {
+                const msg = `👋 Здравствуйте, ${c.name}!\n\n💈 В ${shopName} мы заметили, что прошёл уже месяц с вашего последнего визита.\n\n✂️ Пора обновить стрижку и стиль! Будем рады видеть вас снова.\n\n📅 Записаться в 1 клик через наш Mini App!`;
+                try {
+                    const resp = await fetch(`https://api.telegram.org/bot${tgWizardToken}/sendMessage`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ chat_id: c.telegramChatId, text: msg })
+                    });
+                    const data = await resp.json();
+                    if (data.ok) sent++;
+                    else failed++;
+                } catch(e) {
+                    failed++;
+                }
+            }
+
+            statusEl.innerHTML = `🎉 Готово! Успешно отправлено: ${sent} клиентам в личку. Ошибок: ${failed}.`;
+            if (btn) btn.disabled = false;
+        }
+
+        async function tgDisconnect() {
+            if (!confirm('Отключить Telegram уведомления?')) return;
+            tgWizardToken = '';
+            tgWizardChatId = '';
+            document.getElementById('set_tg_token').value = '';
+            store.settings.telegram_bot_token = '';
+            await window.appDB.saveSettings(store.settings);
+            
+            document.getElementById('tg-step-1').style.display = 'block';
+            document.getElementById('tg-step-2').style.display = 'none';
+            document.getElementById('tg-step-3').style.display = 'none';
+            document.getElementById('tg_bot_token').value = '';
+            document.getElementById('tg-status').style.display = 'none';
+        }
+
+        function tgRestoreWizardState() {
+            const saved = store.settings.telegram_bot_token || '';
+            if (saved && saved.includes('@@')) {
+                const parts = saved.split('@@');
+                tgWizardToken = parts[0];
+                tgWizardChatId = parts[1];
+                
+                // Show step 3 (connected state)
+                document.getElementById('tg-step-1').style.display = 'none';
+                document.getElementById('tg-step-2').style.display = 'none';
+                document.getElementById('tg-step-3').style.display = 'block';
+                document.getElementById('tg-found-chatid').textContent = tgWizardChatId;
+                tgShowStatus('Telegram подключен и работает! 🎉', 'success');
+            }
+        }
+        // ═══ SMS REMINDER FUNCTIONS ═══
+        async function saveSmsSettings(btn) {
+            store.settings.sms_eskiz_email = document.getElementById('sms_eskiz_email').value.trim();
+            store.settings.sms_eskiz_password = document.getElementById('sms_eskiz_password').value;
+            store.settings.sms_template = document.getElementById('sms_template').value.trim();
+            await window.appDB.saveSettings(store.settings);
+            if(btn) { let o = btn.innerHTML; btn.innerHTML = '<i data-lucide="check" style="width:18px;height:18px;"></i> Сохранено'; btn.style.background = 'rgba(46,213,115,0.2)'; lucide.createIcons(); setTimeout(() => { btn.innerHTML = o; btn.style.background = ''; lucide.createIcons(); }, 1500); }
+        }
+
+        async function getEskizToken(email, password) {
+            const fd = new FormData();
+            fd.append('email', email);
+            fd.append('password', password);
+            const res = await fetch('https://notify.eskiz.uz/api/auth/login', { method: 'POST', body: fd });
+            if(!res.ok) throw new Error('Eskiz auth failed: ' + res.status);
+            const json = await res.json();
+            return json.data && json.data.token ? json.data.token : null;
+        }
+
+        async function sendSmsReminders(btn) {
+            const statusEl = document.getElementById('sms-status');
+            const email = (store.settings.sms_eskiz_email || '').trim();
+            const password = store.settings.sms_eskiz_password || '';
+            const template = store.settings.sms_template || 'Hurmatli {name}! Ertaga {time} da {master} bilan uchrashuvingiz bor.';
+            const shopName = store.settings.shopName || 'Barbershop';
+
+            if(!email || !password) {
+                statusEl.innerHTML = '❌ Eskiz email va parolni kiriting va saqlang.';
+                return;
+            }
+
+            if(btn) btn.disabled = true;
+            statusEl.innerHTML = '⏳ Tokenni olish...';
+
+            let token;
+            try {
+                token = await getEskizToken(email, password);
+            } catch(e) {
+                statusEl.innerHTML = '❌ Eskiz autentifikatsiya xatosi: ' + e.message;
+                if(btn) btn.disabled = false;
+                return;
+            }
+            if(!token) {
+                statusEl.innerHTML = '❌ Token olinmadi. Email/parolni tekshiring.';
+                if(btn) btn.disabled = false;
+                return;
+            }
+
+            // Get tomorrow's date string YYYY-MM-DD
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const tomorrowStr = tomorrow.toISOString().split('T')[0];
+
+            const bookings = await window.appDB.getBookings();
+            const tomorrowBookings = bookings.filter(b => b.date === tomorrowStr && b.phone && b.status !== 'cancelled');
+
+            if(tomorrowBookings.length === 0) {
+                statusEl.innerHTML = `✅ ${tomorrowStr} uchun bron yo'q.`;
+                if(btn) btn.disabled = false;
+                return;
+            }
+
+            statusEl.innerHTML = `📤 ${tomorrowBookings.length} ta mijozga SMS yuborilmoqda...`;
+            let sent = 0, failed = 0;
+
+            for(const b of tomorrowBookings) {
+                // Normalize phone: strip non-digits, ensure starts with 998
+                let phone = (b.phone || '').replace(/\D/g, '');
+                if(phone.startsWith('0')) phone = '998' + phone.slice(1);
+                if(!phone.startsWith('998')) phone = '998' + phone;
+                if(phone.length < 12) { failed++; continue; }
+
+                let msg = template
+                    .replace('{name}', b.name || '')
+                    .replace('{phone}', b.phone || '')
+                    .replace('{master}', b.masterName || '')
+                    .replace('{service}', b.service || '')
+                    .replace('{date}', b.date || '')
+                    .replace('{time}', b.time || '')
+                    .replace('{shop}', shopName);
+
+                try {
+                    const fd = new FormData();
+                    fd.append('mobile_phone', phone);
+                    fd.append('message', msg);
+                    fd.append('from', '4546');
+                    const res = await fetch('https://notify.eskiz.uz/api/message/sms/send', {
+                        method: 'POST',
+                        headers: { 'Authorization': 'Bearer ' + token },
+                        body: fd
+                    });
+                    if(res.ok) sent++;
+                    else failed++;
+                } catch(e) {
+                    failed++;
+                }
+            }
+
+            statusEl.innerHTML = `✅ Yuborildi: ${sent} ta. ❌ Xato: ${failed} ta.`;
+            if(btn) btn.disabled = false;
+        }
+
         function addDisabledDate() {
             let val = document.getElementById('disable-date-input').value; if(!val) return;
             if(!store.disabledDates) store.disabledDates = [];
             if(!store.disabledDates.includes(val)) { store.disabledDates.push(val); localStorage.setItem(DB_DISABLED_DATES, JSON.stringify(store.disabledDates)); renderSettingsTab(); }
         }
         function removeDisabledDate(val) {
-            store.disabledDates = (store.disabledDates || []).filter(d => d !== val); localStorage.setItem(DB_DISABLED_DATES, JSON.stringify(store.disabledDates)); renderSettingsTab();
+            showCustomConfirm('Удалить дату из списка?', async () => {
+                store.disabledDates = (store.disabledDates || []).filter(d => d !== val); localStorage.setItem(DB_DISABLED_DATES, JSON.stringify(store.disabledDates)); renderSettingsTab();
+            });
         }
 
         // SERVICES (from before)
@@ -648,116 +1591,266 @@
                         </div>
                     </div>
                     <div class="form-group"><label>Описание снизу (RU)</label><input type="text" id="desc_ru_${s.id}" class="form-control" value="${s.strings.ru.desc}"></div>
-                    <details style="margin-bottom: 15px; cursor: pointer; color: var(--text-muted);">
-                        <summary style="outline: none; display:flex; align-items:center; gap:6px;"><i data-lucide="globe" style="width:16px;height:16px; color:var(--accent);"></i> Нажать тут для изменения переводов интерфейса (EN, UZ, KG)</summary>
-                        <div style="padding-top: 15px; border-top: 1px solid var(--border); margin-top:10px;">
-                            <strong style="color: var(--text-main); display:block; margin-bottom:5px;">English (EN):</strong>
-                            <div style="display:flex; gap:10px; margin-bottom: 15px;"><input type="text" id="title_en_${s.id}" class="form-control" value="${s.strings.en.title}"><input type="text" id="desc_en_${s.id}" class="form-control" value="${s.strings.en.desc}"></div>
-                            <strong style="color: var(--text-main); display:block; margin-bottom:5px;">O'zbek (UZ):</strong>
-                            <div style="display:flex; gap:10px; margin-bottom: 15px;"><input type="text" id="title_uz_${s.id}" class="form-control" value="${s.strings.uz.title}"><input type="text" id="desc_uz_${s.id}" class="form-control" value="${s.strings.uz.desc}"></div>
-                            <strong style="color: var(--text-main); display:block; margin-bottom:5px;">Кыргызча (KG):</strong>
-                            <div style="display:flex; gap:10px;"><input type="text" id="title_kg_${s.id}" class="form-control" value="${s.strings.kg.title}"><input type="text" id="desc_kg_${s.id}" class="form-control" value="${s.strings.kg.desc}"></div>
-                        </div>
-                    </details>
                     <button class="btn" style="padding: 10px 20px; font-size: 0.9rem; width: auto;" onclick="saveService('${s.id}')">💾 Сохранить изменения для "${s.strings.ru.title}"</button>
                 </div>`;
             });
             document.getElementById('admin-services-list').innerHTML = html;
         }
 
+        const defaultServiceTemplates = [
+            { price: 1500, duration: 60, ru: "Мужская стрижка", en: "Men's Haircut", uz: "Erkaklar soch turmagi", kg: "Эркектердин чач кыркуусу" },
+            { price: 1000, duration: 45, ru: "Детская стрижка (до 10 лет)", en: "Kids Haircut (under 10)", uz: "Bolalar soch turmagi (10 yoshgacha)", kg: "Балдар чач кыркуусу (10 жашка чейин)" },
+            { price: 800, duration: 30, ru: "Моделирование бороды", en: "Beard Trim & Shape", uz: "Soqol turmagi", kg: "Сакалды моделдөө" },
+            { price: 700, duration: 30, ru: "Стрижка под машинку (одна насадка)", en: "Buzz Cut / Clipper Cut", uz: "Mashinkada soch olish", kg: "Машинка менен чач кыркуу" },
+            { price: 500, duration: 30, ru: "Укладка (стайлинг)", en: "Hair Styling", uz: "Soch turmaklash", kg: "Чачты стилдештирүү" },
+            { price: 1200, duration: 45, ru: "Премиум моделирование бороды", en: "Premium Beard Shaping", uz: "Premium soqol turmagi", kg: "Премиум сакал моделдөө" },
+            { price: 1000, duration: 30, ru: "Камуфляж седины", en: "Grey Hair Camouflage", uz: "Oq sochlarni yashirish", kg: "Ак чачтарды жашыруу (Камуфляж)" },
+            { price: 300, duration: 15, ru: "Коррекция воском", en: "Waxing", uz: "Mumi bilan tozalash", kg: "Мом менен коррекция" },
+            { price: 500, duration: 30, ru: "Черная очищающая маска", en: "Black Peel-off Mask", uz: "Qora tozalovchi niqob", kg: "Кара тазалоочу маска" },
+            { price: 1500, duration: 30, ru: "Премиум уход за кожей головы", en: "Premium Scalp Care", uz: "Bosh terisi uchun premium parvarish", kg: "Баш терисине премиум кам көрүү" },
+            { price: 1500, duration: 45, ru: "Премиум уход за лицом", en: "Premium Facial Care", uz: "Yuz uchun premium parvarish", kg: "Бетке премиум кам көрүү" },
+            { price: 300, duration: 15, ru: "Патчи", en: "Eye Patches", uz: "Ko'z patchlari", kg: "Көз патчтары" },
+            { price: 2300, duration: 90, ru: "Папа + Сын", en: "Father + Son Combo", uz: "Ota + Og'il", kg: "Ата + Уул" },
+            { price: 2100, duration: 90, ru: "Стрижка + моделирование бороды", en: "Haircut + Beard Trim", uz: "Soch va Soqol turmagi", kg: "Чач кыркуу + сакалды моделдөө" },
+            { price: 2500, duration: 90, ru: "Стрижка + премиум моделирование бороды", en: "Haircut + Premium Beard", uz: "Soch + Premium soqol", kg: "Чач кыркуу + премиум сакал" }
+        ];
+
         async function addService() {
             let sId = 's_' + Date.now();
+            let templateSelect = document.getElementById('new_service_template');
+            let tVal = templateSelect ? templateSelect.value : 'custom';
+            
             let newS = {
                 id: sId,
                 price: 1000,
                 duration: 60,
                 strings: {
-                    ru: { title: "Новая Услуга", desc: "Описание" },
-                    en: { title: "New Service", desc: "Description" },
-                    uz: { title: "Yangi Xizmat", desc: "Tavsifi" },
-                    kg: { title: "Жаңы Кызмат", desc: "Сүрөттөмөсү" }
+                    ru: { title: "Новая Услуга", desc: "" },
+                    en: { title: "New Service", desc: "" },
+                    uz: { title: "Yangi Xizmat", desc: "" },
+                    kg: { title: "Жаңы Кызмат", desc: "" }
                 }
             };
+
+            if (tVal !== 'custom') {
+                let tIdx = parseInt(tVal);
+                let tmpl = defaultServiceTemplates[tIdx];
+                if(tmpl) {
+                    newS.price = tmpl.price;
+                    newS.duration = tmpl.duration;
+                    newS.strings.ru.title = tmpl.ru;
+                    newS.strings.en.title = tmpl.en;
+                    newS.strings.uz.title = tmpl.uz;
+                    newS.strings.kg.title = tmpl.kg;
+                }
+            }
+
             store.services.push(newS);
             await window.appDB.saveServices(store.services);
             renderServicesEditor();
-            alert('Услуга создана! Отредактируйте её в списке.');
+            alert(tVal === 'custom' ? 'Услуга создана! Отредактируйте её параметры ниже.' : `Услуга "${newS.strings.ru.title}" успешно добавлена!`);
         }
 
         async function deleteService(id) {
-            if(!confirm('Удалить эту услугу навсегда?')) return;
-            store.services = store.services.filter(s => s.id !== id);
-            await window.appDB.saveServices(store.services);
-            renderServicesEditor();
+            showCustomConfirm('Удалить эту услугу навсегда?', async () => {
+                store.services = store.services.filter(s => s.id !== id);
+                await window.appDB.saveServices(store.services);
+                renderServicesList(store.services);
+                renderManualOptions(store.services, store.masters);
+                renderServicesEditor();
+            });
         }
 
         async function saveService(id) {
             let s = store.services.find(x => x.id === id);
             if(s) {
-                s.price = document.getElementById(`price_${id}`).value;
+                s.price = parseInt(document.getElementById(`price_${id}`).value) || 0;
                 s.duration = parseInt(document.getElementById(`duration_${id}`).value);
-                ['ru', 'en', 'uz', 'kg'].forEach(l => {
-                    s.strings[l].title = document.getElementById(`title_${l}_${id}`).value;
-                    s.strings[l].desc = document.getElementById(`desc_${l}_${id}`).value;
-                });
+
+                let curTitle = document.getElementById(`title_ru_${id}`).value;
+                let curDesc = document.getElementById(`desc_ru_${id}`).value;
+
+                if(!s.strings) s.strings = {};
+                if(!s.strings.ru) s.strings.ru = { title: "", desc: "" };
+
+                s.strings.ru.title = curTitle;
+                s.strings.ru.desc = curDesc;
+
+                // Sync to other languages if they are still the default placeholder
+                if (!s.strings.en || s.strings.en.title === "New Service" || s.strings.en.title === "") {
+                    ['en', 'uz', 'kg'].forEach(l => {
+                        if(!s.strings[l]) s.strings[l] = {};
+                        s.strings[l].title = curTitle;
+                        s.strings[l].desc = curDesc;
+                    });
+                }
+
                 await window.appDB.saveServices(store.services);
-                let btn = event.currentTarget; let o = btn.innerHTML; btn.innerHTML = "✓ Сохранено"; setTimeout(() => btn.innerHTML = o, 1500);
+                alert('✅ Сохранено!');
+                
+                // Re-render to update the header title of the card if it was RU
+                if(currentAdminLang === 'ru') renderServicesEditor();
             }
         }
 
-        let notificationsEnabled = false;
-        // Более приятный и короткий одиночный звук (стеклянный "Дзинь" / "Туут")
-        const NOTIFICATION_SOUND_URL = 'https://cdnjs.cloudflare.com/ajax/libs/ion-sound/3.0.1/sounds/glass.mp3';
-        let lastCheckedFlag = localStorage.getItem('barber_new_booking_flag');
+        let notificationsEnabled = localStorage.getItem('admin_notifications') === 'true';
         
-        function enableNotifications() {
-            notificationsEnabled = true;
-            let audio = new Audio(NOTIFICATION_SOUND_URL);
-            audio.play().catch(e => console.log('Audio error:', e));
-
+        // Built-in notification sound using Web Audio API (no external files needed!)
+        function playNotifSound() {
             try {
-                if ("Notification" in window && window.location.protocol !== 'file:') {
-                    let promise = Notification.requestPermission();
-                    if (promise) {
-                        promise.then(permission => {
-                            alert(permission === "granted" ? 'Всплывающие уведомления и звук включены!' : 'Звук включен. Всплывающие окна заблокированы браузером.');
-                        }).catch(e => alert('Звук включен.'));
-                    } else {
-                        alert('Звук включен.');
-                    }
-                } else {
-                    alert('Звук включен (при открытии с ПК всплывающие окна обычно не работают, но звук будет).');
+                // Try custom sound first
+                const customAudio = new Audio('assets/notification.mp3');
+                const playPromise = customAudio.play();
+                if (playPromise) {
+                    playPromise.catch(() => {
+                        // Custom file missing or blocked — use synthesized chime
+                        synthesizeChime();
+                    });
                 }
-            } catch (err) {
-                alert('Звуковые уведомления включены.');
+            } catch(e) {
+                synthesizeChime();
+            }
+        }
+        
+        function synthesizeChime() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // First tone (higher pitch)
+                const playTone = (freq, startTime, duration) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, ctx.currentTime + startTime);
+                    gain.gain.setValueAtTime(0.3, ctx.currentTime + startTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startTime + duration);
+                    
+                    osc.start(ctx.currentTime + startTime);
+                    osc.stop(ctx.currentTime + startTime + duration);
+                };
+                
+                // Pleasant two-tone chime: C6 → E6
+                playTone(1047, 0, 0.3);      // C6
+                playTone(1319, 0.15, 0.4);    // E6
+                // Second chime after pause
+                playTone(1047, 0.6, 0.3);     // C6
+                playTone(1568, 0.75, 0.5);    // G6
+                
+            } catch(e) {
+                console.log('Audio not supported');
+            }
+        }
+        
+        function toggleNotifications() {
+            notificationsEnabled = !notificationsEnabled;
+            localStorage.setItem('admin_notifications', notificationsEnabled);
+            updateNotifButton();
+            
+            if (notificationsEnabled) {
+                // Play test sound to confirm
+                playNotifSound();
+                
+                // Request browser notification permission
+                if ("Notification" in window) {
+                    Notification.requestPermission();
+                }
             }
         }
 
-        function checkNewBookings() {
-            let currentFlag = localStorage.getItem('barber_new_booking_flag');
-            if (currentFlag && currentFlag !== lastCheckedFlag) {
-                // Если флаг поменялся (кто-то записался)
-                if (lastCheckedFlag !== null && notificationsEnabled) {
-                    let audio = new Audio(NOTIFICATION_SOUND_URL);
-                    audio.play().catch(err => console.log('Не удалось воспроизвести звук:', err));
-                    
-                    if ("Notification" in window && Notification.permission === "granted") {
-                        try {
-                            new Notification("Новая запись!", {
-                                body: "Только что поступила новая онлайн-запись.",
-                                icon: "https://cdn-icons-png.flaticon.com/512/3050/3050267.png"
-                            });
-                        } catch(e){}
-                    }
-                }
-                
-                // Обновляем данные на экране не зависимо от звука
-                if (lastCheckedFlag !== null) {
-                    loadAdminData(); 
-                }
-                
-                lastCheckedFlag = currentFlag;
+        function updateNotifButton() {
+            const btn = document.getElementById('notif-toggle-btn');
+            if (!btn) return;
+            if (notificationsEnabled) {
+                btn.innerHTML = '<i data-lucide="bell" style="width:16px;height:16px;margin-right:4px;position:relative;top:-1px;"></i> ЗВУК ВКЛ';
+                btn.style.background = 'rgba(46,213,115,0.15)';
+                btn.style.color = '#2ed573';
+                btn.style.borderColor = '#2ed57350';
+            } else {
+                btn.innerHTML = '<i data-lucide="bell-off" style="width:16px;height:16px;margin-right:4px;position:relative;top:-1px;"></i> ЗВУК ВЫКЛ';
+                btn.style.background = 'rgba(255,71,87,0.1)';
+                btn.style.color = '#ff4757';
+                btn.style.borderColor = '#ff475750';
             }
+            lucide.createIcons();
+        }
+
+        function playNewBookingAlert(booking) {
+            // Play notification sound
+            playNotifSound();
+            
+            // Show visual toast in admin panel
+            showBookingToast(booking);
+            
+            // Browser notification (if permitted)
+            if ("Notification" in window && Notification.permission === "granted") {
+                try {
+                    const name = booking.name || 'Клиент';
+                    const service = booking.service || '';
+                    new Notification("🔔 Новая запись!", {
+                        body: `${name} записался${service ? ' на ' + service : ''}`,
+                        icon: "https://cdn-icons-png.flaticon.com/512/3050/3050267.png"
+                    });
+                } catch(e) {}
+            }
+        }
+
+        function showBookingToast(booking) {
+            // Remove old toast if exists
+            const old = document.getElementById('booking-toast');
+            if (old) old.remove();
+            
+            const name = booking.name || 'Клиент';
+            const service = booking.service || '';
+            const time = booking.time || '';
+            const date = booking.date || '';
+            
+            const toast = document.createElement('div');
+            toast.id = 'booking-toast';
+            toast.style.cssText = `
+                position: fixed; top: 20px; right: 20px; z-index: 99999;
+                background: linear-gradient(135deg, #1a1a2e, #16213e);
+                border: 1px solid #2ed573; border-radius: 6px;
+                padding: 16px 20px; min-width: 280px; max-width: 380px;
+                box-shadow: 0 8px 32px rgba(46,213,115,0.3);
+                animation: toastSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+                font-family: 'Inter', sans-serif; color: white;
+            `;
+            toast.innerHTML = `
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom: 8px;">
+                    <i data-lucide="bell" style="width:20px;height:20px;color:#2ed573;"></i>
+                    <strong style="color:#2ed573; font-size: 1rem;">Новое уведомление!</strong>
+                    <button onclick="this.parentElement.parentElement.remove()" style="margin-left:auto; background:none; border:none; color:#888; cursor:pointer; font-size:1.2rem;">✕</button>
+                </div>
+                <div style="font-size:0.9rem; color:#ccc;">
+                    <i data-lucide="user" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px;"></i> ${name}<br>
+                    ${service ? '<i data-lucide="scissors" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px;"></i> ' + service + '<br>' : ''}
+                    ${date ? '<i data-lucide="calendar" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px;"></i> ' + date + (time ? ' в ' + time : '') + '<br>' : ''}
+                </div>
+            `;
+            document.body.appendChild(toast);
+            lucide.createIcons();
+            
+            // Auto-remove after 8 seconds
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.style.animation = 'toastSlideOut 0.3s ease';
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 8000);
+        }
+
+        // Add toast animations CSS
+        if (!document.getElementById('toast-styles')) {
+            const style = document.createElement('style');
+            style.id = 'toast-styles';
+            style.textContent = `
+                @keyframes toastSlideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+                @keyframes toastSlideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
+            `;
+            document.head.appendChild(style);
         }
 
         // --- APGRADE LOGIC ---
@@ -874,8 +1967,14 @@
             // В календарь выводим только НЕ отмененные записи
             let bookings = store.bookings.filter(b => b.date === today && b.status !== 'cancelled');
             
+            let mastersCopy = [...masters];
+            // If any booking is assigned to 'any', add a virtual column for them
+            if (store.bookings.find(b => b.date === today && b.status !== 'cancelled' && b.masterId === 'any')) {
+                mastersCopy.push({ id: 'any', name: 'Ожидают распределения', workingDays: [0,1,2,3,4,5,6] });
+            }
+
             let html = '<tr><th style="width: 80px;">Время</th>';
-            masters.forEach(m => { html += `<th>${m.name}</th>`; });
+            mastersCopy.forEach(m => { html += `<th>${m.name}</th>`; });
             html += '</tr>';
             
             let tObj = new Date(`2000-01-01T${settings.openTime}:00`);
@@ -889,7 +1988,7 @@
                 let ts = tObj.toTimeString().substring(0,5);
                 html += `<tr><td style="color:var(--text-muted); font-size:0.9rem;">${ts}</td>`;
 
-                masters.forEach(m => {
+                mastersCopy.forEach(m => {
                     let mDays = m.workingDays || [1,2,3,4,5,6,0];
                     let isWorking = mDays.includes(dayOfWeek);
 
@@ -903,13 +2002,14 @@
                         return; // Cell covered by rowspan
                     }
 
-                    let b = bookings.find(x => x.time === ts && (x.masterId === m.id || x.masterId === 'any'));
+                    let b = bookings.find(x => x.time === ts && x.masterId === m.id);
                     if (b) {
                         // Calculate duration in 30-min chunks
                         let serv = allServices.find(s => s.id === b.serviceKey || s.strings.ru.title === b.service) || {};
-                        // If it's manual "ОБЕД" or no duration, default to 60 (2 blocks of 30min)
-                        let duration = serv.duration || 60; 
-                        let rowSpan = Math.max(1, duration / 30);
+                        let duration = parseInt(serv.duration) || 60; 
+                        // MUST be integer to prevent decimal rowspan which completely breaks HTML tables
+                        let chunks = Math.round(duration / 30);
+                        let rowSpan = Math.max(1, chunks);
                         
                         skipCells[m.id] = rowSpan - 1;
 
@@ -969,9 +2069,45 @@
             if(!list || !products) return;
             list.innerHTML = '';
             products.forEach(p => {
-                list.innerHTML += `<div class="card" style="margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-                    <div><h4 style="margin:0">${p.name}</h4><small style="color:var(--text-muted);">В наличии: ${p.count} | ${p.sellPrice} ₽</small></div>
-                </div>`;
+                list.innerHTML += `<tr style="border-bottom:1px solid var(--border);">
+                    <td style="padding:15px; font-weight:500;">${p.name}</td>
+                    <td style="padding:15px; color:var(--text-muted);">${p.buyPrice} ₽</td>
+                    <td style="padding:15px; color:#2ed573;">${p.sellPrice} ₽</td>
+                    <td style="padding:15px;">
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <button class="btn-danger" style="padding:4px 10px;" onclick="changeProductCount('${p.id}',-1)">−</button>
+                            <span>${p.count}</span>
+                            <button class="btn" style="padding:4px 10px;width:auto;" onclick="changeProductCount('${p.id}',1)">+</button>
+                        </div>
+                    </td>
+                    <td style="padding:15px;">
+                        <button class="btn-danger" onclick="deleteProduct('${p.id}')">Удалить</button>
+                    </td>
+                </tr>`;
+            });
+        }
+
+        async function addNewProduct() {
+            const name = document.getElementById('add_prod_name').value.trim();
+            const buy = parseInt(document.getElementById('add_prod_buy').value) || 0;
+            const sell = parseInt(document.getElementById('add_prod_sell').value) || 0;
+            const cnt = parseInt(document.getElementById('add_prod_cnt').value) || 0;
+            if (!name) return alert('Введите название товара!');
+            const newP = { id: 'p_' + Date.now(), name, buyPrice: buy, sellPrice: sell, count: cnt };
+            store.products.push(newP);
+            await window.appDB.saveProducts(store.products);
+            document.getElementById('add_prod_name').value = '';
+            document.getElementById('add_prod_buy').value = '';
+            document.getElementById('add_prod_sell').value = '';
+            document.getElementById('add_prod_cnt').value = '';
+            renderProductsList(store.products);
+        }
+
+        async function deleteProduct(id) {
+            showCustomConfirm('Удалить товар?', async () => {
+                store.products = store.products.filter(p => p.id !== id);
+                await window.appDB.saveProducts(store.products);
+                renderProductsList(store.products);
             });
         }
 
@@ -1021,9 +2157,27 @@
             const list = document.getElementById('admin-reviews-list');
             if(!list || !reviews) return;
             list.innerHTML = '';
-            if(reviews.length === 0) list.innerHTML = '<p class="empty-state">Отзывов пока нет</p>';
+            if(reviews.length === 0) { list.innerHTML = `<p class="empty-state">${adminI18n[currentAdminLang].msg_empty_rev}</p>`; return; }
             reviews.forEach(r => {
-                list.innerHTML += `<div class="card" style="margin-bottom:10px;"><p>"${r.text}"</p><small style="color:var(--accent);">Оценка: ${'⭐'.repeat(r.rating)}</small></div>`;
+                list.innerHTML += `<div class="admin-card" style="margin-bottom:10px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                        <strong style="color:var(--accent);">${r.clientName || 'Аноним'}</strong>
+                        <small style="color:var(--text-muted);">${r.date || ''}</small>
+                    </div>
+                    <p style="margin-bottom:8px;font-style:italic;">"${r.comment || ''}"</p>
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <small style="color:var(--accent);">${'⭐'.repeat(parseInt(r.rating)||0)} (${r.masterName || ''})</small>
+                        <button class="btn-danger" style="padding:4px 10px;" onclick="deleteReview('${r.id}')">Удалить</button>
+                    </div>
+                </div>`;
+            });
+        }
+
+        async function deleteReview(id) {
+            showCustomConfirm('Удалить этот отзыв?', async () => {
+                store.reviews = store.reviews.filter(r => r.id !== id);
+                await window.appDB.saveReviews(store.reviews);
+                renderAdminReviews(store.reviews);
             });
         }
 
@@ -1032,62 +2186,207 @@
             const mMaster = document.getElementById('manual_master');
             if(mService && services) {
                 mService.innerHTML = '';
-                services.forEach(s => mService.innerHTML += `<option value="${s.id}">${s.strings.ru.title} - ${s.price} ₽</option>`);
+                services.forEach(s => mService.innerHTML += `<option value="${s.id}">${s.strings[currentAdminLang]?.title || s.strings.ru.title} - ${s.price} ₽</option>`);
             }
             if(mMaster && masters) {
-                mMaster.innerHTML = '<option value="any">Любой мастер</option>';
+                const anyStr = currentAdminLang === 'ru' ? 'Любой мастер' : (currentAdminLang === 'en' ? 'Any master' : (currentAdminLang === 'uz' ? 'Istalgan usta' : 'Каалаган чебер'));
+                mMaster.innerHTML = `<option value="any">${anyStr}</option>`;
                 masters.forEach(m => mMaster.innerHTML += `<option value="${m.id}">${m.name}</option>`);
             }
         }
 
-        function renderMastersList(masters, reviews) {
+        const DAY_LABELS = ['ВС','ПН','ВТ','СР','ЧТ','ПТ','СБ'];
+
+        function handleMasterPhotoUpload(inputEl, targetId, previewId) {
+            const file = inputEl.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const MAX = 300;
+                    let w = img.width, h = img.height;
+                    if (w > h) { if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; } }
+                    else       { if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; } }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = w; canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                    const base64 = canvas.toDataURL('image/jpeg', 0.82);
+                    const target = document.getElementById(targetId);
+                    if (target) target.value = base64;
+                    const preview = document.getElementById(previewId);
+                    if (preview) { preview.src = base64; preview.style.display = 'block'; }
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderMastersList(masters) {
             const list = document.getElementById('admin-masters-list');
-            if(!list || !masters) return;
-            list.innerHTML = '';
-            masters.forEach(m => {
-                list.innerHTML += `<div class="card" style="margin-bottom:15px; display:flex; justify-content:space-between; align-items:center;">
-                    <div><h4 style="margin:0">${m.name}</h4><small style="color:var(--text-muted);">Доля от услуг: ${m.share}% | От товаров: ${m.productShare || 0}%</small></div>
-                    <button class="btn-danger" onclick="deleteMaster('${m.id}')" style="padding: 8px 16px; width:auto;">Удалить</button>
+            if (!list || !masters) return;
+            if (masters.length === 0) {
+                list.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:20px;">Мастера ещё не добавлены</p>';
+                return;
+            }
+            list.innerHTML = masters.map(m => {
+                const isActive = m.active !== false;
+                const borderColor = isActive ? 'var(--accent)' : 'var(--border)';
+                const ava = m.photo
+                    ? `<img src="${m.photo}" style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid ${borderColor};flex-shrink:0;">`
+                    : `<div style="width:52px;height:52px;border-radius:50%;background:var(--overlay-mid);display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:bold;color:var(--accent);flex-shrink:0;border:2px solid ${borderColor};">${m.name.charAt(0).toUpperCase()}</div>`;
+
+                const dayPills = DAY_LABELS.map((d, i) => {
+                    const on = (m.workingDays || []).includes(i);
+                    return `<span style="padding:2px 7px;border-radius:4px;font-size:0.72rem;font-weight:600;background:${on ? 'var(--accent)' : 'var(--overlay-mid)'};color:${on ? '#000' : 'var(--text-muted)'};">${d}</span>`;
+                }).join('');
+
+                const statusBadge = isActive
+                    ? `<span style="background:rgba(46,213,115,0.15);color:#2ed573;padding:2px 9px;border-radius:10px;font-size:0.72rem;font-weight:600;">● Активен</span>`
+                    : `<span style="background:rgba(255,100,100,0.15);color:#ff6464;padding:2px 9px;border-radius:10px;font-size:0.72rem;font-weight:600;">● Пауза</span>`;
+
+                const editDays = DAY_LABELS.map((d, i) => {
+                    const on = (m.workingDays || []).includes(i);
+                    return `<label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:0.85rem;"><input type="checkbox" value="${i}" ${on ? 'checked' : ''} style="accent-color:var(--accent);"> ${d}</label>`;
+                }).join('');
+
+                return `
+                <div class="card" style="margin-bottom:15px;opacity:${isActive ? '1' : '0.65'};transition:opacity .3s;">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
+                        <div style="display:flex;align-items:center;gap:14px;flex:1;min-width:0;">
+                            ${ava}
+                            <div style="min-width:0;">
+                                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
+                                    <h4 style="margin:0;">${m.name}</h4>
+                                    ${statusBadge}
+                                </div>
+                                ${m.description ? `<p style="color:var(--text-muted);font-size:0.82rem;margin:0 0 7px;">${m.description}</p>` : ''}
+                                <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:7px;">${dayPills}</div>
+                                <small style="color:var(--text-muted);">Услуги: <b style="color:var(--accent)">${m.share}%</b> &nbsp;|&nbsp; Товары: <b style="color:var(--accent)">${m.productShare || 0}%</b></small>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0;">
+                            <button class="btn btn-outline" onclick="toggleMasterActive('${m.id}')" style="margin:0;padding:6px 12px;width:auto;font-size:0.8rem;">${isActive ? '⏸ Пауза' : '▶ Активировать'}</button>
+                            <button class="btn btn-outline" onclick="toggleMasterEdit('${m.id}')" style="margin:0;padding:6px 12px;width:auto;font-size:0.8rem;">✏ Изменить</button>
+                            <button class="btn-danger" onclick="deleteMaster('${m.id}')" style="padding:6px 12px;width:auto;font-size:0.8rem;">Удалить</button>
+                        </div>
+                    </div>
+                    <div id="edit-form-${m.id}" style="display:none;margin-top:15px;padding-top:15px;border-top:1px solid var(--border);">
+                        <div class="flex-row" style="margin-bottom:10px;">
+                            <div class="form-group" style="margin:0;flex:2;">
+                                <label style="display:block;margin-bottom:4px;font-size:0.8rem;color:var(--text-muted);">Имя</label>
+                                <input type="text" id="edit_name_${m.id}" class="form-control" value="${m.name}">
+                            </div>
+                            <div class="form-group" style="margin:0;flex:1;">
+                                <label style="display:block;margin-bottom:4px;font-size:0.8rem;color:var(--text-muted);">Доля услуги (%)</label>
+                                <input type="number" id="edit_share_${m.id}" class="form-control" value="${m.share}">
+                            </div>
+                            <div class="form-group" style="margin:0;flex:1;">
+                                <label style="display:block;margin-bottom:4px;font-size:0.8rem;color:var(--text-muted);">Доля товары (%)</label>
+                                <input type="number" id="edit_pshare_${m.id}" class="form-control" value="${m.productShare || 0}">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom:10px;">
+                            <label style="display:block;margin-bottom:4px;font-size:0.8rem;color:var(--text-muted);">Специализация / описание</label>
+                            <input type="text" id="edit_desc_${m.id}" class="form-control" value="${(m.description || '').replace(/"/g, '&quot;')}">
+                        </div>
+                        <div class="form-group" style="margin-bottom:10px;">
+                            <label style="display:block;margin-bottom:4px;font-size:0.8rem;color:var(--text-muted);">Фото</label>
+                            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                                <input type="text" id="edit_photo_${m.id}" class="form-control" value="${(m.photo || '').replace(/"/g, '&quot;')}" placeholder="Ссылка (URL)" style="flex:1;min-width:150px;">
+                                <label class="btn btn-outline" style="margin:0;padding:8px 14px;width:auto;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;font-size:0.82rem;">
+                                    📁 С ПК
+                                    <input type="file" accept="image/*" style="display:none;" onchange="handleMasterPhotoUpload(this,'edit_photo_${m.id}','edit_preview_${m.id}')">
+                                </label>
+                            </div>
+                            ${m.photo ? `<img id="edit_preview_${m.id}" src="${m.photo}" style="margin-top:8px;width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);">` : `<img id="edit_preview_${m.id}" style="display:none;margin-top:8px;width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);">`}
+                        </div>
+                        <div style="margin-bottom:12px;">
+                            <label style="display:block;margin-bottom:8px;font-size:0.8rem;color:var(--text-muted);">Рабочие дни</label>
+                            <div style="display:flex;gap:14px;flex-wrap:wrap;" id="edit_days_${m.id}">${editDays}</div>
+                        </div>
+                        <div style="display:flex;gap:8px;">
+                            <button class="btn" onclick="saveMasterEdit('${m.id}')" style="padding:10px 22px;width:auto;font-size:0.85rem;">Сохранить</button>
+                            <button class="btn btn-outline" onclick="toggleMasterEdit('${m.id}')" style="margin:0;padding:10px 22px;width:auto;font-size:0.85rem;">Отмена</button>
+                        </div>
+                    </div>
                 </div>`;
-            });
+            }).join('');
+        }
+
+        function toggleMasterEdit(id) {
+            const form = document.getElementById('edit-form-' + id);
+            if (!form) return;
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+
+        async function toggleMasterActive(id) {
+            const m = store.masters.find(x => x.id === id);
+            if (!m) return;
+            m.active = m.active === false ? true : false;
+            await window.appDB.saveMasters(store.masters);
+            renderMastersList(store.masters);
+        }
+
+        async function saveMasterEdit(id) {
+            const m = store.masters.find(x => x.id === id);
+            if (!m) return;
+            const newName = document.getElementById('edit_name_' + id).value.trim();
+            if (!newName) return alert('Имя не может быть пустым!');
+            m.name = newName;
+            m.share = parseInt(document.getElementById('edit_share_' + id).value) || 0;
+            m.productShare = parseInt(document.getElementById('edit_pshare_' + id).value) || 0;
+            m.description = document.getElementById('edit_desc_' + id).value.trim();
+            m.photo = document.getElementById('edit_photo_' + id).value.trim();
+            let days = [];
+            document.querySelectorAll('#edit_days_' + id + ' input[type="checkbox"]:checked').forEach(el => days.push(parseInt(el.value)));
+            if (days.length === 0) days = [1,2,3,4,5,6,0];
+            m.workingDays = days;
+            await window.appDB.saveMasters(store.masters);
+            renderMastersList(store.masters);
+            renderManualOptions(store.services, store.masters);
         }
 
         async function addMaster() {
             const nameEl = document.getElementById('new_master_name');
             const shareEl = document.getElementById('new_master_share');
             const pShareEl = document.getElementById('new_master_product_share');
-            
+            const photoEl = document.getElementById('new_master_photo');
+            const descEl = document.getElementById('new_master_desc');
+
             const name = nameEl.value.trim();
             const share = parseInt(shareEl.value || 50);
             const pShare = parseInt(pShareEl.value || 10);
-            
-            if(!name) return alert('Введите имя мастера!');
-            
+            const photoUrl = photoEl.value.trim();
+            const desc = descEl ? descEl.value.trim() : '';
+
+            if (!name) return alert('Введите имя мастера!');
+
             let days = [];
             document.querySelectorAll('#new_master_days input[type="checkbox"]:checked').forEach(el => days.push(parseInt(el.value)));
-            if(days.length === 0) days = [1,2,3,4,5,6,0];
+            if (days.length === 0) days = [1,2,3,4,5,6,0];
 
-            let m = {
-                id: 'm_' + Date.now(),
-                name: name,
-                share: share,
-                productShare: pShare,
-                workingDays: days
-            };
+            const m = { id: 'm_' + Date.now(), name, share, productShare: pShare, photo: photoUrl, description: desc, workingDays: days, active: true };
             store.masters.push(m);
             await window.appDB.saveMasters(store.masters);
-            
-            // Clear inputs
-            nameEl.value = ''; shareEl.value = '50'; pShareEl.value = '10';
+
+            nameEl.value = ''; shareEl.value = '50'; pShareEl.value = '10'; photoEl.value = '';
+            if (descEl) descEl.value = '';
+            const prev = document.getElementById('new_master_preview');
+            if (prev) { prev.src = ''; prev.style.display = 'none'; }
             document.querySelectorAll('#new_master_days input[type="checkbox"]').forEach(el => el.checked = true);
-            
-            alert('Мастер ' + name + ' успешно добавлен!');
+
+            renderMastersList(store.masters);
+            renderManualOptions(store.services, store.masters);
         }
 
         async function deleteMaster(id) {
-            if(!confirm('Вы уверены, что хотите удалить этого мастера?')) return;
-            store.masters = store.masters.filter(m => m.id !== id);
-            await window.appDB.saveMasters(store.masters);
+            showCustomConfirm('Вы уверены, что хотите удалить этого мастера?', async () => {
+                store.masters = store.masters.filter(m => m.id !== id);
+                await window.appDB.saveMasters(store.masters);
+                renderMastersList(store.masters);
+                renderManualOptions(store.services, store.masters);
+            });
         }
 
         async function updateBookingStatus(id, newStatus) {
@@ -1101,9 +2400,13 @@
         }
 
         async function deleteBooking(id) {
-            if(!confirm('Точно удалить запись? Это действие необратимо.')) return;
-            store.bookings = store.bookings.filter(b => b.id !== id);
-            await window.appDB.saveBookings(store.bookings);
+            showCustomConfirm('Точно удалить запись? Это действие необратимо.', async () => {
+                store.bookings = store.bookings.filter(b => b.id !== id);
+                await window.appDB.saveBookings(store.bookings);
+                renderCalendarGrid(store.bookings);
+                if(typeof renderAdminBookings === 'function') renderAdminBookings(store.bookings);
+                renderCharts(store.bookings);
+            });
         }
 
         async function addManualBooking() {
@@ -1134,11 +2437,21 @@
                 price: srvPrice,
                 masterId: mastId,
                 masterName: mName,
-                status: 'pending'
+                status: 'pending',
+                timestamp: new Date().toISOString()
             };
 
-            store.bookings.push(newBooking);
-            await window.appDB.saveBookings(store.bookings);
+            try {
+                const result = await window.appDB.commitNewBooking(newBooking, {
+                    masters: store.masters,
+                    services: store.services,
+                    settings: store.settings
+                });
+                store.bookings = result.items;
+            } catch (e) {
+                alert(e.message || 'Этот слот уже занят или данные некорректны.');
+                return;
+            }
 
             // Clear inputs
             document.getElementById('manual_client_name').value = '';
@@ -1167,5 +2480,64 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
     <script src="assets/engine.js"></script>
 
+    <!-- CUSTOM CONFIRM MODAL HTML structure -->
+    <div id="customConfirmModal" class="modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index:999999; display:none; align-items: center; justify-content: center; background: rgba(0,0,0,0.8);  transition: opacity 0.3s ease; opacity: 0;">
+        <div class="modal-content" style="background: var(--surface); max-width: 400px; width: 90%; text-align: center; padding: 30px 20px; border-radius: 8px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.5); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
+            <div style="width: 60px; height: 60px; background: rgba(255,71,87,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;">
+                <i data-lucide="alert-triangle" style="width: 30px; height: 30px; color: #ff4757;"></i>
+            </div>
+            <h3 style="margin: 0 0 10px 0; font-size: 1.2rem; font-weight: 700;">Подтвердите действие</h3>
+            <p id="custom-confirm-msg" style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin: 0 0 25px 0;">Вы уверены?</p>
+            
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button onclick="closeCustomConfirm()" style="flex: 1; padding: 12px; background: rgba(255,255,255,0.05); color: var(--text-main); border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s;">
+                    Отмена
+                </button>
+                <button onclick="executeCustomConfirm()" style="flex: 1; padding: 12px; background: #ff4757; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(255,71,87,0.4); transition: 0.2s;">
+                    Удалить
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        #customConfirmModal .modal-content { opacity: 0; transform: translateY(20px); }
+        #customConfirmModal.active { opacity: 1 !important; }
+        #customConfirmModal.active .modal-content { transform: translateY(0); opacity: 1; }
+        #customConfirmModal .modal-content button:hover { opacity: 0.8; transform: translateY(-1px); }
+    </style>
+
+    <script>
+        let confirmCallback = null;
+        function showCustomConfirm(message, callback) {
+            confirmCallback = callback;
+            const msgEl = document.getElementById('custom-confirm-msg');
+            if (msgEl) msgEl.innerText = message;
+            const modal = document.getElementById('customConfirmModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                requestAnimationFrame(() => modal.classList.add('active'));
+            }
+        }
+        function closeCustomConfirm() {
+            const modal = document.getElementById('customConfirmModal');
+            if (modal) {
+                modal.classList.remove('active');
+                setTimeout(() => modal.style.display = 'none', 300);
+            }
+            confirmCallback = null;
+        }
+        function executeCustomConfirm() {
+            if (confirmCallback) confirmCallback();
+            closeCustomConfirm();
+        }
+    </script>
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/sw.js').catch(function() {});
+        });
+    }
+    </script>
 </body>
 </html>

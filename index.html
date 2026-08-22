@@ -3,14 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="apple-touch-icon" href="assets/pwa-icon-192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/pwa-icon-192.png">
     <title>Брутальный Барбершоп - Онлайн Запись</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Jura:wght@400;500;600;700&family=Russo+One&display=swap" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script src="assets/booking-logic.js"></script>
     <!-- Import DB Layer for Firebase emulated logic -->
     <script src="assets/db.js"></script>
 
+    <script>
+        // Helper function for Telegram Haptic Feedback
+        function triggerHaptic(type = 'light') {
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+                try {
+                    if (type === 'selection') {
+                        window.Telegram.WebApp.HapticFeedback.selectionChanged();
+                    } else if (type === 'success') {
+                        window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+                    } else if (type === 'error') {
+                        window.Telegram.WebApp.HapticFeedback.notificationOccurred('error');
+                    } else {
+                        window.Telegram.WebApp.HapticFeedback.impactOccurred(type);
+                    }
+                } catch(e) {}
+            }
+        }
+
+        // Telegram Mini App Initialization
+        (function() {
+            if (window.Telegram && window.Telegram.WebApp) {
+                const tg = window.Telegram.WebApp;
+                tg.ready();
+                tg.expand();
+
+                // Setup BackButton listener
+                if (tg.BackButton) {
+                    tg.BackButton.onClick(() => {
+                        triggerHaptic('light');
+                        if (typeof currentStep !== 'undefined' && currentStep > 1) {
+                            nextStep(currentStep - 1);
+                        }
+                    });
+                }
+                
+                document.addEventListener('DOMContentLoaded', () => {
+                    const user = tg.initDataUnsafe?.user;
+                    if (user) {
+                        window.telegramUser = user;
+                        const nameInput = document.getElementById('client-name');
+                        if (nameInput && !nameInput.value) {
+                            const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ');
+                            nameInput.value = fullName;
+                            if (typeof validateForm === 'function') validateForm();
+                        }
+                    }
+                });
+            }
+        })();
+    </script>
+
     <style>
-        :root { --bg-dark: #000000; --surface: #0a0a0e; --surface-hover: #12121a; --accent: #ffffff; --accent-hover: #cccccc; --text-main: #ffffff; --text-muted: #888888; --border: rgba(255,255,255,0.2); --danger: #ef4444; --success: #10b981; --font-sans: 'Inter', sans-serif; --font-serif: 'Syncopate', sans-serif; --overlay-light: rgba(255,255,255,0.05); --overlay-heavy: rgba(255,255,255,0.3); --overlay-mid: rgba(255,255,255,0.15); --header-grad: rgba(20,20,24,1); --transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        :root { --bg-dark: #030305; --surface: #101014; --surface-hover: #16161d; --accent: #5e6ad2; --accent-hover: #7b86e8; --text-main: #f4f4f5; --text-muted: #a1a1aa; --border: rgba(94, 106, 210, 0.2); --danger: #ef4444; --success: #10b981; --overlay-light: rgba(255,255,255,0.05); --overlay-mid: rgba(0,0,0,0.2); --overlay-heavy: rgba(0,0,0,0.5); --header-grad: rgba(20,20,24,1); --font-sans: 'Jura', sans-serif; --font-serif: 'Russo One', sans-serif; --transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         ::selection { background: var(--accent); color: var(--bg-dark); }
@@ -50,6 +110,7 @@
         .service-info h3 { font-family: var(--font-sans); font-size: 1.1rem; margin-bottom: 5px; }
         .service-info p { color: var(--text-muted); font-size: 0.9rem; }
         .service-price { font-weight: 600; color: var(--accent); font-size: 1.1rem; white-space: nowrap; margin-left: 15px; }
+        .master-card-inner { gap: 20px; }
 
         .date-picker { margin-bottom: 25px; }
         .dates-scroll { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
@@ -82,6 +143,28 @@
         .btn-danger { background: rgba(255, 71, 87, 0.1); color: var(--danger); border: 1px solid var(--danger); padding: 8px 16px; font-size: 0.9rem; border-radius: 6px; cursor: pointer; }
         .btn-danger:hover { background: var(--danger); color: var(--text-main); }
 
+        /* MODE TOGGLE SWITCHER & MAP STYLES */
+        .app-view-toggle { max-width: 600px; margin: 0 auto 25px; padding: 0 20px; }
+        .toggle-pill-container { display: flex; background: var(--surface); border: 1px solid var(--border); border-radius: 50px; padding: 5px; box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+        .mode-toggle-btn { flex: 1; border: none; background: transparent; color: var(--text-muted); font-family: var(--font-sans); font-weight: 600; font-size: 0.9rem; padding: 12px 18px; border-radius: 50px; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .mode-toggle-btn.active { background: var(--accent); color: var(--bg-dark); box-shadow: 0 4px 15px rgba(94, 106, 210, 0.4); }
+        .mode-toggle-btn:hover:not(.active) { color: var(--text-main); background: var(--overlay-light); }
+        
+        #barber-map-section { max-width: 600px; margin: 0 auto 40px; padding: 0 20px; display: none; }
+        .map-card-wrapper { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+        #leaflet-map { width: 100%; height: 380px; background: #111; z-index: 1; border-radius: 12px 12px 0 0; }
+        .district-filter { display: flex; gap: 8px; overflow-x: auto; padding: 12px 15px; background: var(--surface); border-bottom: 1px solid var(--border); scrollbar-width: none; }
+        .district-chip { background: var(--bg-dark); border: 1px solid var(--border); color: var(--text-muted); padding: 6px 14px; border-radius: 50px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; transition: var(--transition); }
+        .district-chip.active { background: var(--accent); color: var(--bg-dark); border-color: var(--accent); font-weight: 600; }
+        .district-chip:hover:not(.active) { border-color: var(--accent); color: var(--text-main); }
+
+        /* BARBER RESUME MODAL SHEET */
+        #barber-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 99999; align-items: flex-end; justify-content: center; }
+        .barber-modal-sheet { background: var(--surface); border: 1px solid var(--border); border-radius: 20px 20px 0 0; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; padding: 25px; animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .insta-badge { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff; padding: 4px 10px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; }
+        .work-photo { width: 100px; height: 100px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border); flex-shrink: 0; }
+
         .success-icon { width: 80px; height: 80px; background: rgba(46, 213, 115, 0.1); color: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto 20px; }
 
         /* CHATBOT UI */
@@ -106,24 +189,348 @@
         .chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
         .typing { font-size: 0.8rem; color: var(--text-muted); margin-left: 20px; display: none; }
 
-        @media(max-width: 600px) {
-            #ai-chat-window { width: calc(100vw - 20px); height: calc(100vh - 120px); right: 10px; bottom: 80px; }
-            .theme-btn { top: 12px !important; left: 12px !important; padding: 10px !important; }
-            .lang-switcher { top: 12px !important; right: 60px !important; }
-            .lang-btn { padding: 8px 10px !important; font-size: 0.8rem; }
-            .service-card { padding: 14px 16px; }
-            .booking-container { margin: 0 12px 40px; padding: 18px 16px; }
-            .btn { padding: 16px 20px; font-size: 0.9rem; min-height: 52px; }
+        @media(max-width: 850px) {
+            /* PREVENT HORIZONTAL SCROLL */
+            body { overflow-x: hidden; }
+
+            /* ── HEADER ── */
+            .header { padding: 72px 16px 20px; }
+            .header h1 { font-size: 1.45rem; margin-bottom: 6px; letter-spacing: 0.5px; }
+            .header p { font-size: 0.85rem; max-width: 100%; }
+
+            /* ── TOP CONTROLS ── */
+            .theme-btn {
+                top: 14px !important; left: 14px !important;
+                padding: 8px 10px !important; border-radius: 8px !important;
+            }
+            .lang-switcher { top: 14px !important; right: 14px !important; }
+            .lang-btn { padding: 7px 10px !important; font-size: 0.8rem !important; border-radius: 8px !important; }
+
+            /* ── LIVE STATS — 2×2 сетка ── */
+            #live-stats-wrap {
+                border: none !important; background: transparent !important;
+                padding: 0 12px !important; margin-bottom: 0 !important; max-width: 100%;
+            }
+            #live-stats-inner {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 10px !important;
+                border: none !important; background: transparent !important;
+                padding: 0 !important; margin: 0 0 16px !important;
+                width: 100% !important; overflow: visible !important;
+            }
+            .stat-item {
+                min-width: unset; flex-shrink: unset; scroll-snap-align: unset;
+                background: var(--surface); border: 1px solid var(--border);
+                border-radius: 14px; padding: 18px 10px;
+                display: flex; flex-direction: column;
+                justify-content: center; align-items: center; text-align: center;
+            }
+            .stat-value { font-size: 1.6rem; margin-bottom: 4px; }
+            .stat-label { font-size: 0.7rem; margin-top: 0; line-height: 1.3; }
+
+            /* ── AI PROMO BANNER ── */
+            #ai-promo-wrap { padding: 0 12px; }
+            .ai-banner-content {
+                padding: 13px 15px !important; gap: 12px !important;
+                flex-direction: row !important; align-items: center !important;
+            }
+
+            /* ── BOOKING CONTAINER ── */
+            .booking-container { margin: 0 12px 40px; padding: 18px 14px; border-radius: 6px; }
+
+            /* ── STEPPER ── */
             .stepper { margin-bottom: 22px; }
-            .step { width: 32px; height: 32px; font-size: 0.85rem; }
-            .time-grid { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 8px; }
-            .time-slot { padding: 10px 6px; font-size: 0.9rem; }
-            .ai-banner-content { flex-direction: column; text-align: center; gap: 12px !important; }
-            .live-stats { flex-direction: row; flex-wrap: wrap; gap: 10px; padding: 14px 16px; }
-            .stat-item { flex: 1; min-width: 80px; }
-            #ai-chat-btn { width: 54px; height: 54px; bottom: 18px; right: 18px; }
+            .step { width: 32px; height: 32px; font-size: 0.82rem; flex-shrink: 0; }
+
+            /* ── MASTERS — горизонтальный скролл ── */
+            .master-list {
+                display: flex; flex-wrap: nowrap; overflow-x: auto;
+                padding-bottom: 10px; gap: 10px;
+                scroll-snap-type: x mandatory; scrollbar-width: none;
+                -webkit-overflow-scrolling: touch;
+            }
+            .master-list::-webkit-scrollbar { display: none; }
+            .master-list .service-card {
+                min-width: 145px; max-width: 155px; height: auto; min-height: 120px;
+                flex-shrink: 0; scroll-snap-align: start;
+                flex-direction: column; justify-content: center; align-items: center;
+                text-align: center; padding: 16px 10px; border-radius: 14px;
+            }
+            .master-card-inner { flex-direction: column !important; gap: 6px !important; align-items: center !important; }
+            .master-ava { width: 54px !important; height: 54px !important; margin: 0 auto !important; }
+
+            /* ── SERVICES — вертикальный список (читаемо) ── */
+            .service-list {
+                display: flex; flex-direction: column;
+                gap: 10px; overflow: visible; padding-bottom: 0;
+            }
+            .service-list .service-card {
+                min-width: unset; width: 100%; height: auto; min-height: 60px;
+                flex-direction: row; justify-content: space-between; align-items: center;
+                padding: 14px 16px; border-radius: 10px; text-align: left;
+                scroll-snap-align: unset; flex-shrink: unset;
+            }
+            .service-info { margin-bottom: 0; flex: 1; margin-right: 12px; }
+            .service-info h3 { font-size: 0.95rem; margin-bottom: 3px; line-height: 1.3; }
+            .service-info p { font-size: 0.78rem; line-height: 1.2; opacity: 0.8; }
+            .service-list .service-card > div:last-child {
+                flex-direction: column; align-items: flex-end; flex-shrink: 0;
+            }
+            .service-price { margin-left: 0; font-size: 1rem; margin-top: 0; }
+
+            /* ── BUTTONS ── */
+            .btn { padding: 15px 18px; font-size: 0.9rem; min-height: 50px; }
+
+            /* ── DATES ── */
+            .dates-scroll { gap: 8px; padding-bottom: 12px; scroll-snap-type: x mandatory; }
+            .date-card {
+                min-width: 65px; flex-shrink: 0; scroll-snap-align: start;
+                border-radius: 10px; padding: 11px 6px;
+            }
+            .date-card .day { font-size: 0.68rem; }
+            .date-card .num { font-size: 1.15rem; }
+
+            /* ── TIME GRID — 4 колонки ── */
+            .time-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+            .time-slot { padding: 11px 4px; font-size: 0.85rem; border-radius: 8px; }
+
+            /* ── FORM ── */
+            .form-control { padding: 14px 18px; font-size: 0.95rem; }
+
+            /* ── AI CHAT ── */
+            #ai-chat-window {
+                width: calc(100vw - 16px);
+                height: calc(100dvh - 85px);
+                right: 8px; bottom: 72px; border-radius: 8px;
+            }
+            #ai-chat-btn { width: 52px; height: 52px; bottom: 14px; right: 14px; }
+
+            /* ── REVIEWS ── */
+            #public-reviews { margin: 20px auto 60px; padding: 0 12px; }
+            #reviews-list { grid-template-columns: 1fr !important; }
         }
     
+        /* ══════════════════════════════════
+           INTRO ANIMATION
+        ══════════════════════════════════ */
+        #intro-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 99999;
+            background: #000;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-direction: column;
+            flex-direction: column;
+            -webkit-align-items: center;
+            align-items: center;
+            -webkit-justify-content: center;
+            justify-content: center;
+            /* НЕ hidden — иначе обрезает иконки при вращении */
+            overflow: visible;
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+        }
+        /* диагональные полосы фон */
+        #intro-overlay::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: repeating-linear-gradient(
+                -45deg,
+                transparent, transparent 20px,
+                rgba(255,255,255,0.02) 20px, rgba(255,255,255,0.02) 22px
+            );
+            animation: introPole 3s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        @keyframes introPole {
+            from { background-position: 0 0; }
+            to   { background-position: 200px 0; }
+        }
+
+        /* контент поверх шторок */
+        #intro-icons, #intro-brand, #intro-cutline, #intro-skip {
+            position: relative;
+            z-index: 3;
+        }
+
+        /* блок с двумя иконками */
+        #intro-icons {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            gap: clamp(20px, 6vw, 40px);
+        }
+
+        /* ножницы */
+        #intro-scissors {
+            opacity: 0;
+            -webkit-transform: scale(0) rotate(-270deg);
+            transform: scale(0) rotate(-270deg);
+            -webkit-transition: opacity .4s, -webkit-transform 1.2s cubic-bezier(0.34,1.56,0.64,1);
+            transition: opacity .4s, transform 1.2s cubic-bezier(0.34,1.56,0.64,1);
+            will-change: transform, opacity;
+            width: clamp(55px, 13vw, 80px);
+            height: clamp(55px, 13vw, 80px);
+            display: block;
+        }
+        #intro-scissors.show {
+            opacity: 1;
+            -webkit-transform: scale(1) rotate(0deg);
+            transform: scale(1) rotate(0deg);
+        }
+        #intro-scissors.hide {
+            opacity: 0;
+            -webkit-transition: opacity .3s;
+            transition: opacity .3s;
+        }
+
+        /* машинка */
+        #intro-clipper {
+            opacity: 0;
+            -webkit-transform: translateY(30px);
+            transform: translateY(30px);
+            -webkit-transition: opacity .6s, -webkit-transform .6s cubic-bezier(0.34,1.56,0.64,1);
+            transition: opacity .6s, transform .6s cubic-bezier(0.34,1.56,0.64,1);
+            will-change: transform, opacity;
+            width: clamp(45px, 11vw, 65px);
+            height: clamp(55px, 13vw, 80px);
+            display: block;
+        }
+        #intro-clipper.show {
+            opacity: 1;
+            -webkit-transform: translateY(0);
+            transform: translateY(0);
+        }
+        #intro-clipper.hide {
+            opacity: 0;
+            -webkit-transition: opacity .3s;
+            transition: opacity .3s;
+        }
+
+        /* бренд блок */
+        #intro-brand {
+            text-align: center;
+            margin-top: 24px;
+            opacity: 0;
+            -webkit-transform: translateY(25px);
+            transform: translateY(25px);
+            -webkit-transition: opacity .6s, -webkit-transform .6s;
+            transition: opacity .6s, transform .6s;
+            will-change: transform, opacity;
+            padding: 0 20px;
+        }
+        #intro-brand.show {
+            opacity: 1;
+            -webkit-transform: translateY(0);
+            transform: translateY(0);
+        }
+        #intro-brand.hide {
+            opacity: 0;
+            -webkit-transform: translateY(-20px);
+            transform: translateY(-20px);
+            -webkit-transition: opacity .35s, -webkit-transform .35s;
+            transition: opacity .35s, transform .35s;
+        }
+
+        #intro-title {
+            font-family: 'Syncopate', 'Inter', sans-serif;
+            font-size: clamp(1.6rem, 8vw, 3.5rem);
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            color: #ffffff;
+            text-transform: uppercase;
+            margin: 0;
+            line-height: 1.2;
+            word-break: break-word;
+        }
+        #intro-line {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            margin: 14px auto 0;
+            width: 0;
+            opacity: 0;
+            -webkit-transition: width .8s .2s, opacity .8s .2s;
+            transition: width .8s .2s, opacity .8s .2s;
+        }
+        #intro-brand.show #intro-line {
+            width: min(200px, 60vw);
+            opacity: 0.6;
+        }
+        #intro-brand.hide #intro-line { opacity: 0; }
+
+        #intro-sub {
+            font-size: clamp(0.6rem, 2vw, 0.75rem);
+            letter-spacing: 0.4em;
+            color: #777;
+            text-transform: uppercase;
+            margin-top: 12px;
+            opacity: 0;
+            -webkit-transition: opacity .6s .4s;
+            transition: opacity .6s .4s;
+        }
+        #intro-brand.show #intro-sub { opacity: 1; }
+
+        /* линия разреза */
+        #intro-cutline {
+            position: absolute;
+            top: 50%; left: 0; right: 0;
+            height: 2px;
+            -webkit-transform: translateY(-50%) scaleX(0);
+            transform: translateY(-50%) scaleX(0);
+            -webkit-transform-origin: center;
+            transform-origin: center;
+            background: linear-gradient(90deg, transparent, #ffffff, transparent);
+            box-shadow: 0 0 25px #fff, 0 0 50px rgba(255,255,255,0.25);
+            -webkit-transition: -webkit-transform .4s ease-in-out;
+            transition: transform .4s ease-in-out;
+            pointer-events: none;
+            z-index: 4;
+        }
+        #intro-cutline.show {
+            -webkit-transform: translateY(-50%) scaleX(1);
+            transform: translateY(-50%) scaleX(1);
+        }
+
+        /* шторки — старт ЗА экраном, появляются только при разрезе */
+        #intro-top, #intro-bottom {
+            position: absolute;
+            left: 0; right: 0;
+            background: #000;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 2;
+            will-change: transform;
+        }
+        #intro-top    { top: 0;    height: 50.5%; }
+        #intro-bottom { bottom: 0; height: 50.5%; }
+
+        /* кнопка пропустить */
+        #intro-skip {
+            position: absolute;
+            bottom: max(28px, env(safe-area-inset-bottom, 28px));
+            background: transparent;
+            border: none;
+            color: #555;
+            font-size: clamp(0.65rem, 2.5vw, 0.72rem);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            cursor: pointer;
+            opacity: 0;
+            -webkit-transition: opacity .5s, color .3s;
+            transition: opacity .5s, color .3s;
+            font-family: 'Inter', sans-serif;
+            padding: 12px 20px;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        #intro-skip.show { opacity: 1; }
+        #intro-skip:hover, #intro-skip:active { color: #fff; }
+
         [data-theme="light"] {
             --bg-dark: #ffffff;
             --surface: #f4f4f5;
@@ -162,9 +569,9 @@
             filter: grayscale(1);
         }
         @keyframes majesticFloat {
-            0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
-            50% { transform: translate(-52%, -48%) scale(1.04) rotate(1deg); filter: brightness(1.4); }
-            100% { transform: translate(-48%, -52%) scale(1.08) rotate(-1deg); filter: brightness(0.9); }
+            0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.45; }
+            50% { transform: translate(-52%, -48%) scale(1.04) rotate(1deg); opacity: 0.6; }
+            100% { transform: translate(-48%, -52%) scale(1.08) rotate(-1deg); opacity: 0.35; }
         }
     </style>
 
@@ -193,6 +600,76 @@
 </head>
 <body>
 
+    <!-- ══ INTRO ANIMATION ══ -->
+    <div id="intro-overlay">
+        <div id="intro-top"></div>
+        <div id="intro-bottom"></div>
+
+        <div id="intro-icons">
+            <!-- Ножницы: кольца слева, лезвия вправо, пивот в центре -->
+            <svg id="intro-scissors" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="18" cy="25" r="12" stroke="#fff" stroke-width="2.5"/>
+                <circle cx="18" cy="75" r="12" stroke="#fff" stroke-width="2.5"/>
+                <path d="M26 33 Q36 41 48 50 Q68 45 88 41" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"/>
+                <path d="M26 67 Q36 59 48 50 Q68 55 88 59" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"/>
+                <circle cx="48" cy="50" r="5" fill="#c9a84c"/>
+                <circle cx="48" cy="50" r="2.5" fill="#111"/>
+            </svg>
+            <!-- Машинка: корпус + лезвие + зубья -->
+            <svg id="intro-clipper" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="18" y="38" width="64" height="50" rx="12" stroke="#fff" stroke-width="2.5"/>
+                <rect x="18" y="20" width="64" height="18" rx="4" fill="#1a1a1a" stroke="#fff" stroke-width="2.5"/>
+                <line x1="27" y1="20" x2="27" y2="11" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="36" y1="20" x2="36" y2="7"  stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="45" y1="20" x2="45" y2="11" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="54" y1="20" x2="54" y2="7"  stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="63" y1="20" x2="63" y2="11" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="72" y1="20" x2="72" y2="7"  stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="50" cy="58" r="5" fill="#c9a84c" opacity="0.9"/>
+                <line x1="28" y1="72" x2="72" y2="72" stroke="#ffffff33" stroke-width="2" stroke-linecap="round"/>
+                <line x1="28" y1="80" x2="72" y2="80" stroke="#ffffff33" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
+
+        <div id="intro-brand">
+            <h1 id="intro-title">Барбершоп</h1>
+            <div id="intro-line"></div>
+            <p id="intro-sub">Men's Grooming</p>
+        </div>
+
+        <div id="intro-cutline"></div>
+        <button id="intro-skip">Пропустить →</button>
+    </div>
+
+    <!-- AUTH MODAL (GUEST OR LOGIN) -->
+    <div id="auth-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center; padding:20px; ">
+        <div style="background:var(--surface); border: 1px solid var(--border); border-radius:12px; width:100%; max-width:400px; padding:30px; text-align:center; animation: popIn 0.3s ease;">
+            <i data-lucide="shield-check" style="width:48px;height:48px;color:var(--accent);margin-bottom:15px;"></i>
+            <h2 id="auth-modal-title" style="font-family:var(--font-sans); margin-bottom:10px; font-size:1.4rem;" data-i18n="auth_modal_title_booking">Быстрый вход</h2>
+            <p id="auth-modal-desc" style="color:var(--text-muted); font-size:0.9rem; margin-bottom:25px; line-height:1.5;" data-i18n="auth_modal_desc_booking">Войдите, чтобы получать бонусы и сохранять историю ваших записей, или продолжите без регистрации.</p>
+            
+            <div id="modal-tg-block" style="display:none;">
+                <div id="modal-telegram-widget" style="margin-bottom:10px; text-align:center;"></div>
+                <div style="margin: 15px 0; color:var(--text-muted); font-size:0.8rem; position:relative;">
+                    <span style="background:var(--surface); padding:0 10px; position:relative; z-index:2;">ИЛИ</span>
+                    <div style="position:absolute; top:50%; left:0; right:0; height:1px; background:var(--border); z-index:1;"></div>
+                </div>
+            </div>
+
+            <button class="btn" style="margin-top:0; margin-bottom:10px; display:flex; align-items:center; justify-content:center; gap:10px; background:#ffffff; color:#000000;" onclick="loginWithGoogle()">
+                <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                Продолжить с Google
+            </button>
+
+            <div style="margin: 15px 0; color:var(--text-muted); font-size:0.8rem; position:relative;">
+                <span style="background:var(--surface); padding:0 10px; position:relative; z-index:2;">ИЛИ</span>
+                <div style="position:absolute; top:50%; left:0; right:0; height:1px; background:var(--border); z-index:1;"></div>
+            </div>
+
+            <button type="button" id="auth-modal-guest-btn" class="btn btn-outline" style="margin-top:0;" onclick="continueAsGuest()" data-i18n="auth_guest_skip">Пропустить и записаться</button>
+        </div>
+    </div>
+
     <button class="theme-btn" onclick="toggleTheme()" style="position: absolute; top:15px; left:20px; z-index:100; background: var(--surface); color: var(--text-main); border: 1px solid var(--border); padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: var(--transition); display:flex; align-items:center; gap:6px;"><i data-lucide="sun" id="theme-icon" style="width:18px;height:18px;"></i></button>
     <div class="bg-layer" style="background-image: url('assets/bg_1.jpg');"></div>
     <div class="lang-switcher">
@@ -202,8 +679,13 @@
     </div>
 
     <header class="header">
+        <div style="display:inline-block; margin-bottom: 20px; border-top: 1px solid var(--accent); border-bottom: 1px solid var(--accent); padding: 8px 30px; letter-spacing: 4px; font-size: 0.75rem; color: var(--accent); text-transform: uppercase;">Men's Grooming</div>
         <h1 data-i18n="title">Брутальный Барбершоп</h1>
-        <p data-i18n="subtitle">Запишись онлайн к лучшим мастерам города за пару кликов.</p>
+        <div style="position:relative; display:inline-block; margin-top:10px;">
+            <div style="position:absolute; left:-18px; top:-8px; font-size:2rem; opacity:0.1; font-family:serif;">"</div>
+            <p data-i18n="subtitle" style="font-style:italic; opacity:0.8; margin:0; padding: 0 5px;">Запишись онлайн к лучшим мастерам города за пару кликов.</p>
+            <div style="position:absolute; right:-18px; bottom:-18px; font-size:2rem; opacity:0.1; font-family:serif;">"</div>
+        </div>
     </header>
 
     <!-- LIVE STATS BAR -->
@@ -229,7 +711,7 @@
     </div>
 
     <!-- AI PROMO BANNER -->
-    <div style="max-width: 600px; margin: 0 auto 25px; padding: 0 20px;">
+    <div style="max-width: 600px; margin: 0 auto 25px; padding: 0 20px;" id="ai-promo-wrap">
         <a href="ai_style.html" style="text-decoration:none; display:block;">
             <div class="ai-banner-content" style="
                 background: linear-gradient(135deg, var(--overlay-mid) 0%, rgba(94,106,210,0.04) 100%);
@@ -241,7 +723,7 @@
                 gap: 16px;
                 transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             " onmouseover="this.style.borderColor='rgba(94,106,210,0.7)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(94,106,210,0.35)'; this.style.transform='translateY(0)'">
-                <div style="color:var(--accent); margin-right: 5px;"><i data-lucide="bot" style="width:40px; height:40px; stroke-width: 1.5;"></i></div>
+                <div style="margin-right: 5px; flex-shrink:0;"><img src="assets/ai_logo.png" style="width:48px;height:48px;object-fit:contain;border-radius:50%;display:block;"></div>
                 <div style="flex:1;">
                     <div style="color: var(--accent); font-weight: 600; font-family: var(--font-serif); font-size: 1.2rem; margin-bottom: 3px; display:flex; align-items:center; gap:8px;">
                         <span data-i18n="ai_promo_title">Интеллектуальный подбор</span>
@@ -254,7 +736,9 @@
         </a>
     </div>
 
-    <main class="booking-container">
+
+
+    <main class="booking-container" id="booking-main-container">
         <!-- MY BOOKING WIDGET -->
         <div id="my-booking-widget" style="display:none; background: linear-gradient(135deg, var(--overlay-mid), rgba(0,0,0,0)); border: 1px solid var(--accent); border-radius: 6px; padding: 20px; margin-bottom: 30px;">
             <h3 style="color: var(--accent); margin-bottom: 10px; font-size: 1.1rem;" data-i18n="widget_title">Напоминание о записи</h3>
@@ -272,20 +756,22 @@
             <div class="step" data-step="4">4</div>
         </div>
 
-        <!-- STEP 1: MASTERS -->
+        <!-- STEP 1: SERVICES -->
         <div class="step-content active" id="step-1">
-            <h2 data-i18n="step1_master" style="margin-bottom: 20px; font-family: var(--font-sans); font-size: 1.3rem;">Выберите мастера</h2>
-            <div class="master-list" id="masters-container"></div>
-            <button class="btn" id="btn-next-1" disabled onclick="nextStep(2)" data-i18n="btn_next">Далее</button>
-        </div>
-
-        <!-- STEP 2: SERVICES -->
-        <div class="step-content" id="step-2">
             <h2 data-i18n="step2_service" style="margin-bottom: 20px; font-family: var(--font-sans); font-size: 1.3rem;">Выберите услугу</h2>
             <div class="service-list" id="services-container"></div>
-            <div style="display: flex; gap: 10px; margin-top: 30px;">
-                <button class="btn btn-outline" style="margin-top: 0; width: 30%;" onclick="nextStep(1)" data-i18n="btn_back">Назад</button>
-                <button class="btn" id="btn-next-2" disabled style="margin-top: 0;" onclick="nextStep(3)" data-i18n="btn_next">Далее</button>
+            <div style="margin-top: 30px; display:flex; justify-content:center;">
+                <button class="btn" id="btn-next-1" disabled style="width: 100%; letter-spacing: 2px;" onclick="nextStep(2)" data-i18n="btn_next">Далее</button>
+            </div>
+        </div>
+
+        <!-- STEP 2: MASTERS -->
+        <div class="step-content" id="step-2">
+            <h2 data-i18n="step1_master" style="margin-bottom: 20px; font-family: var(--font-sans); font-size: 1.3rem;">Выберите мастера</h2>
+            <div class="master-list" id="masters-container"></div>
+            <div style="display: flex; gap: 15px; margin-top: 30px; align-items: stretch;">
+                <button class="btn btn-outline" style="margin: 0; flex: 1; min-height: 55px;" onclick="nextStep(1)" data-i18n="btn_back">Назад</button>
+                <button class="btn" id="btn-next-2" disabled style="margin: 0; flex: 2; min-height: 55px; letter-spacing: 2px;" onclick="nextStep(3)" data-i18n="btn_next">Далее</button>
             </div>
         </div>
 
@@ -299,9 +785,9 @@
                 <h2 data-i18n="step3_time" style="margin-bottom: 15px; font-family: var(--font-sans); font-size: 1.3rem;">Выберите время</h2>
                 <div class="time-grid" id="times-container"></div>
             </div>
-            <div style="display: flex; gap: 10px; margin-top: 30px;">
-                <button class="btn btn-outline" style="margin-top: 0; width: 30%;" onclick="nextStep(2)" data-i18n="btn_back">Назад</button>
-                <button class="btn" id="btn-next-3" style="margin-top: 0;" disabled onclick="nextStep(4)" data-i18n="btn_next">Далее</button>
+            <div style="display: flex; gap: 15px; margin-top: 30px; align-items: stretch;">
+                <button class="btn btn-outline" style="margin: 0; flex: 1; min-height: 55px;" onclick="nextStep(2)" data-i18n="btn_back">Назад</button>
+                <button class="btn" id="btn-next-3" disabled style="margin: 0; flex: 2; min-height: 55px; letter-spacing: 2px;" onclick="nextStep(4)" data-i18n="btn_next">Далее</button>
             </div>
         </div>
 
@@ -309,11 +795,7 @@
         <div class="step-content" id="step-4">
             <h2 data-i18n="step4_title" style="margin-bottom: 20px; font-family: var(--font-sans); font-size: 1.3rem;">Ваши контакты</h2>
             
-            <div id="telegram-auth-container" style="text-align: center; margin-bottom: 20px;">
-                <!-- Telegram Widget injected here dynamically -->
-            </div>
-
-            <div id="manual-auth-container" style="display: none;">
+            <div id="manual-auth-container" style="display: block;">
                 <div class="form-group"><label data-i18n="label_name">Ваше имя</label><input type="text" id="client-name" class="form-control" data-i18n-placeholder="placeholder_name" placeholder="Иван Иванов" oninput="validateForm()"></div>
                 <div class="form-group"><label data-i18n="label_phone">Номер телефона</label><input type="tel" id="client-phone" class="form-control" placeholder="+7 (999) 000-00-00" oninput="validateForm()"></div>
             </div>
@@ -324,9 +806,9 @@
                 <div id="summary-service" style="font-weight: 500; margin-bottom: 5px;"></div>
                 <div id="summary-datetime" style="color: var(--accent);"></div>
             </div>
-            <div style="display: flex; gap: 10px;">
-                <button class="btn btn-outline" style="margin-top: 0; width: 30%;" onclick="nextStep(3)" data-i18n="btn_back">Назад</button>
-                <button class="btn" id="btn-submit" style="margin-top: 0;" disabled onclick="submitBooking()" data-i18n="btn_submit">Записаться</button>
+            <div style="display: flex; gap: 15px; align-items: stretch;">
+                <button class="btn btn-outline" style="margin: 0; flex: 1; min-height: 55px;" onclick="nextStep(3)" data-i18n="btn_back">Назад</button>
+                <button class="btn" id="btn-submit" disabled style="margin: 0; flex: 2; min-height: 55px; letter-spacing: 2px; box-shadow: 0 5px 20px rgba(255,255,255,0.1);" onclick="askForAuth()" data-i18n="btn_submit">Записаться</button>
             </div>
         </div>
 
@@ -390,6 +872,7 @@
                 step4_title: "Ваши контакты", label_name: "Ваше имя", placeholder_name: "Иван Иванов", label_phone: "Номер телефона", details: "Детали записи:", btn_submit: "Записаться",
                 success_title: "Вы успешно записаны!", success_desc: "Ждем вас в назначенное время.", btn_home: "На главную", widget_title: "Напоминание о записи", widget_cancel: "Отменить мою запись", widget_close: "Скрыть", any_master: "Любой свободный мастер",
                 review_title: "Оцените работу мастера", review_placeholder: "Ваш отзыв (необязательно)", review_send: "Отправить отзыв", reviews_public_title: "Отзывы наших клиентов", reviews_empty: "Пока нет отзывов. Будьте первым!", review_success: "✅ Спасибо за ваш отзыв!",
+                auth_modal_title_booking: "Быстрый вход", auth_modal_desc_booking: "Войдите, чтобы получать бонусы и сохранять историю ваших записей, или продолжите без регистрации.", auth_modal_title_review: "Вход для отзыва", auth_modal_desc_review: "Войдите через Google или Telegram — после этого откроется форма отзыва о мастере.", auth_guest_skip: "Пропустить и записаться", review_auth_later: "Позже", review_auth_gate: "Чтобы оставить отзыв о мастере, войдите через Google или Telegram.", review_auth_btn: "Войти и оставить отзыв",
                 stat_masters: "Мастеров", stat_today: "Записей сегодня", stat_rating: "Рейтинг", stat_total: "Всего клиентов",
                 ai_promo_title: "Интеллектуальный подбор", ai_promo_desc: "Глубокий анализ лица и подбор идеального образа с помощью нейросети",
                 chat_header: "Барбер-Ассистент", chat_welcome: "Привет! Я ваш персональный ИИ-ассистент. Отвечу на любые вопросы о стрижках, мастерах и ценах. Как я могу вам помочь?", chat_typing: "Бот печатает...", chat_placeholder: "Спросите что-нибудь..."
@@ -400,9 +883,13 @@
                 step4_title: "Your contacts", label_name: "Your name", placeholder_name: "John Doe", label_phone: "Phone number", details: "Booking details:", btn_submit: "Book Appointment",
                 success_title: "Successfully booked!", success_desc: "We look forward to seeing you at the appointed time.", btn_home: "Back to home", widget_title: "Booking Reminder", widget_cancel: "Cancel my booking", widget_close: "Hide", any_master: "Any available barber",
                 review_title: "Rate your Master", review_placeholder: "Your review (optional)", review_send: "Submit Review", reviews_public_title: "Our Client Reviews", reviews_empty: "No reviews yet. Be the first!", review_success: "✅ Thank you for your feedback!",
+                auth_modal_title_booking: "Quick sign-in", auth_modal_desc_booking: "Sign in for perks and booking history, or continue as a guest.", auth_modal_title_review: "Sign in to review", auth_modal_desc_review: "Use Google or Telegram — then the review form will open.", auth_guest_skip: "Skip and book", review_auth_later: "Not now", review_auth_gate: "To leave a review about your barber, sign in with Google or Telegram.", review_auth_btn: "Sign in and review",
                 stat_masters: "Masters", stat_today: "Appointments today", stat_rating: "Rating", stat_total: "Total Clients",
                 ai_promo_title: "Smart AI Selection", ai_promo_desc: "Deep facial analysis to find your ideal look using neural networks",
-                chat_header: "Barber Assistant", chat_welcome: "Hi! I'm your personal AI Assistant. Ask me anything about haircuts, masters, or pricing. How can I help you?", chat_typing: "Bot is typing...", chat_placeholder: "Ask something..."
+                chat_header: "Barber Assistant", chat_welcome: "Hi! I'm your personal AI Assistant. Ask me anything about haircuts, masters, or pricing. How can I help you?", chat_typing: "Bot is typing...", chat_placeholder: "Ask something...",
+                msg_err_fill: "Please fill all fields correctly.",
+                msg_tg_format: "🔥 New booking!\\nName: {name}\\nPhone: {phone}\\nService: {service}\\nMaster: {master}\\nDate: {date} at {time}\\nPrice: {price} ₽",
+                def_review: "The haircut was great!"
             },
             uz: {
                 title: "Brutal Barbershop", subtitle: "Shaharning eng yaxshi ustalariga onlayn yoziling.",
@@ -410,9 +897,13 @@
                 step4_title: "Kontaktlaringiz", label_name: "Ismingiz", placeholder_name: "Sardor", label_phone: "Telefon raqami", details: "Yozuv tafsilotlari:", btn_submit: "Yozilish",
                 success_title: "Muvaffaqiyatli yozildingiz!", success_desc: "Sizni belgilangan vaqtda kutib qolamiz.", btn_home: "Bosh sahifaga", widget_title: "Eslatma", widget_cancel: "Bekor qilish", widget_close: "Yashirish", any_master: "Istalgan bo'sh usta",
                 review_title: "Ustani baholang", review_placeholder: "Fikringiz (ixtiyoriy)", review_send: "Yuborish", reviews_public_title: "Mijozlarimiz fikrlari", reviews_empty: "Hozircha sharhlar yo'q. Birinchi bo'ling!", review_success: "✅ Sharh uchun rahmat!",
+                auth_modal_title_booking: "Tezkor kirish", auth_modal_desc_booking: "Bonuslar va tarix uchun kiring yoki mehmon sifatida davom eting.", auth_modal_title_review: "Sharh uchun kirish", auth_modal_desc_review: "Google yoki Telegram orqali kiring — keyin sharh formasi ochiladi.", auth_guest_skip: "Mehmon sifatida yozilish", review_auth_later: "Keyinroq", review_auth_gate: "Usta haqida sharh qoldirish uchun Google yoki Telegram orqali kiring.", review_auth_btn: "Kirish va sharh",
                 stat_masters: "Ustalar", stat_today: "Bugun yozuvlar", stat_rating: "Reyting", stat_total: "Jami mijozlar",
                 ai_promo_title: "Aqlli sun'iy intellekt tanlovi", ai_promo_desc: "Sun'iy intellekt yordamida yuzingizni chuqur tahlil qilib, mos obrazni tanlash",
-                chat_header: "Barber Yordamchi", chat_welcome: "Salom! Men shaxsiy AI yordamchingizman. Menga soch turmaklari, ustalar va narxlar haqida savol berishingiz mumkin. Qanday yordam bera olaman?", chat_typing: "Bot yozmoqda...", chat_placeholder: "Biror narsa so'rang..."
+                chat_header: "Barber Yordamchi", chat_welcome: "Salom! Men shaxsiy AI yordamchingizman. Menga soch turmaklari, ustalar va narxlar haqida savol berishingiz mumkin. Qanday yordam bera olaman?", chat_typing: "Bot yozmoqda...", chat_placeholder: "Biror narsa so'rang...",
+                msg_err_fill: "Iltimos, barcha maydonlarni to'g'ri to'ldiring.",
+                msg_tg_format: "🔥 Yangi yozuv!\\nIsm: {name}\\nTelefon: {phone}\\nXizmat: {service}\\nUsta: {master}\\nSana: {date} soat {time}\\nNarxi: {price} ₽",
+                def_review: "Soch turmagi ajoyib!"
             },
             kg: {
                 title: "Катаал Чачтарач", subtitle: "Шаардын эң мыкты чеберлерине онлайн жазылыңыз.",
@@ -420,9 +911,13 @@
                 step4_title: "Байланыштарыңыз", label_name: "Атыңыз", placeholder_name: "Азамат", label_phone: "Телефон номери", details: "Жазуунун чоо-жайы:", btn_submit: "Жазылуу",
                 success_title: "Ийгиликтүү жазылдыңыз!", success_desc: "Сизди белгиленген убакытта күтөбүз.", btn_home: "Башкы бетке", widget_title: "Эскертүү", widget_cancel: "Жоюу", widget_close: "Жашыруу", any_master: "Каалаган чебер",
                 review_title: "Чеберге баа бериңиз", review_placeholder: "Сиздин оюңуз (милдеттүү эмес)", review_send: "Жөнөтүү", reviews_public_title: "Кардарларыбыздын сын-пикирлери", reviews_empty: "Азырынча сын-пикирлер жок. Биринчи болуңуз!", review_success: "✅ Пикириңиз үчүн рахмат!",
+                auth_modal_title_booking: "Тез кирүү", auth_modal_desc_booking: "Бонустар жана тарых үчүн кириңиз же конок катары улантыңыз.", auth_modal_title_review: "Пикир үчүн кирүү", auth_modal_desc_review: "Google же Telegram аркылуу кириңиз — андан кийин пикир формасы ачылат.", auth_guest_skip: "Конок катары жазылуу", review_auth_later: "Кийин", review_auth_gate: "Чебер жөнүндө пикир калтыруу үчүн Google же Telegram аркылуу кириңиз.", review_auth_btn: "Кирүү жана пикир",
                 stat_masters: "Чеберлер", stat_today: "Бүгүнкү жазуулар", stat_rating: "Рейтинг", stat_total: "Жалпы кардарлар",
                 ai_promo_title: "Акылдуу ЖИ тандоосу", ai_promo_desc: "Бетти терең анализдөө жана жасалма интеллект менен идеалдуу образды тандоо",
-                chat_header: "Чачтарач жардамчысы", chat_welcome: "Салам! Мен сиздин жеке ЖИ жардамчыңызмын. Чач кыркуу, чеберлер жана баалар жөнүндө сураңыз. Кантип жардам бере алам?", chat_typing: "Бот жазып жатат...", chat_placeholder: "Бир нерсе сураңыз..."
+                chat_header: "Чачтарач жардамчысы", chat_welcome: "Салам! Мен сиздин жеке ЖИ жардамчыңызмын. Чач кыркуу, чеберлер жана баалар жөнүндө сураңыз. Кантип жардам бере алам?", chat_typing: "Бот жазып жатат...", chat_placeholder: "Бир нерсе сураңыз...",
+                msg_err_fill: "Сураныч, бардык талааларды туура толтуруңуз.",
+                msg_tg_format: "🔥 Жаңы жазуу!\\nАты: {name}\\nТелефон: {phone}\\nКызмат: {service}\\nЧебер: {master}\\nДата: {date} саат {time}\\nБаасы: {price} ₽",
+                def_review: "Чач кыркуу сонун болду!"
             }
         };
 
@@ -433,11 +928,13 @@
             currentLang = lang; localStorage.setItem('barber_lang', lang); document.getElementById('lang-select').value = lang;
             document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.getAttribute('data-i18n'); if (i18n[lang] && i18n[lang][key]) el.innerText = i18n[lang][key]; });
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { const key = el.getAttribute('data-i18n-placeholder'); if (i18n[lang] && i18n[lang][key]) el.placeholder = i18n[lang][key]; });
-            if(currentStep === 1) renderMastersUI();
-            if(currentStep === 2) renderServicesUI();
+            if(currentStep === 1) renderServicesUI();
+            if(currentStep === 2) renderMastersUI();
             if(currentStep === 3) renderDates();
             if(currentStep === 4) updateSummary();
             loadMyBookings();
+            const authOv = document.getElementById('auth-modal-overlay');
+            if (authOv && authOv.style.display === 'flex') applyAuthModalConfig(authModalMode);
         }
 
         // DB Fetchers & Store (Firebase Architecture)
@@ -471,6 +968,7 @@
 
         let currentStep = 1;
         let bookingData = { id: null, masterId: null, masterName: null, serviceKey: null, serviceRuName: null, price: null, duration: 60, date: null, time: null, name: '', phone: '', timestamp: null };
+        let bookingFinalizeInProgress = false;
 
         function renderLiveStats() {
             const masters = getMasters();
@@ -490,30 +988,76 @@
             document.getElementById('stat-total').textContent = totalClients || bookings.length || '0';
         }
 
+        function applySettings(settings) {
+            if (settings.shopName) {
+                document.title = settings.shopName + " - Онлайн Запись";
+                Object.keys(i18n).forEach(lang => { if(i18n[lang]) i18n[lang].title = settings.shopName; });
+                document.querySelectorAll('[data-i18n="title"]').forEach(el => { el.innerHTML = settings.shopName; });
+            }
+            if(settings.design) {
+                const des = settings.design;
+                if(des.accentColor) document.documentElement.style.setProperty('--accent', des.accentColor);
+                if(des.fontFamily) {
+                    document.documentElement.style.setProperty('--font-sans', des.fontFamily);
+                    document.documentElement.style.setProperty('--font-serif', des.fontFamily);
+                }
+                if(des.bgImage) {
+                    const bg = document.querySelector('.bg-layer');
+                    if(des.bgImage === 'none') { bg.style.display = 'none'; }
+                    else { bg.style.display = 'block'; bg.style.backgroundImage = `url('${des.bgImage}')`; }
+                }
+                let st = document.getElementById('live-stats-wrap');
+                if(st) st.style.display = des.hideStats ? 'none' : '';
+                let ai = document.getElementById('ai-promo-wrap');
+                if(ai) ai.style.display = des.hideAi ? 'none' : '';
+            }
+        }
+
         async function initApp() {
             // Load from real-time DB wrapper
             store.bookings = await window.appDB.getBookings();
             store.reviews = await window.appDB.getReviews();
             store.disabledDates = JSON.parse(localStorage.getItem('barber_disabled_dates')) || [];
-            
+
             let srvs = await window.appDB.getServices(); if(srvs.length) store.services = srvs;
             let msts = await window.appDB.getMasters(); if(msts.length) store.masters = msts;
             let sets = await window.appDB.getSettings(); if(Object.keys(sets).length) store.settings = sets;
 
-            if (store.settings.shopName) {
-                document.title = store.settings.shopName + " - Онлайн Запись";
-                Object.keys(i18n).forEach(lang => {
-                    if(i18n[lang]) i18n[lang].title = store.settings.shopName;
-                });
+            applySettings(store.settings);
+
+            // Load AI key from global Firebase settings
+            if(window.appDB.getGlobalSettings) {
+                let gSet = await window.appDB.getGlobalSettings();
+                if(gSet.aiKey) {
+                    localStorage.setItem('chatbot_api_key', gSet.aiKey);
+                    localStorage.setItem('openrouter_api_key', gSet.aiKey);
+                }
             }
 
             // Subscribe to real-time events to auto-update UI magically without polling
             window.appDB.subscribe('barber_bookings', data => { store.bookings = data; renderLiveStats(); loadMyBookings(); if(currentStep===3) renderTimes(); });
             window.appDB.subscribe('barber_reviews', data => { store.reviews = data; renderLiveStats(); });
-            window.appDB.subscribe('barber_masters', data => { if(data.length) store.masters = data; if(currentStep===1) renderMastersUI(); });
-            window.appDB.subscribe('barber_services', data => { if(data.length) store.services = data; if(currentStep===2) renderServicesUI(); });
+            window.appDB.subscribe('barber_masters', data => { if(data.length) store.masters = data; if(currentStep===2) renderMastersUI(); });
+            window.appDB.subscribe('barber_services', data => { if(data.length) store.services = data; if(currentStep===1) renderServicesUI(); });
+            window.appDB.subscribe('barber_settings', data => {
+                if(data && typeof data === 'object' && !Array.isArray(data) && Object.keys(data).length) {
+                    store.settings = data;
+                    applySettings(data);
+                }
+            });
 
             changeLanguage(currentLang); lucide.createIcons(); renderLiveStats();
+            
+            // Handle Google redirect result (mobile auth flow)
+            handleGoogleRedirectResult();
+
+            // Load Telegram bot name from Firebase settings so widget works on any device
+            (async () => {
+                const set = await window.appDB.getSettings();
+                if (set.telegram_bot_name) {
+                    localStorage.setItem('telegram_bot_name', set.telegram_bot_name);
+                }
+            })();
         }
 
         document.addEventListener("DOMContentLoaded", initApp);
@@ -521,16 +1065,16 @@
         // MASTERS (STEP 1)
         function renderMastersUI() {
             const list = document.getElementById('masters-container'); list.innerHTML = '';
-            let masters = [...getMasters(), { id: 'any', name: i18n[currentLang]['any_master'], isAny: true }];
+            let masters = [...getMasters().filter(m => m.active !== false), { id: 'any', name: i18n[currentLang]['any_master'], isAny: true }];
 
             masters.forEach(m => {
-                let card = document.createElement('div'); card.className = "service-card";
+                let card = document.createElement('div'); card.className = "service-card master-card-ui";
                 if (bookingData.masterId === m.id) card.classList.add('selected');
                 card.onclick = () => {
                     bookingData.masterId = m.id; bookingData.masterName = m.isAny ? 'Любой мастер' : m.name;
-                    document.querySelectorAll('#step-1 .service-card').forEach(c => c.classList.remove('selected'));
+                    document.querySelectorAll('#step-2 .service-card').forEach(c => c.classList.remove('selected'));
                     card.classList.add('selected');
-                    document.getElementById('btn-next-1').disabled = false;
+                    document.getElementById('btn-next-2').disabled = false;
                 };
                 
                 let statsHtml = '';
@@ -539,9 +1083,24 @@
                     statsHtml = `<div style="font-size:0.85rem; color:var(--accent); margin-top:5px;">⭐ ${rating.avg} <span style="color:var(--text-muted); font-size:0.75rem;">(${rating.count})</span></div>`;
                 }
 
-                card.innerHTML = `<div style="flex:1;"><h3>${m.name}</h3>${statsHtml}</div>`;
+                let avaHtml = '';
+                if (m.isAny) {
+                    avaHtml = `<div class="master-ava" style="width:50px;height:50px;border-radius:50%;background:transparent;border:1px dashed var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0;"><i data-lucide="users" style="width:24px;height:24px;"></i></div>`;
+                } else if (m.photo) {
+                    avaHtml = `<img class="master-ava" src="${m.photo}" style="width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid var(--border);flex-shrink:0;">`;
+                } else {
+                    avaHtml = `<div class="master-ava" style="width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;font-weight:bold;color:var(--accent);flex-shrink:0;border:1px solid var(--border);">${m.name.charAt(0)}</div>`;
+                }
+
+                card.innerHTML = `<div class="master-card-inner" style="display:flex; align-items:center; flex:1;">
+                    ${avaHtml}
+                    <div><h3 style="margin:0;">${m.name}</h3>${m.description ? `<p style="color:var(--text-muted);font-size:0.8rem;margin:3px 0 0;">${m.description}</p>` : ''}${statsHtml}</div>
+                </div>`;
                 list.appendChild(card);
             });
+            // если мастер уже выбран (возврат назад) — разблокируем кнопку
+            if (bookingData.masterId) document.getElementById('btn-next-2').disabled = false;
+            if(window.lucide) lucide.createIcons();
         }
 
         function getAverageRating(masterId) {
@@ -562,12 +1121,14 @@
                 let durText = (s.duration || 60) + " мин";
                 card.onclick = () => {
                     bookingData.serviceKey = s.id; bookingData.price = s.price; bookingData.serviceRuName = s.strings.ru.title; bookingData.duration = s.duration || 60;
-                    document.querySelectorAll('#step-2 .service-card').forEach(c => c.classList.remove('selected')); card.classList.add('selected');
-                    document.getElementById('btn-next-2').disabled = false;
+                    document.querySelectorAll('#step-1 .service-card').forEach(c => c.classList.remove('selected')); card.classList.add('selected');
+                    document.getElementById('btn-next-1').disabled = false;
                 };
                 card.innerHTML = `<div class="service-info"><h3>${t.title}</h3><p>${t.desc}</p></div><div style="text-align:right;"><div class="service-price">${s.price} ₽</div><div style="font-size:0.85rem; color:var(--text-muted); margin-top:5px; margin-left:15px;">⏱ ${durText}</div></div>`;
                 list.appendChild(card);
             });
+            // если услуга уже выбрана (возврат назад) — разблокируем кнопку
+            if (bookingData.serviceKey) document.getElementById('btn-next-1').disabled = false;
         }
 
         // DATES & TIMES (STEP 3)
@@ -607,7 +1168,7 @@
             const container = document.getElementById('times-container'); container.innerHTML = '';
             document.getElementById('time-picker').style.display = 'block';
             
-            let allBookings = getDB(DB_BOOKINGS).filter(b => b.status !== 'cancelled');
+            let allBookings = store.bookings.filter(b => b.status !== 'cancelled');
             let settings = getSettings();
             let allServices = getServices();
             let durInMinutes = bookingData.duration || 60;
@@ -682,6 +1243,7 @@
 
         // STEPPER CONTROL
         function nextStep(step) {
+            triggerHaptic('light');
             document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
             document.getElementById(`step-${step}`).classList.add('active');
             document.querySelectorAll('.step').forEach(el => {
@@ -691,8 +1253,18 @@
                 if (s === step) el.classList.add('active');
             });
             currentStep = step;
-            if(step === 1) renderMastersUI();
-            if(step === 2) renderServicesUI();
+
+            // Telegram WebApp Native BackButton Sync
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.BackButton) {
+                if (step > 1) {
+                    window.Telegram.WebApp.BackButton.show();
+                } else {
+                    window.Telegram.WebApp.BackButton.hide();
+                }
+            }
+
+            if(step === 1) renderServicesUI();
+            if(step === 2) renderMastersUI();
             if(step === 3) renderDates();
             if(step === 4) updateSummary();
         }
@@ -707,55 +1279,270 @@
             let dObj = new Date(bookingData.date);
             document.getElementById('summary-datetime').innerHTML = `<i data-lucide="calendar" style="width:14px;height:14px;"></i> ${dObj.toLocaleDateString('ru-RU')} в ${bookingData.time}`;
 
-            // Initialize Telegram Login
-            initTelegramLogin();
+
             
             lucide.createIcons();
             validateForm();
         }
 
-        // TELEGRAM LOGIN LOGIC (SaaS Model)
-        function initTelegramLogin() {
-            const container = document.getElementById('telegram-auth-container');
-            const manualContainer = document.getElementById('manual-auth-container');
-            const botName = localStorage.getItem('telegram_bot_name') || '';
+        let activeUserAuth = null;
+        /** 'booking' — вход перед записью; 'review' — вход после записи, чтобы оставить отзыв */
+        let authModalMode = 'booking';
 
-            container.innerHTML = ''; // Clear
+        function applyAuthModalConfig(mode) {
+            authModalMode = mode;
+            const L = i18n[currentLang] || i18n.ru;
+            const titleEl = document.getElementById('auth-modal-title');
+            const descEl = document.getElementById('auth-modal-desc');
+            const guestBtn = document.getElementById('auth-modal-guest-btn');
+            if (!titleEl || !descEl || !guestBtn) return;
+            if (mode === 'review') {
+                titleEl.innerText = L.auth_modal_title_review;
+                descEl.innerText = L.auth_modal_desc_review;
+                guestBtn.innerText = L.review_auth_later;
+            } else {
+                titleEl.innerText = L.auth_modal_title_booking;
+                descEl.innerText = L.auth_modal_desc_booking;
+                guestBtn.innerText = L.auth_guest_skip;
+            }
+        }
 
-            if (!botName) {
-                // Feature not configured by this Tenant, fallback to manual auth
-                manualContainer.style.display = 'block';
+        function saveReviewSnapshotForRedirect() {
+            return JSON.stringify({
+                masterId: bookingData.masterId,
+                masterName: bookingData.masterName,
+                serviceKey: bookingData.serviceKey,
+                serviceRuName: bookingData.serviceRuName,
+                name: bookingData.name,
+                phone: bookingData.phone,
+                id: bookingData.id,
+                date: bookingData.date,
+                time: bookingData.time,
+                price: bookingData.price
+            });
+        }
+
+        function renderReviewAuthGate() {
+            const box = document.getElementById('review-form-box');
+            if (!box) return;
+            box.style.display = 'block';
+            const L = i18n[currentLang] || i18n.ru;
+            box.innerHTML = `<p style="color:var(--text-muted); margin-bottom:16px; line-height:1.5;">${L.review_auth_gate}</p>
+                <button type="button" class="btn" style="margin-top:0; width:100%;" onclick="openAuthModalForReview()">${L.review_auth_btn}</button>`;
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function showFullReviewForm() {
+            const box = document.getElementById('review-form-box');
+            if (!box) return;
+            const L = i18n[currentLang] || i18n.ru;
+            box.innerHTML = `<h3 style="margin-bottom: 15px; font-size:1.1rem;" data-i18n="review_title"></h3>
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;" id="rating-stars">
+                    <span onclick="setRating(1)" style="font-size: 2rem; cursor: pointer; color: var(--accent);">★</span>
+                    <span onclick="setRating(2)" style="font-size: 2rem; cursor: pointer; color: var(--accent);">★</span>
+                    <span onclick="setRating(3)" style="font-size: 2rem; cursor: pointer; color: var(--accent);">★</span>
+                    <span onclick="setRating(4)" style="font-size: 2rem; cursor: pointer; color: var(--accent);">★</span>
+                    <span onclick="setRating(5)" style="font-size: 2rem; cursor: pointer; color: var(--accent);">★</span>
+                </div>
+                <input type="hidden" id="review-rating-val" value="5">
+                <textarea id="review-text" class="form-control" style="height: 100px; margin-bottom: 15px;" data-i18n-placeholder="review_placeholder"></textarea>
+                <button type="button" class="btn" style="margin-top:0;" data-i18n="review_send" onclick="submitReview()"></button>`;
+            box.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (L[key]) el.innerText = L[key];
+            });
+            box.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (L[key]) el.placeholder = L[key];
+            });
+            setRating(5);
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function navigateToSuccessReviewOnly() {
+            document.getElementById('stepper').style.display = 'none';
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            const stepOk = document.getElementById('step-success');
+            if (stepOk) stepOk.classList.add('active');
+            showFullReviewForm();
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function openAuthModalForReview() {
+            if (!window.appDB || !window.appDB.useFirebase) {
+                alert((i18n[currentLang] || i18n.ru).auth_modal_desc_review + ' (Firebase недоступен.)');
                 return;
             }
+            applyAuthModalConfig('review');
+            document.getElementById('auth-modal-overlay').style.display = 'flex';
+            initModalTelegramWidget();
+            if (window.lucide) lucide.createIcons();
+        }
 
-            manualContainer.style.display = 'none';
+        function askForAuth() {
+            if (activeUserAuth) {
+                finalizeBooking(); return;
+            }
+            applyAuthModalConfig('booking');
+            document.getElementById('auth-modal-overlay').style.display = 'flex';
+            initModalTelegramWidget();
+            lucide.createIcons();
+        }
 
-            // Create script dynamically to load telegram widget
+        function continueAsGuest() {
+            if (authModalMode === 'review') {
+                document.getElementById('auth-modal-overlay').style.display = 'none';
+                applyAuthModalConfig('booking');
+                return;
+            }
+            document.getElementById('auth-modal-overlay').style.display = 'none';
+            finalizeBooking();
+        }
+
+        async function loginWithGoogle() {
+            try {
+                if (!window.appDB.useFirebase) {
+                    if (authModalMode === 'review') {
+                        document.getElementById('auth-modal-overlay').style.display = 'none';
+                        applyAuthModalConfig('booking');
+                        alert('SaaS Firebase отключен — войти для отзыва нельзя.');
+                    } else {
+                        alert('SaaS Firebase отключен, авторизация симулируется локально.');
+                        continueAsGuest();
+                    }
+                    return;
+                }
+                const { getAuth, signInWithPopup, signInWithRedirect, GoogleAuthProvider } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
+                const auth = getAuth(window.appDB.app);
+                const provider = new GoogleAuthProvider();
+                
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+                
+                if (isMobile) {
+                    if (authModalMode === 'review') {
+                        sessionStorage.setItem('pendingBookingStep', 'google_redirect_review');
+                        sessionStorage.setItem('review_snapshot', saveReviewSnapshotForRedirect());
+                    } else {
+                        sessionStorage.setItem('pendingBooking', JSON.stringify(bookingData));
+                        sessionStorage.setItem('pendingBookingStep', 'google_redirect');
+                    }
+                    await signInWithRedirect(auth, provider);
+                } else {
+                    const result = await signInWithPopup(auth, provider);
+                    activeUserAuth = { type: 'google', uid: result.user.uid, name: result.user.displayName, email: result.user.email };
+                    document.getElementById('auth-modal-overlay').style.display = 'none';
+                    if (authModalMode === 'review') {
+                        applyAuthModalConfig('booking');
+                        showFullReviewForm();
+                    } else {
+                        finalizeBooking();
+                    }
+                }
+            } catch(e) {
+                console.error("Google Auth error", e);
+                if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user') {
+                    try {
+                        const { getAuth, signInWithRedirect, GoogleAuthProvider } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
+                        const auth = getAuth(window.appDB.app);
+                        if (authModalMode === 'review') {
+                            sessionStorage.setItem('pendingBookingStep', 'google_redirect_review');
+                            sessionStorage.setItem('review_snapshot', saveReviewSnapshotForRedirect());
+                        } else {
+                            sessionStorage.setItem('pendingBooking', JSON.stringify(bookingData));
+                            sessionStorage.setItem('pendingBookingStep', 'google_redirect');
+                        }
+                        await signInWithRedirect(auth, new GoogleAuthProvider());
+                    } catch(e2) {
+                        alert('Ошибка авторизации.');
+                    }
+                } else {
+                    alert('Ошибка: ' + (e.message || 'Неизвестная ошибка авторизации'));
+                }
+            }
+        }
+
+        async function handleGoogleReviewRedirectResult() {
+            if (!window.appDB || !window.appDB.app) {
+                sessionStorage.removeItem('pendingBookingStep');
+                sessionStorage.removeItem('review_snapshot');
+                return;
+            }
+            try {
+                const { getAuth, getRedirectResult } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
+                const auth = getAuth(window.appDB.app);
+                const result = await getRedirectResult(auth);
+                const snapRaw = sessionStorage.getItem('review_snapshot');
+                sessionStorage.removeItem('pendingBookingStep');
+                sessionStorage.removeItem('review_snapshot');
+                if (result && result.user && snapRaw) {
+                    activeUserAuth = { type: 'google', uid: result.user.uid, name: result.user.displayName, email: result.user.email };
+                    Object.assign(bookingData, JSON.parse(snapRaw));
+                    navigateToSuccessReviewOnly();
+                }
+            } catch (e) {
+                console.warn('Google review redirect error:', e);
+                sessionStorage.removeItem('pendingBookingStep');
+                sessionStorage.removeItem('review_snapshot');
+            }
+        }
+        
+        // Handle Google redirect result on page load
+        async function handleGoogleRedirectResult() {
+            if (!window.appDB || !window.appDB.app) return;
+            if (sessionStorage.getItem('pendingBookingStep') === 'google_redirect_review') {
+                await handleGoogleReviewRedirectResult();
+                return;
+            }
+            if (sessionStorage.getItem('pendingBookingStep') !== 'google_redirect') return;
+            try {
+                const { getAuth, getRedirectResult } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
+                const auth = getAuth(window.appDB.app);
+                const result = await getRedirectResult(auth);
+                if (result && result.user) {
+                    activeUserAuth = { type: 'google', uid: result.user.uid, name: result.user.displayName, email: result.user.email };
+                    const savedBooking = sessionStorage.getItem('pendingBooking');
+                    if (savedBooking) {
+                        Object.assign(bookingData, JSON.parse(savedBooking));
+                    }
+                    sessionStorage.removeItem('pendingBooking');
+                    sessionStorage.removeItem('pendingBookingStep');
+                    
+                    if (bookingData.name) document.getElementById('client-name').value = bookingData.name;
+                    if (bookingData.phone) document.getElementById('client-phone').value = bookingData.phone;
+                    finalizeBooking();
+                } else {
+                    sessionStorage.removeItem('pendingBookingStep');
+                }
+            } catch(e) {
+                console.warn('Redirect result error:', e);
+                sessionStorage.removeItem('pendingBookingStep');
+                sessionStorage.removeItem('pendingBooking');
+            }
+        }
+
+        function initModalTelegramWidget() {
+            const container = document.getElementById('modal-telegram-widget');
+            const block = document.getElementById('modal-tg-block');
+            const botName = localStorage.getItem('telegram_bot_name') || '';
+            container.innerHTML = '';
+            if (!botName) { block.style.display = 'none'; return; }
+
+            block.style.display = 'block';
             const script = document.createElement('script');
-            script.async = true;
-            script.src = "https://telegram.org/js/telegram-widget.js?22";
-            script.setAttribute("data-telegram-login", botName);
-            script.setAttribute("data-size", "large");
-            script.setAttribute("data-onauth", "onTelegramAuth(user)");
-            script.setAttribute("data-request-access", "write");
-
+            script.async = true; script.src = "https://telegram.org/js/telegram-widget.js?22";
+            script.setAttribute("data-telegram-login", botName); script.setAttribute("data-size", "large");
+            script.setAttribute("data-onauth", "onTelegramAuthModal(user)"); script.setAttribute("data-request-access", "write");
             container.appendChild(script);
         }
 
-        window.onTelegramAuth = function(user) {
-            // Callback from Telegram
-            document.getElementById('client-name').value = user.first_name + (user.last_name ? ' ' + user.last_name : '');
-            
-            // Note: phone is not always provided by widget without explicit scope in webapp context
-            // But we use Telegram ID as a phone bypass if it exists
-            bookingData.telegramId = user.id;
-            document.getElementById('client-phone').value = user.id; // Store ID temporarily in phone or bypass
-            bookingData.phone = "TG:" + user.id;
-
-            // Instantly submit booking!
-            validateForm();
-            if(document.getElementById('client-name').value) {
-                submitBooking();
+        window.onTelegramAuthModal = function(user) {
+            activeUserAuth = { type: 'telegram', uid: user.id, name: user.first_name };
+            document.getElementById('auth-modal-overlay').style.display = 'none';
+            if (authModalMode === 'review') {
+                applyAuthModalConfig('booking');
+                showFullReviewForm();
+            } else {
+                finalizeBooking();
             }
         };
 
@@ -765,41 +1552,78 @@
             document.getElementById('btn-submit').disabled = !(bookingData.name.trim().length > 2 && bookingData.phone.trim().length > 6);
         }
 
-        async function submitBooking() {
-            let allBookings = getDB(DB_BOOKINGS);
+        async function finalizeBooking() {
+            if (bookingFinalizeInProgress) return;
+            bookingFinalizeInProgress = true;
+            const btnSubmit = document.getElementById('btn-submit');
+            if (btnSubmit) btnSubmit.disabled = true;
+
             let myHistory = getDB(DB_MY_HISTORY);
             
             bookingData.id = Date.now().toString();
             bookingData.timestamp = new Date().toISOString();
+            if (activeUserAuth) {
+                bookingData.authUid = activeUserAuth.uid;
+                bookingData.authType = activeUserAuth.type;
+            }
             
             let dbEntry = {
                 id: bookingData.id, masterId: bookingData.masterId, masterName: bookingData.masterName,
                 service: bookingData.serviceRuName, serviceKey: bookingData.serviceKey, price: bookingData.price,
-                date: bookingData.date, time: bookingData.time, name: bookingData.name, phone: bookingData.phone, timestamp: bookingData.timestamp
+                date: bookingData.date, time: bookingData.time, name: bookingData.name, phone: bookingData.phone, timestamp: bookingData.timestamp,
+                authUid: bookingData.authUid || null, authType: bookingData.authType || 'guest',
+                telegramChatId: (window.telegramUser && window.telegramUser.id) ? window.telegramUser.id : null,
+                telegramUsername: (window.telegramUser && window.telegramUser.username) ? window.telegramUser.username : null,
+                status: 'confirmed'
             };
 
-            // Save to DB layer async
-            store.bookings.push(dbEntry);
-            await window.appDB.saveBookings(store.bookings);
+            try {
+                const result = await window.appDB.commitNewBooking(dbEntry, {
+                    masters: store.masters,
+                    services: store.services,
+                    settings: store.settings
+                });
+                store.bookings = result.items;
+            } catch (err) {
+                alert(err.message || 'Не удалось записаться. Выберите другое время.');
+                bookingFinalizeInProgress = false;
+                if (btnSubmit) validateForm();
+                return;
+            }
 
             myHistory.push(bookingData.id); saveDB(DB_MY_HISTORY, myHistory);
 
-            // Fetch Telegram notification
+            // Trigger success vibration
+            triggerHaptic('success');
+
+            // Send notification to Telegram bot
             sendTelegramPush(dbEntry);
 
-            // Review form visibility
-            document.getElementById('review-form-box').style.display = (bookingData.masterId === 'any') ? 'none' : 'block';
+            // Hide BackButton in Telegram Mini App on success screen
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.BackButton) {
+                window.Telegram.WebApp.BackButton.hide();
+            }
+
+            // Отзыв: «любой мастер» — без отзыва; гость — кнопка входа, потом форма; уже вошёл — сразу форма
+            if (bookingData.masterId === 'any') {
+                document.getElementById('review-form-box').style.display = 'none';
+            } else if (!activeUserAuth) {
+                renderReviewAuthGate();
+            } else {
+                showFullReviewForm();
+            }
 
             document.getElementById('stepper').style.display = 'none';
             document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
             document.getElementById('step-success').classList.add('active');
+            bookingFinalizeInProgress = false;
         }
 
         // MY HISTORY LOGIC
         function loadMyBookings() {
             let myHist = getDB(DB_MY_HISTORY);
             if(myHist.length === 0) return;
-            let allBookings = getDB(DB_BOOKINGS);
+            let allBookings = store.bookings;
             
             // Find latest future/today booking
             let todayIso = new Date().toISOString().split('T')[0];
@@ -844,12 +1668,21 @@
 
         async function submitReview() {
             if (bookingData.masterId === 'any') { alert('Выберите мастера для отзыва'); return; }
+            if (!activeUserAuth) {
+                alert((i18n[currentLang] || i18n.ru).review_auth_gate);
+                openAuthModalForReview();
+                return;
+            }
             let text = document.getElementById('review-text').value.trim();
+            let displayName = bookingData.name || 'Аноним';
+            if (activeUserAuth) {
+                displayName = activeUserAuth.name || activeUserAuth.email || displayName;
+            }
             store.reviews.push({
                 id: Date.now().toString(),
                 masterId: bookingData.masterId,
                 masterName: bookingData.masterName,
-                clientName: bookingData.name || 'Аноним',
+                clientName: displayName,
                 rating: currentRating,
                 comment: text,
                 date: new Date().toISOString().split('T')[0]
@@ -871,7 +1704,8 @@
             const chatId = parts[1];
             if (!chatId) return;
 
-            let msg = `🔥 Новая запись!Имя: ${entry.name}Телефон: ${entry.phone}Услуга: ${entry.service}Мастер: ${entry.masterName}Дата: ${entry.date} в ${entry.time}Цена: ${entry.price} ₽`;
+            let msgTpl = i18n[currentLang].msg_tg_format || `🔥 Новая запись!\\nИмя: {name}\\nТелефон: {phone}\\nУслуга: {service}\\nМастер: {master}\\nДата: {date} в {time}\\nЦена: {price} ₽`;
+            let msg = msgTpl.replace('{name}', entry.name).replace('{phone}', entry.phone).replace('{service}', entry.service).replace('{master}', entry.masterName).replace('{date}', entry.date).replace('{time}', entry.time).replace('{price}', entry.price);
             
             try {
                 fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
@@ -898,7 +1732,7 @@
                         <div style="color:var(--accent); font-size:0.9rem;">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
                     </div>
                     <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">Мастер: ${r.masterName}</div>
-                    <p style="font-size:0.9rem; line-height:1.6; font-style: italic;">"${r.comment || 'Стрижка была отличной!'}"</p>
+                    <p style="font-size:0.9rem; line-height:1.6; font-style: italic;">"${r.comment || (i18n[currentLang].def_review || 'Стрижка была отличной!')}"</p>
                     <div style="font-size:0.75rem; color:var(--text-muted); margin-top:15px;">${r.date}</div>
                 `;
                 container.appendChild(card);
@@ -929,7 +1763,18 @@
             const text = input.value.trim();
             if(!text) return;
 
-            const apiKey = localStorage.getItem('chatbot_api_key');
+            // Try to load API key from Firebase if not in localStorage
+            let apiKey = localStorage.getItem('chatbot_api_key');
+            if(!apiKey && window.appDB && window.appDB.getGlobalSettings) {
+                try {
+                    const gSet = await window.appDB.getGlobalSettings();
+                    if(gSet.aiKey) {
+                        apiKey = gSet.aiKey;
+                        localStorage.setItem('chatbot_api_key', gSet.aiKey);
+                        localStorage.setItem('openrouter_api_key', gSet.aiKey);
+                    }
+                } catch(e) { /* silent */ }
+            }
             if(!apiKey) {
                 addMessage('bot', 'Здравствуйте! Я — ваш интеллектуальный помощник. К сожалению, сейчас я нахожусь в режиме офлайн для технического обслуживания. Пожалуйста, попробуйте позже или запишитесь к нашим мастерам через форму выше.');
                 input.value = '';
@@ -1033,5 +1878,101 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
     <script src="assets/engine.js"></script>
 
+    <!-- ══ INTRO ANIMATION LOGIC ══ -->
+    <script>
+    (function() {
+        var overlay = document.getElementById('intro-overlay');
+        if (!overlay) return;
+
+        // Fail-safe: Always hide intro overlay after 2.5s maximum no matter what happens
+        var safeTimer = setTimeout(function() {
+            if (overlay) overlay.style.display = 'none';
+        }, 2500);
+
+        try {
+            var scissors = document.getElementById('intro-scissors');
+            var clipper  = document.getElementById('intro-clipper');
+            var brand    = document.getElementById('intro-brand');
+            var cutline  = document.getElementById('intro-cutline');
+            var topPane  = document.getElementById('intro-top');
+            var botPane  = document.getElementById('intro-bottom');
+            var skipBtn  = document.getElementById('intro-skip');
+
+            // Check session storage with safety fallback
+            var seen = false;
+            try { seen = sessionStorage.getItem('introSeen'); } catch(e) {}
+            if (seen) {
+                overlay.style.display = 'none';
+                clearTimeout(safeTimer);
+                return;
+            }
+
+            var timers = [];
+            function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
+            function clearAll() { timers.forEach(function(t){ clearTimeout(t); }); }
+
+            function splitAndReveal() {
+                try { sessionStorage.setItem('introSeen', '1'); } catch(e) {}
+                clearAll();
+                clearTimeout(safeTimer);
+
+                if (scissors) scissors.style.opacity = '0';
+                if (clipper) clipper.style.opacity = '0';
+                if (brand) brand.style.opacity = '0';
+                if (cutline) cutline.style.opacity = '0';
+                if (skipBtn) skipBtn.style.opacity = '0';
+
+                if (topPane && botPane) {
+                    topPane.style.transition = 'none';
+                    botPane.style.transition = 'none';
+                    topPane.style.opacity = '1';
+                    botPane.style.opacity = '1';
+                    topPane.style.transform = 'translateY(0)';
+                    botPane.style.transform = 'translateY(0)';
+                    void topPane.offsetHeight;
+
+                    var easing = 'cubic-bezier(0.76,0,0.24,1)';
+                    topPane.style.transition = 'transform 0.8s ' + easing;
+                    botPane.style.transition = 'transform 0.8s ' + easing;
+                    topPane.style.transform = 'translateY(-105%)';
+                    botPane.style.transform = 'translateY(105%)';
+                }
+
+                setTimeout(function() {
+                    if (overlay) overlay.style.display = 'none';
+                }, 850);
+            }
+
+            function skipInstant() {
+                clearAll();
+                clearTimeout(safeTimer);
+                try { sessionStorage.setItem('introSeen', '1'); } catch(e) {}
+                if (overlay) overlay.style.display = 'none';
+            }
+
+            if (skipBtn) skipBtn.addEventListener('click', skipInstant);
+            overlay.addEventListener('click', skipInstant);
+
+            // Fast phase sequence
+            if (scissors) later(function() { scissors.classList.add('show'); }, 200);
+            if (clipper)  later(function() { clipper.classList.add('show'); }, 400);
+            if (brand)    later(function() { brand.classList.add('show'); }, 800);
+            if (skipBtn)  later(function() { skipBtn.classList.add('show'); }, 1000);
+            later(splitAndReveal, 1800);
+        } catch (err) {
+            console.warn('Intro animation bypassed:', err);
+            if (overlay) overlay.style.display = 'none';
+            clearTimeout(safeTimer);
+        }
+    })();
+    </script>
+
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/sw.js').catch(function() {});
+        });
+    }
+    </script>
 </body>
 </html>
