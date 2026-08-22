@@ -25,7 +25,7 @@ class BarberDB {
         if (urlTenant) {
             localStorage.setItem('tenant_id', urlTenant);
         }
-        this.tenantId = localStorage.getItem('tenant_id') || 'local_demo';
+        this.tenantId = localStorage.getItem('tenant_id') || 'shine_barbershop';
         this.useFirebase = false;
         this.fs = null; // Firestore reference
         
