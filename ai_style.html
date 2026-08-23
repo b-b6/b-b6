@@ -1084,6 +1084,16 @@ JSON FORMAT:
 
             document.getElementById('loading-state').style.display = 'none';
             document.getElementById('analyze-btn').disabled = false;
+
+            if (lastAnalysisError.includes('User not found') || lastAnalysisError.includes('401') || lastAnalysisError.includes('Key')) {
+                localStorage.removeItem('openrouter_api_key');
+                let freshKey = window.prompt('Ключ OpenRouter был аннулирован.\nВставьте новый бесплатный ключ с https://openrouter.ai/keys :');
+                if (freshKey && freshKey.trim()) {
+                    localStorage.setItem('openrouter_api_key', freshKey.trim());
+                    return analyzePhoto();
+                }
+            }
+
             showError('Ошибка анализа: ' + lastAnalysisError);
         }
 
