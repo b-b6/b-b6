@@ -1097,6 +1097,25 @@ JSON FORMAT:
             showError('Ошибка анализа: ' + lastAnalysisError);
         }
 
+        const FACE_ICONS = {
+            'oval': 'circle',
+            'овал': 'circle',
+            'round': 'disc',
+            'круг': 'disc',
+            'square': 'square',
+            'квадрат': 'square',
+            'oblong': 'rectangle-vertical',
+            'прямоугольн': 'rectangle-vertical',
+            'heart': 'heart',
+            'сердц': 'heart',
+            'triangle': 'triangle',
+            'треугольн': 'triangle',
+            'diamond': 'gem',
+            'ромб': 'gem'
+        };
+
+        const STYLE_ICONS = ['scissors', 'sparkles', 'user-check', 'award'];
+
         const FACE_SHAPE_NAMES = {
             en: { 'овал': 'Oval Face', 'овальная': 'Oval Face', 'круг': 'Round Face', 'круглая': 'Round Face', 'квадрат': 'Square Face', 'квадратная': 'Square Face', 'прямоугольн': 'Oblong Face', 'прямоугольная': 'Oblong Face', 'сердц': 'Heart Face', 'сердцевидная': 'Heart Face', 'треугольн': 'Triangle Face', 'треугольная': 'Triangle Face', 'ромб': 'Diamond Face', 'ромбовидная': 'Diamond Face' },
             ru: { 'oval': 'Овальная форма', 'round': 'Круглая форма', 'square': 'Квадратная форма', 'oblong': 'Прямоугольная форма', 'heart': 'Сердцевидная форма', 'triangle': 'Треугольная форма', 'diamond': 'Ромбовидная форма' },
