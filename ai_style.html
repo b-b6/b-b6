@@ -967,23 +967,24 @@
         }
 
         async function analyzePhoto() {
-            const DEFAULT_AI_KEY = atob('c2stb3ItdjEtYzU2MzJlZTk4MTBhZGY2Zjg4YjRiM2U2NTMwNjYxOTg2N2M3OWU1YzZmZTc1ZDYyMzcyYmVhZGJjMmRmMjg4MA==');
-            let apiKey = localStorage.getItem('openrouter_api_key') || DEFAULT_AI_KEY;
-            
+            let userKey = localStorage.getItem('openrouter_api_key');
+            let fallbackKeys = [
+                atob('c2stb3ItdjEtNTIyMTRjYWExYzlhOTllZWNhNDBhYWU1NTk3ODRiYzI2NjEwZmQ4YmFhMmRkN2UxZjUyNzFjMmU3MjhiNTc5ZQ=='),
+                atob('c2stb3ItdjEtYzU2MzJlZTk4MTBhZGY2Zjg4YjRiM2U2NTMwNjYxOTg2N2M3OWU1YzZmZTc1ZDYyMzcyYmVhZGJjMmRmMjg4MA==')
+            ];
+
             if (window.appDB && window.appDB.getGlobalSettings) {
                 try {
                     const gSet = await window.appDB.getGlobalSettings();
                     if (gSet && gSet.aiKey) {
-                        apiKey = gSet.aiKey;
-                        localStorage.setItem('openrouter_api_key', gSet.aiKey);
+                        fallbackKeys.unshift(gSet.aiKey);
                     }
                 } catch(e) { console.warn('Could not load AI key from Firebase', e); }
             }
 
-            if (!apiKey) {
-                apiKey = DEFAULT_AI_KEY;
-                localStorage.setItem('openrouter_api_key', apiKey);
-            }
+            let keysToTry = [];
+            if (userKey) keysToTry.push(userKey);
+            fallbackKeys.forEach(k => { if (!keysToTry.includes(k)) keysToTry.push(k); });
             if (!selectedImageBase64) { showError('Загрузите фото!'); return; }
 
             hideError();
@@ -1032,46 +1033,52 @@ JSON FORMAT:
                 'openai/gpt-4o-mini'
             ];
 
-            let lastAnalysisError = '';
+            for (let apiKey of keysToTry) {
+                for (let model of models) {
+                    try {
+                        const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${apiKey}`,
+                                'Content-Type': 'application/json',
+                                'HTTP-Referer': window.location.origin || 'https://barber.uz',
+                                'X-Title': 'Barbershop AI'
+                            },
+                            body: JSON.stringify({
+                                model: model,
+                                messages: [{
+                                    role: 'user',
+                                    content: [
+                                        { type: 'text', text: prompt },
+                                        { type: 'image_url', image_url: { url: `data:image/jpeg;base64,${selectedImageBase64}` } }
+                                    ]
+                                }],
+                                max_tokens: 1500,
+                                temperature: 0.1
+                            })
+                        });
 
-            for (let model of models) {
-                try {
-                    const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${apiKey}`,
-                            'Content-Type': 'application/json',
-                            'HTTP-Referer': window.location.origin || 'https://barber.uz',
-                            'X-Title': 'Barbershop AI'
-                        },
-                        body: JSON.stringify({
-                            model: model,
-                            messages: [{
-                                role: 'user',
-                                content: [
-                                    { type: 'text', text: prompt },
-                                    { type: 'image_url', image_url: { url: `data:image/jpeg;base64,${selectedImageBase64}` } }
-                                ]
-                            }],
-                            max_tokens: 1500,
-                            temperature: 0.1 // Снижаем вариативность для стабильности
-                        })
-                    });
+                        const data = await resp.json();
+                        if (!resp.ok) {
+                            lastAnalysisError = data.error?.message || 'Ошибка API';
+                            if (resp.status === 401 || lastAnalysisError.includes('User not found')) {
+                                localStorage.removeItem('openrouter_api_key');
+                                break; // Key is invalid; try next key in keysToTry
+                            }
+                            continue; // Try next model
+                        }
 
-                    const data = await resp.json();
-                    if (!resp.ok) {
-                        lastAnalysisError = data.error?.message || 'Ошибка API';
-                        continue; // Try next model
+                        // Success! Store working key
+                        localStorage.setItem('openrouter_api_key', apiKey);
+                        let rawText = data.choices[0].message.content;
+                        rawText = rawText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+                        const result = JSON.parse(rawText);
+                        renderResults(result);
+                        return;
+                    } catch (e) {
+                        lastAnalysisError = e.message;
+                        continue;
                     }
-
-                    let rawText = data.choices[0].message.content;
-                    rawText = rawText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-                    const result = JSON.parse(rawText);
-                    renderResults(result);
-                    return;
-                } catch (e) {
-                    lastAnalysisError = e.message;
-                    continue;
                 }
             }
 
