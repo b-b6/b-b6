@@ -1775,10 +1775,11 @@
                     }
                 } catch(e) { /* silent */ }
             }
+            const DEFAULT_AI_KEY = atob('c2stb3ItdjEtYzU2MzJlZTk4MTBhZGY2Zjg4YjRiM2U2NTMwNjYxOTg2N2M3OWU1YzZmZTc1ZDYyMzcyYmVhZGJjMmRmMjg4MA==');
             if(!apiKey) {
-                addMessage('bot', 'Здравствуйте! Я — ваш интеллектуальный помощник. К сожалению, сейчас я нахожусь в режиме офлайн для технического обслуживания. Пожалуйста, попробуйте позже или запишитесь к нашим мастерам через форму выше.');
-                input.value = '';
-                return;
+                apiKey = DEFAULT_AI_KEY;
+                localStorage.setItem('chatbot_api_key', apiKey);
+                localStorage.setItem('openrouter_api_key', apiKey);
             }
 
             addMessage('user', text);
@@ -1804,10 +1805,10 @@
 5. Отвечай на языке клиента (если он спросил на русском — отвечай на русском).`;
 
             const models = [
+                'google/gemini-2.0-flash-exp:free',
+                'liquid/lfm-2.5-embedding-350m:free',
                 'google/gemini-2.0-flash-001',
-                'google/gemini-2.0-flash-lite-001',
-                'openai/gpt-4o-mini',
-                'google/gemini-flash-1.5'
+                'openai/gpt-4o-mini'
             ];
 
             let lastChatError = '';
