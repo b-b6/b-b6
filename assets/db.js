@@ -1,4 +1,4 @@
-// Barber Real-time Database Layer (Hybrid Firebase / LocalStorage SaaS Model)
+﻿// Barber Real-time Database Layer (Hybrid Firebase / LocalStorage SaaS Model)
 
 window.escapeHTML = function(str) {
     if(typeof str !== 'string' || !str) return str;
@@ -71,7 +71,7 @@ class BarberDB {
         }`;
         
         // Timeout: if Firebase doesn't connect in 8s, fall back to localStorage
-        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase connection timeout (8s)')), 8000));
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase connection timeout (1.5s)')), 1500));
         
         try {
             const firebaseInit = (async () => {
@@ -88,7 +88,7 @@ class BarberDB {
                 const testRef = doc(this.fs, `global/saas`);
                 await Promise.race([
                     getDoc(testRef),
-                    new Promise((_, rej) => setTimeout(() => rej(new Error('Firestore read timeout')), 6000))
+                    new Promise((_, rej) => setTimeout(() => rej(new Error('Firestore read timeout')), 1500))
                 ]);
                 
                 this.useFirebase = true;
@@ -109,7 +109,7 @@ class BarberDB {
                 const docRef = this.fsTools.doc(this.fs, `tenants/${this.tenantId}/data/${type}`);
                 const snap = await Promise.race([
                     this.fsTools.getDoc(docRef),
-                    new Promise((_, rej) => setTimeout(() => rej(new Error('Read timeout')), 5000))
+                    new Promise((_, rej) => setTimeout(() => rej(new Error('Read timeout')), 1500))
                 ]);
                 if (snap.exists()) {
                     const data = snap.data().items || fallback;
@@ -362,3 +362,4 @@ class BarberDB {
 
 const db = new BarberDB();
 window.appDB = db;
+

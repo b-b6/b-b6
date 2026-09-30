@@ -442,6 +442,8 @@
             
             try {
                 await window.appDB.saveSettings(store.settings);
+                localStorage.setItem('barber_design_settings', JSON.stringify(store.settings.design));
+                localStorage.setItem(window.appDB.tenantId + '_barber_settings', JSON.stringify(store.settings));
 
                 let tenants = await window.appDB.getGlobalTenants();
                 let myT = tenants.find(t => t.id === window.appDB.tenantId);
@@ -468,6 +470,8 @@
             
             try {
                 await window.appDB.saveSettings(store.settings);
+                localStorage.setItem('barber_design_settings', JSON.stringify(store.settings.design));
+                localStorage.setItem(window.appDB.tenantId + '_barber_settings', JSON.stringify(store.settings));
                 if(btn) { let o = btn.innerHTML; btn.innerHTML = '<i data-lucide="check" style="width:18px;height:18px;"></i> Сохранено'; btn.style.background = 'rgba(46,213,115,0.2)'; lucide.createIcons(); setTimeout(() => { btn.innerHTML = o; btn.style.background = ''; lucide.createIcons(); }, 1500); }
             } catch(e) {
                 console.error('saveDesignSettings error:', e);
@@ -556,6 +560,8 @@
                 localStorage.setItem('telegram_bot_name', botUsername);
                 store.settings.telegram_bot_name = botUsername;
                 await window.appDB.saveSettings(store.settings);
+                localStorage.setItem('barber_design_settings', JSON.stringify(store.settings.design));
+                localStorage.setItem(window.appDB.tenantId + '_barber_settings', JSON.stringify(store.settings));
                 
             } catch(e) {
                 tgShowStatus('Ошибка сети. Проверьте интернет-соединение.', 'error');
@@ -602,6 +608,8 @@
                             document.getElementById('set_tg_token').value = fullToken;
                             store.settings.telegram_bot_token = fullToken;
                             await window.appDB.saveSettings(store.settings);
+                localStorage.setItem('barber_design_settings', JSON.stringify(store.settings.design));
+                localStorage.setItem(window.appDB.tenantId + '_barber_settings', JSON.stringify(store.settings));
                             
                             // Show step 3
                             document.getElementById('tg-step-2').style.display = 'none';
@@ -752,6 +760,8 @@
             document.getElementById('set_tg_token').value = '';
             store.settings.telegram_bot_token = '';
             await window.appDB.saveSettings(store.settings);
+                localStorage.setItem('barber_design_settings', JSON.stringify(store.settings.design));
+                localStorage.setItem(window.appDB.tenantId + '_barber_settings', JSON.stringify(store.settings));
             
             document.getElementById('tg-step-1').style.display = 'block';
             document.getElementById('tg-step-2').style.display = 'none';
@@ -781,6 +791,8 @@
             store.settings.sms_eskiz_password = document.getElementById('sms_eskiz_password').value;
             store.settings.sms_template = document.getElementById('sms_template').value.trim();
             await window.appDB.saveSettings(store.settings);
+                localStorage.setItem('barber_design_settings', JSON.stringify(store.settings.design));
+                localStorage.setItem(window.appDB.tenantId + '_barber_settings', JSON.stringify(store.settings));
             if(btn) { let o = btn.innerHTML; btn.innerHTML = '<i data-lucide="check" style="width:18px;height:18px;"></i> Сохранено'; btn.style.background = 'rgba(46,213,115,0.2)'; lucide.createIcons(); setTimeout(() => { btn.innerHTML = o; btn.style.background = ''; lucide.createIcons(); }, 1500); }
         }
 
@@ -1796,4 +1808,5 @@
 
         // Fallback for document load (already handled by initAdmin but explicitly just in case)
         if(typeof initAdmin === 'undefined') document.addEventListener('DOMContentLoaded', () => { changeLanguage(currentLang); loadAdminData(); });
+
 

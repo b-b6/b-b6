@@ -76,8 +76,19 @@
         const DB_REVIEWS = 'barber_reviews';
         const DB_DISABLED_DATES = 'barber_disabled_dates';
 
-        const defaultServices = [{ id: 'haircut', price: 1500, duration: 60, strings: { ru:{title:"Мужская стрижка", desc:""}, en:{title:"Men's Haircut", desc:""}, uz:{title:"Erkaklar soch turmagi", desc:""}, kg:{title:"Эркектердин чач кыркуусу", desc:""} } }];
-        const defaultMasters = [{ id: 'm1', name: 'Мастер Алексей', workingDays: [1,2,3,4,5,6,0] }];
+        const defaultServices = [
+            { id: 'haircut', price: 1500, duration: 60, strings: { ru:{title:"Мужская стрижка", desc:"Классическая или модельная стрижка с мытьем и укладкой"}, en:{title:"Men's Haircut", desc:"Classic haircut with wash and styling"}, uz:{title:"Erkaklar soch turmagi", desc:"Klassik soch turmagi va yuvish"}, kg:{title:"Эркектердин чач жасалгасы", desc:"Классикалык чач кыркуу"} } },
+            { id: 'combo', price: 2100, duration: 75, strings: { ru:{title:"Стрижка + Борода", desc:"Комплексный уход: стрижка волос и моделирование бороды"}, en:{title:"Haircut + Beard", desc:"Full combo: haircut and beard shaping"}, uz:{title:"Soch va Soqol", desc:"Kompleks parvarish: soch va soqol"}, kg:{title:"Чач жана Сакал", desc:"Чач жана сакал комплекси"} } },
+            { id: 'beard', price: 800, duration: 30, strings: { ru:{title:"Моделирование бороды", desc:"Придание формы, распаривание и контуринг опасной бритвой"}, en:{title:"Beard Trim & Shape", desc:"Shaping, hot towel and straight razor contour"}, uz:{title:"Soqol turmagi", desc:"Soqolga shakl berish va tozalash"}, kg:{title:"Сакал тууралоо", desc:"Сакалга форма берүү"} } },
+            { id: 'clipper', price: 700, duration: 30, strings: { ru:{title:"Стрижка под машинку", desc:"Стрижка одной или несколькими насадками"}, en:{title:"Buzz Cut / Clipper", desc:"Short haircut using clippers"}, uz:{title:"Mashinkada soch olish", desc:"Mashinka yordamida soch olish"}, kg:{title:"Машинка менен кыркуу", desc:"Машинка менен кыска чач"} } },
+            { id: 'royal_shave', price: 1200, duration: 45, strings: { ru:{title:"Королевское бритьё", desc:"Традиционное бритьё с горячими компрессами и премиум маслами"}, en:{title:"Royal Shave", desc:"Traditional hot towel straight razor shave"}, uz:{title:"Qirollik soqol olish", desc:"Issiq kompress va moylar bilan soqol olish"}, kg:{title:"Падышалык кырынуу", desc:"Ысык компресс менен кырынуу"} } },
+            { id: 'kids', price: 1000, duration: 45, strings: { ru:{title:"Детская стрижка (до 12 лет)", desc:"Стильная стрижка для юных джентльменов"}, en:{title:"Kids Haircut", desc:"Haircut for kids under 12"}, uz:{title:"Bolalar soch turmagi", desc:"12 yoshgacha bolalar uchun"}, kg:{title:"Балдар чач жасалгасы", desc:"12 жашка чейинки балдарга"} } }
+        ];
+        const defaultMasters = [
+            { id: 'm1', name: 'Алексей (Топ-Барбер)', description: 'Опыт 7 лет. Эксперт по классике и фейдам', workingDays: [1,2,3,4,5,6,0] },
+            { id: 'm2', name: 'Тимур (Шеф-Мастер)', description: 'Опыт 9 лет. Моделирование бороды и опасная бритва', workingDays: [1,2,3,4,5,6,0] },
+            { id: 'm3', name: 'Руслан (Барбер)', description: 'Опыт 4 года. Трендовые и текстурные стрижки', workingDays: [1,2,3,4,5,6,0] }
+        ];
         const defaultSettings = { openTime: '10:00', closeTime: '21:00' };
 
         const store = {
@@ -147,27 +158,38 @@
         }
 
         async function initApp() {
-            // Load from real-time DB wrapper
-            store.bookings = await window.appDB.getBookings();
-            store.reviews = await window.appDB.getReviews();
-            store.disabledDates = JSON.parse(localStorage.getItem('barber_disabled_dates')) || [];
+            // 1. МГНОВЕННЫЙ РЕНДЕР ИЗ КЭША / ДЕФОЛТА (0 мс задержки!)
+            try {
+                const cachedDesign = localStorage.getItem('barber_design_settings');
+                if (cachedDesign) applySettings({ design: JSON.parse(cachedDesign) });
+                const cachedServices = localStorage.getItem(window.appDB.tenantId + '_barber_services');
+                if (cachedServices) { const s = JSON.parse(cachedServices); if(s.length) store.services = s; }
+                const cachedMasters = localStorage.getItem(window.appDB.tenantId + '_barber_masters');
+                if (cachedMasters) { const m = JSON.parse(cachedMasters); if(m.length) store.masters = m; }
+                const cachedSettings = localStorage.getItem(window.appDB.tenantId + '_barber_settings');
+                if (cachedSettings) { const st = JSON.parse(cachedSettings); if(Object.keys(st).length) { store.settings = st; applySettings(st); } }
+            } catch(e) {}
 
-            let srvs = await window.appDB.getServices(); if(srvs.length) store.services = srvs;
-            let msts = await window.appDB.getMasters(); if(msts.length) store.masters = msts;
-            let sets = await window.appDB.getSettings(); if(Object.keys(sets).length) store.settings = sets;
+            // Рендерим сразу!
+            changeLanguage(currentLang);
+            renderServicesUI();
+            renderMastersUI();
+            renderLiveStats();
+            lucide.createIcons();
 
-            applySettings(store.settings);
+            // 2. ФОНОВАЯ СИНХРОНИЗАЦИЯ С БАЗОЙ (без зависания интерфейса)
+            Promise.all([
+                window.appDB.getBookings().then(b => { if(b && b.length) store.bookings = b; }),
+                window.appDB.getReviews().then(r => { if(r && r.length) store.reviews = r; }),
+                window.appDB.getServices().then(s => { if(s && s.length) { store.services = s; if(currentStep===1) renderServicesUI(); } }),
+                window.appDB.getMasters().then(m => { if(m && m.length) { store.masters = m; if(currentStep===2) renderMastersUI(); } }),
+                window.appDB.getSettings().then(st => { if(st && Object.keys(st).length) { store.settings = st; applySettings(st); } })
+            ]).then(() => {
+                renderLiveStats();
+                lucide.createIcons();
+            }).catch(err => console.warn('Background sync error:', err));
 
-            // Load AI key from global Firebase settings
-            if(window.appDB.getGlobalSettings) {
-                let gSet = await window.appDB.getGlobalSettings();
-                if(gSet.aiKey) {
-                    localStorage.setItem('chatbot_api_key', gSet.aiKey);
-                    localStorage.setItem('openrouter_api_key', gSet.aiKey);
-                }
-            }
-
-            // Subscribe to real-time events to auto-update UI magically without polling
+            // Подписка на обновления в реальном времени
             window.appDB.subscribe('barber_bookings', data => { store.bookings = data; renderLiveStats(); loadMyBookings(); if(currentStep===3) renderTimes(); });
             window.appDB.subscribe('barber_reviews', data => { store.reviews = data; renderLiveStats(); });
             window.appDB.subscribe('barber_masters', data => { if(data.length) store.masters = data; if(currentStep===2) renderMastersUI(); });
@@ -179,18 +201,7 @@
                 }
             });
 
-            changeLanguage(currentLang); lucide.createIcons(); renderLiveStats();
-            
-            // Handle Google redirect result (mobile auth flow)
             handleGoogleRedirectResult();
-
-            // Load Telegram bot name from Firebase settings so widget works on any device
-            (async () => {
-                const set = await window.appDB.getSettings();
-                if (set.telegram_bot_name) {
-                    localStorage.setItem('telegram_bot_name', set.telegram_bot_name);
-                }
-            })();
         }
 
         document.addEventListener("DOMContentLoaded", initApp);
@@ -1008,4 +1019,5 @@
         setTimeout(() => {
             if(!chatOpen) document.getElementById('chat-badge').style.display = 'flex';
         }, 5000);
+
 
