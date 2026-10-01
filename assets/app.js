@@ -1,4 +1,4 @@
-﻿const i18n = {
+const i18n = {
             ru: {
                 title: "Брутальный Барбершоп", subtitle: "Запишись онлайн к лучшим мастерам города за пару кликов.",
                 step1_master: "Выберите мастера", step2_service: "Выберите услугу", btn_next: "Далее", btn_back: "Назад", step3_date: "Выберите дату", step3_time: "Выберите время",
@@ -848,16 +848,16 @@
             const chatId = parts[1];
             if (!chatId) return;
 
-            const msg = ✂️ Новая онлайн-запись в барбершоп!\n\n +
-                        👤 Клиент: \n +
-                        📞 Телефон: \n +
-                        💈 Услуга: \n +
-                        ✂️ Мастер: \n +
-                        📅 Дата:  в \n +
-                        💰 Стоимость: ;
+            const msg = '✂️ Новая онлайн-запись в барбершоп!\n\n' +
+                        '👤 Клиент: ' + (entry.name || 'Не указано') + '\n' +
+                        '📞 Телефон: ' + (entry.phone || 'Не указан') + '\n' +
+                        '💈 Услуга: ' + (entry.service || 'Стрижка') + '\n' +
+                        '✂️ Мастер: ' + (entry.masterName || 'Любой') + '\n' +
+                        '📅 Дата: ' + (entry.date || '') + ' в ' + (entry.time || '') + '\n' +
+                        '💰 Стоимость: ' + (entry.price || '0');
             
             try {
-                fetch(https://api.telegram.org/bot/sendMessage, {
+                fetch('https://api.telegram.org/bot' + botToken + '/sendMessage', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({chat_id: chatId, text: msg})
