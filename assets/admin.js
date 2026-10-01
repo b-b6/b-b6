@@ -1,4 +1,4 @@
-﻿const DB_DISABLED_DATES = 'barber_disabled_dates';
+const DB_DISABLED_DATES = 'barber_disabled_dates';
 
         const defaultServices = [
             { id: 'haircut', price: 1500, duration: 60, strings: { ru: { title: "Мужская стрижка", desc: "Мытье головы, стрижка, укладка" }, en: { title: "Men's Haircut", desc: "Hair wash, haircut, styling" }, uz: { title: "Erkaklar soch turmagi", desc: "Soch yuvish, soch kesish, turmaklash" }, kg: { title: "Эркектердин чач кыркуусу", desc: "Чач жуу, чач кыркуу, жасалгалоо" } } },
@@ -161,6 +161,9 @@
             let t = tenants.find(x => x.email === email && x.pin === pin);
             if (!t && (email === 'admin@barber.uz' || email === 'admin') && pin === '7777') {
                 t = { id: 'markazibarbershop1', email: 'admin@barber.uz', pin: '7777', shopName: 'Главный Барбершоп' };
+            }
+            if (!t && (email === 'shine' || email === 'shine@barber.uz') && pin === '7777') {
+                t = { id: 'shine_barbershop', email: 'shine', pin: '7777', shopName: 'Shine Barbershop' };
             }
             if(t) {
                 localStorage.setItem('tenant_id', t.id);

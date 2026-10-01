@@ -133,7 +133,10 @@ const i18n = {
         }
 
         function applySettings(settings) {
-            if (settings.shopName) {
+            const customName = (window.appDB && window.appDB.tenantId === "shine_barbershop") ? "Shine Barbershop" : null;
+            const effectiveName = (settings && settings.shopName) || customName;
+            if (effectiveName) {
+                if (settings) settings.shopName = effectiveName;
                 document.title = settings.shopName + " - Онлайн Запись";
                 Object.keys(i18n).forEach(lang => { if(i18n[lang]) i18n[lang].title = settings.shopName; });
                 document.querySelectorAll('[data-i18n="title"]').forEach(el => { el.innerHTML = settings.shopName; });
