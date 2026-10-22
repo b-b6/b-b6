@@ -1267,8 +1267,8 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             let ctxRev = document.getElementById('revenueChart').getContext('2d');
             revenueChartInstance = new Chart(ctxRev, {
                 type: 'bar',
-                data: { labels: labels7Days, datasets: [{ label: 'Доход Завершено (₽)', data: data7Days, backgroundColor: '#2ed573', borderRadius: 4 }] },
-                options: { responsive: true, scales: { y: { beginAtZero: true, grid: { color: 'var(--overlay-light)' } }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
+                data: { labels: labels7Days, datasets: [{ label: 'Доход Завершено (₽)', data: data7Days, backgroundColor: '#111827', borderRadius: 6 }] },
+                options: { responsive: true, scales: { y: { beginAtZero: true, grid: { color: '#e5e7eb' } }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
             });
 
             // Master shares
@@ -1286,8 +1286,8 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             let ctxMast = document.getElementById('mastersChart').getContext('2d');
             mastersChartInstance = new Chart(ctxMast, {
                 type: 'doughnut',
-                data: { labels: mLabels, datasets: [{ data: mData, backgroundColor: ['#d4af37', '#1e90ff', '#2ed573', '#ff4757', '#9b59b6'], borderWidth: 0, hoverOffset: 4 }] },
-                options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#f0f0f0' } } } }
+                data: { labels: mLabels, datasets: [{ data: mData, backgroundColor: ['#111827', '#2563eb', '#10b981', '#f59e0b', '#ef4444'], borderWidth: 0, hoverOffset: 4 }] },
+                options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#374151' } } } }
             });
         }
 
@@ -1576,7 +1576,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
 
                 const dayPills = DAY_LABELS.map((d, i) => {
                     const on = (m.workingDays || []).includes(i);
-                    return `<span style="padding:2px 7px;border-radius:4px;font-size:0.72rem;font-weight:600;background:${on ? 'var(--accent)' : 'var(--overlay-mid)'};color:${on ? '#000' : 'var(--text-muted)'};">${d}</span>`;
+                    return `<span style="padding:3px 8px;border-radius:6px;font-size:0.72rem;font-weight:700;background:${on ? '#111827' : '#f3f4f6'};color:${on ? '#ffffff' : '#6b7280'};">${d}</span>`;
                 }).join('');
 
                 const statusBadge = isActive

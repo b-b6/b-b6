@@ -85,9 +85,9 @@ const i18n = {
             { id: 'kids', price: 1000, duration: 45, strings: { ru:{title:"Детская стрижка (до 12 лет)", desc:"Стильная стрижка для юных джентльменов"}, en:{title:"Kids Haircut", desc:"Haircut for kids under 12"}, uz:{title:"Bolalar soch turmagi", desc:"12 yoshgacha bolalar uchun"}, kg:{title:"Балдар чач жасалгасы", desc:"12 жашка чейинки балдарга"} } }
         ];
         const defaultMasters = [
-            { id: 'm1', name: 'Алексей (Топ-Барбер)', description: 'Опыт 7 лет. Эксперт по классике и фейдам', workingDays: [1,2,3,4,5,6,0] },
-            { id: 'm2', name: 'Тимур (Шеф-Мастер)', description: 'Опыт 9 лет. Моделирование бороды и опасная бритва', workingDays: [1,2,3,4,5,6,0] },
-            { id: 'm3', name: 'Руслан (Барбер)', description: 'Опыт 4 года. Трендовые и текстурные стрижки', workingDays: [1,2,3,4,5,6,0] }
+            { id: 'm1', name: 'Алексей (Топ-Барбер)', description: 'Опыт 7 лет. Эксперт по классике и фейдам', district: 'Центр (Ц-1)', lat: 41.3111, lng: 69.2797, workingDays: [1,2,3,4,5,6,0] },
+            { id: 'm2', name: 'Тимур (Шеф-Мастер)', description: 'Опыт 9 лет. Моделирование бороды и опасная бритва', district: 'Юнусабад', lat: 41.3455, lng: 69.2882, workingDays: [1,2,3,4,5,6,0] },
+            { id: 'm3', name: 'Руслан (Барбер)', description: 'Опыт 4 года. Трендовые и текстурные стрижки', district: 'Чиланзар', lat: 41.2858, lng: 69.2285, workingDays: [1,2,3,4,5,6,0] }
         ];
         const defaultSettings = { openTime: '10:00', closeTime: '21:00' };
 
@@ -95,6 +95,224 @@ const i18n = {
             bookings: [], reviews: [], disabledDates: [],
             services: defaultServices, masters: defaultMasters, settings: defaultSettings
         };
+
+        // ═══ INTERACTIVE LEAFLET MAP & BOTTOM SHEET (YANDEX GO / AIRBNB STYLE) ═══
+        let mainMap = null;
+        let mapMarkers = [];
+        let userLocationMarker = null;
+        const TASHKENT_FALLBACK_COORDS = [
+            [41.3111, 69.2797],
+            [41.3455, 69.2882],
+            [41.2858, 69.2285],
+            [41.3268, 69.3180],
+            [41.2995, 69.2540],
+            [41.3580, 69.2420]
+        ];
+
+        function getMasterCoords(m, idx) {
+            const lat = parseFloat(m.lat);
+            const lng = parseFloat(m.lng);
+            if (!isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) {
+                return [lat, lng];
+            }
+            return TASHKENT_FALLBACK_COORDS[idx % TASHKENT_FALLBACK_COORDS.length];
+        }
+
+        function initMainMap() {
+            const mapEl = document.getElementById('main-map');
+            if (!mapEl || typeof L === 'undefined') return;
+            if (mainMap) {
+                mainMap.invalidateSize();
+                renderMapMarkers();
+                return;
+            }
+            mainMap = L.map('main-map', {
+                center: [41.3150, 69.2790],
+                zoom: 12,
+                zoomControl: false
+            });
+            L.control.zoom({ position: 'bottomright' }).addTo(mainMap);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                attribution: '© OpenStreetMap © CARTO',
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(mainMap);
+
+            renderMapMarkers();
+            initSheetTouchGestures();
+        }
+
+        function renderMapMarkers() {
+            if (!mainMap) return;
+            mapMarkers.forEach(mk => mainMap.removeLayer(mk));
+            mapMarkers = [];
+
+            const activeMasters = getMasters().filter(m => m.active !== false);
+            const chipsBar = document.getElementById('map-chips-bar');
+            if (chipsBar) {
+                let chipsHtml = `<button type="button" class="map-chip ${!bookingData.masterId || bookingData.masterId === 'any' ? 'active' : ''}" onclick="focusAllMastersOnMap()">📍 Все мастера (${activeMasters.length})</button>`;
+                activeMasters.forEach((m, idx) => {
+                    const isSel = bookingData.masterId === m.id;
+                    const shortName = (m.name || 'Мастер').split('(')[0].trim();
+                    const rating = getAverageRating(m.id).avg;
+                    chipsHtml += `<button type="button" class="map-chip ${isSel ? 'active' : ''}" onclick="selectMasterFromMap('${m.id}', ${idx})">✂️ ${shortName} <span style="color:#f59e0b;">★ ${rating}</span></button>`;
+                });
+                chipsBar.innerHTML = chipsHtml;
+            }
+
+            activeMasters.forEach((m, idx) => {
+                const coords = getMasterCoords(m, idx);
+                const isSel = bookingData.masterId === m.id;
+                const shortName = (m.name || 'Мастер').split('(')[0].trim();
+                const rating = getAverageRating(m.id).avg;
+
+                const icon = L.divIcon({
+                    className: '',
+                    html: `<div class="barber-map-pill ${isSel ? 'active' : ''}" id="map-pill-${m.id}">
+                        <span>✂️ ${shortName}</span>
+                        <span class="pill-star">★</span>
+                        <span>${rating}</span>
+                    </div>`,
+                    iconSize: [130, 34],
+                    iconAnchor: [65, 34]
+                });
+
+                const marker = L.marker(coords, { icon }).addTo(mainMap);
+                marker.on('click', () => {
+                    selectMasterFromMap(m.id, idx);
+                });
+                mapMarkers.push(marker);
+            });
+        }
+
+        function focusAllMastersOnMap() {
+            if (!mainMap) return;
+            const cardEl = document.getElementById('map-selected-card');
+            if (cardEl) cardEl.style.display = 'none';
+            mainMap.flyTo([41.3150, 69.2790], 12, { duration: 0.6 });
+        }
+
+        function selectMasterFromMap(masterId, idx = 0) {
+            const masters = getMasters().filter(m => m.active !== false);
+            const m = masters.find(x => x.id === masterId);
+            if (!m) return;
+
+            triggerHaptic('selection');
+            bookingData.masterId = m.id;
+            bookingData.masterName = m.name;
+
+            const coords = getMasterCoords(m, idx);
+            if (mainMap) {
+                mainMap.flyTo(coords, 14, { duration: 0.65 });
+            }
+
+            renderMapMarkers();
+            renderMastersUI();
+            const btn2 = document.getElementById('btn-next-2');
+            if (btn2) btn2.disabled = false;
+
+            // Show floating preview card on desktop or expand sheet on mobile
+            const cardEl = document.getElementById('map-selected-card');
+            if (cardEl) {
+                const rating = getAverageRating(m.id);
+                const ava = (m.photo || m.avatar)
+                    ? `<img src="${m.photo || m.avatar}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:1.5px solid #e5e7eb;">`
+                    : `<div style="width:48px;height:48px;border-radius:50%;background:#111827;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;">${m.name.charAt(0)}</div>`;
+                cardEl.innerHTML = `
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+                        ${ava}
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-weight:800;font-size:0.98rem;color:#111827;">${m.name}</div>
+                            <div style="font-size:0.8rem;color:#6b7280;">${m.district || m.address || 'Ташкент'} • <span style="color:#f59e0b;font-weight:700;">★ ${rating.avg}</span></div>
+                        </div>
+                        <button type="button" onclick="document.getElementById('map-selected-card').style.display='none'" style="background:none;border:none;font-size:1.2rem;color:#9ca3af;cursor:pointer;">&times;</button>
+                    </div>
+                    ${m.description || m.bio ? `<p style="font-size:0.82rem;color:#4b5563;margin-bottom:12px;line-height:1.4;">${m.description || m.bio}</p>` : ''}
+                    <button type="button" class="btn" style="padding:11px 16px;font-size:0.88rem;" onclick="bookSelectedMasterFromMap('${m.id}')">Записаться к мастеру →</button>
+                `;
+                cardEl.style.display = 'block';
+            }
+
+            if (window.innerWidth <= 960) {
+                setSheetSnap('half');
+            }
+        }
+
+        function bookSelectedMasterFromMap(masterId) {
+            if (!bookingData.serviceKey && store.services.length > 0) {
+                nextStep(1);
+            } else {
+                nextStep(3);
+            }
+            if (window.innerWidth <= 960) {
+                setSheetSnap('full');
+            }
+        }
+
+        function locateUserOnMap() {
+            if (!mainMap) return;
+            if (!navigator.geolocation) {
+                focusAllMastersOnMap();
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(pos => {
+                const { latitude, longitude } = pos.coords;
+                if (userLocationMarker) mainMap.removeLayer(userLocationMarker);
+                const ico = L.divIcon({
+                    className: '',
+                    html: `<div style="width:16px;height:16px;border-radius:50%;background:#2563eb;border:3px solid #fff;box-shadow:0 0 0 6px rgba(37,99,235,0.22);"></div>`,
+                    iconSize: [16, 16],
+                    iconAnchor: [8, 8]
+                });
+                userLocationMarker = L.marker([latitude, longitude], { icon: ico }).addTo(mainMap);
+                mainMap.flyTo([latitude, longitude], 14, { duration: 0.7 });
+            }, () => {
+                focusAllMastersOnMap();
+            });
+        }
+
+        // Bottom Sheet Snap States on Mobile ('peek', 'half', 'full')
+        let currentSheetSnap = 'half';
+        function setSheetSnap(mode) {
+            currentSheetSnap = mode;
+            const sheet = document.getElementById('bottom-sheet');
+            if (!sheet) return;
+            sheet.classList.remove('snap-peek', 'snap-full');
+            if (mode === 'peek') sheet.classList.add('snap-peek');
+            if (mode === 'full') sheet.classList.add('snap-full');
+
+            ['peek', 'half', 'full'].forEach(k => {
+                const b = document.getElementById('snap-btn-' + k);
+                if (b) b.classList.toggle('active', k === mode);
+            });
+            setTimeout(() => { if (mainMap) mainMap.invalidateSize(); }, 350);
+        }
+
+        function cycleSheetSnap() {
+            if (currentSheetSnap === 'half') setSheetSnap('full');
+            else if (currentSheetSnap === 'full') setSheetSnap('peek');
+            else setSheetSnap('half');
+        }
+
+        function initSheetTouchGestures() {
+            const handle = document.getElementById('sheet-handle');
+            if (!handle) return;
+            let startY = 0;
+            handle.addEventListener('touchstart', e => {
+                if (e.touches && e.touches[0]) startY = e.touches[0].clientY;
+            }, { passive: true });
+            handle.addEventListener('touchend', e => {
+                if (!e.changedTouches || !e.changedTouches[0]) return;
+                const dy = e.changedTouches[0].clientY - startY;
+                if (dy < -35) {
+                    if (currentSheetSnap === 'peek') setSheetSnap('half');
+                    else setSheetSnap('full');
+                } else if (dy > 35) {
+                    if (currentSheetSnap === 'full') setSheetSnap('half');
+                    else setSheetSnap('peek');
+                }
+            }, { passive: true });
+        }
 
         function getDB(key) { 
             if (key === DB_BOOKINGS) return store.bookings;
@@ -141,17 +359,11 @@ const i18n = {
                 Object.keys(i18n).forEach(lang => { if(i18n[lang]) i18n[lang].title = settings.shopName; });
                 document.querySelectorAll('[data-i18n="title"]').forEach(el => { el.innerHTML = settings.shopName; });
             }
-            if(settings.design) {
+            if(settings && settings.design) {
                 const des = settings.design;
-                if(des.accentColor) document.documentElement.style.setProperty('--accent', des.accentColor);
-                if(des.fontFamily) {
-                    document.documentElement.style.setProperty('--font-sans', des.fontFamily);
-                    document.documentElement.style.setProperty('--font-serif', des.fontFamily);
-                }
-                if(des.bgImage) {
-                    const bg = document.querySelector('.bg-layer');
-                    if(des.bgImage === 'none') { bg.style.display = 'none'; }
-                    else { bg.style.display = 'block'; bg.style.backgroundImage = `url('${des.bgImage}')`; }
+                // Avoid setting white #ffffff accent on light minimalist background
+                if(des.accentColor && des.accentColor.toLowerCase() !== '#ffffff' && des.accentColor.toLowerCase() !== '#fff') {
+                    document.documentElement.style.setProperty('--accent', des.accentColor);
                 }
                 let st = document.getElementById('live-stats-wrap');
                 if(st) st.style.display = des.hideStats ? 'none' : '';
@@ -178,24 +390,26 @@ const i18n = {
             renderServicesUI();
             renderMastersUI();
             renderLiveStats();
+            initMainMap();
             lucide.createIcons();
 
             // 2. ФОНОВАЯ СИНХРОНИЗАЦИЯ С БАЗОЙ (без зависания интерфейса)
             Promise.all([
                 window.appDB.getBookings().then(b => { if(b && b.length) store.bookings = b; }),
-                window.appDB.getReviews().then(r => { if(r && r.length) store.reviews = r; }),
+                window.appDB.getReviews().then(r => { if(r && r.length) { store.reviews = r; renderPublicReviews(); } }),
                 window.appDB.getServices().then(s => { if(s && s.length) { store.services = s; if(currentStep===1) renderServicesUI(); } }),
-                window.appDB.getMasters().then(m => { if(m && m.length) { store.masters = m; if(currentStep===2) renderMastersUI(); } }),
+                window.appDB.getMasters().then(m => { if(m && m.length) { store.masters = m; if(currentStep===2) renderMastersUI(); renderMapMarkers(); } }),
                 window.appDB.getSettings().then(st => { if(st && Object.keys(st).length) { store.settings = st; applySettings(st); } })
             ]).then(() => {
                 renderLiveStats();
+                renderMapMarkers();
                 lucide.createIcons();
             }).catch(err => console.warn('Background sync error:', err));
 
             // Подписка на обновления в реальном времени
             window.appDB.subscribe('barber_bookings', data => { store.bookings = data; renderLiveStats(); loadMyBookings(); if(currentStep===3) renderTimes(); });
-            window.appDB.subscribe('barber_reviews', data => { store.reviews = data; renderLiveStats(); });
-            window.appDB.subscribe('barber_masters', data => { if(data.length) store.masters = data; if(currentStep===2) renderMastersUI(); });
+            window.appDB.subscribe('barber_reviews', data => { store.reviews = data; renderLiveStats(); renderPublicReviews(); renderMapMarkers(); });
+            window.appDB.subscribe('barber_masters', data => { if(data.length) { store.masters = data; if(currentStep===2) renderMastersUI(); renderMapMarkers(); } });
             window.appDB.subscribe('barber_services', data => { if(data.length) store.services = data; if(currentStep===1) renderServicesUI(); });
             window.appDB.subscribe('barber_settings', data => {
                 if(data && typeof data === 'object' && !Array.isArray(data) && Object.keys(data).length) {
@@ -209,12 +423,12 @@ const i18n = {
 
         document.addEventListener("DOMContentLoaded", initApp);
 
-        // MASTERS (STEP 1)
+        // MASTERS (STEP 2)
         function renderMastersUI() {
             const list = document.getElementById('masters-container'); list.innerHTML = '';
             let masters = [...getMasters().filter(m => m.active !== false), { id: 'any', name: i18n[currentLang]['any_master'], isAny: true }];
 
-            masters.forEach(m => {
+            masters.forEach((m, idx) => {
                 let card = document.createElement('div'); card.className = "service-card master-card-ui";
                 if (bookingData.masterId === m.id) card.classList.add('selected');
                 card.onclick = () => {
@@ -222,26 +436,32 @@ const i18n = {
                     document.querySelectorAll('#step-2 .service-card').forEach(c => c.classList.remove('selected'));
                     card.classList.add('selected');
                     document.getElementById('btn-next-2').disabled = false;
+                    if (!m.isAny && mainMap) {
+                        const coords = getMasterCoords(m, idx);
+                        mainMap.flyTo(coords, 14, { duration: 0.5 });
+                    }
+                    renderMapMarkers();
                 };
                 
                 let statsHtml = '';
                 if (!m.isAny) {
                     let rating = getAverageRating(m.id);
-                    statsHtml = `<div style="font-size:0.85rem; color:var(--accent); margin-top:5px;">⭐ ${rating.avg} <span style="color:var(--text-muted); font-size:0.75rem;">(${rating.count})</span></div>`;
+                    statsHtml = `<div style="font-size:0.82rem; color:#111827; font-weight:600; margin-top:4px;"><span style="color:#f59e0b;">★</span> ${rating.avg} <span style="color:var(--text-muted); font-weight:400; font-size:0.75rem;">(${rating.count})</span></div>`;
                 }
 
                 let avaHtml = '';
+                const photoSrc = m.photo || m.avatar;
                 if (m.isAny) {
-                    avaHtml = `<div class="master-ava" style="width:50px;height:50px;border-radius:50%;background:transparent;border:1px dashed var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0;"><i data-lucide="users" style="width:24px;height:24px;"></i></div>`;
-                } else if (m.photo) {
-                    avaHtml = `<img class="master-ava" src="${m.photo}" style="width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid var(--border);flex-shrink:0;">`;
+                    avaHtml = `<div class="master-ava" style="width:50px;height:50px;border-radius:50%;background:#f3f4f6;border:1.5px dashed #9ca3af;display:flex;align-items:center;justify-content:center;color:#111827;flex-shrink:0;"><i data-lucide="users" style="width:22px;height:22px;"></i></div>`;
+                } else if (photoSrc) {
+                    avaHtml = `<img class="master-ava" src="${photoSrc}" style="width:50px;height:50px;border-radius:50%;object-fit:cover;border:1.5px solid var(--border);flex-shrink:0;">`;
                 } else {
-                    avaHtml = `<div class="master-ava" style="width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;font-weight:bold;color:var(--accent);flex-shrink:0;border:1px solid var(--border);">${m.name.charAt(0)}</div>`;
+                    avaHtml = `<div class="master-ava" style="width:50px;height:50px;border-radius:50%;background:#111827;display:flex;align-items:center;justify-content:center;font-weight:700;color:#ffffff;flex-shrink:0;">${m.name.charAt(0)}</div>`;
                 }
 
                 card.innerHTML = `<div class="master-card-inner" style="display:flex; align-items:center; flex:1;">
                     ${avaHtml}
-                    <div><h3 style="margin:0;">${m.name}</h3>${m.description ? `<p style="color:var(--text-muted);font-size:0.8rem;margin:3px 0 0;">${m.description}</p>` : ''}${statsHtml}</div>
+                    <div><h3 style="margin:0;">${m.name}</h3>${(m.description || m.bio) ? `<p style="color:var(--text-muted);font-size:0.8rem;margin:3px 0 0;">${m.description || m.bio}</p>` : ''}${statsHtml}</div>
                 </div>`;
                 list.appendChild(card);
             });
