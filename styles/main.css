@@ -6,9 +6,9 @@
     --surface: #ffffff;
     --surface-hover: #f9fafb;
     --surface-active: #f3f4f6;
-    --text-main: #111827;
-    --text-secondary: #374151;
-    --text-muted: #6b7280;
+    --text-main: #0f172a;
+    --text-secondary: #1f2937;
+    --text-muted: #4b5563;
     --accent: #111827;
     --accent-brand: #ff385c; /* Airbnb coral accent for badges/highlights */
     --accent-gold: #f59e0b;
@@ -47,6 +47,7 @@ html, body {
     background-color: var(--bg-main);
     color: var(--text-main);
     font-family: var(--font-sans);
+    font-weight: 600;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow: hidden;
@@ -451,7 +452,7 @@ html, body {
 
 .header h1 {
     font-family: var(--font-serif);
-    font-size: 1.75rem;
+    font-size: 1.8rem;
     font-weight: 800;
     letter-spacing: -0.03em;
     color: var(--text-main);
@@ -460,8 +461,9 @@ html, body {
 }
 
 .header p {
-    font-size: 0.92rem;
-    color: var(--text-muted);
+    font-size: 0.94rem;
+    font-weight: 600;
+    color: var(--text-secondary);
     line-height: 1.45;
     font-style: normal !important;
 }
@@ -494,16 +496,16 @@ html, body {
 
 .stat-value {
     font-family: var(--font-serif);
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     font-weight: 800;
     color: var(--text-main);
     line-height: 1.2;
 }
 
 .stat-label {
-    font-size: 0.68rem;
-    font-weight: 500;
-    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-secondary);
     margin-top: 2px;
     line-height: 1.15;
 }
@@ -607,8 +609,8 @@ html, body {
 
 .step-content h2 {
     font-family: var(--font-serif);
-    font-size: 1.2rem;
-    font-weight: 700;
+    font-size: 1.25rem;
+    font-weight: 800;
     color: var(--text-main);
     margin-bottom: 14px;
     letter-spacing: -0.02em;
@@ -650,21 +652,22 @@ html, body {
 
 .service-info h3, .master-card-inner h3 {
     font-family: var(--font-sans);
-    font-size: 0.98rem;
-    font-weight: 700;
+    font-size: 1.02rem;
+    font-weight: 800;
     color: var(--text-main);
     margin-bottom: 4px;
 }
 
 .service-info p {
-    font-size: 0.82rem;
-    color: var(--text-muted);
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--text-secondary);
     line-height: 1.4;
 }
 
 .service-price {
     font-family: var(--font-serif);
-    font-size: 1.05rem;
+    font-size: 1.08rem;
     font-weight: 800;
     color: var(--text-main);
     white-space: nowrap;
@@ -731,20 +734,20 @@ html, body {
 }
 
 .date-card .day {
-    font-size: 0.72rem;
-    font-weight: 600;
+    font-size: 0.74rem;
+    font-weight: 700;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     margin-bottom: 4px;
 }
 
 .date-card.selected .day {
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.85);
 }
 
 .date-card .num {
     font-family: var(--font-serif);
-    font-size: 1.15rem;
+    font-size: 1.18rem;
     font-weight: 800;
 }
 
@@ -766,8 +769,8 @@ html, body {
     background: var(--surface);
     border: 1.5px solid var(--border);
     text-align: center;
-    font-size: 0.88rem;
-    font-weight: 600;
+    font-size: 0.9rem;
+    font-weight: 700;
     color: var(--text-main);
     cursor: pointer;
     transition: var(--transition);
@@ -799,9 +802,9 @@ html, body {
 
 .form-group label {
     display: block;
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-main);
     margin-bottom: 6px;
 }
 
@@ -813,7 +816,8 @@ html, body {
     background: var(--surface);
     color: var(--text-main);
     font-family: var(--font-sans);
-    font-size: 0.95rem;
+    font-size: 0.96rem;
+    font-weight: 600;
     outline: none;
     transition: var(--transition);
 }
@@ -824,7 +828,8 @@ html, body {
 }
 
 .form-control::placeholder {
-    color: #9ca3af;
+    color: #6b7280;
+    font-weight: 500;
 }
 
 /* ── BUTTONS (Apple / Uber Pill CTA) ── */
@@ -836,8 +841,8 @@ html, body {
     background: #111827;
     color: #ffffff;
     font-family: var(--font-sans);
-    font-size: 0.95rem;
-    font-weight: 700;
+    font-size: 0.96rem;
+    font-weight: 800;
     cursor: pointer;
     transition: var(--transition);
     display: inline-flex;

@@ -6,9 +6,9 @@
     --glass-bg: #ffffff;
     --glass-border: #e5e7eb;
     --surface: #ffffff;
-    --text-main: #111827;
-    --text-secondary: #374151;
-    --text-muted: #6b7280;
+    --text-main: #0f172a;
+    --text-secondary: #1f2937;
+    --text-muted: #4b5563;
     --accent-gold: #111827;
     --accent-green: #10b981;
     --accent-blue: #2563eb;
@@ -39,6 +39,7 @@ body {
     background-color: var(--bg-main);
     color: var(--text-main);
     font-family: var(--font-sans);
+    font-weight: 600;
     -webkit-font-smoothing: antialiased;
     min-height: 100vh;
     overflow-x: hidden;

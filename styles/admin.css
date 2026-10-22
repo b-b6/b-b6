@@ -5,9 +5,9 @@
     --bg-dark: #f3f4f6;
     --surface: #ffffff;
     --surface-hover: #f9fafb;
-    --text-main: #111827;
-    --text-secondary: #374151;
-    --text-muted: #6b7280;
+    --text-main: #0f172a;
+    --text-secondary: #1f2937;
+    --text-muted: #4b5563;
     --accent: #111827;
     --accent-blue: #2563eb;
     --border: #e5e7eb;
@@ -41,6 +41,7 @@ body {
     background-color: var(--bg-main);
     color: var(--text-main);
     font-family: var(--font-sans);
+    font-weight: 600;
     -webkit-font-smoothing: antialiased;
     min-height: 100vh;
     line-height: 1.5;
