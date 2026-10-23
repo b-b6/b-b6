@@ -13,8 +13,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="assets/booking-logic.js"></script>
-    <!-- Import DB Layer -->
+    <!-- Import DB Layer & Mobile Bridge -->
     <script src="assets/db.js"></script>
+    <script src="assets/mobile-bridge.js"></script>
+    <!-- Leaflet Interactive Map for Pinning Barbershop Coordinates -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <!-- QR Code Generator -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 
@@ -548,6 +552,65 @@
                     <button class="btn" style="margin: 0; padding: 14px 30px;" onclick="addDisabledDate()">Отключить</button>
                 </div>
                 <div style="margin-top: 20px;" id="disabled-dates-list"></div>
+            </div>
+
+            <!-- INTERACTIVE GEOLOCATION PIN MODULE ("ТОЧКА НА КАРТЕ") -->
+            <div class="admin-card" id="admin-map-pin-card">
+                <h3 style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:1.4rem;">📍</span> Точка на карте (Геометка филиала)
+                </h3>
+                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">
+                    Укажите точное расположение вашего барбершопа на карте. Сохраненная точка автоматически отобразится на общей карте всех барбершопов Кыргызстана (<code>barbermap_kg.html</code>).
+                </p>
+
+                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
+                    <button type="button" class="btn btn-outline" style="width:auto; padding:11px 18px; display:inline-flex; align-items:center; gap:8px;" onclick="detectAdminLocationGPS()">
+                        📍 Определить мое текущее положение по GPS
+                    </button>
+                    <a href="barbermap_kg.html" target="_blank" class="btn btn-outline" style="width:auto; padding:11px 18px; display:inline-flex; align-items:center; gap:8px; text-decoration:none;">
+                        🗺 Открыть общую карту КР
+                    </a>
+                </div>
+
+                <div id="admin-location-map" style="width:100%; height:290px; border-radius:14px; border:1px solid var(--border); margin-bottom:14px; z-index:1;"></div>
+
+                <div class="flex-row" style="gap:12px; margin-bottom:12px;">
+                    <div class="form-group" style="margin:0; flex:1;">
+                        <label>Город</label>
+                        <input type="text" id="pin_shop_city" class="form-control" placeholder="Бишкек" value="Бишкек">
+                    </div>
+                    <div class="form-group" style="margin:0; flex:2;">
+                        <label>Точный адрес (улица, дом)</label>
+                        <input type="text" id="pin_shop_address" class="form-control" placeholder="пр. Чуй, 155">
+                    </div>
+                </div>
+
+                <div class="flex-row" style="gap:12px; margin-bottom:15px;">
+                    <div class="form-group" style="margin:0; flex:1;">
+                        <label>Широта (Latitude)</label>
+                        <input type="number" step="0.000001" id="pin_shop_lat" class="form-control" placeholder="42.874600" onchange="updateAdminPinFromInputs()">
+                    </div>
+                    <div class="form-group" style="margin:0; flex:1;">
+                        <label>Долгота (Longitude)</label>
+                        <input type="number" step="0.000001" id="pin_shop_lon" class="form-control" placeholder="74.569800" onchange="updateAdminPinFromInputs()">
+                    </div>
+                </div>
+
+                <button type="button" class="btn" style="width:auto; padding:13px 26px; display:inline-flex; align-items:center; gap:8px;" onclick="saveAdminLocationCoordinates(this)">
+                    💾 Сохранить координаты
+                </button>
+                <div id="pin-save-status" style="margin-top:10px; font-size:0.88rem; font-weight:600; color:var(--success); display:none;"></div>
+            </div>
+
+            <!-- SESSION LOGOUT CARD -->
+            <div class="admin-card" style="border-color: rgba(239,68,68,0.35);">
+                <h3 style="color:#ef4444;">🚪 Управление сессией и выход</h3>
+                <p style="color: var(--text-muted); margin-bottom: 14px; font-size: 0.9rem;">
+                    Завершить текущую сессию владельца барбершопа на этом устройстве и вернуться на стартовый экран выбора роли («Я Клиент / Владелец / Мастер»).
+                </p>
+                <button type="button" class="btn" style="background:#ef4444; color:#fff; width:auto; padding:13px 26px;" onclick="logoutOwnerAccount()">
+                    🚪 Выйти из аккаунта
+                </button>
             </div>
         </div>
     </main>

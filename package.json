@@ -1,0 +1,40 @@
+{
+  "name": "barbermap-multi-tenant-saas",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Единое мобильное приложение Multi-Tenant Barber SaaS (iOS / Android) — Клиент, Владелец, Соло-Мастер",
+  "main": "mobile/App.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "cap:init": "npx cap init \"BarberMap SaaS\" kg.barbermap.saas --web-dir .",
+    "cap:sync": "npx cap sync",
+    "cap:android": "npx cap open android",
+    "cap:ios": "npx cap open ios",
+    "build:apk": "cd android && ./gradlew assembleRelease",
+    "eas:android": "eas build --platform android --profile production",
+    "eas:ios": "eas build --platform ios --profile production"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/app": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/geolocation": "^6.0.0",
+    "@capacitor/ios": "^6.0.0",
+    "@capacitor/preferences": "^6.0.0",
+    "@capacitor/push-notifications": "^6.0.0",
+    "@react-native-async-storage/async-storage": "1.23.1",
+    "expo": "~51.0.0",
+    "expo-linking": "~6.3.1",
+    "expo-location": "~17.0.1",
+    "expo-notifications": "~0.28.0",
+    "expo-status-bar": "~1.12.1",
+    "react": "18.2.0",
+    "react-native": "0.74.1",
+    "react-native-webview": "13.8.6"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.0.0"
+  }
+}

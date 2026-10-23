@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>BARBERMAP KG — Все барбершопы Кыргызстана на одной карте</title>
+    <meta name="description" content="Интерактивная карта барбершопов Бишкека, Оша и Джалал-Абада. 401 проверенное место, онлайн-запись, радар ближайших, прямые звонки и маршруты в 2ГИС.">
+    <meta name="theme-color" content="#06141B">
+
+    <!-- OpenGraph & Social Cards -->
+    <meta property="og:title" content="BARBERMAP KG — Барбершопы Кыргызстана">
+    <meta property="og:description" content="401 проверенный барбершоп: Бишкек, Ош, Джалал-Абад. Онлайн-запись, WhatsApp, 2ГИС, Яндекс Карты.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="ru_RU">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2306141B'/%3E%3Cpath d='M30 70 L50 25 L70 70 M36 56 L64 56' stroke='%23fbbf24' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Ccircle cx='50' cy='22' r='5' fill='%23f59e0b'/%3E%3C/svg%3E">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
+    <!-- Leaflet MarkerCluster -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+    <!-- Barbershops Dataset & Mobile Bridge -->
+    <script src="barbershops_kg.js"></script>
+    <script src="assets/db.js"></script>
+    <script src="assets/mobile-bridge.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#06141B',
+                        panelBg: '#11212D',
+                        cardBg: '#253745',
+                        cardBorder: '#4A5C6A',
+                        textMuted: '#9BA8AB',
+                        textLight: '#CCD0CF',
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Cabinet Grotesk', 'Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #06141B;
+            color: #CCD0CF;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #06141B;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #253745;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4A5C6A;
+        }
+
+        /* Map container */
+        #map {
+            width: 100% !important;
+            height: 100% !important;
+            background-color: #06141B !important;
+            z-index: 1;
+        }
+
+        /* ================= GOLD METALLIC MAP MARKER PINS ================= */
+        .barber-marker-pin {
+            width: 40px;
+            height: 40px;
+            border-radius: 50% 50% 50% 0;
+            background: linear-gradient(135deg, #fef08a 0%, #fbbf24 45%, #d97706 100%);
+            position: absolute;
+            transform: rotate(-45deg);
+            left: 50%;
+            top: 50%;
+            margin: -20px 0 0 -20px;
+            border: 2px solid #ffffff;
+            box-shadow: 0 4px 18px rgba(245, 158, 11, 0.75), 0 0 12px rgba(217, 119, 6, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+        }
+        .barber-marker-pin:hover, .barber-marker-pin.active-pin {
+            transform: rotate(-45deg) scale(1.22);
+            box-shadow: 0 6px 24px rgba(245, 158, 11, 0.95), 0 0 20px rgba(251, 191, 36, 0.85);
+        }
+        .barber-marker-pin i {
+            transform: rotate(45deg);
+            color: #06141B;
+            font-size: 15px;
+            font-weight: 900;
+        }
+
+        /* Radar Active Target Beacon */
+        .radar-target-beacon {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid #fbbf24;
+            left: 50%;
+            top: 50%;
+            margin: -30px 0 0 -30px;
+            animation: radar-beacon 1.5s infinite ease-out;
+            pointer-events: none;
+        }
+        @keyframes radar-beacon {
+            0% { transform: scale(0.4); opacity: 1; border-color: #fbbf24; }
+            100% { transform: scale(2.2); opacity: 0; border-color: #d97706; }
+        }
+
+        /* ================= GOLD METALLIC MARKER CLUSTERS ================= */
+        .marker-cluster-small, .marker-cluster-medium, .marker-cluster-large {
+            background-color: rgba(245, 158, 11, 0.35) !important;
+            border-radius: 50% !important;
+        }
+        .marker-cluster-small div, .marker-cluster-medium div, .marker-cluster-large div {
+            background: linear-gradient(135deg, #fef08a 0%, #fbbf24 50%, #d97706 100%) !important;
+            color: #06141B !important;
+            font-weight: 900 !important;
+            font-size: 13px !important;
+            border: 2px solid #ffffff !important;
+            box-shadow: 0 3px 14px rgba(245, 158, 11, 0.7) !important;
+        }
+
+        /* ================= LEAFLET POPUP STYLING (#253745 PALETTE) ================= */
+        .leaflet-popup-content-wrapper {
+            background: #253745 !important;
+            color: #CCD0CF !important;
+            border: 1.5px solid #4A5C6A !important;
+            border-radius: 8px !important;
+            padding: 0 !important;
+            box-shadow: 0 16px 36px rgba(6, 20, 27, 0.9) !important;
+        }
+        .leaflet-popup-content {
+            margin: 0 !important;
+            line-height: 1.4 !important;
+        }
+        .leaflet-popup-tip {
+            background: #253745 !important;
+        }
+        .leaflet-container a.leaflet-popup-close-button {
+            color: #9BA8AB !important;
+            padding: 6px !important;
+        }
+        .leaflet-container a.leaflet-popup-close-button:hover {
+            color: #ffffff !important;
+        }
+
+        /* Pulsing user GPS location pin */
+        .user-geo-pin {
+            width: 18px;
+            height: 18px;
+            background: #38bdf8;
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 16px rgba(56, 189, 248, 0.9);
+            position: relative;
+        }
+        .user-geo-pin::after {
+            content: '';
+            position: absolute;
+            top: -9px;
+            left: -9px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(56, 189, 248, 0.45);
+            animation: user-pulse 1.8s infinite ease-out;
+        }
+        @keyframes user-pulse {
+            0% { transform: scale(0.6); opacity: 1; }
+            100% { transform: scale(1.8); opacity: 0; }
+        }
+
+        /* Radar Scanner Sweep Animation */
+        @keyframes radar-sweep {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .radar-sweep-beam {
+            transform-origin: 50% 50%;
+            animation: radar-sweep 2.4s linear infinite;
+        }
+
+        /* Mobile Bottom Sheet transitions */
+        .sheet-transition {
+            transition: height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col antialiased selection:bg-[#4A5C6A] selection:text-[#CCD0CF] bg-[#06141B] overflow-hidden">
+
+    <!-- ================= TOP HEADER PANEL (#11212D) ================= -->
+    <header class="h-14 sm:h-16 bg-[#11212D] border-b border-[#4A5C6A] px-3 sm:px-6 flex items-center justify-between shrink-0 z-30 shadow-md">
+        <div class="flex items-center gap-2 sm:gap-3">
+            <a href="app.html?switch_role=1" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-[#253745] hover:bg-[#34495e] border border-[#4A5C6A] text-xs font-bold text-amber-400 transition-colors" title="Экран выбора роли">
+                <i class="fa-solid fa-user-Astronaut fa-user-gear text-[11px]"></i>
+                <span>Роль</span>
+            </a>
+            <div class="flex items-center gap-1.5">
+                <span class="font-display font-black tracking-wider text-lg sm:text-xl text-[#CCD0CF]">BARBER<span class="text-amber-400">MAP</span></span>
+                <span class="text-[9px] sm:text-[10px] uppercase font-bold tracking-widest bg-amber-400/10 text-amber-400 px-2 py-0.5 rounded-md border border-amber-400/30">KG</span>
+            </div>
+            <p class="text-xs text-[#9BA8AB] hidden lg:block border-l border-[#4A5C6A] pl-3">Все барбершопы Кыргызстана</p>
+        </div>
+
+        <!-- City Switcher (Desktop) & Controls -->
+        <div class="flex items-center gap-2 sm:gap-3">
+            <!-- Desktop City Tabs -->
+            <div class="hidden md:flex bg-[#06141B] p-1 rounded-md border border-[#4A5C6A] text-xs font-semibold gap-0.5">
+                <button onclick="setCityFilter('all')" id="city-btn-all" class="px-2.5 py-1.5 rounded-md transition-all bg-gradient-to-r from-amber-400 to-amber-500 text-black font-bold shadow-sm">Все (401)</button>
+                <button onclick="setCityFilter('Бишкек')" id="city-btn-bishkek" class="px-2.5 py-1.5 rounded-md text-[#CCD0CF] hover:text-white hover:bg-[#253745] transition-all">Бишкек (214)</button>
+                <button onclick="setCityFilter('Джалал-Абад')" id="city-btn-ja" class="px-2.5 py-1.5 rounded-md text-[#CCD0CF] hover:text-white hover:bg-[#253745] transition-all">Джалал-Абад (47)</button>
+                <button onclick="setCityFilter('Ош')" id="city-btn-osh" class="px-2.5 py-1.5 rounded-md text-[#CCD0CF] hover:text-white hover:bg-[#253745] transition-all">Ош (87)</button>
+                <button onclick="setCityFilter('Каракол')" id="city-btn-karakol" class="px-2.5 py-1.5 rounded-md text-[#CCD0CF] hover:text-white hover:bg-[#253745] transition-all">Каракол (12)</button>
+                <button onclick="openCityModal()" id="city-btn-more" class="px-2.5 py-1.5 rounded-md text-amber-400 hover:text-white hover:bg-[#253745] transition-all flex items-center gap-1 font-bold">
+                    <span>Ещё</span>
+                    <i class="fa-solid fa-chevron-down text-[9px]"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Active City Chip (Tapping opens city modal) -->
+            <button onclick="openCityModal()" class="md:hidden flex items-center gap-1.5 bg-[#253745] hover:bg-[#34495e] border border-[#4A5C6A] px-2.5 py-1.5 rounded-md text-xs font-bold text-[#CCD0CF] transition-colors">
+                <i class="fa-solid fa-city text-amber-400 text-[10px]"></i>
+                <span id="mobile-current-city-label">Все города</span>
+                <i class="fa-solid fa-chevron-down text-[9px] text-[#9BA8AB] ml-0.5"></i>
+            </button>
+
+            <!-- Roulette Action (Header Desktop) -->
+            <button onclick="spinBarberRoulette()" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#253745] hover:bg-[#34495e] border border-[#4A5C6A] text-amber-400 font-bold text-xs transition-all active:scale-95" title="Случайный выбор барбершопа">
+                <i class="fa-solid fa-dice text-xs"></i>
+                <span>Рулетка</span>
+            </button>
+
+            <!-- Radar Action (Header) -->
+            <button onclick="triggerSuperRadar()" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-bold text-xs shadow-md shadow-amber-500/20 transition-all active:scale-95" title="Найти ближайший барбершоп с анимацией радара">
+                <i class="fa-solid fa-bolt text-xs animate-bounce"></i>
+                <span>Радар</span>
+            </button>
+
+            <!-- Total Count Badge -->
+            <div class="flex items-center gap-1.5 bg-[#253745] px-2.5 py-1.5 rounded-md border border-[#4A5C6A] text-xs">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-[#CCD0CF] font-medium"><strong id="total-count-badge" class="text-white font-bold">401</strong> <span class="hidden sm:inline">барбершоп</span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= MAIN WORKSPACE ================= -->
+    <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+
+        <!-- ================= DESKTOP SIDEBAR PANEL (#06141B BASE, #11212D HEADER, #253745 CARDS) ================= -->
+        <aside id="sidebar-panel" class="hidden md:flex w-[420px] lg:w-[460px] bg-[#06141B] border-r border-[#4A5C6A] flex-col shrink-0 z-20 h-full">
+            
+            <!-- Search & Filters Container (#11212D) -->
+            <div class="p-3.5 border-b border-[#4A5C6A] bg-[#11212D] space-y-2.5">
+                <!-- Search Input (#253745 background) -->
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9BA8AB] text-sm"></i>
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        placeholder="Поиск: Chop, FIRMA, Чуй, 10 мкр, Манаса..."
+                        class="w-full bg-[#253745] text-sm text-[#CCD0CF] placeholder-[#9BA8AB] pl-10 pr-9 py-2.5 rounded-md border border-[#4A5C6A] focus:outline-none focus:border-amber-400 transition-colors"
+                        oninput="handleSearch(this.value)"
+                    >
+                    <button id="search-clear-btn" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-[#9BA8AB] hover:text-white">
+                        <i class="fa-solid fa-xmark text-sm"></i>
+                    </button>
+                </div>
+
+                <!-- Filter Chips (#253745 background) -->
+                <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs no-scrollbar">
+                    <button onclick="setCategoryFilter('all')" id="filter-all" class="filter-chip active shrink-0 px-3 py-1.5 rounded-md bg-gradient-to-r from-amber-400 to-amber-500 text-black font-bold text-xs">Все</button>
+                    <button onclick="setCategoryFilter('open')" id="filter-open" class="filter-chip shrink-0 px-3 py-1.5 rounded-md bg-[#253745] text-[#CCD0CF] hover:text-white hover:bg-[#4A5C6A] border border-[#4A5C6A] flex items-center gap-1.5 text-xs transition-colors">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Открыто сейчас
+                    </button>
+                    <button onclick="setCategoryFilter('online')" id="filter-online" class="filter-chip shrink-0 px-3 py-1.5 rounded-md bg-[#253745] text-[#CCD0CF] hover:text-white hover:bg-[#4A5C6A] border border-[#4A5C6A] flex items-center gap-1.5 text-xs transition-colors">
+                        <i class="fa-solid fa-bolt text-amber-400 text-[10px]"></i> Онлайн-запись
+                    </button>
+                    <button onclick="setCategoryFilter('whatsapp')" id="filter-whatsapp" class="filter-chip shrink-0 px-3 py-1.5 rounded-md bg-[#253745] text-[#CCD0CF] hover:text-white hover:bg-[#4A5C6A] border border-[#4A5C6A] flex items-center gap-1.5 text-xs transition-colors">
+                        <i class="fa-brands fa-whatsapp text-emerald-400"></i> WhatsApp
+                    </button>
+                    <button onclick="setCategoryFilter('top')" id="filter-top" class="filter-chip shrink-0 px-3 py-1.5 rounded-md bg-[#253745] text-[#CCD0CF] hover:text-white hover:bg-[#4A5C6A] border border-[#4A5C6A] flex items-center gap-1.5 text-xs transition-colors">
+                        <i class="fa-solid fa-star text-amber-400 text-[10px]"></i> 4.8+ Топ
+                    </button>
+                </div>
+            </div>
+
+            <!-- Scrollable Cards List (#06141B background, cards in #253745) -->
+            <div id="barbershop-list" class="flex-1 overflow-y-auto p-3 space-y-2.5">
+                <!-- Dynamically populated via JS -->
+            </div>
+
+            <!-- Footer Stats in Sidebar (#11212D) -->
+            <div class="p-2.5 border-t border-[#4A5C6A] bg-[#11212D] text-xs text-[#9BA8AB] flex items-center justify-between px-4">
+                <span>База: <strong class="text-[#CCD0CF]">Кыргызстан (2ГИС + SaaS)</strong></span>
+                <span id="sidebar-count-stats" class="text-amber-400 font-mono text-[11px] font-bold">401 проверенный барбершоп</span>
+            </div>
+        </aside>
+
+        <!-- ================= FULLSCREEN MAP CONTAINER ================= -->
+        <main id="map-panel" class="flex-1 h-full w-full relative min-h-0 overflow-hidden">
+            <div id="map"></div>
+
+            <!-- Yandex Maps Official Search Widget Container -->
+            <div id="yandex-widget-container" class="hidden absolute inset-0 w-full h-full z-10 bg-[#11212D]">
+                <iframe id="yandex-map-iframe" src="https://yandex.com/map-widget/v1/?ll=72.991779%2C40.934637&mode=search&text=%D0%B4%D0%B6%D0%B0%D0%BB%D0%B0%D0%BB%20%D0%B0%D0%B1%D0%B0%D0%B4%20%D0%B1%D0%B0%D1%80%D0%B1%D0%B5%D1%80%D1%88%D0%BE%D0%BF&z=13.79" width="100%" height="100%" frameborder="0" allowfullscreen="true" style="position:relative; width:100%; height:100%; border:none;"></iframe>
+            </div>
+
+            <!-- Map Layer Switcher Toolbar (Top-Right, #11212D) -->
+            <div class="absolute top-3 right-3 z-30 flex items-center bg-[#11212D]/95 backdrop-blur-md border border-[#4A5C6A] rounded-md p-1 shadow-2xl gap-1">
+                <span class="text-[9px] uppercase tracking-wider text-[#9BA8AB] font-bold px-1.5 hidden lg:inline">Слой:</span>
+                <button onclick="setMapTile('2gis')" id="layer-btn-2gis" class="px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-md text-[#CCD0CF] hover:text-white hover:bg-[#253745] text-xs flex items-center gap-1 transition-all">
+                    <span class="font-extrabold text-[10px] text-emerald-400">2Г</span>
+                    <span>2ГИС</span>
+                </button>
+                <button onclick="setMapTile('google-streets')" id="layer-btn-google-streets" class="px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-md bg-gradient-to-r from-amber-400 to-amber-500 text-black font-bold text-xs flex items-center gap-1 transition-all shadow-sm">
+                    <i class="fa-solid fa-map text-[10px]"></i>
+                    <span class="hidden sm:inline">Google Улицы</span>
+                </button>
+                <button onclick="setMapTile('yandex-widget')" id="layer-btn-yandex-widget" class="px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-md text-[#CCD0CF] hover:text-white hover:bg-[#253745] text-xs flex items-center gap-1 transition-all">
+                    <i class="fa-solid fa-location-dot text-rose-400 text-[10px]"></i>
+                    <span>Яндекс</span>
+                </button>
+                <button onclick="setMapTile('google-hybrid')" id="layer-btn-google-hybrid" class="px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-md text-[#CCD0CF] hover:text-white hover:bg-[#253745] text-xs flex items-center gap-1 transition-all">
+                    <i class="fa-solid fa-satellite text-sky-400 text-[10px]"></i>
+                    <span class="hidden sm:inline">Спутник</span>
+                </button>
+                <button onclick="setMapTile('esri')" id="layer-btn-esri" class="px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-md text-[#CCD0CF] hover:text-white hover:bg-[#253745] text-xs flex items-center gap-1 transition-all hidden md:flex">
+                    <i class="fa-solid fa-city text-amber-400 text-[10px]"></i>
+                    <span>Esri</span>
+                </button>
+            </div>
+
+            <!-- Floating Map Actions (GPS & Reset) -->
+            <div class="absolute bottom-20 md:bottom-14 right-3 z-20 flex flex-col sm:flex-row items-end sm:items-center gap-2">
+                <button onclick="triggerSuperRadar()" class="h-10 px-3.5 rounded-md bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-extrabold shadow-2xl flex items-center gap-1.5 text-xs transition-all border border-amber-300 active:scale-95" title="Сканировать ближайший барбершоп">
+                    <i class="fa-solid fa-compass text-sm"></i>
+                    <span>Радар</span>
+                </button>
+                <button onclick="locateUser()" id="geo-btn" class="h-10 px-3 rounded-md bg-[#11212D]/95 hover:bg-[#253745] text-[#CCD0CF] hover:text-sky-400 border border-[#4A5C6A] shadow-2xl flex items-center gap-1.5 text-xs font-semibold transition-all backdrop-blur-md" title="Определить моё местоположение (GPS)">
+                    <i class="fa-solid fa-location-crosshairs text-sky-400 text-sm"></i>
+                    <span class="hidden sm:inline">Где я</span>
+                </button>
+                <button onclick="resetMapView()" class="h-10 px-3 rounded-md bg-[#11212D]/95 hover:bg-[#253745] text-[#CCD0CF] hover:text-amber-400 border border-[#4A5C6A] shadow-2xl flex items-center gap-1.5 text-xs font-semibold transition-all backdrop-blur-md" title="Сбросить масштаб">
+                    <i class="fa-solid fa-crosshairs text-amber-400 text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Map Status Banner (Desktop Bottom-Left) -->
+            <div class="hidden md:flex absolute bottom-3 left-3 z-20 bg-[#11212D]/95 border border-[#4A5C6A] text-[#CCD0CF] px-3 py-1.5 rounded-md text-[11px] backdrop-blur-md items-center gap-2 shadow-lg">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span id="map-status-text">Интерактивная карта готова</span>
+            </div>
+
+            <!-- Quick Barbershop Preview Card (ONLY for mobile screens < 768px, #253745) -->
+            <div id="quick-preview-card" class="hidden md:hidden absolute bottom-16 left-3 right-3 z-20 bg-[#253745]/98 border border-amber-400/80 rounded-md p-3.5 shadow-2xl backdrop-blur-md space-y-2.5 animate-in fade-in slide-in-from-bottom-4 duration-200">
+                <div class="flex items-start justify-between gap-2">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <img id="prev-img" src="" class="w-12 h-12 rounded-md object-cover border border-[#4A5C6A] shrink-0" alt="">
+                        <div class="min-w-0">
+                            <h4 id="prev-name" class="font-display font-bold text-sm text-[#CCD0CF] truncate">Chop-Chop</h4>
+                            <p id="prev-address" class="text-xs text-[#9BA8AB] truncate">ул. Токтогула, 125/1</p>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <span id="prev-rating" class="text-[11px] font-bold text-amber-400 flex items-center gap-1"><i class="fa-solid fa-star text-[10px]"></i> 4.9</span>
+                                <span id="prev-distance" class="text-[11px] font-semibold text-sky-400"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="closeQuickPreview()" class="w-7 h-7 rounded-md bg-[#11212D] text-[#9BA8AB] hover:text-white flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-xmark text-xs"></i>
+                    </button>
+                </div>
+                <div class="grid grid-cols-4 gap-1.5 pt-1">
+                    <a id="prev-call-btn" href="#" class="py-2 rounded-md bg-[#11212D] hover:bg-[#182836] text-[#CCD0CF] hover:text-emerald-400 border border-[#4A5C6A] font-bold text-xs flex items-center justify-center gap-1 shadow-sm">
+                        <i class="fa-solid fa-phone text-emerald-400 text-[11px]"></i>
+                        <span>Звонок</span>
+                    </a>
+                    <a id="prev-wa-btn" href="#" target="_blank" class="py-2 rounded-md bg-[#11212D] hover:bg-[#182836] text-[#CCD0CF] hover:text-emerald-400 border border-[#4A5C6A] font-bold text-xs flex items-center justify-center gap-1">
+                        <i class="fa-brands fa-whatsapp text-emerald-400 text-sm"></i>
+                        <span>WA</span>
+                    </a>
+                    <a id="prev-2gis-btn" href="#" target="_blank" class="py-2 rounded-md bg-[#11212D] hover:bg-[#182836] text-[#CCD0CF] hover:text-emerald-400 border border-[#4A5C6A] font-bold text-xs flex items-center justify-center gap-1">
+                        <span>2ГИС</span>
+                    </a>
+                    <button id="prev-book-btn" onclick="" class="py-2 rounded-md bg-gradient-to-r from-amber-400 to-amber-500 text-black font-extrabold text-xs shadow-md">
+                        <span>✂️ Запись</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- ================= MOBILE INTERACTIVE BOTTOM SHEET (#11212D & #253745) ================= -->
+        <div id="mobile-sheet" class="md:hidden fixed inset-x-0 bottom-14 z-30 bg-[#11212D] border-t border-[#4A5C6A] rounded-t-xl shadow-2xl flex flex-col sheet-transition max-h-[85vh] h-[72px]">
+            
+            <!-- Sheet Header / Drag Handle -->
+            <div id="sheet-header" class="p-2.5 pb-2 cursor-pointer flex flex-col items-center shrink-0 select-none bg-[#11212D] rounded-t-xl" onclick="toggleMobileSheet()">
+                <div class="w-12 h-1.5 bg-[#4A5C6A] rounded-full mb-2"></div>
+                <div class="w-full flex items-center justify-between px-2 text-xs">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-scissors text-amber-400 text-xs"></i>
+                        <span class="font-bold text-[#CCD0CF]"><span id="sheet-city-name">Все</span> (<span id="sheet-count">401</span>)</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 text-[11px] text-[#9BA8AB]">
+                        <span id="sheet-toggle-label">Показать список</span>
+                        <i id="sheet-toggle-icon" class="fa-solid fa-chevron-up text-[10px] text-amber-400 transition-transform"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sheet Search & Filters -->
+            <div id="sheet-controls" class="px-3 pb-2.5 pt-1 border-b border-[#4A5C6A] space-y-2 shrink-0 bg-[#11212D]">
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[#9BA8AB] text-xs"></i>
+                    <input 
+                        type="text" 
+                        id="sheet-search-input" 
+                        placeholder="Поиск барбершопа или улицы..."
+                        class="w-full bg-[#253745] text-xs text-[#CCD0CF] placeholder-[#9BA8AB] pl-8 pr-8 py-2 rounded-md border border-[#4A5C6A] focus:outline-none focus:border-amber-400"
+                        oninput="handleSearch(this.value)"
+                    >
+                    <button id="sheet-search-clear" onclick="clearSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9BA8AB]">
+                        <i class="fa-solid fa-xmark text-xs"></i>
+                    </button>
+                </div>
+                <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs no-scrollbar">
+                    <button onclick="setCategoryFilter('all')" class="mobile-filter-chip active shrink-0 px-2.5 py-1 rounded-md bg-gradient-to-r from-amber-400 to-amber-500 text-black font-bold text-[11px]">Все</button>
+                    <button onclick="setCategoryFilter('open')" class="mobile-filter-chip shrink-0 px-2.5 py-1 rounded-md bg-[#253745] text-[#CCD0CF] border border-[#4A5C6A] text-[11px] flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Открыто
+                    </button>
+                    <button onclick="setCategoryFilter('online')" class="mobile-filter-chip shrink-0 px-2.5 py-1 rounded-md bg-[#253745] text-[#CCD0CF] border border-[#4A5C6A] text-[11px] flex items-center gap-1">
+                        <i class="fa-solid fa-bolt text-amber-400 text-[9px]"></i> Онлайн
+                    </button>
+                    <button onclick="setCategoryFilter('top')" class="mobile-filter-chip shrink-0 px-2.5 py-1 rounded-md bg-[#253745] text-[#CCD0CF] border border-[#4A5C6A] text-[11px] flex items-center gap-1">
+                        <i class="fa-solid fa-star text-amber-400 text-[9px]"></i> 4.8+
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sheet Content: Scrollable Cards (#253745) -->
+            <div id="sheet-cards-list" class="flex-1 overflow-y-auto p-3 space-y-2.5 bg-[#06141B]">
+                <!-- Dynamically populated via JS -->
+            </div>
+        </div>
+
+        <!-- ================= MOBILE FIXED BOTTOM NAVIGATION DOCK (#11212D) ================= -->
+        <nav class="md:hidden fixed bottom-0 inset-x-0 h-14 bg-[#11212D] border-t border-[#4A5C6A] z-40 flex items-center justify-around px-2 shadow-2xl">
+            <button onclick="setMobileSheetState('collapsed')" id="nav-btn-map" class="flex flex-col items-center justify-center flex-1 py-1 text-amber-400 font-bold">
+                <i class="fa-solid fa-map-location-dot text-base mb-0.5"></i>
+                <span class="text-[10px]">Карта</span>
+            </button>
+            <button onclick="setMobileSheetState('half')" id="nav-btn-list" class="flex flex-col items-center justify-center flex-1 py-1 text-[#9BA8AB] hover:text-white">
+                <i class="fa-solid fa-list-ul text-base mb-0.5"></i>
+                <span class="text-[10px]">Список</span>
+            </button>
+            <button onclick="triggerSuperRadar()" class="flex flex-col items-center justify-center flex-1 py-1 -mt-4">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 text-black flex items-center justify-center shadow-lg shadow-amber-500/40 border-2 border-white active:scale-95 transition-transform">
+                    <i class="fa-solid fa-compass text-lg"></i>
+                </div>
+                <span class="text-[10px] font-black text-amber-400 mt-0.5">РАДАР</span>
+            </button>
+            <button onclick="spinBarberRoulette()" class="flex flex-col items-center justify-center flex-1 py-1 text-[#9BA8AB] hover:text-white">
+                <i class="fa-solid fa-dice text-base mb-0.5 text-amber-400"></i>
+                <span class="text-[10px]">Рулетка</span>
+            </button>
+            <button onclick="openCityModal()" class="flex flex-col items-center justify-center flex-1 py-1 text-[#9BA8AB] hover:text-white">
+                <i class="fa-solid fa-city text-base mb-0.5"></i>
+                <span class="text-[10px]">Город</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- ================= MIND-BLOWING RADAR SCANNER OVERLAY ================= -->
+    <div id="radar-overlay" class="fixed inset-0 z-50 bg-[#06141B]/95 backdrop-blur-md hidden flex flex-col items-center justify-center p-4 select-none">
+        <div class="relative w-72 h-72 sm:w-80 sm:h-80 flex items-center justify-center mb-6">
+            <div class="absolute inset-0 rounded-full border border-amber-400/20"></div>
+            <div class="absolute inset-8 rounded-full border border-amber-400/30"></div>
+            <div class="absolute inset-16 rounded-full border border-amber-400/40"></div>
+            <div class="absolute inset-24 rounded-full border border-amber-400/50"></div>
+            <div class="absolute inset-x-0 top-1/2 h-[1px] bg-amber-400/30"></div>
+            <div class="absolute inset-y-0 left-1/2 w-[1px] bg-amber-400/30"></div>
+            <div class="radar-sweep-beam absolute inset-0 rounded-full bg-gradient-to-tr from-transparent via-amber-400/10 to-amber-400/40 pointer-events-none"></div>
+            <div class="w-6 h-6 rounded-full bg-amber-400 flex items-center justify-center shadow-lg shadow-amber-400/80 animate-ping"></div>
+            <div class="w-4 h-4 rounded-full bg-white z-10"></div>
+        </div>
+
+        <div class="text-center space-y-2 max-w-sm">
+            <span class="text-[11px] uppercase tracking-widest text-amber-400 font-bold bg-amber-400/10 px-3 py-1 rounded-md border border-amber-400/30">СУПЕР-РАДАР KG</span>
+            <h3 id="radar-status-text" class="text-lg sm:text-xl font-display font-black text-white">Сканирование барбершопов...</h3>
+            <p id="radar-subtext" class="text-xs text-[#9BA8AB]">Вычисляем ближайший барбершоп и пеший маршрут</p>
+        </div>
+
+        <button onclick="closeRadarOverlay()" class="mt-6 px-4 py-1.5 rounded-md bg-[#253745] hover:bg-[#4A5C6A] text-xs text-[#CCD0CF] border border-[#4A5C6A]">
+            Отмена
+        </button>
+    </div>
+
+    <!-- ================= BARBER ROULETTE MODAL (#11212D & #253745) ================= -->
+    <div id="roulette-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-[#11212D] border border-amber-400 rounded-xl w-full max-w-sm overflow-hidden shadow-2xl text-center p-6 space-y-4 animate-in fade-in zoom-in duration-200">
+            <div class="w-16 h-16 rounded-full bg-amber-400/15 border border-amber-400/40 text-amber-400 flex items-center justify-center mx-auto text-2xl">
+                <i class="fa-solid fa-dice"></i>
+            </div>
+            <div>
+                <span class="text-[10px] uppercase font-bold tracking-widest text-amber-400 bg-amber-400/10 px-2.5 py-0.5 rounded-md border border-amber-400/25">БАРБЕР-РУЛЕТКА</span>
+                <h3 class="font-display font-bold text-lg text-white mt-1">Куда сходить подстричься?</h3>
+                <p class="text-xs text-[#9BA8AB] mt-0.5">Случайный выбор из лучших барбершопов с рейтингом 4.8+</p>
+            </div>
+
+            <!-- Spinning Slot Window (#253745) -->
+            <div class="bg-[#253745] border border-[#4A5C6A] rounded-md p-4 min-h-[90px] flex flex-col items-center justify-center">
+                <div id="roulette-shop-name" class="font-display font-black text-xl text-amber-400 truncate w-full">Chop-Chop</div>
+                <div id="roulette-shop-addr" class="text-xs text-[#CCD0CF] truncate w-full mt-1">ул. Токтогула, 125/1</div>
+            </div>
+
+            <div class="space-y-2">
+                <button id="roulette-book-btn" onclick="bookRouletteChoice()" class="w-full py-2.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-extrabold text-sm rounded-md shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-calendar-check text-xs"></i>
+                    <span>Записаться онлайн сюда</span>
+                </button>
+                <div class="grid grid-cols-2 gap-2">
+                    <button id="roulette-spin-btn" onclick="executeRouletteSpin()" class="py-2 bg-[#253745] hover:bg-[#4A5C6A] text-amber-400 font-bold text-xs rounded-md border border-[#4A5C6A] flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-rotate text-xs"></i>
+                        <span>Крутить ещё</span>
+                    </button>
+                    <button id="roulette-go-btn" onclick="acceptRouletteChoice()" class="py-2 bg-[#253745] hover:bg-[#4A5C6A] text-[#CCD0CF] font-semibold text-xs rounded-md border border-[#4A5C6A]">
+                        На карте
+                    </button>
+                </div>
+                <button onclick="closeRouletteModal()" class="w-full py-1 text-xs text-[#9BA8AB] hover:text-white">
+                    Закрыть
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MOBILE CITY SELECTOR MODAL (#11212D & #253745) ================= -->
+    <div id="city-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-[#11212D] border-t sm:border border-[#4A5C6A] rounded-t-xl sm:rounded-xl w-full max-w-sm overflow-hidden shadow-2xl p-5 space-y-3 animate-in slide-in-from-bottom duration-200">
+            <div class="flex items-center justify-between border-b border-[#4A5C6A] pb-3">
+                <h3 class="font-display font-bold text-base text-white flex items-center gap-2">
+                    <i class="fa-solid fa-city text-amber-400"></i>
+                    <span>Выберите город</span>
+                </h3>
+                <button onclick="closeCityModal()" class="w-7 h-7 rounded-md bg-[#253745] text-[#9BA8AB] hover:text-white flex items-center justify-center">
+                    <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+            </div>
+            <div class="space-y-1.5 max-h-[65vh] overflow-y-auto pr-1">
+                <button onclick="selectCityFromModal('all')" class="w-full p-2.5 rounded-md bg-[#253745] hover:bg-[#34495e] border border-[#4A5C6A] flex items-center justify-between text-left transition-colors">
+                    <div>
+                        <span class="text-sm font-bold text-[#CCD0CF] block">Весь Кыргызстан</span>
+                        <span class="text-xs text-[#9BA8AB]">Все города страны</span>
+                    </div>
+                    <span class="text-xs font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">401+</span>
+                </button>
+                <button onclick="selectCityFromModal('Бишкек')" class="w-full p-2.5 rounded-md bg-[#253745] hover:bg-[#34495e] border border-[#4A5C6A] flex items-center justify-between text-left transition-colors">
+                    <div>
+                        <span class="text-sm font-bold text-[#CCD0CF] block">Бишкек</span>
+                        <span class="text-xs text-[#9BA8AB]">Столица, центр и микрорайоны</span>
+                    </div>
+                    <span class="text-xs font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">214</span>
+                </button>
+                <button onclick="selectCityFromModal('Джалал-Абад')" class="w-full p-2.5 rounded-md bg-[#253745] hover:bg-[#34495e] border border-[#4A5C6A] flex items-center justify-between text-left transition-colors">
+                    <div>
+                        <span class="text-sm font-bold text-[#CCD0CF] block">Джалал-Абад</span>
+                        <span class="text-xs text-[#9BA8AB]">Манас, центр, Байзакова, Осмонова</span>
+                    </div>
+                    <span class="text-xs font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">47</span>
+                </button>
+                <button onclick="selectCityFromModal('Ош')" class="w-full p-2.5 rounded-md bg-[#253745] hover:bg-[#34495e] border border-[#4A5C6A] flex items-center justify-between text-left transition-colors">
+                    <div>
+                        <span class="text-sm font-bold text-[#CCD0CF] block">Ош</span>
+                        <span class="text-xs text-[#9BA8AB]">Южная столица, Масалиева, Навои</span>
+                    </div>
+                    <span class="text-xs font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">87</span>
+                </button>
+                <button onclick="selectCityFromModal('Каракол')" class="w-full p-2.5 rounded-md bg-[#253745] hover:bg-[#34495e] border border-[#4A5C6A] flex items-center justify-between text-left transition-colors">
+                    <div>
+                        <span class="text-sm font-bold text-[#CCD0CF] block">Каракол</span>
+                        <span class="text-xs text-[#9BA8AB]">Иссык-Кульская область</span>
+                    </div>
+                    <span class="text-xs font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">12</span>
+                </button>
+                <button onclick="selectCityFromModal('Токмок')" class="w-full p-2.5 rounded-md bg-[#253745] hover:bg-[#34495e] border border-[#4A5C6A] flex items-center justify-between text-left transition-colors">
+                    <div>
+                        <span class="text-sm font-bold text-[#CCD0CF] block">Токмок</span>
+                        <span class="text-xs text-[#9BA8AB]">Чуйская область</span>
+                    </div>
+                    <span class="text-xs font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">5</span>
+                </button>
+                <button onclick="selectCityFromModal('Кара-Балта')" class="w-full p-2.5 rounded-md bg-[#253745] hover:bg-[#34495e] border border-[#4A5C6A] flex items-center justify-between text-left transition-colors">
+                    <div>
+                        <span class="text-sm font-bold text-[#CCD0CF] block">Кара-Балта</span>
+                        <span class="text-xs text-[#9BA8AB]">Чуйская область</span>
+                    </div>
+                    <span class="text-xs font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">5</span>
+                </button>
+                <button onclick="selectCityFromModal('Кант')" class="w-full p-2.5 rounded-md bg-[#253745] hover:bg-[#34495e] border border-[#4A5C6A] flex items-center justify-between text-left transition-colors">
+                    <div>
+                        <span class="text-sm font-bold text-[#CCD0CF] block">Кант</span>
+                        <span class="text-xs text-[#9BA8AB]">Чуйская область</span>
+                    </div>
+                    <span class="text-xs font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">6</span>
+                </button>
+                <button onclick="selectCityFromModal('Талас')" class="w-full p-2.5 rounded-md bg-[#253745] hover:bg-[#34495e] border border-[#4A5C6A] flex items-center justify-between text-left transition-colors">
+                    <div>
+                        <span class="text-sm font-bold text-[#CCD0CF] block">Талас</span>
+                        <span class="text-xs text-[#9BA8AB]">Таласская область</span>
+                    </div>
+                    <span class="text-xs font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">4</span>
+                </button>
+                <button onclick="selectCityFromModal('Нарын')" class="w-full p-2.5 rounded-md bg-[#253745] hover:bg-[#34495e] border border-[#4A5C6A] flex items-center justify-between text-left transition-colors">
+                    <div>
+                        <span class="text-sm font-bold text-[#CCD0CF] block">Нарын</span>
+                        <span class="text-xs text-[#9BA8AB]">Нарынская область</span>
+                    </div>
+                    <span class="text-xs font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">5</span>
+                </button>
+                <button onclick="selectCityFromModal('Балыкчы')" class="w-full p-2.5 rounded-md bg-[#253745] hover:bg-[#34495e] border border-[#4A5C6A] flex items-center justify-between text-left transition-colors">
+                    <div>
+                        <span class="text-sm font-bold text-[#CCD0CF] block">Балыкчы</span>
+                        <span class="text-xs text-[#9BA8AB]">Иссык-Кульская область</span>
+                    </div>
+                    <span class="text-xs font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">3</span>
+                </button>
+                <button onclick="selectCityFromModal('Узген')" class="w-full p-2.5 rounded-md bg-[#253745] hover:bg-[#34495e] border border-[#4A5C6A] flex items-center justify-between text-left transition-colors">
+                    <div>
+                        <span class="text-sm font-bold text-[#CCD0CF] block">Узген</span>
+                        <span class="text-xs text-[#9BA8AB]">Ошская область</span>
+                    </div>
+                    <span class="text-xs font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">6</span>
+                </button>
+                <button onclick="selectCityFromModal('Кызыл-Кия')" class="w-full p-2.5 rounded-md bg-[#253745] hover:bg-[#34495e] border border-[#4A5C6A] flex items-center justify-between text-left transition-colors">
+                    <div>
+                        <span class="text-sm font-bold text-[#CCD0CF] block">Кызыл-Кия</span>
+                        <span class="text-xs text-[#9BA8AB]">Баткенская область</span>
+                    </div>
+                    <span class="text-xs font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">7</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= ROUTE MODAL (#11212D & #253745) ================= -->
+    <div id="route-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-[#11212D] border border-[#4A5C6A] rounded-xl w-full max-w-sm overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div class="p-4 border-b border-[#4A5C6A] flex items-center justify-between bg-[#11212D]">
+                <div>
+                    <h3 class="font-display font-bold text-sm text-white flex items-center gap-2">
+                        <i class="fa-solid fa-diamond-turn-right text-amber-400"></i>
+                        <span>Построить маршрут</span>
+                    </h3>
+                    <p id="route-shop-name" class="text-xs text-[#9BA8AB] truncate mt-0.5 max-w-[220px]">Chop-Chop</p>
+                </div>
+                <button onclick="closeRouteModal()" class="w-7 h-7 rounded-md bg-[#253745] text-[#9BA8AB] hover:text-white flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+            </div>
+            <div class="p-4 space-y-2.5 bg-[#06141B]">
+                <p class="text-xs text-[#9BA8AB] mb-1">Выберите приложение для навигации:</p>
+                
+                <a id="route-link-2gis" href="#" target="_blank" onclick="closeRouteModal()" class="w-full p-3 rounded-md bg-[#253745] hover:bg-[#34495e] text-emerald-400 border border-[#4A5C6A] flex items-center justify-between transition-all group">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-md bg-emerald-500/10 flex items-center justify-center font-bold text-xs text-emerald-400 border border-emerald-500/20">
+                            2Г
+                        </div>
+                        <div class="text-left">
+                            <span class="text-xs font-bold text-[#CCD0CF] block group-hover:text-emerald-400 transition-colors">2ГИС Навигатор</span>
+                            <span class="text-[10px] text-[#9BA8AB] block">Построить маршрут на авто или пешком</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-xs text-[#4A5C6A] group-hover:text-emerald-400 transition-colors"></i>
+                </a>
+
+                <a id="route-link-yandex" href="#" target="_blank" onclick="closeRouteModal()" class="w-full p-3 rounded-md bg-[#253745] hover:bg-[#34495e] text-rose-400 border border-[#4A5C6A] flex items-center justify-between transition-all group">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-md bg-rose-500/10 flex items-center justify-center font-bold text-xs text-rose-400 border border-rose-500/20">
+                            Я
+                        </div>
+                        <div class="text-left">
+                            <span class="text-xs font-bold text-[#CCD0CF] block group-hover:text-rose-400 transition-colors">Яндекс Карты</span>
+                            <span class="text-[10px] text-[#9BA8AB] block">Яндекс Навигатор и такси</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-xs text-[#4A5C6A] group-hover:text-rose-400 transition-colors"></i>
+                </a>
+
+                <a id="route-link-google" href="#" target="_blank" onclick="closeRouteModal()" class="w-full p-3 rounded-md bg-[#253745] hover:bg-[#34495e] text-sky-400 border border-[#4A5C6A] flex items-center justify-between transition-all group">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-md bg-sky-500/10 flex items-center justify-center font-bold text-xs text-sky-400 border border-sky-500/20">
+                            G
+                        </div>
+                        <div class="text-left">
+                            <span class="text-xs font-bold text-[#CCD0CF] block group-hover:text-sky-400 transition-colors">Google Карты</span>
+                            <span class="text-[10px] text-[#9BA8AB] block">Маршруты и навигация</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-xs text-[#4A5C6A] group-hover:text-sky-400 transition-colors"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= APPLICATION LOGIC SCRIPT ================= -->
+    <script>
+        let allBarbershops = Array.isArray(window.BARBERSHOPS_DATA) ? [...window.BARBERSHOPS_DATA] : [];
+        let filteredBarbershops = [];
+        let map = null;
+        let currentTileLayer = null;
+        let markersGroup = null;
+        let markersMap = {};
+        let currentCity = 'all';
+        let currentCategory = 'all';
+        let searchQuery = '';
+        let currentTileProvider = 'google-streets';
+
+        // Geolocation state
+        let userLocation = null;
+        let userMarker = null;
+
+        // Mobile Bottom Sheet state: 'collapsed' (72px), 'half' (48vh), 'full' (85vh)
+        let sheetState = 'collapsed';
+
+        // Roulette state
+        let rouletteShop = null;
+        let rouletteInterval = null;
+
+        // Merge custom barbershop pins saved via Admin Panel ("Точка на карте")
+        function mergeCustomAdminLocations(customMap) {
+            if (!customMap || typeof customMap !== 'object') return;
+            Object.values(customMap).forEach(loc => {
+                if (!loc || !loc.id || !isFinite(+loc.lat) || !isFinite(+loc.lon)) return;
+                const existingIdx = allBarbershops.findIndex(s => String(s.id) === String(loc.id));
+                const normalized = {
+                    id: String(loc.id),
+                    name: loc.name || ('Барбершоп ' + loc.id),
+                    brand: loc.name || ('Барбершоп ' + loc.id),
+                    city: loc.city || 'Бишкек',
+                    area: loc.area || 'Онлайн-запись SaaS',
+                    address: loc.address || 'Адрес указан на карте',
+                    lat: +loc.lat,
+                    lon: +loc.lon,
+                    rating: +loc.rating || 5.0,
+                    reviews_count: +loc.reviews || 25,
+                    phone: loc.phone || '+996 555 00-00-00',
+                    working_hours: loc.hours || '10:00 - 21:00',
+                    price_range: '500 - 1 500 сом',
+                    booking_type: 'yclients',
+                    photo: loc.photo || 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=400&auto=format&fit=crop&q=80'
+                };
+                if (existingIdx >= 0) {
+                    allBarbershops[existingIdx] = { ...allBarbershops[existingIdx], ...normalized };
+                } else {
+                    allBarbershops.unshift(normalized);
+                }
+            });
+        }
+
+        // Navigate directly to Multi-Tenant Booking Page: index.html?id={selected_id}
+        function openBookingModal(shopId) {
+            const shop = allBarbershops.find(s => String(s.id) === String(shopId));
+            const targetId = shop ? shop.id : shopId;
+            const shopName = shop ? shop.name : '';
+            window.location.href = `index.html?id=${encodeURIComponent(targetId)}${shopName ? '&shopName=' + encodeURIComponent(shopName) : ''}`;
+        }
+
+        // Web Audio Synthesizer (for sci-fi radar sound effects)
+        function playRadarBeep(freq = 880, duration = 0.08) {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                const audioCtx = new AudioCtx();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        // Working hours checker (Kyrgyzstan UTC+6)
+        function isOpenNow(hoursStr) {
+            if (!hoursStr) return true;
+            if (hoursStr.toLowerCase().includes('круглосуточно')) return true;
+
+            const match = hoursStr.match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
+            if (!match) return true;
+
+            const now = new Date();
+            const kgTime = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (6 * 3600000));
+            const curMinutes = kgTime.getHours() * 60 + kgTime.getMinutes();
+
+            const startMinutes = parseInt(match[1], 10) * 60 + parseInt(match[2], 10);
+            const endMinutes = parseInt(match[3], 10) * 60 + parseInt(match[4], 10);
+
+            if (endMinutes > startMinutes) {
+                return curMinutes >= startMinutes && curMinutes < endMinutes;
+            } else {
+                return curMinutes >= startMinutes || curMinutes < endMinutes;
+            }
+        }
+
+        // Distance Calculation (Haversine formula)
+        function getDistanceKm(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        function formatDistance(km) {
+            if (km < 1) {
+                return `${Math.round(km * 1000)} м`;
+            }
+            return `${km.toFixed(1)} км`;
+        }
+
+        // Apply User GPS Coordinates on Map
+        function applyUserCoordinates(latitude, longitude) {
+            userLocation = { lat: latitude, lon: longitude };
+            const geoBtn = document.getElementById('geo-btn');
+            if (geoBtn) {
+                geoBtn.innerHTML = '<i class="fa-solid fa-location-crosshairs text-emerald-400 text-sm"></i><span class="hidden sm:inline">Вы здесь</span>';
+            }
+            if (map) {
+                if (userMarker) {
+                    map.removeLayer(userMarker);
+                }
+                const userIcon = L.divIcon({
+                    className: 'user-pin-container',
+                    html: '<div class="user-geo-pin"></div>',
+                    iconSize: [18, 18],
+                    iconAnchor: [9, 9]
+                });
+                userMarker = L.marker([latitude, longitude], { icon: userIcon, zIndexOffset: 1000 }).addTo(map);
+                userMarker.bindPopup('<div class="p-2 text-xs font-bold text-white text-center">📍 Ваше местоположение</div>').openPopup();
+                map.flyTo([latitude, longitude], 15, { duration: 1.0 });
+                const statusEl = document.getElementById('map-status-text');
+                if (statusEl) statusEl.textContent = 'Ваша геолокация определена';
+            }
+            renderView();
+        }
+
+        // Initialize Application
+        window.addEventListener('DOMContentLoaded', async () => {
+            if (window.BarberMobileBridge) {
+                mergeCustomAdminLocations(window.BarberMobileBridge.getCustomLocationsLocal());
+            }
+
+            initMap();
+            renderView();
+            initSheetTouchGestures();
+
+            // Check if opened from Role Selection Screen ("Я Клиент") with GPS parameters
+            const params = new URLSearchParams(window.location.search);
+            const gpsParam = params.get('gps');
+            const latParam = parseFloat(params.get('lat'));
+            const lonParam = parseFloat(params.get('lon'));
+            if (gpsParam === '1' && isFinite(latParam) && isFinite(lonParam)) {
+                applyUserCoordinates(latParam, lonParam);
+            } else if (gpsParam === '1') {
+                locateUser();
+            }
+
+            // Sync remote custom coordinates from Firestore if available
+            if (window.BarberMobileBridge && window.BarberMobileBridge.syncRemoteLocationsToMap) {
+                const remoteMap = await window.BarberMobileBridge.syncRemoteLocationsToMap();
+                mergeCustomAdminLocations(remoteMap);
+                renderView();
+            }
+
+            setTimeout(resizeMap, 200);
+            setTimeout(resizeMap, 600);
+            setTimeout(resizeMap, 1200);
+        });
+
+        window.addEventListener('resize', () => {
+            resizeMap();
+        });
+
+        function resizeMap() {
+            if (map) {
+                map.invalidateSize(true);
+            }
+        }
+
+        // Initialize Map
+        function initMap() {
+            try {
+                const bishkekLat = 42.8724;
+                const bishkekLon = 74.5976;
+
+                map = L.map('map', {
+                    zoomControl: false,
+                    attributionControl: false
+                }).setView([bishkekLat, bishkekLon], 13);
+
+                L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+                setMapTile('google-streets');
+
+                markersGroup = L.markerClusterGroup({
+                    showCoverageOnHover: false,
+                    maxClusterRadius: 36,
+                    spiderfyOnMaxZoom: true
+                });
+                map.addLayer(markersGroup);
+
+                document.getElementById('map-status-text').textContent = 'Карта активна | Дома и улицы';
+            } catch (err) {
+                console.error("Map init error:", err);
+                document.getElementById('map-status-text').textContent = 'Ошибка загрузки карты: ' + err.message;
+            }
+        }
+
+        // Tile layer switcher
+        function setMapTile(provider) {
+            currentTileProvider = provider;
+            const yandexContainer = document.getElementById('yandex-widget-container');
+
+            const btnIds = ['2gis', 'google-streets', 'yandex-widget', 'google-hybrid', 'esri'];
+            btnIds.forEach(id => {
+                const btn = document.getElementById(`layer-btn-${id}`);
+                if (btn) btn.className = 'px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-md text-[#CCD0CF] hover:text-white hover:bg-[#253745] text-xs flex items-center gap-1 transition-all';
+            });
+            const activeBtn = document.getElementById(`layer-btn-${provider}`);
+            if (activeBtn) activeBtn.className = 'px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-md bg-gradient-to-r from-amber-400 to-amber-500 text-black font-bold text-xs flex items-center gap-1 transition-all shadow-sm';
+
+            if (provider === 'yandex-widget') {
+                if (yandexContainer) yandexContainer.classList.remove('hidden');
+                document.getElementById('map-status-text').textContent = 'Слой: Яндекс Карты (Официальный виджет поиска)';
+                return;
+            }
+
+            if (yandexContainer) yandexContainer.classList.add('hidden');
+
+            if (currentTileLayer && map) {
+                map.removeLayer(currentTileLayer);
+            }
+
+            if (provider === '2gis') {
+                currentTileLayer = L.tileLayer('https://tile{s}.maps.2gis.com/tiles?x={x}&y={y}&z={z}&v=1.5&key=fb2542a3-ea70-441d-9b49-bbc1b26168c5', {
+                    subdomains: ['0', '1', '2', '3'],
+                    maxZoom: 19
+                }).addTo(map);
+                document.getElementById('map-status-text').textContent = 'Слой: 2ГИС (Официальные карты Кыргызстана)';
+            } else if (provider === 'google-streets') {
+                currentTileLayer = L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&hl=ru', {
+                    subdomains: ['0', '1', '2', '3'],
+                    maxZoom: 20
+                }).addTo(map);
+                document.getElementById('map-status-text').textContent = 'Слой: Google Карты (Улицы и дома на русском)';
+            } else if (provider === 'google-hybrid') {
+                currentTileLayer = L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}&hl=ru', {
+                    subdomains: ['0', '1', '2', '3'],
+                    maxZoom: 20
+                }).addTo(map);
+                document.getElementById('map-status-text').textContent = 'Слой: Спутник HD + Улицы (Гибрид)';
+            } else if (provider === 'esri') {
+                currentTileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+                    maxZoom: 18
+                }).addTo(map);
+                document.getElementById('map-status-text').textContent = 'Слой: Esri World Street Map';
+            }
+
+            resizeMap();
+        }
+
+        // Render Cards and Markers
+        function renderView() {
+            filteredBarbershops = allBarbershops.filter(shop => {
+                if (currentCity !== 'all' && shop.city !== currentCity) return false;
+                if (currentCategory === 'open' && !isOpenNow(shop.working_hours)) return false;
+                if (currentCategory === 'online' && shop.booking_type !== 'yclients' && shop.booking_type !== 'dikidi') return false;
+                if (currentCategory === 'whatsapp' && shop.booking_type !== 'whatsapp') return false;
+                if (currentCategory === 'top' && shop.rating < 4.8) return false;
+
+                if (searchQuery.trim() !== '') {
+                    const q = searchQuery.toLowerCase();
+                    const matchName = (shop.name || '').toLowerCase().includes(q);
+                    const matchAddress = (shop.address || '').toLowerCase().includes(q);
+                    const matchCity = (shop.city || '').toLowerCase().includes(q);
+                    const matchArea = shop.area ? shop.area.toLowerCase().includes(q) : false;
+                    const matchPhone = shop.phone ? shop.phone.replace(/[^0-9]/g, '').includes(q.replace(/[^0-9]/g, '')) : false;
+                    if (!matchName && !matchAddress && !matchCity && !matchArea && !matchPhone) return false;
+                }
+
+                return true;
+            });
+
+            if (userLocation) {
+                filteredBarbershops.sort((a, b) => {
+                    const distA = getDistanceKm(userLocation.lat, userLocation.lon, a.lat, a.lon);
+                    const distB = getDistanceKm(userLocation.lat, userLocation.lon, b.lat, b.lon);
+                    return distA - distB;
+                });
+            }
+
+            document.getElementById('total-count-badge').textContent = filteredBarbershops.length;
+            const statsEl = document.getElementById('sidebar-count-stats');
+            if (statsEl) statsEl.textContent = `${filteredBarbershops.length} из ${allBarbershops.length} мест`;
+
+            const sheetCountEl = document.getElementById('sheet-count');
+            if (sheetCountEl) sheetCountEl.textContent = filteredBarbershops.length;
+
+            renderSidebarCards();
+            renderSheetCards();
+            renderMapMarkers();
+        }
+
+        // Build HTML for a barbershop card (#253745 slate background)
+        function buildCardHtml(shop, isMobile = false) {
+            const cleanPhone = (shop.phone || '').replace(/[^0-9]/g, '');
+            const open = isOpenNow(shop.working_hours);
+            const statusBadge = open
+                ? `<span class="text-[10px] font-semibold text-emerald-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>Открыто</span>`
+                : `<span class="text-[10px] font-semibold text-[#9BA8AB] flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-slate-600"></span>Закрыто</span>`;
+
+            let distBadge = '';
+            if (userLocation) {
+                const km = getDistanceKm(userLocation.lat, userLocation.lon, shop.lat, shop.lon);
+                distBadge = `<span class="text-[10px] font-bold text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/20 flex items-center gap-1"><i class="fa-solid fa-person-walking text-[10px]"></i>${formatDistance(km)}</span>`;
+            }
+
+            let crmBadge = '';
+            if (shop.booking_type === 'yclients') {
+                crmBadge = `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#11212D] text-amber-400 border border-[#4A5C6A]"><i class="fa-solid fa-bolt mr-1 text-amber-400"></i>Онлайн</span>`;
+            } else if (shop.booking_type === 'dikidi') {
+                crmBadge = `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#11212D] text-blue-400 border border-[#4A5C6A]"><i class="fa-solid fa-bolt mr-1 text-blue-400"></i>DIKIDI</span>`;
+            } else {
+                crmBadge = `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#11212D] text-emerald-400 border border-[#4A5C6A]"><i class="fa-brands fa-whatsapp mr-1 text-emerald-400"></i>WhatsApp</span>`;
+            }
+
+            const areaTag = shop.area ? `<span class="text-[10px] bg-[#11212D] text-[#9BA8AB] px-1.5 py-0.5 rounded border border-[#4A5C6A]">${shop.area}</span>` : '';
+            const photoUrl = shop.photo || 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=400&auto=format&fit=crop&q=80';
+
+            return `
+                <div class="flex items-start gap-2.5 sm:gap-3">
+                    <img src="${photoUrl}" class="w-14 h-14 sm:w-16 sm:h-16 rounded-md object-cover shrink-0 border border-[#4A5C6A]" alt="${shop.name}">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between gap-1 mb-0.5">
+                            <h4 class="font-display font-bold text-sm text-[#CCD0CF] truncate group-hover:text-amber-400 transition-colors">${shop.name}</h4>
+                            <div class="flex items-center gap-1 shrink-0 text-xs text-amber-400 font-bold bg-[#11212D] px-1.5 py-0.5 rounded border border-[#4A5C6A]">
+                                <i class="fa-solid fa-star text-[10px]"></i>
+                                <span>${shop.rating || '5.0'}</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-[#9BA8AB] truncate mb-1">
+                            <i class="fa-solid fa-location-dot text-[#4A5C6A] mr-1"></i>${shop.address}
+                        </p>
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            ${crmBadge}
+                            ${statusBadge}
+                            ${distBadge}
+                            ${areaTag}
+                            <span class="text-[10px] text-[#9BA8AB] flex items-center gap-1"><i class="fa-regular fa-clock text-[9px]"></i>${shop.working_hours || '10:00 - 21:00'}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ergonomic Action Buttons -->
+                <div class="pt-2 border-t border-[#4A5C6A] flex flex-col gap-1.5">
+                    <div class="grid grid-cols-4 gap-1.5">
+                        <button onclick="event.stopPropagation(); openBookingModal('${shop.id}')" class="col-span-2 py-2 px-2.5 rounded-md bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-extrabold text-xs shadow-md shadow-amber-500/20 flex items-center justify-center gap-1.5 transition-all active:scale-95">
+                            <i class="fa-solid fa-calendar-check text-[11px]"></i>
+                            <span>Записаться онлайн</span>
+                        </button>
+                        <a href="tel:${cleanPhone}" onclick="event.stopPropagation()" class="py-2 px-1.5 rounded-md bg-[#11212D] hover:bg-[#182836] text-[#CCD0CF] hover:text-emerald-400 border border-[#4A5C6A] font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm" title="Прямой вызов на телефон">
+                            <i class="fa-solid fa-phone text-emerald-400 text-[10px]"></i>
+                            <span>Звонок</span>
+                        </a>
+                        <button onclick="event.stopPropagation(); focusBarbershop('${shop.id}')" class="py-2 px-1.5 rounded-md bg-[#11212D] hover:bg-[#182836] text-[#CCD0CF] hover:text-amber-400 border border-[#4A5C6A] font-bold text-xs flex items-center justify-center gap-1 transition-colors" title="Показать на карте">
+                            <i class="fa-solid fa-location-dot text-amber-400 text-xs"></i>
+                            <span>Карта</span>
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between text-[11px] pt-0.5 px-0.5 text-[#9BA8AB]">
+                        <span class="font-mono text-[#CCD0CF] text-xs font-semibold">${shop.phone || '+996 555 00-00-00'}</span>
+                        <div class="flex items-center gap-2">
+                            <a href="${shop.link_2gis || `https://2gis.kg/${shop.city === 'Ош' ? 'osh' : (shop.city === 'Джалал-Абад' ? 'dzhalal-abad' : 'bishkek')}/search/${encodeURIComponent(shop.name)}`}" target="_blank" onclick="event.stopPropagation()" class="text-emerald-400 hover:underline font-bold">
+                                2ГИС
+                            </a>
+                            <span>•</span>
+                            <button onclick="event.stopPropagation(); openRouteModal('${shop.id}')" class="text-amber-400 hover:underline font-bold flex items-center gap-1">
+                                <i class="fa-solid fa-diamond-turn-right text-[9px]"></i>
+                                <span>Маршрут</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render Desktop Cards (Clicking card navigates to index.html?id={selected_id})
+        function renderSidebarCards() {
+            const listEl = document.getElementById('barbershop-list');
+            if (!listEl) return;
+            listEl.innerHTML = '';
+
+            if (filteredBarbershops.length === 0) {
+                listEl.innerHTML = `
+                    <div class="text-center py-12 text-[#9BA8AB]">
+                        <i class="fa-solid fa-scissors text-3xl mb-3 opacity-30"></i>
+                        <p class="text-sm font-medium">Ничего не найдено</p>
+                        <p class="text-xs mt-1">Попробуйте изменить запрос или фильтр</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredBarbershops.forEach(shop => {
+                const card = document.createElement('div');
+                card.id = `card-${shop.id}`;
+                card.className = `p-3 rounded-md bg-[#253745] border border-[#4A5C6A] hover:border-amber-400 hover:shadow-lg transition-all cursor-pointer group space-y-2`;
+                card.innerHTML = buildCardHtml(shop, false);
+                card.onclick = () => openBookingModal(shop.id);
+                listEl.appendChild(card);
+            });
+        }
+
+        // Render Mobile Sheet Cards
+        function renderSheetCards() {
+            const sheetList = document.getElementById('sheet-cards-list');
+            if (!sheetList) return;
+            sheetList.innerHTML = '';
+
+            if (filteredBarbershops.length === 0) {
+                sheetList.innerHTML = `
+                    <div class="text-center py-8 text-[#9BA8AB]">
+                        <p class="text-xs">Ничего не найдено по этому фильтру</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredBarbershops.forEach(shop => {
+                const card = document.createElement('div');
+                card.id = `sheet-card-${shop.id}`;
+                card.className = `p-3 rounded-md bg-[#253745] border border-[#4A5C6A] hover:border-amber-400 transition-all cursor-pointer space-y-2`;
+                card.innerHTML = buildCardHtml(shop, true);
+                card.onclick = () => openBookingModal(shop.id);
+                sheetList.appendChild(card);
+            });
+        }
+
+        // ================= GOLD METALLIC MAP MARKERS RENDERING =================
+        function renderMapMarkers() {
+            if (!markersGroup) return;
+            markersGroup.clearLayers();
+            markersMap = {};
+
+            filteredBarbershops.forEach(shop => {
+                const customIcon = L.divIcon({
+                    className: 'custom-pin-container',
+                    html: `
+                        <div class="barber-marker-pin" id="pin-${shop.id}">
+                            <i class="fa-solid fa-scissors"></i>
+                        </div>
+                    `,
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 40],
+                    popupAnchor: [0, -40]
+                });
+
+                const marker = L.marker([shop.lat, shop.lon], { icon: customIcon });
+
+                const cleanPhone = (shop.phone || '').replace(/[^0-9]/g, '');
+                const open = isOpenNow(shop.working_hours);
+                const statusBadge = open
+                    ? `<span class="text-emerald-400 text-[10px] font-semibold flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>Открыто</span>`
+                    : `<span class="text-[#9BA8AB] text-[10px] font-semibold flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-slate-600"></span>Закрыто</span>`;
+                const photoUrl = shop.photo || 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=400&auto=format&fit=crop&q=80';
+
+                const popupContent = `
+                    <div class="w-64 p-3 font-sans">
+                        <div class="relative mb-2">
+                            <img src="${photoUrl}" class="w-full h-24 object-cover rounded-md border border-[#4A5C6A]">
+                            <div class="absolute top-1.5 right-1.5 flex items-center gap-1 text-[11px] text-amber-400 font-bold bg-[#11212D]/90 px-1.5 py-0.5 rounded border border-[#4A5C6A]">
+                                <i class="fa-solid fa-star text-[9px]"></i> ${shop.rating || '5.0'}
+                            </div>
+                        </div>
+                        <h4 class="font-display font-bold text-sm text-[#CCD0CF] truncate mb-0.5">${shop.name}</h4>
+                        <p class="text-[11px] text-[#9BA8AB] truncate mb-1.5"><i class="fa-solid fa-location-dot text-[#4A5C6A] mr-1"></i>${shop.address}</p>
+                        <div class="flex items-center justify-between text-xs mb-2 text-[#CCD0CF]">
+                            <span class="text-[10px] text-[#9BA8AB]"><i class="fa-regular fa-clock text-amber-400 mr-1"></i>${shop.working_hours || '10:00 - 21:00'}</span>
+                            ${statusBadge}
+                        </div>
+                        <div class="grid grid-cols-4 gap-1 mb-2">
+                            <a href="tel:${cleanPhone}" class="py-1.5 text-center bg-[#11212D] hover:bg-[#182836] text-[#CCD0CF] hover:text-emerald-400 border border-[#4A5C6A] font-bold text-[11px] rounded-md transition-colors flex items-center justify-center gap-1" title="Позвонить">
+                                <i class="fa-solid fa-phone text-emerald-400 text-[9px]"></i>
+                                <span>Тел</span>
+                            </a>
+                            <a href="https://wa.me/${cleanPhone}?text=${encodeURIComponent('Здравствуйте! Хочу записаться на стрижку через сервис BarberMap.')}" target="_blank" class="py-1.5 text-center bg-[#11212D] hover:bg-[#182836] text-[#CCD0CF] hover:text-emerald-400 border border-[#4A5C6A] font-bold text-[11px] rounded-md transition-colors flex items-center justify-center gap-1" title="Написать в WhatsApp">
+                                <i class="fa-brands fa-whatsapp text-emerald-400 text-xs"></i>
+                                <span>WA</span>
+                            </a>
+                            <a href="${shop.link_2gis || `https://2gis.kg/${shop.city === 'Ош' ? 'osh' : (shop.city === 'Джалал-Абад' ? 'dzhalal-abad' : 'bishkek')}/search/${encodeURIComponent(shop.name)}`}" target="_blank" class="py-1.5 text-center bg-[#11212D] hover:bg-[#182836] text-[#CCD0CF] hover:text-emerald-400 border border-[#4A5C6A] text-[11px] font-bold rounded-md transition-colors flex items-center justify-center">
+                                2ГИС
+                            </a>
+                            <button onclick="openRouteModal('${shop.id}')" class="py-1.5 text-center bg-[#11212D] hover:bg-[#182836] text-[#CCD0CF] hover:text-amber-400 border border-[#4A5C6A] text-[11px] font-bold rounded-md transition-colors flex items-center justify-center gap-0.5" title="Построить маршрут">
+                                <i class="fa-solid fa-diamond-turn-right text-[8px] text-amber-400"></i>
+                                <span>Путь</span>
+                            </button>
+                        </div>
+                        <button onclick="openBookingModal('${shop.id}')" class="w-full py-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-extrabold text-xs rounded-md shadow-md transition-all active:scale-95">
+                            ✂️ Записаться онлайн
+                        </button>
+                    </div>
+                `;
+
+                marker.bindPopup(popupContent, {
+                    autoPan: true,
+                    autoPanPaddingTopLeft: L.point(40, 95),
+                    autoPanPaddingBottomRight: L.point(40, 60),
+                    closeButton: true
+                });
+
+                marker.on('click', () => {
+                    highlightBarbershop(shop.id);
+                    if (window.innerWidth < 768) {
+                        marker.closePopup();
+                        showQuickPreview(shop);
+                    }
+                });
+
+                markersGroup.addLayer(marker);
+                markersMap[shop.id] = marker;
+            });
+        }
+
+        // Focus barbershop when clicked on map
+        function focusBarbershop(id) {
+            const shop = allBarbershops.find(s => String(s.id) === String(id));
+            if (!shop) return;
+
+            highlightBarbershop(id);
+
+            if (window.innerWidth < 768) {
+                showQuickPreview(shop);
+                setMobileSheetState('collapsed');
+            } else {
+                closeQuickPreview();
+            }
+
+            if (currentTileProvider === 'yandex-widget') {
+                const iframe = document.getElementById('yandex-map-iframe');
+                if (iframe) {
+                    iframe.src = `https://yandex.com/map-widget/v1/?ll=${shop.lon}%2C${shop.lat}&z=17&pt=${shop.lon},${shop.lat},pm2rdm&mode=search&text=${encodeURIComponent(shop.name)}`;
+                }
+                document.getElementById('map-status-text').textContent = `Яндекс Карты: ${shop.name}`;
+                return;
+            }
+
+            if (!map) return;
+            const latOffset = (window.innerWidth >= 768) ? 0.0020 : 0;
+            map.flyTo([shop.lat + latOffset, shop.lon], 16.5, { duration: 0.7 });
+
+            if (window.innerWidth >= 768 && markersMap[id]) {
+                setTimeout(() => {
+                    markersMap[id].openPopup();
+                }, 350);
+            }
+        }
+
+        function highlightBarbershop(id) {
+            document.querySelectorAll('#barbershop-list > div, #sheet-cards-list > div').forEach(c => {
+                c.classList.remove('border-amber-400', 'ring-1', 'ring-amber-400/50', 'bg-[#2b3e4f]');
+                c.classList.add('bg-[#253745]', 'border-[#4A5C6A]');
+            });
+
+            const desktopCard = document.getElementById(`card-${id}`);
+            if (desktopCard) {
+                desktopCard.classList.remove('bg-[#253745]', 'border-[#4A5C6A]');
+                desktopCard.classList.add('border-amber-400', 'ring-1', 'ring-amber-400/50', 'bg-[#2b3e4f]');
+                desktopCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            const mobileCard = document.getElementById(`sheet-card-${id}`);
+            if (mobileCard) {
+                mobileCard.classList.remove('bg-[#253745]', 'border-[#4A5C6A]');
+                mobileCard.classList.add('border-amber-400', 'ring-1', 'ring-amber-400/50', 'bg-[#2b3e4f]');
+                mobileCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        // Show floating quick preview card (Strictly mobile)
+        function showQuickPreview(shop) {
+            if (window.innerWidth >= 768) {
+                closeQuickPreview();
+                return;
+            }
+
+            const card = document.getElementById('quick-preview-card');
+            if (!card) return;
+
+            const cleanPhone = (shop.phone || '').replace(/[^0-9]/g, '');
+            document.getElementById('prev-img').src = shop.photo || 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=400&auto=format&fit=crop&q=80';
+            document.getElementById('prev-name').textContent = shop.name;
+            document.getElementById('prev-address').textContent = shop.address;
+            document.getElementById('prev-rating').innerHTML = `<i class="fa-solid fa-star text-[10px]"></i> ${shop.rating || '5.0'}`;
+
+            if (userLocation) {
+                const km = getDistanceKm(userLocation.lat, userLocation.lon, shop.lat, shop.lon);
+                document.getElementById('prev-distance').textContent = `• ${formatDistance(km)}`;
+            } else {
+                document.getElementById('prev-distance').textContent = '';
+            }
+
+            document.getElementById('prev-call-btn').href = `tel:${cleanPhone}`;
+            document.getElementById('prev-wa-btn').href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent('Здравствуйте! Хочу записаться на стрижку через сервис BarberMap.')}`;
+            document.getElementById('prev-2gis-btn').href = shop.link_2gis || `https://2gis.kg/routeSearch/rsType/car/to/${shop.lon},${shop.lat}`;
+            document.getElementById('prev-book-btn').onclick = () => openBookingModal(shop.id);
+
+            card.classList.remove('hidden');
+        }
+
+        function closeQuickPreview() {
+            const card = document.getElementById('quick-preview-card');
+            if (card) card.classList.add('hidden');
+        }
+
+        // ================= MOBILE BOTTOM SHEET GESTURES & STATES =================
+        function setMobileSheetState(state) {
+            sheetState = state;
+            const sheet = document.getElementById('mobile-sheet');
+            const icon = document.getElementById('sheet-toggle-icon');
+            const label = document.getElementById('sheet-toggle-label');
+            const btnMap = document.getElementById('nav-btn-map');
+            const btnList = document.getElementById('nav-btn-list');
+
+            if (!sheet) return;
+
+            if (state === 'collapsed') {
+                sheet.style.height = '72px';
+                if (icon) icon.className = 'fa-solid fa-chevron-up text-[10px] text-amber-400 transition-transform';
+                if (label) label.textContent = 'Показать список';
+                if (btnMap) { btnMap.className = 'flex flex-col items-center justify-center flex-1 py-1 text-amber-400 font-bold'; }
+                if (btnList) { btnList.className = 'flex flex-col items-center justify-center flex-1 py-1 text-[#9BA8AB] hover:text-white'; }
+            } else if (state === 'half') {
+                sheet.style.height = '48vh';
+                if (icon) icon.className = 'fa-solid fa-chevron-down text-[10px] text-amber-400 transition-transform';
+                if (label) label.textContent = 'Свернуть';
+                if (btnMap) { btnMap.className = 'flex flex-col items-center justify-center flex-1 py-1 text-[#9BA8AB] hover:text-white'; }
+                if (btnList) { btnList.className = 'flex flex-col items-center justify-center flex-1 py-1 text-amber-400 font-bold'; }
+            } else if (state === 'full') {
+                sheet.style.height = '85vh';
+                if (icon) icon.className = 'fa-solid fa-chevron-down text-[10px] text-amber-400 transition-transform';
+                if (label) label.textContent = 'Свернуть';
+                if (btnMap) { btnMap.className = 'flex flex-col items-center justify-center flex-1 py-1 text-[#9BA8AB] hover:text-white'; }
+                if (btnList) { btnList.className = 'flex flex-col items-center justify-center flex-1 py-1 text-amber-400 font-bold'; }
+            }
+
+            resizeMap();
+        }
+
+        function toggleMobileSheet() {
+            if (sheetState === 'collapsed') {
+                setMobileSheetState('half');
+            } else {
+                setMobileSheetState('collapsed');
+            }
+        }
+
+        function initSheetTouchGestures() {
+            const header = document.getElementById('sheet-header');
+            if (!header) return;
+
+            let startY = 0;
+            let currentY = 0;
+
+            header.addEventListener('touchstart', (e) => {
+                startY = e.touches[0].clientY;
+            }, { passive: true });
+
+            header.addEventListener('touchend', (e) => {
+                currentY = e.changedTouches[0].clientY;
+                const diff = startY - currentY;
+                if (diff > 40) {
+                    if (sheetState === 'collapsed') setMobileSheetState('half');
+                    else if (sheetState === 'half') setMobileSheetState('full');
+                } else if (diff < -40) {
+                    if (sheetState === 'full') setMobileSheetState('half');
+                    else if (sheetState === 'half') setMobileSheetState('collapsed');
+                }
+            }, { passive: true });
+        }
+
+        // ================= MIND-BLOWING SUPER RADAR FEATURE =================
+        function triggerSuperRadar() {
+            const overlay = document.getElementById('radar-overlay');
+            const statusEl = document.getElementById('radar-status-text');
+            const subtextEl = document.getElementById('radar-subtext');
+
+            if (!overlay) return;
+            overlay.classList.remove('hidden');
+
+            playRadarBeep(440, 0.1);
+            statusEl.textContent = 'СКАНИРОВАНИЕ БАРБЕРШОПОВ...';
+            subtextEl.textContent = 'Определяем координаты и вычисляем геодезические расстояния';
+
+            let step = 0;
+            const scanInterval = setInterval(() => {
+                step++;
+                playRadarBeep(520 + (step * 80), 0.06);
+
+                if (step === 1) {
+                    statusEl.textContent = 'ПОДКЛЮЧЕНИЕ К СПУТНИКАМ GPS...';
+                } else if (step === 2) {
+                    statusEl.textContent = `АНАЛИЗ БАЗЫ (${allBarbershops.length} БАРБЕРШОПОВ)...`;
+                } else if (step === 3) {
+                    statusEl.textContent = 'ТОЧКА ЗАФИКСИРОВАНА!';
+                    playRadarBeep(880, 0.2);
+                    clearInterval(scanInterval);
+
+                    setTimeout(() => {
+                        overlay.classList.add('hidden');
+                        finishRadarSearch();
+                    }, 500);
+                }
+            }, 600);
+        }
+
+        function closeRadarOverlay() {
+            const overlay = document.getElementById('radar-overlay');
+            if (overlay) overlay.classList.add('hidden');
+        }
+
+        function finishRadarSearch() {
+            let targetShop = null;
+            if (userLocation) {
+                let minDistance = Infinity;
+                allBarbershops.forEach(s => {
+                    const d = getDistanceKm(userLocation.lat, userLocation.lon, s.lat, s.lon);
+                    if (d < minDistance) {
+                        minDistance = d;
+                        targetShop = s;
+                    }
+                });
+            }
+
+            if (!targetShop) {
+                const pool = allBarbershops.filter(s => currentCity === 'all' || s.city === currentCity);
+                targetShop = pool.sort((a, b) => b.rating - a.rating)[0] || allBarbershops[0];
+            }
+
+            confetti({
+                particleCount: 100,
+                spread: 80,
+                origin: { y: 0.6 },
+                colors: ['#fbbf24', '#f59e0b', '#38bdf8', '#ffffff']
+            });
+
+            focusBarbershop(targetShop.id);
+            setMobileSheetState('collapsed');
+
+            const pin = document.getElementById(`pin-${targetShop.id}`);
+            if (pin) {
+                const beacon = document.createElement('div');
+                beacon.className = 'radar-target-beacon';
+                pin.appendChild(beacon);
+                setTimeout(() => beacon.remove(), 6000);
+            }
+        }
+
+        // ================= BARBER ROULETTE ("МНЕ ПОВЕЗЁТ!") =================
+        function spinBarberRoulette() {
+            const modal = document.getElementById('roulette-modal');
+            if (modal) modal.classList.remove('hidden');
+            executeRouletteSpin();
+        }
+
+        function executeRouletteSpin() {
+            const pool = allBarbershops.filter(s => (currentCity === 'all' || s.city === currentCity) && s.rating >= 4.8);
+            if (pool.length === 0) return;
+
+            const nameEl = document.getElementById('roulette-shop-name');
+            const addrEl = document.getElementById('roulette-shop-addr');
+            const spinBtn = document.getElementById('roulette-spin-btn');
+
+            if (spinBtn) spinBtn.disabled = true;
+
+            let iterations = 0;
+            const maxIterations = 18;
+            if (rouletteInterval) clearInterval(rouletteInterval);
+
+            rouletteInterval = setInterval(() => {
+                iterations++;
+                const randomIdx = Math.floor(Math.random() * pool.length);
+                const tempShop = pool[randomIdx];
+                nameEl.textContent = tempShop.name;
+                addrEl.textContent = `${tempShop.city}, ${tempShop.address}`;
+                playRadarBeep(400 + (iterations * 25), 0.04);
+
+                if (iterations >= maxIterations) {
+                    clearInterval(rouletteInterval);
+                    rouletteShop = tempShop;
+                    if (spinBtn) spinBtn.disabled = false;
+                    playRadarBeep(980, 0.25);
+
+                    confetti({
+                        particleCount: 70,
+                        spread: 60,
+                        origin: { y: 0.6 },
+                        colors: ['#fbbf24', '#f59e0b', '#CCD0CF']
+                    });
+                }
+            }, 60);
+        }
+
+        function acceptRouletteChoice() {
+            if (rouletteShop) {
+                closeRouletteModal();
+                focusBarbershop(rouletteShop.id);
+                setMobileSheetState('collapsed');
+            }
+        }
+
+        function bookRouletteChoice() {
+            if (rouletteShop) {
+                openBookingModal(rouletteShop.id);
+            }
+        }
+
+        function closeRouletteModal() {
+            const modal = document.getElementById('roulette-modal');
+            if (modal) modal.classList.add('hidden');
+            if (rouletteInterval) clearInterval(rouletteInterval);
+        }
+
+        // ================= CITY FILTERING =================
+        function setCityFilter(city) {
+            currentCity = city;
+            const cityMap = [
+                { id: 'all', key: 'all' },
+                { id: 'bishkek', key: 'Бишкек' },
+                { id: 'ja', key: 'Джалал-Абад' },
+                { id: 'osh', key: 'Ош' },
+                { id: 'karakol', key: 'Каракол' }
+            ];
+
+            cityMap.forEach(c => {
+                const isSelected = (city === c.key);
+                const headerBtn = document.getElementById(`city-btn-${c.id}`);
+                if (headerBtn) {
+                    headerBtn.className = isSelected
+                        ? 'px-2.5 py-1.5 rounded-md transition-all bg-gradient-to-r from-amber-400 to-amber-500 text-black font-bold shadow-sm'
+                        : 'px-2.5 py-1.5 rounded-md text-[#CCD0CF] hover:text-white hover:bg-[#253745] transition-all';
+                }
+            });
+
+            const mobileLabel = document.getElementById('mobile-current-city-label');
+            const sheetCityName = document.getElementById('sheet-city-name');
+            const cityText = city === 'all' ? 'Все города' : city;
+            if (mobileLabel) mobileLabel.textContent = cityText;
+            if (sheetCityName) sheetCityName.textContent = cityText;
+
+            renderView();
+
+            if (currentTileProvider === 'yandex-widget') {
+                const iframe = document.getElementById('yandex-map-iframe');
+                if (iframe) {
+                    if (city === 'Бишкек') {
+                        iframe.src = 'https://yandex.com/map-widget/v1/?ll=74.5976%2C42.8724&z=13&mode=search&text=' + encodeURIComponent('барбершоп Бишкек');
+                    } else if (city === 'Ош') {
+                        iframe.src = 'https://yandex.com/map-widget/v1/?ll=72.8020%2C40.5280&z=13.5&mode=search&text=' + encodeURIComponent('барбершоп Ош');
+                    } else if (city === 'Джалал-Абад') {
+                        iframe.src = 'https://yandex.com/map-widget/v1/?ll=72.991779%2C40.934637&mode=search&text=' + encodeURIComponent('джалал абад барбершоп') + '&z=13.8';
+                    } else if (city === 'Каракол') {
+                        iframe.src = 'https://yandex.com/map-widget/v1/?ll=78.3930%2C42.4910&z=14&mode=search&text=' + encodeURIComponent('барбершоп Каракол');
+                    } else {
+                        iframe.src = 'https://yandex.com/map-widget/v1/?ll=73.5000%2C41.8000&z=7.2&mode=search&text=' + encodeURIComponent('барбершопы Кыргызстан');
+                    }
+                }
+                document.getElementById('map-status-text').textContent = `Яндекс Карты: ${cityText}`;
+                return;
+            }
+
+            if (map) {
+                if (city === 'Бишкек') {
+                    map.flyTo([42.8724, 74.5976], 13.2, { duration: 0.8 });
+                } else if (city === 'Ош') {
+                    map.flyTo([40.5280, 72.8020], 13.5, { duration: 0.8 });
+                } else if (city === 'Джалал-Абад') {
+                    map.flyTo([40.9333, 72.9810], 14, { duration: 0.8 });
+                } else if (city === 'Каракол') {
+                    map.flyTo([42.4910, 78.3930], 14, { duration: 0.8 });
+                } else if (city === 'Токмок') {
+                    map.flyTo([42.8350, 75.2930], 14, { duration: 0.8 });
+                } else if (city === 'Кант') {
+                    map.flyTo([42.8920, 74.8520], 14.5, { duration: 0.8 });
+                } else if (city === 'Нарын') {
+                    map.flyTo([41.4285, 75.9912], 14, { duration: 0.8 });
+                } else if (city === 'Талас') {
+                    map.flyTo([42.5225, 72.2415], 14, { duration: 0.8 });
+                } else if (city === 'Узген') {
+                    map.flyTo([40.7680, 73.3015], 14, { duration: 0.8 });
+                } else if (city === 'Кара-Балта') {
+                    map.flyTo([42.8140, 73.8480], 14, { duration: 0.8 });
+                } else if (city === 'Балыкчы') {
+                    map.flyTo([42.4580, 76.1850], 14, { duration: 0.8 });
+                } else if (city === 'Кызыл-Кия') {
+                    map.flyTo([40.2560, 72.1280], 14, { duration: 0.8 });
+                } else {
+                    const group = new L.featureGroup(markersGroup.getLayers());
+                    if (group.getLayers().length > 0) {
+                        map.fitBounds(group.getBounds().pad(0.08));
+                    }
+                }
+            }
+        }
+
+        function openCityModal() {
+            const modal = document.getElementById('city-modal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeCityModal() {
+            const modal = document.getElementById('city-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function selectCityFromModal(city) {
+            setCityFilter(city);
+            closeCityModal();
+        }
+
+        function resetMapView() {
+            setCityFilter(currentCity);
+        }
+
+        // ================= CATEGORY FILTERING =================
+        function setCategoryFilter(category) {
+            currentCategory = category;
+            ['all', 'open', 'online', 'whatsapp', 'top'].forEach(cat => {
+                const btn = document.getElementById(`filter-${cat}`);
+                if (btn) {
+                    if (category === cat) {
+                        btn.className = 'filter-chip active shrink-0 px-3 py-1.5 rounded-md bg-gradient-to-r from-amber-400 to-amber-500 text-black font-bold text-xs';
+                    } else {
+                        btn.className = 'filter-chip shrink-0 px-3 py-1.5 rounded-md bg-[#253745] text-[#CCD0CF] hover:text-white hover:bg-[#4A5C6A] border border-[#4A5C6A] flex items-center gap-1.5 text-xs transition-colors';
+                    }
+                }
+            });
+            renderView();
+        }
+
+        // ================= SEARCH =================
+        function handleSearch(val) {
+            searchQuery = val;
+            const desktopClear = document.getElementById('search-clear-btn');
+            const sheetClear = document.getElementById('sheet-search-clear');
+            const hasQuery = searchQuery.trim().length > 0;
+
+            if (desktopClear) {
+                if (hasQuery) desktopClear.classList.remove('hidden');
+                else desktopClear.classList.add('hidden');
+            }
+            if (sheetClear) {
+                if (hasQuery) sheetClear.classList.remove('hidden');
+                else sheetClear.classList.add('hidden');
+            }
+
+            const dInput = document.getElementById('search-input');
+            const sInput = document.getElementById('sheet-search-input');
+            if (dInput && dInput.value !== val) dInput.value = val;
+            if (sInput && sInput.value !== val) sInput.value = val;
+
+            renderView();
+        }
+
+        function clearSearch() {
+            handleSearch('');
+        }
+
+        // ================= USER GEOLOCATION =================
+        function locateUser() {
+            const geoBtn = document.getElementById('geo-btn');
+            if (!navigator.geolocation) {
+                alert("Геолокация не поддерживается вашим устройством");
+                return;
+            }
+
+            if (geoBtn) {
+                geoBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sky-400 text-sm"></i><span class="hidden sm:inline">Поиск...</span>';
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    applyUserCoordinates(pos.coords.latitude, pos.coords.longitude);
+                },
+                (err) => {
+                    console.warn("Geolocation error:", err);
+                    if (geoBtn) {
+                        geoBtn.innerHTML = '<i class="fa-solid fa-location-crosshairs text-sky-400 text-sm"></i><span class="hidden sm:inline">Где я</span>';
+                    }
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+            );
+        }
+
+        // ================= ROUTE MODAL LOGIC =================
+        function openRouteModal(shopId) {
+            const shop = allBarbershops.find(s => String(s.id) === String(shopId));
+            if (!shop) return;
+
+            document.getElementById('route-shop-name').textContent = `${shop.name} (${shop.address})`;
+            document.getElementById('route-link-2gis').href = `https://2gis.kg/routeSearch/rsType/car/to/${shop.lon},${shop.lat}`;
+            document.getElementById('route-link-yandex').href = `https://yandex.com/maps/?rtext=~${shop.lat},${shop.lon}&rtt=auto`;
+            document.getElementById('route-link-google').href = `https://www.google.com/maps/dir/?api=1&destination=${shop.lat},${shop.lon}`;
+
+            document.getElementById('route-modal').classList.remove('hidden');
+        }
+
+        function closeRouteModal() {
+            document.getElementById('route-modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

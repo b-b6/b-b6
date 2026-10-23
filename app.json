@@ -1,0 +1,52 @@
+{
+  "expo": {
+    "name": "BarberMap KG — Barber SaaS",
+    "slug": "barbermap-kg-saas",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "barbersaas",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#06141B",
+    "splash": {
+      "backgroundColor": "#06141B"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "kg.barbermap.saas",
+      "associatedDomains": [
+        "applinks:b-b6.github.io"
+      ],
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Геолокация используется только для поиска ближайших к вам барбершопов на карте Кыргызстана."
+      }
+    },
+    "android": {
+      "package": "kg.barbermap.saas",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "POST_NOTIFICATIONS",
+        "VIBRATE"
+      ],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "b-b6.github.io",
+              "pathPrefix": "/b-b6/book"
+            },
+            {
+              "scheme": "https",
+              "host": "b-b6.github.io",
+              "pathPrefix": "/b-b6/index.html"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
+    }
+  }
+}

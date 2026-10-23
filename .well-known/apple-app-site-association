@@ -1,0 +1,16 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "TEAMID1234.kg.barbermap.saas",
+        "paths": [
+          "/b-b6/book*",
+          "/b-b6/index.html*",
+          "/book*",
+          "/index.html*"
+        ]
+      }
+    ]
+  }
+}

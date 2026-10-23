@@ -1,0 +1,37 @@
+{
+  "appId": "kg.barbermap.saas",
+  "appName": "BarberMap SaaS",
+  "webDir": ".",
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "https://b-b6.github.io/b-b6/app.html",
+    "cleartext": true,
+    "allowNavigation": [
+      "b-b6.github.io",
+      "*.2gis.com",
+      "*.google.com",
+      "*.googleapis.com"
+    ]
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1500,
+      "backgroundColor": "#06141B",
+      "showSpinner": false
+    },
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    },
+    "Geolocation": {
+      "permissions": ["location"]
+    }
+  },
+  "android": {
+    "backgroundColor": "#06141B",
+    "allowMixedContent": true
+  },
+  "ios": {
+    "backgroundColor": "#06141B",
+    "contentInset": "always"
+  }
+}

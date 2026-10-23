@@ -109,11 +109,38 @@ const i18n = {
             [41.3580, 69.2420]
         ];
 
+        function getCatalogBarbershopInfo() {
+            const tenantId = window.appDB ? String(window.appDB.tenantId) : '';
+            const customMap = (window.BarberMobileBridge && window.BarberMobileBridge.getCustomLocationsLocal)
+                ? window.BarberMobileBridge.getCustomLocationsLocal()
+                : {};
+            if (customMap && customMap[tenantId]) {
+                return customMap[tenantId];
+            }
+            if (Array.isArray(window.BARBERSHOPS_DATA)) {
+                const found = window.BARBERSHOPS_DATA.find(s => String(s.id) === tenantId);
+                if (found) return found;
+            }
+            return null;
+        }
+
+        function isSoloBookingMode() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('solo') === '1' || Boolean(store.settings && store.settings.soloMode);
+        }
+
         function getMasterCoords(m, idx) {
             const lat = parseFloat(m.lat);
             const lng = parseFloat(m.lng);
             if (!isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) {
                 return [lat, lng];
+            }
+            const catShop = getCatalogBarbershopInfo();
+            if (catShop && isFinite(+catShop.lat) && isFinite(+catShop.lon)) {
+                return [+catShop.lat + (idx * 0.0004), +catShop.lon + (idx * 0.0004)];
+            }
+            if (store.settings && isFinite(+store.settings.lat) && isFinite(+store.settings.lon)) {
+                return [+store.settings.lat + (idx * 0.0004), +store.settings.lon + (idx * 0.0004)];
             }
             return TASHKENT_FALLBACK_COORDS[idx % TASHKENT_FALLBACK_COORDS.length];
         }
@@ -121,14 +148,21 @@ const i18n = {
         function initMainMap() {
             const mapEl = document.getElementById('main-map');
             if (!mapEl || typeof L === 'undefined') return;
+            const catShop = getCatalogBarbershopInfo();
+            const initCenter = (catShop && isFinite(+catShop.lat) && isFinite(+catShop.lon))
+                ? [+catShop.lat, +catShop.lon]
+                : (store.settings && isFinite(+store.settings.lat) && isFinite(+store.settings.lon))
+                    ? [+store.settings.lat, +store.settings.lon]
+                    : [42.8746, 74.5976];
             if (mainMap) {
                 mainMap.invalidateSize();
+                mainMap.setView(initCenter, 14);
                 renderMapMarkers();
                 return;
             }
             mainMap = L.map('main-map', {
-                center: [41.3150, 69.2790],
-                zoom: 12,
+                center: initCenter,
+                zoom: 14,
                 zoomControl: false
             });
             L.control.zoom({ position: 'bottomright' }).addTo(mainMap);
@@ -351,13 +385,21 @@ const i18n = {
         }
 
         function applySettings(settings) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlShopName = urlParams.get('shopName');
+            const catShop = getCatalogBarbershopInfo();
             const customName = (window.appDB && window.appDB.tenantId === "shine_barbershop") ? "Shine Barbershop" : null;
-            const effectiveName = (settings && settings.shopName) || customName;
+            const effectiveName = (settings && settings.shopName) || urlShopName || (catShop && catShop.name) || customName;
             if (effectiveName) {
                 if (settings) settings.shopName = effectiveName;
-                document.title = settings.shopName + " - Онлайн Запись";
-                Object.keys(i18n).forEach(lang => { if(i18n[lang]) i18n[lang].title = settings.shopName; });
-                document.querySelectorAll('[data-i18n="title"]').forEach(el => { el.innerHTML = settings.shopName; });
+                document.title = effectiveName + " - Онлайн Запись";
+                Object.keys(i18n).forEach(lang => { if(i18n[lang]) i18n[lang].title = effectiveName; });
+                document.querySelectorAll('[data-i18n="title"]').forEach(el => { el.innerHTML = effectiveName; });
+            }
+            if (catShop && catShop.address) {
+                document.querySelectorAll('[data-i18n="subtitle"]').forEach(el => {
+                    el.innerHTML = `📍 ${catShop.city ? catShop.city + ', ' : ''}${catShop.address}`;
+                });
             }
             if(settings && settings.design) {
                 const des = settings.design;
@@ -608,9 +650,21 @@ const i18n = {
             });
         }
 
-        // STEPPER CONTROL
+        // STEPPER CONTROL (With Solo-Master Mode Support — Skips Step 2 Master Selection)
         function nextStep(step) {
             triggerHaptic('light');
+
+            if (isSoloBookingMode() && step === 2) {
+                if (currentStep === 1) {
+                    const soloM = getMasters()[0] || { id: 1, name: (store.settings && store.settings.soloMasterName) || 'Топ-Мастер' };
+                    bookingData.masterId = soloM.id;
+                    bookingData.masterName = soloM.name;
+                    step = 3;
+                } else if (currentStep === 3) {
+                    step = 1;
+                }
+            }
+
             document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
             document.getElementById(`step-${step}`).classList.add('active');
             document.querySelectorAll('.step').forEach(el => {
@@ -963,8 +1017,11 @@ const i18n = {
             // Trigger success vibration
             triggerHaptic('success');
 
-            // Send notification to Telegram bot
+            // Send notification to Telegram bot & FCM Push Notification to Owner/Master devices
             sendTelegramPush(dbEntry);
+            if (window.BarberMobileBridge && window.BarberMobileBridge.sendBookingPushNotification) {
+                window.BarberMobileBridge.sendBookingPushNotification(window.appDB.tenantId, dbEntry);
+            }
 
             // Hide BackButton in Telegram Mini App on success screen
             if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.BackButton) {

@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#06141B">
+    <title>Кабинет Мастера | Barber SaaS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
+    <style>
+        :root {
+            --bg-deep: #06141B;
+            --bg-panel: #11212D;
+            --bg-card: #253745;
+            --border-color: #4A5C6A;
+            --gold: #fbbf24;
+            --gold-dark: #f59e0b;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --green: #10b981;
+            --red: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            padding-bottom: 90px;
+        }
+
+        /* Header */
+        .top-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(17, 33, 45, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .master-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .master-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #06141B;
+            font-weight: 800;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px rgba(251, 191, 36, 0.3);
+        }
+
+        .master-title h1 {
+            font-size: 16px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .master-title p {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Status Toggle Pill */
+        .status-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 12.5px;
+            font-weight: 800;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+
+        .status-toggle-btn.active {
+            background: rgba(16, 185, 129, 0.16);
+            color: #34d399;
+            border-color: rgba(16, 185, 129, 0.45);
+        }
+
+        .status-toggle-btn.paused {
+            background: rgba(245, 158, 11, 0.16);
+            color: var(--gold);
+            border-color: rgba(251, 191, 36, 0.45);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            box-shadow: 0 0 8px currentColor;
+        }
+
+        /* Container */
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        /* Personal Earnings Summary Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .stat-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 14px 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card.gold-highlight {
+            background: linear-gradient(145deg, #253745 0%, #11212D 100%);
+            border-color: var(--gold);
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.15);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 6px;
+        }
+
+        .stat-val {
+            font-size: 19px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .stat-card.gold-highlight .stat-val {
+            color: var(--gold);
+        }
+
+        .stat-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        /* Section Panels */
+        .tab-section {
+            display: none;
+        }
+
+        .tab-section.active {
+            display: block;
+        }
+
+        .panel-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .panel-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .panel-head h2 {
+            font-size: 16px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Single-Column Schedule Grid */
+        .date-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 14px;
+            background: var(--bg-card);
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .date-bar input[type="date"] {
+            background: transparent;
+            border: 0;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            outline: none;
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #06141B;
+            border: none;
+            padding: 9px 14px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 4px 14px rgba(251, 191, 36, 0.25);
+        }
+
+        .btn-outline {
+            background: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 8px 13px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 12.5px;
+            cursor: pointer;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .single-col-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .slot-row {
+            display: flex;
+            align-items: stretch;
+            gap: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 12px 14px;
+            transition: border-color 0.15s;
+        }
+
+        .slot-row.booked {
+            border-left: 4px solid var(--gold);
+            background: rgba(37, 55, 69, 0.95);
+        }
+
+        .slot-row.completed {
+            border-left: 4px solid var(--green);
+            opacity: 0.9;
+        }
+
+        .slot-row.free {
+            background: rgba(17, 33, 45, 0.65);
+            border-style: dashed;
+        }
+
+        .slot-time {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--gold);
+            min-width: 54px;
+            display: flex;
+            align-items: center;
+        }
+
+        .slot-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .slot-client {
+            font-size: 14.5px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .slot-service {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            margin-top: 2px;
+            font-weight: 600;
+        }
+
+        .slot-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Working Days ПН-ВС */
+        .days-row {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .day-btn {
+            padding: 10px 4px;
+            border-radius: 10px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 800;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .day-btn.on {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #06141B;
+            border-color: var(--gold);
+            box-shadow: 0 3px 10px rgba(251, 191, 36, 0.3);
+        }
+
+        /* Form Inputs */
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 11px 13px;
+            border-radius: 10px;
+            background: var(--bg-deep);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 14px;
+            font-weight: 600;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--gold);
+        }
+
+        /* Services List */
+        .service-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 68px;
+            background: rgba(17, 33, 45, 0.98);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 200;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 700;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px 0;
+        }
+
+        .nav-item.active {
+            color: var(--gold);
+        }
+
+        .nav-item span.icon {
+            font-size: 19px;
+        }
+
+        /* Modal */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(6, 20, 27, 0.8);
+            backdrop-filter: blur(4px);
+            z-index: 300;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal-backdrop.show {
+            display: flex;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 420px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 20px;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 14px;
+            background: rgba(239, 68, 68, 0.14);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #f87171;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="master-profile">
+            <div class="master-avatar" id="master-avatar-letter">М</div>
+            <div class="master-title">
+                <h1 id="master-display-name">Кабинет Мастера</h1>
+                <p id="master-tenant-badge">ID: default</p>
+            </div>
+        </div>
+        <button class="status-toggle-btn active" id="status-toggle-btn" onclick="toggleMasterActiveStatus()">
+            <span class="status-dot"></span>
+            <span id="status-toggle-text">Активен</span>
+        </button>
+    </header>
+
+    <main class="container">
+        <!-- Personal Earnings & Commission Stats (No access to other masters' cash) -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Записей сегодня</div>
+                <div class="stat-val" id="stat-today-count">0</div>
+                <div class="stat-sub" id="stat-completed-count">0 выполнено</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Оборот по слотам</div>
+                <div class="stat-val" id="stat-gross-sum">0 с</div>
+                <div class="stat-sub">Личные услуги</div>
+            </div>
+            <div class="stat-card gold-highlight">
+                <div class="stat-label">Мой заработок (<span id="stat-commission-pct">60</span>%)</div>
+                <div class="stat-val" id="stat-net-earnings">0 с</div>
+                <div class="stat-sub">Чистыми на руки</div>
+            </div>
+        </div>
+
+        <!-- TAB 1: SINGLE-COLUMN SCHEDULE FOR TODAY -->
+        <section id="tab-schedule" class="tab-section active">
+            <div class="panel-card">
+                <div class="panel-head">
+                    <h2>📅 Моя сетка записей (1 колонка)</h2>
+                    <button class="btn-gold" onclick="openAddBookingModal()">+ Записать</button>
+                </div>
+
+                <div class="date-bar">
+                    <button class="btn-outline" onclick="shiftScheduleDate(-1)">◀ Вчера</button>
+                    <input type="date" id="solo-schedule-date" onchange="renderSoloSchedule()">
+                    <button class="btn-outline" onclick="shiftScheduleDate(1)">Завтра ▶</button>
+                </div>
+
+                <div id="solo-slots-container" class="single-col-grid">
+                    <!-- Populated by assets/barber.js -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: PERSONAL SCHEDULE DAYS & STATUS -->
+        <section id="tab-workdays" class="tab-section">
+            <div class="panel-card">
+                <div class="panel-head">
+                    <h2>🗓 Мой график и статус</h2>
+                </div>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+                    Выберите ваши рабочие дни недели. В выходные дни запись к вам автоматически закрыта.
+                </p>
+
+                <div class="days-row" id="workdays-selector">
+                    <button type="button" class="day-btn on" data-day="ПН" onclick="toggleWorkDay('ПН')">ПН</button>
+                    <button type="button" class="day-btn on" data-day="ВТ" onclick="toggleWorkDay('ВТ')">ВТ</button>
+                    <button type="button" class="day-btn on" data-day="СР" onclick="toggleWorkDay('СР')">СР</button>
+                    <button type="button" class="day-btn on" data-day="ЧТ" onclick="toggleWorkDay('ЧТ')">ЧТ</button>
+                    <button type="button" class="day-btn on" data-day="ПТ" onclick="toggleWorkDay('ПТ')">ПТ</button>
+                    <button type="button" class="day-btn on" data-day="СБ" onclick="toggleWorkDay('СБ')">СБ</button>
+                    <button type="button" class="day-btn" data-day="ВС" onclick="toggleWorkDay('ВС')">ВС</button>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px;">
+                    <div class="form-group">
+                        <label>Начало смены</label>
+                        <input type="time" id="solo-work-start" class="form-input" value="10:00" onchange="saveSoloProfile()">
+                    </div>
+                    <div class="form-group">
+                        <label>Конец смены</label>
+                        <input type="time" id="solo-work-end" class="form-input" value="21:00" onchange="saveSoloProfile()">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 6px;">
+                    <label>Мой процент от стрижек (%)</label>
+                    <input type="number" id="solo-commission-input" class="form-input" min="10" max="100" step="5" value="60" onchange="saveSoloProfile()">
+                    <small style="font-size: 11.5px; color: var(--text-muted); display: block; margin-top: 4px;">
+                        Для частного соло-мастера на аренде кресла укажите 100%, для мастера на проценте — ваш % (например, 50% или 60%).
+                    </small>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: OWN SERVICES & PRICES -->
+        <section id="tab-services" class="tab-section">
+            <div class="panel-card">
+                <div class="panel-head">
+                    <h2>💈 Мои услуги и цены</h2>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 110px 90px; gap: 8px; margin-bottom: 14px;">
+                    <input type="text" id="new-srv-name" class="form-input" placeholder="Название услуги">
+                    <input type="number" id="new-srv-price" class="form-input" placeholder="Цена (с)">
+                    <input type="number" id="new-srv-dur" class="form-input" placeholder="Мин" value="45">
+                </div>
+                <button class="btn-gold" style="width: 100%; margin-bottom: 16px;" onclick="addSoloService()">
+                    + Добавить услугу в мой прайс
+                </button>
+
+                <div id="solo-services-list">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: PERSONAL QR CODE & SETTINGS -->
+        <section id="tab-settings" class="tab-section">
+            <div class="panel-card" style="text-align: center;">
+                <div class="panel-head" style="justify-content: center;">
+                    <h2>📱 Личный QR-код мастера (Без выбора мастера)</h2>
+                </div>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">
+                    Клиент сканирует этот QR-код и сразу попадает на выбор вашей услуги и времени (шаг выбора мастера пропускается автоматически).
+                </p>
+
+                <div id="solo-qr-container" style="background: #fff; padding: 16px; border-radius: 16px; display: inline-block; margin-bottom: 14px;"></div>
+
+                <div class="form-group" style="text-align: left;">
+                    <label>Прямая ссылка для Instagram / WhatsApp (Deep Link):</label>
+                    <input type="text" id="solo-direct-link" class="form-input" readonly onclick="this.select()">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button class="btn-gold" onclick="copySoloLink()">📋 Скопировать ссылку</button>
+                    <button class="btn-outline" onclick="openSoloClientPreview()">👁 Открыть как клиент</button>
+                </div>
+            </div>
+
+            <div class="panel-card">
+                <div class="panel-head">
+                    <h2>⚙️ Профиль соло-мастера</h2>
+                </div>
+                <div class="form-group">
+                    <label>Ваше имя (отображается клиентам)</label>
+                    <input type="text" id="solo-name-input" class="form-input" placeholder="Например: Азамат (Top Barber)">
+                </div>
+                <div class="form-group">
+                    <label>Специализация</label>
+                    <input type="text" id="solo-spec-input" class="form-input" placeholder="Fade / Борода / Классика">
+                </div>
+                <div class="form-group">
+                    <label>4-значный PIN-код для входа</label>
+                    <input type="password" id="solo-pin-input" class="form-input" maxlength="8" placeholder="1111">
+                </div>
+                <button class="btn-gold" style="width: 100%;" onclick="saveSoloProfile(true)">💾 Сохранить настройки</button>
+
+                <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0 12px;">
+                <button class="logout-btn" onclick="logoutMasterSession()">
+                    🚪 Выйти из аккаунта (Сменить роль)
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Manual Booking Modal -->
+    <div class="modal-backdrop" id="manual-booking-modal">
+        <div class="modal-box">
+            <h3 style="font-size: 17px; font-weight: 800; margin-bottom: 14px; color: var(--gold);">✂️ Новая личная запись</h3>
+            <div class="form-group">
+                <label>Имя клиента</label>
+                <input type="text" id="mb-client-name" class="form-input" placeholder="Имя клиента">
+            </div>
+            <div class="form-group">
+                <label>Телефон</label>
+                <input type="tel" id="mb-client-phone" class="form-input" placeholder="+996 555 00-00-00">
+            </div>
+            <div class="form-group">
+                <label>Услуга</label>
+                <select id="mb-service-select" class="form-input"></select>
+            </div>
+            <div class="form-group">
+                <label>Время</label>
+                <input type="time" id="mb-time-input" class="form-input" value="14:00">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px;">
+                <button class="btn-outline" onclick="closeAddBookingModal()">Отмена</button>
+                <button class="btn-gold" onclick="saveManualSoloBooking()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" data-tab="schedule" onclick="switchSoloTab('schedule', this)">
+            <span class="icon">📅</span>
+            <span>Записи</span>
+        </button>
+        <button class="nav-item" data-tab="workdays" onclick="switchSoloTab('workdays', this)">
+            <span class="icon">🗓</span>
+            <span>График и %</span>
+        </button>
+        <button class="nav-item" data-tab="services" onclick="switchSoloTab('services', this)">
+            <span class="icon">💈</span>
+            <span>Услуги</span>
+        </button>
+        <button class="nav-item" data-tab="settings" onclick="switchSoloTab('settings', this)">
+            <span class="icon">📱</span>
+            <span>QR и Профиль</span>
+        </button>
+    </nav>
+
+    <script src="assets/db.js"></script>
+    <script src="assets/mobile-bridge.js"></script>
+    <script src="assets/barber.js"></script>
+</body>
+
+</html>

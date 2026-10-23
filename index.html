@@ -20,9 +20,11 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- Core Logic & DB -->
+    <!-- Core Logic, Barbershops KG Catalog & Mobile Bridge -->
+    <script src="barbershops_kg.js"></script>
     <script src="assets/booking-logic.js"></script>
     <script src="assets/db.js"></script>
+    <script src="assets/mobile-bridge.js"></script>
 
     <script>
         function triggerHaptic(type = 'light') {
@@ -305,6 +307,12 @@
                 </div>
 
                 <div class="map-top-actions">
+                    <a href="barbermap_kg.html" class="lang-btn" style="text-decoration:none; display:inline-flex; align-items:center; gap:5px;" title="Все барбершопы Кыргызстана">
+                        🗺 Карта КР
+                    </a>
+                    <a href="app.html?switch_role=1" class="lang-btn" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px;" title="Выбор роли">
+                        👤 Роль
+                    </a>
                     <select class="lang-btn" id="lang-select" onchange="changeLanguage(this.value)">
                         <option value="ru">RU</option>
                         <option value="uz">UZ</option>
