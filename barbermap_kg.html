@@ -385,8 +385,42 @@ body.dragging .map-ctrls{transition:opacity .2s}
 
   /* ================= data ================= */
   let rawCatalog = (window.BARBERSHOPS_DATA || []).slice();
-  if (window.BarberMobileBridge && window.BarberMobileBridge.syncRemoteLocationsToMap) {
-    try { window.BarberMobileBridge.syncRemoteLocationsToMap(rawCatalog); } catch(e){}
+
+  // Merge custom coordinates & new branches saved from admin.html
+  if (window.BarberMobileBridge && window.BarberMobileBridge.getCustomLocationsLocal) {
+    try {
+      const customLocs = window.BarberMobileBridge.getCustomLocationsLocal() || {};
+      Object.keys(customLocs).forEach(tenantId => {
+        const item = customLocs[tenantId];
+        if (item && isFinite(item.lat) && isFinite(item.lon)) {
+          const idx = rawCatalog.findIndex(b => String(b.id) === String(tenantId));
+          if (idx >= 0) {
+            rawCatalog[idx] = {
+              ...rawCatalog[idx],
+              lat: item.lat,
+              lon: item.lon,
+              name: item.name || rawCatalog[idx].name,
+              address: item.address || rawCatalog[idx].address,
+              city: item.city || rawCatalog[idx].city
+            };
+          } else {
+            rawCatalog.unshift({
+              id: item.id,
+              name: item.name || 'Барбершоп',
+              city: item.city || 'Бишкек',
+              address: item.address || 'Адрес указан на карте',
+              lat: item.lat,
+              lon: item.lon,
+              rating: item.rating || 5.0,
+              reviews: item.reviews || 25,
+              hours: item.hours || '10:00 - 21:00'
+            });
+          }
+        }
+      });
+    } catch(e) {
+      console.warn('Error applying custom admin locations:', e);
+    }
   }
 
   const DATA = rawCatalog
