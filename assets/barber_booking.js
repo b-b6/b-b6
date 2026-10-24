@@ -1,4 +1,4 @@
-﻿// --- DATABASE MOCK (LocalStorage) ---
+// --- DATABASE MOCK (LocalStorage) ---
         const DB_BOOKINGS = 'barber_bookings';
         const DB_DISABLED_DATES = 'barber_disabled_dates';
         const DB_DISABLED_TIMES = 'barber_disabled_times';
@@ -50,7 +50,7 @@
                 renderDates();
             }
             if (step === 3) {
-                document.getElementById('summary-service').innerText = `${bookingData.service} (${bookingData.price} ₽)`;
+                document.getElementById('summary-service').innerText = `${bookingData.service} (${bookingData.price} СЃРѕРј)`;
                 
                 // Format Date nicely
                 const d = new Date(bookingData.date);
@@ -219,7 +219,7 @@
                             <div class="booking-details">
                                 <h4>${b.date} в ${b.time}</h4>
                                 <p><strong style="color:#fff;">КЛИЕНТ:</strong> ${b.name} (${b.phone})</p>
-                                <p><strong style="color:#fff;">УСЛУГА:</strong> ${b.service} - ${b.price} ₽</p>
+                                <p><strong style="color:#fff;">УСЛУГА:</strong> ${b.service} - ${b.price} СЃРѕРј</p>
                             </div>
                             <button class="btn btn-danger" onclick="deleteBooking('${b.id}')">Удалить</button>
                         </div>

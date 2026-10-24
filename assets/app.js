@@ -21,7 +21,7 @@ const i18n = {
                 ai_promo_title: "Smart AI Selection", ai_promo_desc: "Deep facial analysis to find your ideal look using neural networks",
                 chat_header: "Barber Assistant", chat_welcome: "Hi! I'm your personal AI Assistant. Ask me anything about haircuts, masters, or pricing. How can I help you?", chat_typing: "Bot is typing...", chat_placeholder: "Ask something...",
                 msg_err_fill: "Please fill all fields correctly.",
-                msg_tg_format: "🔥 New booking!\\nName: {name}\\nPhone: {phone}\\nService: {service}\\nMaster: {master}\\nDate: {date} at {time}\\nPrice: {price} ₽",
+                msg_tg_format: "🔥 New booking!\\nName: {name}\\nPhone: {phone}\\nService: {service}\\nMaster: {master}\\nDate: {date} at {time}\\nPrice: {price} сом",
                 def_review: "The haircut was great!"
             },
             uz: {
@@ -35,7 +35,7 @@ const i18n = {
                 ai_promo_title: "Aqlli sun'iy intellekt tanlovi", ai_promo_desc: "Sun'iy intellekt yordamida yuzingizni chuqur tahlil qilib, mos obrazni tanlash",
                 chat_header: "Barber Yordamchi", chat_welcome: "Salom! Men shaxsiy AI yordamchingizman. Menga soch turmaklari, ustalar va narxlar haqida savol berishingiz mumkin. Qanday yordam bera olaman?", chat_typing: "Bot yozmoqda...", chat_placeholder: "Biror narsa so'rang...",
                 msg_err_fill: "Iltimos, barcha maydonlarni to'g'ri to'ldiring.",
-                msg_tg_format: "🔥 Yangi yozuv!\\nIsm: {name}\\nTelefon: {phone}\\nXizmat: {service}\\nUsta: {master}\\nSana: {date} soat {time}\\nNarxi: {price} ₽",
+                msg_tg_format: "🔥 Yangi yozuv!\\nIsm: {name}\\nTelefon: {phone}\\nXizmat: {service}\\nUsta: {master}\\nSana: {date} soat {time}\\nNarxi: {price} сом",
                 def_review: "Soch turmagi ajoyib!"
             },
             kg: {
@@ -49,7 +49,7 @@ const i18n = {
                 ai_promo_title: "Акылдуу ЖИ тандоосу", ai_promo_desc: "Бетти терең анализдөө жана жасалма интеллект менен идеалдуу образды тандоо",
                 chat_header: "Чачтарач жардамчысы", chat_welcome: "Салам! Мен сиздин жеке ЖИ жардамчыңызмын. Чач кыркуу, чеберлер жана баалар жөнүндө сураңыз. Кантип жардам бере алам?", chat_typing: "Бот жазып жатат...", chat_placeholder: "Бир нерсе сураңыз...",
                 msg_err_fill: "Сураныч, бардык талааларды туура толтуруңуз.",
-                msg_tg_format: "🔥 Жаңы жазуу!\\nАты: {name}\\nТелефон: {phone}\\nКызмат: {service}\\nЧебер: {master}\\nДата: {date} саат {time}\\nБаасы: {price} ₽",
+                msg_tg_format: "🔥 Жаңы жазуу!\\nАты: {name}\\nТелефон: {phone}\\nКызмат: {service}\\nЧебер: {master}\\nДата: {date} саат {time}\\nБаасы: {price} сом",
                 def_review: "Чач кыркуу сонун болду!"
             }
         };
@@ -166,9 +166,9 @@ const i18n = {
                 zoomControl: false
             });
             L.control.zoom({ position: 'bottomright' }).addTo(mainMap);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                attribution: '© OpenStreetMap © CARTO',
-                subdomains: 'abcd',
+            L.tileLayer('https://tile{s}.maps.2gis.com/tiles?x={x}&y={y}&z={z}&v=1.5&key=fb2542a3-ea70-441d-9b49-bbc1b26168c5', {
+                attribution: '&copy; 2GIS',
+                subdomains: '0123',
                 maxZoom: 19
             }).addTo(mainMap);
 
@@ -533,7 +533,7 @@ const i18n = {
                     document.querySelectorAll('#step-1 .service-card').forEach(c => c.classList.remove('selected')); card.classList.add('selected');
                     document.getElementById('btn-next-1').disabled = false;
                 };
-                card.innerHTML = `<div class="service-info"><h3>${t.title}</h3><p>${t.desc}</p></div><div style="text-align:right;"><div class="service-price">${s.price} ₽</div><div style="font-size:0.85rem; color:var(--text-muted); margin-top:5px; margin-left:15px;">⏱ ${durText}</div></div>`;
+                card.innerHTML = `<div class="service-info"><h3>${t.title}</h3><p>${t.desc}</p></div><div style="text-align:right;"><div class="service-price">${s.price} сом</div><div style="font-size:0.85rem; color:var(--text-muted); margin-top:5px; margin-left:15px;">⏱ ${durText}</div></div>`;
                 list.appendChild(card);
             });
             // если услуга уже выбрана (возврат назад) — разблокируем кнопку
@@ -696,7 +696,7 @@ const i18n = {
             let mName = bookingData.masterId === 'any' ? i18n[currentLang]['any_master'] : bookingData.masterName;
             
             document.getElementById('summary-master').innerHTML = `<i data-lucide="user" style="width:14px;height:14px;"></i> ${mName}`;
-            document.getElementById('summary-service').innerHTML = `<i data-lucide="scissors" style="width:14px;height:14px;"></i> ${t.title} - ${bookingData.price} ₽`;
+            document.getElementById('summary-service').innerHTML = `<i data-lucide="scissors" style="width:14px;height:14px;"></i> ${t.title} - ${bookingData.price} сом`;
             let dObj = new Date(bookingData.date);
             document.getElementById('summary-datetime').innerHTML = `<i data-lucide="calendar" style="width:14px;height:14px;"></i> ${dObj.toLocaleDateString('ru-RU')} в ${bookingData.time}`;
 

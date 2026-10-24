@@ -405,8 +405,8 @@
         function initSAMap() {
             if (saMap) { saMap.invalidateSize(); renderSAMarkers(); return; }
             saMap = L.map('sa-leaflet-map', { center: [41.3150, 69.2790], zoom: 12 });
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                attribution: '© OpenStreetMap © CARTO', subdomains: 'abcd', maxZoom: 19
+            L.tileLayer('https://tile{s}.maps.2gis.com/tiles?x={x}&y={y}&z={z}&v=1.5&key=fb2542a3-ea70-441d-9b49-bbc1b26168c5', {
+                attribution: '&copy; 2GIS', subdomains: '0123', maxZoom: 19
             }).addTo(saMap);
             renderSAMarkers();
         }
@@ -559,8 +559,8 @@
             }
 
             pickMap = L.map('barber-pick-map', { center: [lat, lng], zoom: 14 });
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                attribution: '© OpenStreetMap © CARTO', subdomains: 'abcd', maxZoom: 19
+            L.tileLayer('https://tile{s}.maps.2gis.com/tiles?x={x}&y={y}&z={z}&v=1.5&key=fb2542a3-ea70-441d-9b49-bbc1b26168c5', {
+                attribution: '&copy; 2GIS', subdomains: '0123', maxZoom: 19
             }).addTo(pickMap);
 
             pickMarker = L.marker([lat, lng], { draggable: true }).addTo(pickMap);
