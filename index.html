@@ -85,7 +85,7 @@
         })();
     </script>
 
-    <link rel="stylesheet" href="styles/main.css?v=3">
+    <link rel="stylesheet" href="styles/main.css?v=5">
 </head>
 <body>
 
@@ -115,7 +115,7 @@
             </button>
 
             <div style="margin: 14px 0; color:var(--text-muted); font-size:0.78rem; position:relative;">
-                <span style="background:#ffffff; padding:0 10px; position:relative; z-index:2;">ИЛИ</span>
+                <span style="background:var(--surface); padding:0 10px; position:relative; z-index:2;">ИЛИ</span>
                 <div style="position:absolute; top:50%; left:0; right:0; height:1px; background:var(--border); z-index:1;"></div>
             </div>
 
@@ -124,33 +124,39 @@
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════
-         MAIN APP SHELL: LEFT SIDEBAR / BOTTOM SHEET + FULL MAP
+         MAIN APP SHELL: UNIFIED CENTERED MOBILE-FIRST BOOKING SCREEN
          ═══════════════════════════════════════════════════════════ -->
     <div class="app-shell">
 
-        <!-- 1. BOOKING SHEET / SIDEBAR -->
+        <!-- 1. BOOKING SCREEN -->
         <aside class="sheet-panel" id="bottom-sheet">
-            <!-- Mobile Drag / Snap Bar (Yandex Go / Uber style) -->
-            <div class="sheet-drag-bar" id="sheet-handle">
-                <div class="sheet-handle-pill" onclick="cycleSheetSnap()"></div>
-                <div class="sheet-snap-controls">
-                    <span class="sheet-snap-title">Онлайн-запись</span>
-                    <div class="sheet-snap-btns">
-                        <button type="button" class="snap-btn" id="snap-btn-peek" onclick="setSheetSnap('peek')">🗺 Карта</button>
-                        <button type="button" class="snap-btn active" id="snap-btn-half" onclick="setSheetSnap('half')">Половина</button>
-                        <button type="button" class="snap-btn" id="snap-btn-full" onclick="setSheetSnap('full')">🔼 Весь экран</button>
-                    </div>
+            <!-- Unified Top App Navigation Bar -->
+            <div class="booking-top-nav">
+                <a href="barbermap_kg.html" class="top-nav-pill" id="back-to-map-btn" title="Вернуться на карту барбершопов">
+                    <span>←</span>
+                    <span>🗺 Карта КР</span>
+                </a>
+                <div class="top-nav-right">
+                    <select class="top-nav-pill" id="lang-select" onchange="changeLanguage(this.value)" aria-label="Язык">
+                        <option value="ru">RU</option>
+                        <option value="kg">KG</option>
+                        <option value="uz">UZ</option>
+                        <option value="en">EN</option>
+                    </select>
+                    <a href="app.html?switch_role=1" class="top-nav-pill" title="Сменить роль (Клиент / Владелец / Мастер)">
+                        <span>🚪 Роль</span>
+                    </a>
                 </div>
             </div>
 
             <div class="sheet-scroll" id="sheet-scroll-container">
                 <header class="header">
-                    <div class="header-badge">
+                    <div class="header-badge" id="booking-mode-badge">
                         <i data-lucide="sparkles" style="width:13px;height:13px;"></i>
-                        <span>Online Booking</span>
+                        <span id="booking-mode-badge-text">Онлайн-запись</span>
                     </div>
-                    <h1 data-i18n="title">Брутальный Барбершоп</h1>
-                    <p data-i18n="subtitle">Запишись онлайн к лучшим мастерам города за пару кликов.</p>
+                    <h1 id="shop-main-title" data-i18n="title">Барбершоп</h1>
+                    <p id="shop-main-subtitle" data-i18n="subtitle">Запишись онлайн к лучшим мастерам за пару кликов.</p>
                 </header>
 
                 <!-- LIVE STATS BAR -->
@@ -193,10 +199,10 @@
                 <!-- MAIN BOOKING FLOW -->
                 <main class="booking-container" id="booking-main-container">
                     <!-- MY BOOKING WIDGET -->
-                    <div id="my-booking-widget" style="display:none; background:#f9fafb; border:1.5px solid #111827; border-radius:var(--radius-md); padding:16px; margin-bottom:20px;">
+                    <div id="my-booking-widget" style="display:none; background:rgba(251, 191, 36, 0.08); border:1.5px solid rgba(251, 191, 36, 0.35); border-radius:var(--radius-md); padding:16px; margin-bottom:20px;">
                         <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-                            <i data-lucide="calendar-check" style="width:18px;height:18px;color:#111827;"></i>
-                            <h3 style="color:#111827; margin:0; font-size:0.95rem; font-weight:700;" data-i18n="widget_title">Напоминание о записи</h3>
+                            <i data-lucide="calendar-check" style="width:18px;height:18px;color:var(--accent);"></i>
+                            <h3 style="color:var(--accent); margin:0; font-size:0.95rem; font-weight:700;" data-i18n="widget_title">Напоминание о записи</h3>
                         </div>
                         <div id="my-booking-details" style="color:var(--text-main); font-size:0.95rem; font-weight:600;"></div>
                         <div style="margin-top:12px; display:flex; gap:8px;">
@@ -207,10 +213,10 @@
 
                     <!-- STEPPER -->
                     <div class="stepper" id="stepper">
-                        <div class="step active" data-step="1">1. Услуга</div>
-                        <div class="step" data-step="2">2. Мастер</div>
-                        <div class="step" data-step="3">3. Время</div>
-                        <div class="step" data-step="4">4. Бронь</div>
+                        <div class="step active" data-step="1" id="step-ind-1">1. Услуга</div>
+                        <div class="step" data-step="2" id="step-ind-2">2. Мастер</div>
+                        <div class="step" data-step="3" id="step-ind-3">3. Время</div>
+                        <div class="step" data-step="4" id="step-ind-4">4. Бронь</div>
                     </div>
 
                     <!-- STEP 1: SERVICES -->
@@ -255,11 +261,11 @@
                         <div id="manual-auth-container" style="display: block;">
                             <div class="form-group">
                                 <label data-i18n="label_name">Ваше имя</label>
-                                <input type="text" id="client-name" class="form-control" data-i18n-placeholder="placeholder_name" placeholder="Иван Иванов" oninput="validateForm()">
+                                <input type="text" id="client-name" class="form-control" data-i18n-placeholder="placeholder_name" placeholder="Азамат" oninput="validateForm()">
                             </div>
                             <div class="form-group">
                                 <label data-i18n="label_phone">Номер телефона</label>
-                                <input type="tel" id="client-phone" class="form-control" placeholder="+998 (90) 000-00-00" oninput="validateForm()">
+                                <input type="tel" id="client-phone" class="form-control" placeholder="+996 (555) 00-00-00" oninput="validateForm()">
                             </div>
                         </div>
                         
@@ -308,47 +314,11 @@
             </div>
         </aside>
 
-        <!-- 2. FULL-SCREEN INTERACTIVE MAP VIEWPORT -->
-        <div class="map-viewport">
-            <!-- Top Floating Overlay on Map -->
-            <div class="map-floating-top">
-                <div class="map-brand-pill">
-                    <div class="map-brand-logo">✂️</div>
-                    <span class="map-brand-text" data-i18n="title">Барбершоп</span>
-                </div>
-
-                <div class="map-top-actions">
-                    <a href="barbermap_kg.html" class="lang-btn" style="text-decoration:none; display:inline-flex; align-items:center; gap:5px;" title="Все барбершопы Кыргызстана">
-                        🗺 Карта КР
-                    </a>
-                    <a href="app.html?switch_role=1" class="lang-btn" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px;" title="Выбор роли">
-                        👤 Роль
-                    </a>
-                    <select class="lang-btn" id="lang-select" onchange="changeLanguage(this.value)">
-                        <option value="ru">RU</option>
-                        <option value="uz">UZ</option>
-                        <option value="en">EN</option>
-                        <option value="kg">KG</option>
-                    </select>
-                    <button type="button" class="map-icon-btn" onclick="locateUserOnMap()" title="Моё местоположение">
-                        <i data-lucide="navigation" style="width:17px;height:17px;"></i>
-                    </button>
-                    <a href="admin.html" class="map-icon-btn" title="Вход для администратора">
-                        <i data-lucide="SlidersHorizontal" style="width:17px;height:17px;"></i>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Interactive Master / Location Chips on Map -->
-            <div class="map-chips-bar" id="map-chips-bar">
-                <!-- Populated dynamically with masters & locations -->
-            </div>
-
-            <!-- Leaflet Map Container -->
+        <!-- Hidden Legacy Map Viewport (Map is handled by barbermap_kg.html) -->
+        <div class="map-viewport" style="display:none !important;">
+            <div id="map-chips-bar"></div>
             <div id="main-map"></div>
-
-            <!-- Floating Selected Barber Card (Desktop Preview) -->
-            <div class="map-selected-card" id="map-selected-card"></div>
+            <div id="map-selected-card"></div>
         </div>
 
     </div>
@@ -374,7 +344,7 @@
         </form>
     </div>
 
-    <script src="assets/app.js"></script>
+    <script src="assets/app.js?v=5"></script>
 
     <script>
     if ('serviceWorker' in navigator) {

@@ -50,7 +50,7 @@
                 renderDates();
             }
             if (step === 3) {
-                document.getElementById('summary-service').innerText = `${bookingData.service} (${bookingData.price} СЃРѕРј)`;
+                document.getElementById('summary-service').innerText = `${bookingData.service} (${bookingData.price} сом)`;
                 
                 // Format Date nicely
                 const d = new Date(bookingData.date);
@@ -219,7 +219,7 @@
                             <div class="booking-details">
                                 <h4>${b.date} в ${b.time}</h4>
                                 <p><strong style="color:#fff;">КЛИЕНТ:</strong> ${b.name} (${b.phone})</p>
-                                <p><strong style="color:#fff;">УСЛУГА:</strong> ${b.service} - ${b.price} СЃРѕРј</p>
+                                <p><strong style="color:#fff;">УСЛУГА:</strong> ${b.service} - ${b.price} сом</p>
                             </div>
                             <button class="btn btn-danger" onclick="deleteBooking('${b.id}')">Удалить</button>
                         </div>

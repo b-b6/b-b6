@@ -32,8 +32,8 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                 book_grid_title: 'Сетка на сегодня', book_grid_sub: 'Кликните на пустое окно, чтобы быстро записать',
                 mast_sub: 'Добавьте ваших барберов, чтобы клиенты могли записываться к конкретному человеку. Здесь же можно указать ссылку на их фото.',
                 option_serv_custom: '-- Своя услуга (настроить с нуля) --',
-                prod_add_title: 'Добавить новый товар', label_prod_name: 'Название', label_prod_buy: 'Закупка (СЃРѕРј)', label_prod_sell: 'Продажа (СЃРѕРј)', label_prod_count: 'Кол-во (шт)',
-                table_prod_name: 'Название', table_prod_buy: 'В закупе (СЃРѕРј)',
+                prod_add_title: 'Добавить новый товар', label_prod_name: 'Название', label_prod_buy: 'Закупка (сом)', label_prod_sell: 'Продажа (сом)', label_prod_count: 'Кол-во (шт)',
+                table_prod_name: 'Название', table_prod_buy: 'В закупе (сом)',
                 table_client_name: 'Имя клиента', table_client_phone: 'Телефон', table_client_last: 'Крайний визит',
                 set_bkp_title: 'Резервное копирование и Бухгалтерия', set_bkp_desc: 'Скачайте всю историю записей в формате CSV (открывается в Excel) себе на ПК.', btn_export: 'Скачать базу записей (.csv)',
                 set_shop_title: 'Общие настройки салона (Мой Сайт)', set_shop_link: 'Ссылка на вашу онлайн-запись (отправьте ее клиентам):', label_shop_name: 'Название вашего сайта (Отображается клиентам)', btn_save_shop: 'Сохранить название сайта',
@@ -53,8 +53,8 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                 book_grid_title: "Today's schedule", book_grid_sub: 'Click an empty slot to quickly book',
                 mast_sub: 'Add your barbers so clients can book with a specific person.',
                 option_serv_custom: '-- Custom service (configure from scratch) --',
-                prod_add_title: 'Add new product', label_prod_name: 'Name', label_prod_buy: 'Purchase (СЃРѕРј)', label_prod_sell: 'Sale (СЃРѕРј)', label_prod_count: 'Qty (pcs)',
-                table_prod_name: 'Name', table_prod_buy: 'Purchase price (СЃРѕРј)',
+                prod_add_title: 'Add new product', label_prod_name: 'Name', label_prod_buy: 'Purchase (сом)', label_prod_sell: 'Sale (сом)', label_prod_count: 'Qty (pcs)',
+                table_prod_name: 'Name', table_prod_buy: 'Purchase price (сом)',
                 table_client_name: 'Client Name', table_client_phone: 'Phone', table_client_last: 'Last visit',
                 set_bkp_title: 'Backup & Accounting', set_bkp_desc: 'Download the entire booking history in CSV format (opens in Excel).', btn_export: 'Download booking database (.csv)',
                 set_shop_title: 'General Salon Settings (My Site)', set_shop_link: 'Link to your online booking (send to clients):', label_shop_name: 'Your site name (Shown to clients)', btn_save_shop: 'Save site name',
@@ -74,8 +74,8 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                 book_grid_title: 'Bugungi jadval', book_grid_sub: 'Tezda yozish uchun bo\'sh oynani bosing',
                 mast_sub: 'Mijozlar muayyan ustaga yozilishi uchun barberlaringizni qo\'shing.',
                 option_serv_custom: '-- O\'z xizmat (noldan sozlash) --',
-                prod_add_title: 'Yangi tovar qo\'shish', label_prod_name: 'Nomi', label_prod_buy: 'Xarid (СЃРѕРј)', label_prod_sell: 'Sotuv (СЃРѕРј)', label_prod_count: 'Miqdor (dona)',
-                table_prod_name: 'Nomi', table_prod_buy: 'Xarid narxi (СЃРѕРј)',
+                prod_add_title: 'Yangi tovar qo\'shish', label_prod_name: 'Nomi', label_prod_buy: 'Xarid (сом)', label_prod_sell: 'Sotuv (сом)', label_prod_count: 'Miqdor (dona)',
+                table_prod_name: 'Nomi', table_prod_buy: 'Xarid narxi (сом)',
                 table_client_name: 'Mijoz ismi', table_client_phone: 'Telefon', table_client_last: 'So\'nggi tashrif',
                 set_bkp_title: 'Zaxira nusxa va Buxgalteriya', set_bkp_desc: 'Barcha yozuvlar tarixini CSV formatida yuklab oling (Excelda ochiladi).', btn_export: 'Yozuvlar bazasini yuklab olish (.csv)',
                 set_shop_title: 'Umumiy salon sozlamalari (Mening saytim)', set_shop_link: 'Onlayn yozilish havolasi (mijozlarga yuboring):', label_shop_name: 'Saytingiz nomi (Mijozlarga ko\'rinadi)', btn_save_shop: 'Sayt nomini saqlash',
@@ -95,8 +95,8 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                 book_grid_title: 'Бүгүнкү график', book_grid_sub: 'Тез жазуу үчүн бош терезеге басыңыз',
                 mast_sub: 'Кардарлар белгилүү бир адамга жазыла алуусу үчүн барберлериңизди кошуңуз.',
                 option_serv_custom: '-- Өз кызмат (нолдон жөндөө) --',
-                prod_add_title: 'Жаңы товар кошуу', label_prod_name: 'Аталышы', label_prod_buy: 'Сатып алуу (СЃРѕРј)', label_prod_sell: 'Сатуу (СЃРѕРј)', label_prod_count: 'Саны (дана)',
-                table_prod_name: 'Аталышы', table_prod_buy: 'Сатып алуу баасы (СЃРѕРј)',
+                prod_add_title: 'Жаңы товар кошуу', label_prod_name: 'Аталышы', label_prod_buy: 'Сатып алуу (сом)', label_prod_sell: 'Сатуу (сом)', label_prod_count: 'Саны (дана)',
+                table_prod_name: 'Аталышы', table_prod_buy: 'Сатып алуу баасы (сом)',
                 table_client_name: 'Кардардын аты', table_client_phone: 'Телефон', table_client_last: 'Акыркы келүү',
                 set_bkp_title: 'Камдык көчүрмө жана Бухгалтерия', set_bkp_desc: 'Бардык жазуулар тарыхын CSV форматында жүктөп алыңыз.', btn_export: 'Жазуулар базасын жүктөп алуу (.csv)',
                 set_shop_title: 'Салондун жалпы жөндөөлөрү (Менин сайтым)', set_shop_link: 'Онлайн жазылуу шилтемеси (кардарларга жибериңиз):', label_shop_name: 'Сайтыңыздын аталышы (Кардарларга көрүнөт)', btn_save_shop: 'Сайттын атын сактоо',
@@ -134,12 +134,21 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             const urlTenantId = urlParams.get('id') || urlParams.get('shop');
             const savedSession = window.BarberMobileBridge ? window.BarberMobileBridge.getSession() : null;
 
+            if (urlTenantId) {
+                localStorage.setItem('tenant_id', urlTenantId);
+                window.appDB.tenantId = urlTenantId;
+            } else if (savedSession && savedSession.role === 'owner' && savedSession.tenantId) {
+                localStorage.setItem('tenant_id', savedSession.tenantId);
+                window.appDB.tenantId = savedSession.tenantId;
+            }
+
             if (savedSession && savedSession.role === 'owner' && savedSession.tenantId) {
                 sessionStorage.setItem('adminAuth', 'true');
-                if (!urlTenantId) {
-                    localStorage.setItem('tenant_id', savedSession.tenantId);
-                    window.appDB.tenantId = savedSession.tenantId;
-                }
+            }
+
+            const navBack = document.getElementById('nav-back-to-booking');
+            if (navBack && window.appDB && window.appDB.tenantId) {
+                navBack.href = `index.html?id=${encodeURIComponent(window.appDB.tenantId)}`;
             }
 
             if(sessionStorage.getItem('adminAuth') !== 'true') {
@@ -153,7 +162,24 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                 document.getElementById('auth-overlay').style.display = 'none';
                 let set = await window.appDB.getSettings();
                 Object.assign(store.settings, set);
-                document.getElementById('header-shop-name').innerText = store.settings.shopName ? `— ${store.settings.shopName}` : `ID: ${window.appDB.tenantId}`;
+
+                let catShop = null;
+                if (Array.isArray(window.BARBERSHOPS_DATA)) {
+                    catShop = window.BARBERSHOPS_DATA.find(s => String(s.id) === String(window.appDB.tenantId));
+                }
+                const resolvedShopName = (store.settings.shopName && store.settings.shopName !== 'Брутальный Барбершоп')
+                    ? store.settings.shopName
+                    : (catShop && catShop.name)
+                        || (savedSession && String(savedSession.tenantId) === String(window.appDB.tenantId) ? savedSession.shopName : '')
+                        || window.appDB.tenantId;
+
+                const hdrEl = document.getElementById('header-shop-name');
+                if (hdrEl) hdrEl.innerText = `— ${resolvedShopName}`;
+                document.title = `Админ Панель — ${resolvedShopName}`;
+                if (navBack) {
+                    navBack.href = `index.html?id=${encodeURIComponent(window.appDB.tenantId)}&shopName=${encodeURIComponent(resolvedShopName)}`;
+                }
+
                 let fullPath = window.BarberMobileBridge
                     ? window.BarberMobileBridge.getUniversalBookLink(window.appDB.tenantId, false)
                     : (window.location.origin + window.location.pathname.replace('admin.html', '') + `book.html?id=${window.appDB.tenantId}`);
@@ -270,12 +296,12 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                         if(b.date === today) todayRev += parseInt(b.price || 0);
                     }
                     
-                    list.innerHTML += `<div class="booking-item" style="${isCancelled ? 'opacity: 0.5;' : ''} align-items: stretch; flex-direction: column;"><div style="display: flex; justify-content: space-between; align-items: flex-start;"><div class="booking-details" style="flex: 1;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 5px;"><h4 style="margin:0;">${b.date} в ${b.time}</h4><select onchange="updateBookingStatus('${b.id}', this.value)" style="background:var(--bg-dark); color:${stColor}; border:1px solid var(--border); padding:4px 8px; border-radius:6px; outline:none; font-size:0.85rem; font-weight:600; cursor:pointer;"><option value="pending" style="color:#f1c40f;" ${st === 'pending' ? 'selected' : ''}>🟡 Ожидается</option><option value="in_progress" style="color:#1e90ff;" ${st === 'in_progress' ? 'selected' : ''}>🔵 В кресле</option><option value="completed" style="color:#2ed573;" ${st === 'completed' ? 'selected' : ''}>🟢 Завершено</option><option value="cancelled" style="color:#ff4757;" ${st === 'cancelled' ? 'selected' : ''}>🔴 Отменено</option></select></div><p><strong style="color: var(--text-main);">КЛИЕНТ:</strong> ${b.name} (${b.phone})</p><p><strong style="color: var(--text-main);">УСЛУГА:</strong> ${b.service} - ${b.price} СЃРѕРј</p><p><strong style="color: var(--text-main);">МАСТЕР:</strong> ${b.masterName || 'Любой'}</p></div><div style="display: flex; flex-direction: column; justify-content: flex-end; margin-left: 15px; gap: 5px;"><button class="btn-danger" onclick="deleteBooking('${b.id}')">Удалить</button></div></div></div>`;
+                    list.innerHTML += `<div class="booking-item" style="${isCancelled ? 'opacity: 0.5;' : ''} align-items: stretch; flex-direction: column;"><div style="display: flex; justify-content: space-between; align-items: flex-start;"><div class="booking-details" style="flex: 1;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 5px;"><h4 style="margin:0;">${b.date} в ${b.time}</h4><select onchange="updateBookingStatus('${b.id}', this.value)" style="background:var(--bg-dark); color:${stColor}; border:1px solid var(--border); padding:4px 8px; border-radius:6px; outline:none; font-size:0.85rem; font-weight:600; cursor:pointer;"><option value="pending" style="color:#f1c40f;" ${st === 'pending' ? 'selected' : ''}>🟡 Ожидается</option><option value="in_progress" style="color:#1e90ff;" ${st === 'in_progress' ? 'selected' : ''}>🔵 В кресле</option><option value="completed" style="color:#2ed573;" ${st === 'completed' ? 'selected' : ''}>🟢 Завершено</option><option value="cancelled" style="color:#ff4757;" ${st === 'cancelled' ? 'selected' : ''}>🔴 Отменено</option></select></div><p><strong style="color: var(--text-main);">КЛИЕНТ:</strong> ${b.name} (${b.phone})</p><p><strong style="color: var(--text-main);">УСЛУГА:</strong> ${b.service} - ${b.price} сом</p><p><strong style="color: var(--text-main);">МАСТЕР:</strong> ${b.masterName || 'Любой'}</p></div><div style="display: flex; flex-direction: column; justify-content: flex-end; margin-left: 15px; gap: 5px;"><button class="btn-danger" onclick="deleteBooking('${b.id}')">Удалить</button></div></div></div>`;
                 });
             }
 
-            let eRev = document.getElementById('stat-total-rev'); if(eRev) eRev.innerText = tRev + ' СЃРѕРј';
-            let eTodRev = document.getElementById('stat-today-rev'); if(eTodRev) eTodRev.innerText = todayRev + ' СЃРѕРј';
+            let eRev = document.getElementById('stat-total-rev'); if(eRev) eRev.innerText = tRev + ' сом';
+            let eTodRev = document.getElementById('stat-today-rev'); if(eTodRev) eTodRev.innerText = todayRev + ' сом';
             let eCnt = document.getElementById('stat-today-count'); if(eCnt) eCnt.innerText = todayCnt;
             let eTotClass = document.getElementById('stat-total-count'); if(eTotClass) eTotClass.innerText = bookings.length;
 
@@ -1091,7 +1117,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                     </div>
                     <div style="display: flex; gap: 15px; margin-bottom: 15px; align-items: flex-end; flex-wrap: wrap;">
                         <div class="form-group" style="margin:0; flex: 2; min-width: 250px;"><label>Название на сайт (RU)</label><input type="text" id="title_ru_${s.id}" class="form-control" value="${s.strings.ru.title}"></div>
-                        <div class="form-group" style="margin:0; flex: 1; min-width: 150px;"><label>Цена (СЃРѕРј)</label><input type="number" id="price_${s.id}" class="form-control" value="${s.price}"></div>
+                        <div class="form-group" style="margin:0; flex: 1; min-width: 150px;"><label>Цена (сом)</label><input type="number" id="price_${s.id}" class="form-control" value="${s.price}"></div>
                         <div class="form-group" style="margin:0; flex: 1; min-width: 150px;">
                             <label>Длительность (мин)</label>
                             <select id="duration_${s.id}" class="form-control" style="appearance:auto;">
@@ -1393,7 +1419,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                     <td style="padding: 15px; color: var(--text-muted);">${c.phone}</td>
                     <td style="padding: 15px;">${c.visits}</td>
                     <td style="padding: 15px; color: var(--text-muted);">${c.lastVisit}</td>
-                    <td style="padding: 15px; color: var(--accent); font-weight: 600;">${c.revenue} СЃРѕРј</td>
+                    <td style="padding: 15px; color: var(--accent); font-weight: 600;">${c.revenue} сом</td>
                 </tr>
             `).join('');
         }
@@ -1442,7 +1468,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             let ctxRev = document.getElementById('revenueChart').getContext('2d');
             revenueChartInstance = new Chart(ctxRev, {
                 type: 'bar',
-                data: { labels: labels7Days, datasets: [{ label: 'Доход Завершено (СЃРѕРј)', data: data7Days, backgroundColor: '#111827', borderRadius: 6 }] },
+                data: { labels: labels7Days, datasets: [{ label: 'Доход Завершено (сом)', data: data7Days, backgroundColor: '#111827', borderRadius: 6 }] },
                 options: { responsive: true, scales: { y: { beginAtZero: true, grid: { color: '#e5e7eb' } }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
             });
 
@@ -1584,8 +1610,8 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             products.forEach(p => {
                 list.innerHTML += `<tr style="border-bottom:1px solid var(--border);">
                     <td style="padding:15px; font-weight:500;">${p.name}</td>
-                    <td style="padding:15px; color:var(--text-muted);">${p.buyPrice} СЃРѕРј</td>
-                    <td style="padding:15px; color:#2ed573;">${p.sellPrice} СЃРѕРј</td>
+                    <td style="padding:15px; color:var(--text-muted);">${p.buyPrice} сом</td>
+                    <td style="padding:15px; color:#2ed573;">${p.sellPrice} сом</td>
                     <td style="padding:15px;">
                         <div style="display:flex;align-items:center;gap:8px;">
                             <button class="btn-danger" style="padding:4px 10px;" onclick="changeProductCount('${p.id}',-1)">−</button>
@@ -1652,17 +1678,17 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                 list.innerHTML += `<tr>
                     <td style="padding:15px; border-bottom:1px solid var(--border);">${m.name}</td>
                     <td style="padding:15px; border-bottom:1px solid var(--border); color:var(--text-muted);">${share}%</td>
-                    <td style="padding:15px; border-bottom:1px solid var(--border);">${total} СЃРѕРј</td>
-                    <td style="padding:15px; border-bottom:1px solid var(--border); color:#2ed573; font-weight:600;">${salary} СЃРѕРј</td>
-                    <td style="padding:15px; border-bottom:1px solid var(--border); color:var(--accent); font-weight:600;">${salon} СЃРѕРј</td>
+                    <td style="padding:15px; border-bottom:1px solid var(--border);">${total} сом</td>
+                    <td style="padding:15px; border-bottom:1px solid var(--border); color:#2ed573; font-weight:600;">${salary} сом</td>
+                    <td style="padding:15px; border-bottom:1px solid var(--border); color:var(--accent); font-weight:600;">${salon} сом</td>
                 </tr>`;
             });
             const tfoot = document.getElementById('admin-salaries-total');
             if (tfoot) tfoot.innerHTML = `<tr>
                 <td style="padding:15px;" colspan="2">Итого</td>
-                <td style="padding:15px;">${grandTotal} СЃРѕРј</td>
-                <td style="padding:15px; color:#2ed573;">${grandSalary} СЃРѕРј</td>
-                <td style="padding:15px; color:var(--accent);">${grandTotal - grandSalary} СЃРѕРј</td>
+                <td style="padding:15px;">${grandTotal} сом</td>
+                <td style="padding:15px; color:#2ed573;">${grandSalary} сом</td>
+                <td style="padding:15px; color:var(--accent);">${grandTotal - grandSalary} сом</td>
             </tr>`;
         }
 
@@ -1699,7 +1725,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             const mMaster = document.getElementById('manual_master');
             if(mService && services) {
                 mService.innerHTML = '';
-                services.forEach(s => mService.innerHTML += `<option value="${s.id}">${s.strings[currentAdminLang]?.title || s.strings.ru.title} - ${s.price} СЃРѕРј</option>`);
+                services.forEach(s => mService.innerHTML += `<option value="${s.id}">${s.strings[currentAdminLang]?.title || s.strings.ru.title} - ${s.price} сом</option>`);
             }
             if(mMaster && masters) {
                 const anyStr = currentAdminLang === 'ru' ? 'Любой мастер' : (currentAdminLang === 'en' ? 'Any master' : (currentAdminLang === 'uz' ? 'Istalgan usta' : 'Каалаган чебер'));

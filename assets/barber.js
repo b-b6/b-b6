@@ -59,10 +59,11 @@ async function loadSoloStateFromDB() {
         const masters = (await window.appDB.getMasters()) || [];
         const primaryMaster = masters[0] || { id: 1, name: 'Мастер', spec: 'Барбер' };
 
+        const defaultName = 'Топ-Мастер #' + (window.appDB.tenantId || '1');
         soloProfile = {
             id: primaryMaster.id || 1,
-            name: settings.soloMasterName || primaryMaster.name || 'Мастер',
-            spec: settings.soloMasterSpec || primaryMaster.spec || 'Топ-Барбер',
+            name: settings.soloMasterName || (primaryMaster.name && primaryMaster.name !== 'Мастер' ? primaryMaster.name : defaultName),
+            spec: settings.soloMasterSpec || (primaryMaster.spec && primaryMaster.spec !== 'Барбер' ? primaryMaster.spec : 'Fade • Борода • Классика'),
             active: settings.soloMasterActive !== undefined ? Boolean(settings.soloMasterActive) : true,
             workDays: Array.isArray(settings.soloWorkDays) ? settings.soloWorkDays : ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'],
             workStart: settings.soloWorkStart || settings.workStart || '10:00',
@@ -70,6 +71,19 @@ async function loadSoloStateFromDB() {
             commissionPct: Number(settings.soloCommissionPct || primaryMaster.commission || primaryMaster.share || 60),
             pin: settings.soloPin || settings.adminPin || '1111'
         };
+
+        if (!settings.soloMode || !settings.soloMasterName) {
+            await window.appDB.saveSettings({
+                ...settings,
+                soloMode: true,
+                soloMasterName: soloProfile.name,
+                soloMasterSpec: soloProfile.spec,
+                soloMasterActive: soloProfile.active,
+                soloWorkDays: soloProfile.workDays,
+                openTime: soloProfile.workStart,
+                closeTime: soloProfile.workEnd
+            });
+        }
 
         const nameInput = document.getElementById('solo-name-input');
         const specInput = document.getElementById('solo-spec-input');
@@ -406,11 +420,22 @@ window.saveManualSoloBooking = async function () {
 };
 
 // ================= PERSONAL SERVICES & PRICES =================
+const DEFAULT_SOLO_SERVICES = [
+    { id: 'solo_srv_1', name: 'Мужская стрижка', price: 600, duration: 45, strings: { ru: { title: 'Мужская стрижка', desc: 'Индивидуальная стрижка с мытьем головы и укладкой' } } },
+    { id: 'solo_srv_2', name: 'Стрижка + Борода', price: 900, duration: 60, strings: { ru: { title: 'Стрижка + Борода', desc: 'Полный комплекс: стрижка волос и оформление бороды' } } },
+    { id: 'solo_srv_3', name: 'Моделирование бороды', price: 400, duration: 30, strings: { ru: { title: 'Моделирование бороды', desc: 'Придание формы и контуринг опасной бритвой' } } },
+    { id: 'solo_srv_4', name: 'Детская стрижка', price: 500, duration: 30, strings: { ru: { title: 'Детская стрижка', desc: 'Стильная стрижка для мальчиков до 12 лет' } } }
+];
+
 window.renderSoloServices = async function () {
     const listEl = document.getElementById('solo-services-list');
     if (!listEl || !window.appDB) return;
     if (!soloServicesCache.length) {
         soloServicesCache = (await window.appDB.getServices()) || [];
+    }
+    if (!soloServicesCache.length) {
+        soloServicesCache = DEFAULT_SOLO_SERVICES;
+        await window.appDB.saveServices(soloServicesCache);
     }
     const services = soloServicesCache;
 
@@ -451,7 +476,10 @@ window.addSoloService = async function () {
         name,
         price,
         duration,
-        icon: '✂️'
+        icon: '✂️',
+        strings: {
+            ru: { title: name, desc: 'Индивидуальная работа мастера' }
+        }
     });
     await window.appDB.saveServices(services);
     soloServicesCache = services;

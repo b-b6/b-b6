@@ -58,9 +58,12 @@ const i18n = {
         let currentLang = localStorage.getItem('barber_lang') || 'ru';
 
         function changeLanguage(lang) {
-            currentLang = lang; localStorage.setItem('barber_lang', lang); document.getElementById('lang-select').value = lang;
+            currentLang = lang; localStorage.setItem('barber_lang', lang);
+            const langSel = document.getElementById('lang-select');
+            if (langSel) langSel.value = lang;
             document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.getAttribute('data-i18n'); if (i18n[lang] && i18n[lang][key]) el.innerText = i18n[lang][key]; });
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { const key = el.getAttribute('data-i18n-placeholder'); if (i18n[lang] && i18n[lang][key]) el.placeholder = i18n[lang][key]; });
+            if (typeof applySettings === 'function') applySettings(store.settings);
             if(currentStep === 1) renderServicesUI();
             if(currentStep === 2) renderMastersUI();
             if(currentStep === 3) renderDates();
@@ -77,19 +80,35 @@ const i18n = {
         const DB_DISABLED_DATES = 'barber_disabled_dates';
 
         const defaultServices = [
-            { id: 'haircut', price: 1500, duration: 60, strings: { ru:{title:"Мужская стрижка", desc:"Классическая или модельная стрижка с мытьем и укладкой"}, en:{title:"Men's Haircut", desc:"Classic haircut with wash and styling"}, uz:{title:"Erkaklar soch turmagi", desc:"Klassik soch turmagi va yuvish"}, kg:{title:"Эркектердин чач жасалгасы", desc:"Классикалык чач кыркуу"} } },
-            { id: 'combo', price: 2100, duration: 75, strings: { ru:{title:"Стрижка + Борода", desc:"Комплексный уход: стрижка волос и моделирование бороды"}, en:{title:"Haircut + Beard", desc:"Full combo: haircut and beard shaping"}, uz:{title:"Soch va Soqol", desc:"Kompleks parvarish: soch va soqol"}, kg:{title:"Чач жана Сакал", desc:"Чач жана сакал комплекси"} } },
-            { id: 'beard', price: 800, duration: 30, strings: { ru:{title:"Моделирование бороды", desc:"Придание формы, распаривание и контуринг опасной бритвой"}, en:{title:"Beard Trim & Shape", desc:"Shaping, hot towel and straight razor contour"}, uz:{title:"Soqol turmagi", desc:"Soqolga shakl berish va tozalash"}, kg:{title:"Сакал тууралоо", desc:"Сакалга форма берүү"} } },
-            { id: 'clipper', price: 700, duration: 30, strings: { ru:{title:"Стрижка под машинку", desc:"Стрижка одной или несколькими насадками"}, en:{title:"Buzz Cut / Clipper", desc:"Short haircut using clippers"}, uz:{title:"Mashinkada soch olish", desc:"Mashinka yordamida soch olish"}, kg:{title:"Машинка менен кыркуу", desc:"Машинка менен кыска чач"} } },
-            { id: 'royal_shave', price: 1200, duration: 45, strings: { ru:{title:"Королевское бритьё", desc:"Традиционное бритьё с горячими компрессами и премиум маслами"}, en:{title:"Royal Shave", desc:"Traditional hot towel straight razor shave"}, uz:{title:"Qirollik soqol olish", desc:"Issiq kompress va moylar bilan soqol olish"}, kg:{title:"Падышалык кырынуу", desc:"Ысык компресс менен кырынуу"} } },
-            { id: 'kids', price: 1000, duration: 45, strings: { ru:{title:"Детская стрижка (до 12 лет)", desc:"Стильная стрижка для юных джентльменов"}, en:{title:"Kids Haircut", desc:"Haircut for kids under 12"}, uz:{title:"Bolalar soch turmagi", desc:"12 yoshgacha bolalar uchun"}, kg:{title:"Балдар чач жасалгасы", desc:"12 жашка чейинки балдарга"} } }
+            { id: 'haircut', price: 800, duration: 45, strings: { ru:{title:"Мужская стрижка", desc:"Классическая или модельная стрижка с мытьем и укладкой"}, en:{title:"Men's Haircut", desc:"Classic haircut with wash and styling"}, uz:{title:"Erkaklar soch turmagi", desc:"Klassik soch turmagi va yuvish"}, kg:{title:"Эркектердин чач жасалгасы", desc:"Классикалык чач кыркуу"} } },
+            { id: 'combo', price: 1200, duration: 60, strings: { ru:{title:"Стрижка + Борода", desc:"Комплексный уход: стрижка волос и моделирование бороды"}, en:{title:"Haircut + Beard", desc:"Full combo: haircut and beard shaping"}, uz:{title:"Soch va Soqol", desc:"Kompleks parvarish: soch va soqol"}, kg:{title:"Чач жана Сакал", desc:"Чач жана сакал комплекси"} } },
+            { id: 'beard', price: 500, duration: 30, strings: { ru:{title:"Моделирование бороды", desc:"Придание формы, распаривание и контуринг опасной бритвой"}, en:{title:"Beard Trim & Shape", desc:"Shaping, hot towel and straight razor contour"}, uz:{title:"Soqol turmagi", desc:"Soqolga shakl berish va tozalash"}, kg:{title:"Сакал тууралоо", desc:"Сакалга форма берүү"} } },
+            { id: 'clipper', price: 500, duration: 30, strings: { ru:{title:"Стрижка под машинку", desc:"Стрижка одной или несколькими насадками"}, en:{title:"Buzz Cut / Clipper", desc:"Short haircut using clippers"}, uz:{title:"Mashinkada soch olish", desc:"Mashinka yordamida soch olish"}, kg:{title:"Машинка менен кыркуу", desc:"Машинка менен кыска чач"} } },
+            { id: 'royal_shave', price: 700, duration: 45, strings: { ru:{title:"Королевское бритьё", desc:"Традиционное бритьё с горячими компрессами и премиум маслами"}, en:{title:"Royal Shave", desc:"Traditional hot towel straight razor shave"}, uz:{title:"Qirollik soqol olish", desc:"Issiq kompress va moylar bilan soqol olish"}, kg:{title:"Падышалык кырынуу", desc:"Ысык компресс менен кырынуу"} } },
+            { id: 'kids', price: 600, duration: 45, strings: { ru:{title:"Детская стрижка (до 12 лет)", desc:"Стильная стрижка для юных джентльменов"}, en:{title:"Kids Haircut", desc:"Haircut for kids under 12"}, uz:{title:"Bolalar soch turmagi", desc:"12 yoshgacha bolalar uchun"}, kg:{title:"Балдар чач жасалгасы", desc:"12 жашка чейинки балдарга"} } }
         ];
         const defaultMasters = [
-            { id: 'm1', name: 'Алексей (Топ-Барбер)', description: 'Опыт 7 лет. Эксперт по классике и фейдам', district: 'Центр (Ц-1)', lat: 41.3111, lng: 69.2797, workingDays: [1,2,3,4,5,6,0] },
-            { id: 'm2', name: 'Тимур (Шеф-Мастер)', description: 'Опыт 9 лет. Моделирование бороды и опасная бритва', district: 'Юнусабад', lat: 41.3455, lng: 69.2882, workingDays: [1,2,3,4,5,6,0] },
-            { id: 'm3', name: 'Руслан (Барбер)', description: 'Опыт 4 года. Трендовые и текстурные стрижки', district: 'Чиланзар', lat: 41.2858, lng: 69.2285, workingDays: [1,2,3,4,5,6,0] }
+            { id: 'm1', name: 'Азамат (Топ-Барбер)', description: 'Опыт 7 лет • Эксперт по классике и фейдам', district: 'Бишкек', lat: 42.8746, lng: 74.5976, workingDays: [1,2,3,4,5,6,0] },
+            { id: 'm2', name: 'Тимур (Шеф-Мастер)', description: 'Опыт 9 лет • Моделирование бороды и опасная бритва', district: 'Бишкек', lat: 42.8756, lng: 74.5986, workingDays: [1,2,3,4,5,6,0] },
+            { id: 'm3', name: 'Бекзат (Барбер-стилист)', description: 'Опыт 5 лет • Трендовые кроп и текстурные стрижки', district: 'Бишкек', lat: 42.8736, lng: 74.5966, workingDays: [1,2,3,4,5,6,0] }
         ];
         const defaultSettings = { openTime: '10:00', closeTime: '21:00' };
+
+        function getServiceStrings(s, lang) {
+            if (s && s.strings && typeof s.strings === 'object') {
+                const tr = s.strings[lang] || s.strings.ru || Object.values(s.strings)[0];
+                if (tr && tr.title) {
+                    return {
+                        title: tr.title,
+                        desc: tr.desc || 'Профессиональная работа мастера',
+                        ruTitle: (s.strings.ru && s.strings.ru.title) ? s.strings.ru.title : tr.title
+                    };
+                }
+            }
+            const title = (s && (s.name || s.title)) ? (s.name || s.title) : 'Услуга';
+            const desc = (s && (s.desc || s.description)) ? (s.desc || s.description) : 'Профессиональная работа мастера';
+            return { title, desc, ruTitle: title };
+        }
 
         const store = {
             bookings: [], reviews: [], disabledDates: [],
@@ -359,8 +378,29 @@ const i18n = {
             if (key === DB_MY_HISTORY) localStorage.setItem(key, JSON.stringify(data));
         }
         function getServices() { return store.services; }
-        function getMasters() { return store.masters; }
-        function getSettings() { return store.settings; }
+        function getMasters() {
+            if (isSoloBookingMode()) {
+                const s = store.settings || {};
+                const urlShopName = new URLSearchParams(window.location.search).get('shopName');
+                const soloName = s.soloMasterName || s.shopName || urlShopName || ('Топ-Мастер #' + (window.appDB ? window.appDB.tenantId : '1'));
+                return [{
+                    id: window.appDB ? String(window.appDB.tenantId) : 'solo_1',
+                    name: soloName,
+                    description: s.soloMasterSpec || 'Частный мастер • Индивидуальная запись',
+                    workingDays: Array.isArray(s.workingDays) ? s.workingDays : [1, 2, 3, 4, 5, 6, 0],
+                    active: s.active !== false
+                }];
+            }
+            return store.masters;
+        }
+        function getSettings() {
+            const st = store.settings || {};
+            return {
+                ...st,
+                openTime: st.openTime || '10:00',
+                closeTime: st.closeTime || '21:00'
+            };
+        }
 
         let currentStep = 1;
         let bookingData = { id: null, masterId: null, masterName: null, serviceKey: null, serviceRuName: null, price: null, duration: 60, date: null, time: null, name: '', phone: '', timestamp: null };
@@ -377,87 +417,145 @@ const i18n = {
             if (reviews.length > 0) {
                 const sum = reviews.reduce((a, r) => a + parseInt(r.rating || 5), 0);
                 avgRating = (sum / reviews.length).toFixed(1);
+            } else {
+                const catShop = getCatalogBarbershopInfo();
+                if (catShop && catShop.rating) avgRating = Number(catShop.rating).toFixed(1);
             }
-            document.getElementById('stat-masters').textContent = masters.length;
-            document.getElementById('stat-today').textContent = todayCount;
-            document.getElementById('stat-rating').textContent = avgRating;
-            document.getElementById('stat-total').textContent = totalClients || bookings.length || '0';
+            const elMasters = document.getElementById('stat-masters');
+            const elToday = document.getElementById('stat-today');
+            const elRating = document.getElementById('stat-rating');
+            const elTotal = document.getElementById('stat-total');
+            if (elMasters) elMasters.textContent = masters.length;
+            if (elToday) elToday.textContent = todayCount;
+            if (elRating) elRating.textContent = avgRating;
+            if (elTotal) elTotal.textContent = totalClients || bookings.length || '0';
+        }
+
+        function formatTenantTitle(tid) {
+            if (!tid) return 'Барбершоп';
+            return String(tid)
+                .replace(/^kg-2gis-\d+$/i, 'Барбершоп')
+                .replace(/[_-]+/g, ' ')
+                .replace(/\b\w/g, c => c.toUpperCase());
         }
 
         function applySettings(settings) {
+            const st = settings || store.settings || {};
             const urlParams = new URLSearchParams(window.location.search);
             const urlShopName = urlParams.get('shopName');
             const catShop = getCatalogBarbershopInfo();
-            const customName = (window.appDB && window.appDB.tenantId === "shine_barbershop") ? "Shine Barbershop" : null;
-            const effectiveName = (settings && settings.shopName) || urlShopName || (catShop && catShop.name) || customName;
-            if (effectiveName) {
-                if (settings) settings.shopName = effectiveName;
-                document.title = effectiveName + " - Онлайн Запись";
-                Object.keys(i18n).forEach(lang => { if(i18n[lang]) i18n[lang].title = effectiveName; });
-                document.querySelectorAll('[data-i18n="title"]').forEach(el => { el.innerHTML = effectiveName; });
-            }
-            if (catShop && catShop.address) {
+            const solo = isSoloBookingMode();
+
+            const badgeTextEl = document.getElementById('booking-mode-badge-text');
+            const step2Pill = document.getElementById('step-ind-2');
+            const step1Pill = document.getElementById('step-ind-1');
+            const step3Pill = document.getElementById('step-ind-3');
+            const step4Pill = document.getElementById('step-ind-4');
+            const aiWrap = document.getElementById('ai-promo-wrap');
+
+            if (solo) {
+                const soloName = st.soloMasterName || (st.shopName && st.shopName !== 'Брутальный Барбершоп' ? st.shopName : null) || urlShopName || ('Топ-Мастер #' + (window.appDB ? window.appDB.tenantId : '1'));
+                const soloSpec = st.soloMasterSpec || 'Частный мастер • Запись напрямую без ожидания';
+
+                if (badgeTextEl) badgeTextEl.textContent = '✂️ Личная запись к мастеру';
+                document.title = soloName + ' — Онлайн-запись';
+                document.querySelectorAll('[data-i18n="title"]').forEach(el => { el.textContent = soloName; });
                 document.querySelectorAll('[data-i18n="subtitle"]').forEach(el => {
-                    el.innerHTML = `📍 ${catShop.city ? catShop.city + ', ' : ''}${catShop.address}`;
+                    el.textContent = `✂️ ${soloSpec} • 🕒 ${st.openTime || '10:00'}–${st.closeTime || '21:00'}`;
                 });
+
+                if (step2Pill) step2Pill.style.display = 'none';
+                if (step1Pill) step1Pill.textContent = '1. Услуга';
+                if (step3Pill) step3Pill.textContent = '2. Время';
+                if (step4Pill) step4Pill.textContent = '3. Бронь';
+                if (aiWrap) aiWrap.style.display = 'none';
+            } else {
+                const customName = (window.appDB && window.appDB.tenantId === 'shine_barbershop') ? 'Shine Barbershop' : null;
+                const savedName = (st.shopName && st.shopName !== 'Брутальный Барбершоп') ? st.shopName : null;
+                const effectiveName = savedName || urlShopName || (catShop && catShop.name) || customName || formatTenantTitle(window.appDB && window.appDB.tenantId);
+
+                if (badgeTextEl) badgeTextEl.textContent = '💈 Онлайн-запись в салон';
+                document.title = effectiveName + ' — Онлайн-запись';
+                document.querySelectorAll('[data-i18n="title"]').forEach(el => { el.textContent = effectiveName; });
+
+                if (catShop && (catShop.address || catShop.city)) {
+                    const addrParts = [];
+                    if (catShop.city && catShop.address) addrParts.push(`📍 ${catShop.city}, ${catShop.address}`);
+                    else if (catShop.address) addrParts.push(`📍 ${catShop.address}`);
+                    else if (catShop.city) addrParts.push(`📍 ${catShop.city}`);
+                    if (catShop.hours) addrParts.push(`🕒 ${catShop.hours}`);
+                    if (catShop.phone) addrParts.push(`📞 ${catShop.phone}`);
+                    document.querySelectorAll('[data-i18n="subtitle"]').forEach(el => {
+                        el.textContent = addrParts.join(' • ');
+                    });
+                } else if (st.address) {
+                    document.querySelectorAll('[data-i18n="subtitle"]').forEach(el => {
+                        el.textContent = `📍 ${st.address} • 🕒 ${st.openTime || '10:00'}–${st.closeTime || '21:00'}`;
+                    });
+                }
+
+                if (step2Pill) step2Pill.style.display = '';
+                if (step1Pill) step1Pill.textContent = '1. Услуга';
+                if (step2Pill) step2Pill.textContent = '2. Мастер';
+                if (step3Pill) step3Pill.textContent = '3. Время';
+                if (step4Pill) step4Pill.textContent = '4. Бронь';
             }
-            if(settings && settings.design) {
-                const des = settings.design;
-                // Avoid setting white #ffffff accent on light minimalist background
-                if(des.accentColor && des.accentColor.toLowerCase() !== '#ffffff' && des.accentColor.toLowerCase() !== '#fff') {
+
+            if (st && st.design) {
+                const des = st.design;
+                if (des.accentColor && des.accentColor.toLowerCase() !== '#ffffff' && des.accentColor.toLowerCase() !== '#fff') {
                     document.documentElement.style.setProperty('--accent', des.accentColor);
                 }
-                let st = document.getElementById('live-stats-wrap');
-                if(st) st.style.display = des.hideStats ? 'none' : '';
-                let ai = document.getElementById('ai-promo-wrap');
-                if(ai) ai.style.display = des.hideAi ? 'none' : '';
+                let stEl = document.getElementById('live-stats-wrap');
+                if (stEl) stEl.style.display = des.hideStats ? 'none' : '';
+                if (!solo && aiWrap) aiWrap.style.display = des.hideAi ? 'none' : '';
             }
         }
 
         async function initApp() {
             // 1. МГНОВЕННЫЙ РЕНДЕР ИЗ КЭША / ДЕФОЛТА (0 мс задержки!)
             try {
-                const cachedDesign = localStorage.getItem('barber_design_settings');
-                if (cachedDesign) applySettings({ design: JSON.parse(cachedDesign) });
                 const cachedServices = localStorage.getItem(window.appDB.tenantId + '_barber_services');
-                if (cachedServices) { const s = JSON.parse(cachedServices); if(s.length) store.services = s; }
+                if (cachedServices) { const s = JSON.parse(cachedServices); if(s && s.length) store.services = s; }
                 const cachedMasters = localStorage.getItem(window.appDB.tenantId + '_barber_masters');
-                if (cachedMasters) { const m = JSON.parse(cachedMasters); if(m.length) store.masters = m; }
+                if (cachedMasters) { const m = JSON.parse(cachedMasters); if(m && m.length) store.masters = m; }
                 const cachedSettings = localStorage.getItem(window.appDB.tenantId + '_barber_settings');
-                if (cachedSettings) { const st = JSON.parse(cachedSettings); if(Object.keys(st).length) { store.settings = st; applySettings(st); } }
+                if (cachedSettings) { const st = JSON.parse(cachedSettings); if(st && Object.keys(st).length) { store.settings = st; } }
             } catch(e) {}
 
             // Рендерим сразу!
             changeLanguage(currentLang);
+            applySettings(store.settings);
             renderServicesUI();
             renderMastersUI();
             renderLiveStats();
-            initMainMap();
-            lucide.createIcons();
+            if (window.lucide) lucide.createIcons();
 
             // 2. ФОНОВАЯ СИНХРОНИЗАЦИЯ С БАЗОЙ (без зависания интерфейса)
             Promise.all([
                 window.appDB.getBookings().then(b => { if(b && b.length) store.bookings = b; }),
                 window.appDB.getReviews().then(r => { if(r && r.length) { store.reviews = r; renderPublicReviews(); } }),
                 window.appDB.getServices().then(s => { if(s && s.length) { store.services = s; if(currentStep===1) renderServicesUI(); } }),
-                window.appDB.getMasters().then(m => { if(m && m.length) { store.masters = m; if(currentStep===2) renderMastersUI(); renderMapMarkers(); } }),
-                window.appDB.getSettings().then(st => { if(st && Object.keys(st).length) { store.settings = st; applySettings(st); } })
+                window.appDB.getMasters().then(m => { if(m && m.length) { store.masters = m; if(currentStep===2) renderMastersUI(); } }),
+                window.appDB.getSettings().then(st => { if(st && Object.keys(st).length) { store.settings = st; } applySettings(store.settings); })
             ]).then(() => {
+                applySettings(store.settings);
                 renderLiveStats();
-                renderMapMarkers();
-                lucide.createIcons();
+                if (currentStep === 1) renderServicesUI();
+                if (currentStep === 2) renderMastersUI();
+                if (window.lucide) lucide.createIcons();
             }).catch(err => console.warn('Background sync error:', err));
 
             // Подписка на обновления в реальном времени
-            window.appDB.subscribe('barber_bookings', data => { store.bookings = data; renderLiveStats(); loadMyBookings(); if(currentStep===3) renderTimes(); });
-            window.appDB.subscribe('barber_reviews', data => { store.reviews = data; renderLiveStats(); renderPublicReviews(); renderMapMarkers(); });
-            window.appDB.subscribe('barber_masters', data => { if(data.length) { store.masters = data; if(currentStep===2) renderMastersUI(); renderMapMarkers(); } });
-            window.appDB.subscribe('barber_services', data => { if(data.length) store.services = data; if(currentStep===1) renderServicesUI(); });
+            window.appDB.subscribe('barber_bookings', data => { store.bookings = data || []; renderLiveStats(); loadMyBookings(); if(currentStep===3) renderTimes(); });
+            window.appDB.subscribe('barber_reviews', data => { store.reviews = data || []; renderLiveStats(); renderPublicReviews(); });
+            window.appDB.subscribe('barber_masters', data => { if(data && data.length) { store.masters = data; if(currentStep===2) renderMastersUI(); } });
+            window.appDB.subscribe('barber_services', data => { if(data && data.length) store.services = data; if(currentStep===1) renderServicesUI(); });
             window.appDB.subscribe('barber_settings', data => {
                 if(data && typeof data === 'object' && !Array.isArray(data) && Object.keys(data).length) {
                     store.settings = data;
-                    applySettings(data);
                 }
+                applySettings(store.settings);
             });
 
             handleGoogleRedirectResult();
@@ -467,7 +565,9 @@ const i18n = {
 
         // MASTERS (STEP 2)
         function renderMastersUI() {
-            const list = document.getElementById('masters-container'); list.innerHTML = '';
+            const list = document.getElementById('masters-container');
+            if (!list) return;
+            list.innerHTML = '';
             let masters = [...getMasters().filter(m => m.active !== false), { id: 'any', name: i18n[currentLang]['any_master'], isAny: true }];
 
             masters.forEach((m, idx) => {
@@ -478,32 +578,27 @@ const i18n = {
                     document.querySelectorAll('#step-2 .service-card').forEach(c => c.classList.remove('selected'));
                     card.classList.add('selected');
                     document.getElementById('btn-next-2').disabled = false;
-                    if (!m.isAny && mainMap) {
-                        const coords = getMasterCoords(m, idx);
-                        mainMap.flyTo(coords, 14, { duration: 0.5 });
-                    }
-                    renderMapMarkers();
                 };
                 
                 let statsHtml = '';
                 if (!m.isAny) {
                     let rating = getAverageRating(m.id);
-                    statsHtml = `<div style="font-size:0.82rem; color:#111827; font-weight:600; margin-top:4px;"><span style="color:#f59e0b;">★</span> ${rating.avg} <span style="color:var(--text-muted); font-weight:400; font-size:0.75rem;">(${rating.count})</span></div>`;
+                    statsHtml = `<div style="font-size:0.82rem; color:var(--text-main); font-weight:700; margin-top:4px;"><span style="color:#fbbf24;">★</span> ${rating.avg} <span style="color:var(--text-muted); font-weight:500; font-size:0.75rem;">(${rating.count})</span></div>`;
                 }
 
                 let avaHtml = '';
                 const photoSrc = m.photo || m.avatar;
                 if (m.isAny) {
-                    avaHtml = `<div class="master-ava" style="width:50px;height:50px;border-radius:50%;background:#f3f4f6;border:1.5px dashed #9ca3af;display:flex;align-items:center;justify-content:center;color:#111827;flex-shrink:0;"><i data-lucide="users" style="width:22px;height:22px;"></i></div>`;
+                    avaHtml = `<div class="master-ava" style="width:50px;height:50px;border-radius:50%;background:var(--bg-main);border:1.5px dashed var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0;"><i data-lucide="users" style="width:22px;height:22px;"></i></div>`;
                 } else if (photoSrc) {
-                    avaHtml = `<img class="master-ava" src="${photoSrc}" style="width:50px;height:50px;border-radius:50%;object-fit:cover;border:1.5px solid var(--border);flex-shrink:0;">`;
+                    avaHtml = `<img class="master-ava" src="${photoSrc}" style="width:50px;height:50px;border-radius:50%;object-fit:cover;border:1.5px solid var(--accent);flex-shrink:0;">`;
                 } else {
-                    avaHtml = `<div class="master-ava" style="width:50px;height:50px;border-radius:50%;background:#111827;display:flex;align-items:center;justify-content:center;font-weight:700;color:#ffffff;flex-shrink:0;">${m.name.charAt(0)}</div>`;
+                    avaHtml = `<div class="master-ava" style="width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg, var(--accent), var(--accent-gold));display:flex;align-items:center;justify-content:center;font-weight:800;color:#06141B;flex-shrink:0;">${(m.name || 'М').charAt(0)}</div>`;
                 }
 
-                card.innerHTML = `<div class="master-card-inner" style="display:flex; align-items:center; flex:1;">
+                card.innerHTML = `<div class="master-card-inner" style="display:flex; align-items:center; gap:14px; flex:1;">
                     ${avaHtml}
-                    <div><h3 style="margin:0;">${m.name}</h3>${(m.description || m.bio) ? `<p style="color:var(--text-muted);font-size:0.8rem;margin:3px 0 0;">${m.description || m.bio}</p>` : ''}${statsHtml}</div>
+                    <div><h3 style="margin:0; color:var(--text-main);">${m.name}</h3>${(m.description || m.bio) ? `<p style="color:var(--text-muted);font-size:0.8rem;margin:3px 0 0;">${m.description || m.bio}</p>` : ''}${statsHtml}</div>
                 </div>`;
                 list.appendChild(card);
             });
@@ -520,20 +615,22 @@ const i18n = {
             return { avg: (sum / mRev.length).toFixed(1), count: mRev.length };
         }
 
-        // SERVICES (STEP 2)
+        // SERVICES (STEP 1)
         function renderServicesUI() {
-            const list = document.getElementById('services-container'); list.innerHTML = '';
+            const list = document.getElementById('services-container');
+            if (!list) return;
+            list.innerHTML = '';
             getServices().forEach(s => {
-                let t = s.strings[currentLang] || s.strings.ru;
+                let t = getServiceStrings(s, currentLang);
                 let card = document.createElement('div'); card.className = "service-card";
-                if (bookingData.serviceKey === s.id) card.classList.add('selected');
-                let durText = (s.duration || 60) + " мин";
+                if (String(bookingData.serviceKey) === String(s.id)) card.classList.add('selected');
+                let durText = (s.duration || 45) + " мин";
                 card.onclick = () => {
-                    bookingData.serviceKey = s.id; bookingData.price = s.price; bookingData.serviceRuName = s.strings.ru.title; bookingData.duration = s.duration || 60;
+                    bookingData.serviceKey = s.id; bookingData.price = s.price; bookingData.serviceRuName = t.ruTitle; bookingData.duration = s.duration || 45;
                     document.querySelectorAll('#step-1 .service-card').forEach(c => c.classList.remove('selected')); card.classList.add('selected');
                     document.getElementById('btn-next-1').disabled = false;
                 };
-                card.innerHTML = `<div class="service-info"><h3>${t.title}</h3><p>${t.desc}</p></div><div style="text-align:right;"><div class="service-price">${s.price} сом</div><div style="font-size:0.85rem; color:var(--text-muted); margin-top:5px; margin-left:15px;">⏱ ${durText}</div></div>`;
+                card.innerHTML = `<div class="service-info"><h3>${t.title}</h3><p>${t.desc}</p></div><div style="text-align:right; flex-shrink:0;"><div class="service-price">${s.price} сом</div><div style="font-size:0.82rem; color:var(--text-muted); margin-top:6px;">⏱ ${durText}</div></div>`;
                 list.appendChild(card);
             });
             // если услуга уже выбрана (возврат назад) — разблокируем кнопку
@@ -598,7 +695,7 @@ const i18n = {
             let bookedMap = {}; 
             allBookings.filter(b => b.date === bookingData.date).forEach(b => {
                 let sDur = 60; 
-                let bSrv = allServices.find(s => s.id === b.serviceKey || s.strings.ru.title === b.service);
+                let bSrv = allServices.find(s => String(s.id) === String(b.serviceKey) || getServiceStrings(s, 'ru').ruTitle === b.service);
                 if (bSrv && bSrv.duration) sDur = bSrv.duration;
                 
                 let bSlots = Math.max(1, sDur / 30);
@@ -656,7 +753,7 @@ const i18n = {
 
             if (isSoloBookingMode() && step === 2) {
                 if (currentStep === 1) {
-                    const soloM = getMasters()[0] || { id: 1, name: (store.settings && store.settings.soloMasterName) || 'Топ-Мастер' };
+                    const soloM = getMasters()[0] || { id: window.appDB ? String(window.appDB.tenantId) : 'solo_1', name: (store.settings && store.settings.soloMasterName) || 'Топ-Мастер' };
                     bookingData.masterId = soloM.id;
                     bookingData.masterName = soloM.name;
                     step = 3;
@@ -691,18 +788,16 @@ const i18n = {
         }
 
         function updateSummary() {
-            let srv = getServices().find(x => x.id === bookingData.serviceKey);
-            let t = srv ? (srv.strings[currentLang] || srv.strings.ru) : {title: ""};
+            let srv = getServices().find(x => String(x.id) === String(bookingData.serviceKey));
+            let t = srv ? getServiceStrings(srv, currentLang) : { title: bookingData.serviceRuName || '' };
             let mName = bookingData.masterId === 'any' ? i18n[currentLang]['any_master'] : bookingData.masterName;
             
             document.getElementById('summary-master').innerHTML = `<i data-lucide="user" style="width:14px;height:14px;"></i> ${mName}`;
-            document.getElementById('summary-service').innerHTML = `<i data-lucide="scissors" style="width:14px;height:14px;"></i> ${t.title} - ${bookingData.price} сом`;
+            document.getElementById('summary-service').innerHTML = `<i data-lucide="scissors" style="width:14px;height:14px;"></i> ${t.title} — ${bookingData.price} сом`;
             let dObj = new Date(bookingData.date);
             document.getElementById('summary-datetime').innerHTML = `<i data-lucide="calendar" style="width:14px;height:14px;"></i> ${dObj.toLocaleDateString('ru-RU')} в ${bookingData.time}`;
 
-
-            
-            lucide.createIcons();
+            if (window.lucide) lucide.createIcons();
             validateForm();
         }
 
@@ -1000,9 +1095,9 @@ const i18n = {
 
             try {
                 const result = await window.appDB.commitNewBooking(dbEntry, {
-                    masters: store.masters,
-                    services: store.services,
-                    settings: store.settings
+                    masters: getMasters(),
+                    services: getServices(),
+                    settings: getSettings()
                 });
                 store.bookings = result.items;
             } catch (err) {
@@ -1216,14 +1311,14 @@ const i18n = {
             showTyping(true);
 
             // Prepare context
-            const masters = store.masters;
-            const services = store.services;
-            const settings = store.settings;
+            const masters = getMasters();
+            const services = getServices();
+            const settings = getSettings();
             
             const contextPrompt = `Ты — экспертный и дружелюбный администратор барбершопа. Твоя задача — помогать клиентам.
 Данные салона в реальном времени:
 - Мастера: ${masters.map(m => m.name).join(', ')}
-- Услуги: ${services.map(s => `${s.strings.ru.title} (${s.price}р)`).join(', ')}
+- Услуги: ${services.map(s => `${getServiceStrings(s, 'ru').ruTitle} (${s.price} сом)`).join(', ')}
 - Время работы: с ${settings.openTime} до ${settings.closeTime}.
 
 Правила:
