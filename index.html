@@ -27,6 +27,17 @@
     <script src="assets/mobile-bridge.js"></script>
 
     <script>
+        // If opened as root web entry without parameters, route to the main Role Selection Screen (app.html)
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const hasId = urlParams.get('id') || urlParams.get('shop') || urlParams.get('tgWebAppStartParam');
+            const hasTg = window.location.hash.includes('tgWebAppData') || window.location.hash.includes('tgWebAppStartParam');
+            if (!hasId && !hasTg) {
+                window.location.replace('app.html');
+                return;
+            }
+        })();
+
         function triggerHaptic(type = 'light') {
             if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
                 try {
