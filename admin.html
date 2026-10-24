@@ -46,6 +46,7 @@
             <input type="password" id="pin-input" class="form-control" placeholder="PIN (7777)" style="margin-bottom:16px;">
             <button class="btn" style="width:100%" onclick="checkPin()" data-i18n="auth_btn">Войти</button>
             <p id="pin-error" style="color:var(--danger); margin-top:12px; display:none; font-size:0.85rem; font-weight:600;" data-i18n="auth_error">Неверный Email или PIN</p>
+            <a href="app.html?switch_role=1" style="display:inline-block; margin-top:16px; font-size:0.84rem; color:var(--text-muted); text-decoration:none; font-weight:600;">← Главное меню (выбор роли)</a>
         </div>
     </div>
 
@@ -68,6 +69,7 @@
             </select>
             <button onclick="toggleTheme()" style="background: transparent; color: var(--text-main); border: 1px solid var(--border); padding: 6px 10px; border-radius: 6px; cursor: pointer; display:inline-flex; align-items:center; transition: var(--transition);"><i data-lucide="sun" id="theme-icon" style="width:18px;height:18px;"></i></button>
             <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; white-space:nowrap;" data-i18n="nav_back">На сайт записи</a>
+            <button onclick="logoutOwnerAccount()" style="background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.35); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.82rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;" title="Выйти в главное меню (выбор роли)">🚪 Выйти</button>
         </div>
     </header>
 

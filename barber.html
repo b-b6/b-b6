@@ -499,10 +499,15 @@
                 <p id="master-tenant-badge">ID: default</p>
             </div>
         </div>
-        <button class="status-toggle-btn active" id="status-toggle-btn" onclick="toggleMasterActiveStatus()">
-            <span class="status-dot"></span>
-            <span id="status-toggle-text">Активен</span>
-        </button>
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <button class="status-toggle-btn active" id="status-toggle-btn" onclick="toggleMasterActiveStatus()">
+                <span class="status-dot"></span>
+                <span id="status-toggle-text">Активен</span>
+            </button>
+            <button type="button" onclick="logoutMasterSession()" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35); padding: 7px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s;" title="Выйти в главное меню (выбор роли)">
+                🚪 Выйти
+            </button>
+        </div>
     </header>
 
     <main class="container">
