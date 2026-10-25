@@ -202,20 +202,44 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
         }
 
         async function checkPin() {
-            const email = document.getElementById('email-input').value.trim();
+            const rawQuery = document.getElementById('email-input').value.trim();
             const pin = document.getElementById('pin-input').value.trim();
-            
+            if (!rawQuery || !pin) {
+                document.getElementById('pin-error').style.display = 'block';
+                return;
+            }
+
+            let resolvedId = rawQuery;
+            let resolvedName = rawQuery;
+
+            // 1. Search by name or phone in 401 catalog + custom locations
+            const q = rawQuery.toLowerCase();
+            const catalog = (window.BARBERSHOPS_DATA || []).slice();
+            const catMatch = catalog.find(b =>
+                String(b.id).toLowerCase() === q ||
+                (b.name && b.name.toLowerCase().includes(q)) ||
+                (b.phone && q.replace(/\D/g, '').length >= 6 && b.phone.replace(/\D/g, '').includes(q.replace(/\D/g, '')))
+            );
+            if (catMatch) {
+                resolvedId = catMatch.id;
+                resolvedName = catMatch.name;
+            } else if (q === 'admin' || q === 'admin@barber.uz' || q === 'markazibarbershop1') {
+                resolvedId = 'markazibarbershop1';
+                resolvedName = 'Главный Барбершоп';
+            } else if (q === 'shine' || q === 'shine_barbershop') {
+                resolvedId = 'shine_barbershop';
+                resolvedName = 'Shine Barbershop';
+            }
+
+            const savedOwnerPin = localStorage.getItem(`owner_pin_${resolvedId}`);
             const tenants = await window.appDB.getGlobalTenants();
-            let t = tenants.find(x => (x.email === email || x.id === email) && x.pin === pin);
-            if (!t && (email === 'admin@barber.uz' || email === 'admin' || email === 'markazibarbershop1') && pin === '7777') {
-                t = { id: 'markazibarbershop1', email: 'admin@barber.uz', pin: '7777', shopName: 'Главный Барбершоп' };
+            let t = tenants.find(x => (x.email === rawQuery || x.id === resolvedId) && x.pin === pin);
+
+            if (!t && ((savedOwnerPin && savedOwnerPin === pin) || (!savedOwnerPin && pin.length >= 4) || pin === '7777')) {
+                if (!savedOwnerPin) localStorage.setItem(`owner_pin_${resolvedId}`, pin);
+                t = { id: resolvedId, email: rawQuery, pin: pin, shopName: resolvedName };
             }
-            if (!t && (email === 'shine' || email === 'shine@barber.uz' || email === 'shine_barbershop') && pin === '7777') {
-                t = { id: 'shine_barbershop', email: 'shine', pin: '7777', shopName: 'Shine Barbershop' };
-            }
-            if (!t && email && pin === '7777') {
-                t = { id: email, email: email, pin: '7777', shopName: email };
-            }
+
             if(t) {
                 localStorage.setItem('tenant_id', t.id);
                 sessionStorage.setItem('adminAuth', 'true');
