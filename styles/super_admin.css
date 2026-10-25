@@ -1,31 +1,39 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
 
 :root {
-    --bg-main: #f7f7f9;
-    --bg-dark: #f3f4f6;
+    --navy: #0c192c;
+    --navy-light: #182b45;
+    --navy-soft: #f0f4f9;
+    --navy-line: #d5e2f0;
+    --burgundy: #7a1c2d;
+    --burgundy-dark: #5c1220;
+    --burgundy-soft: #fbf0f2;
+    --burgundy-line: #f0cdd3;
+    --bg-main: #e9ecef;
+    --bg-dark: #f0f4f9;
     --glass-bg: #ffffff;
-    --glass-border: #e5e7eb;
+    --glass-border: #e6ecf2;
     --surface: #ffffff;
-    --text-main: #0f172a;
-    --text-secondary: #1f2937;
-    --text-muted: #4b5563;
-    --accent-gold: #111827;
-    --accent-green: #10b981;
-    --accent-blue: #2563eb;
-    --accent-red: #ef4444;
-    --border: #e5e7eb;
-    --border-strong: #d1d5db;
-    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
-    --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.12);
-    --radius-sm: 10px;
-    --radius-md: 14px;
-    --radius-lg: 20px;
+    --text-main: #0c192c;
+    --text-secondary: #243348;
+    --text-muted: #6c7a8e;
+    --accent-gold: #7a1c2d;
+    --accent-green: #00873d;
+    --accent-blue: #0a84ff;
+    --accent-red: #c13515;
+    --border: #e6ecf2;
+    --border-strong: #d5e2f0;
+    --shadow-xs: 0 2px 8px rgba(12, 25, 44, 0.05);
+    --shadow-sm: 0 6px 24px rgba(12, 25, 44, 0.08), 0 1px 3px rgba(12, 25, 44, 0.05);
+    --shadow-md: 0 10px 30px rgba(12, 25, 44, 0.12);
+    --shadow-lg: 0 14px 44px rgba(12, 25, 44, 0.14), 0 2px 8px rgba(12, 25, 44, 0.06);
+    --radius-sm: 12px;
+    --radius-md: 16px;
+    --radius-lg: 22px;
     --radius-pill: 9999px;
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-serif: 'Plus Jakarta Sans', 'Inter', sans-serif;
-    --transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    --transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 * {
@@ -77,7 +85,7 @@ body {
     width: 56px;
     height: 56px;
     border-radius: 16px;
-    background: #111827;
+    background: var(--navy);
     color: #ffffff;
     font-family: var(--font-serif);
     font-size: 1.5rem;
@@ -86,6 +94,7 @@ body {
     align-items: center;
     justify-content: center;
     margin: 0 auto 20px;
+    box-shadow: 0 4px 12px rgba(12, 25, 44, 0.2);
 }
 
 /* ── TOPBAR ── */
@@ -93,9 +102,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 500;
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: #ffffff;
     border-bottom: 1px solid var(--border);
     padding: 14px 28px;
     display: flex;
@@ -103,40 +110,42 @@ body {
     justify-content: space-between;
     gap: 16px;
     flex-wrap: wrap;
+    box-shadow: 0 4px 20px rgba(12, 25, 44, 0.05);
 }
 
 .logo-area {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-family: var(--font-serif);
+    font-family: var(--font-sans);
     font-weight: 800;
     font-size: 1.15rem;
-    color: var(--text-main);
+    color: var(--navy);
 }
 
 .logo-icon {
     width: 34px;
     height: 34px;
     border-radius: 10px;
-    background: #111827;
+    background: var(--navy);
     color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 800;
     font-size: 0.95rem;
+    box-shadow: 0 4px 10px rgba(12, 25, 44, 0.2);
 }
 
 .badge-super {
-    background: var(--bg-main);
-    border: 1px solid var(--border);
-    color: var(--text-secondary);
+    background: var(--burgundy-soft);
+    border: 1px solid var(--burgundy-line);
+    color: var(--burgundy);
     padding: 3px 10px;
     border-radius: var(--radius-pill);
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.6px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.4px;
 }
 
 .user-area {
@@ -245,9 +254,9 @@ body {
 }
 
 .stab.active {
-    background: #111827;
+    background: var(--burgundy);
     color: #ffffff;
-    box-shadow: var(--shadow-xs);
+    box-shadow: 0 4px 12px rgba(122, 28, 45, 0.25);
 }
 
 .section-panel {
@@ -295,13 +304,14 @@ body {
 }
 
 .btn-tool.btn-primary {
-    background: #111827;
+    background: var(--burgundy);
     color: #ffffff;
-    border-color: #111827;
+    border-color: var(--burgundy);
+    box-shadow: 0 4px 14px rgba(122, 28, 45, 0.25);
 }
 
 .btn-tool.btn-primary:hover {
-    background: #1f2937;
+    background: var(--burgundy-dark);
 }
 
 .filters-area {
@@ -642,19 +652,19 @@ table td {
     padding: 14px 20px;
     border-radius: var(--radius-sm);
     border: none;
-    background: #111827;
+    background: var(--burgundy);
     color: #ffffff;
     font-family: var(--font-sans);
     font-size: 0.95rem;
-    font-weight: 700;
+    font-weight: 800;
     cursor: pointer;
     transition: var(--transition);
+    box-shadow: 0 4px 14px rgba(122, 28, 45, 0.28);
 }
 
 .btn-submit:hover {
-    background: #1f2937;
+    background: var(--burgundy-dark);
     transform: translateY(-1px);
-    box-shadow: var(--shadow-sm);
 }
 
 #barber-pick-map {

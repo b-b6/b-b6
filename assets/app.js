@@ -447,6 +447,7 @@ const i18n = {
             const solo = isSoloBookingMode();
 
             const badgeTextEl = document.getElementById('booking-mode-badge-text');
+            const avatarLetterEl = document.getElementById('shop-avatar-letter');
             const step2Pill = document.getElementById('step-ind-2');
             const step1Pill = document.getElementById('step-ind-1');
             const step3Pill = document.getElementById('step-ind-3');
@@ -457,7 +458,8 @@ const i18n = {
                 const soloName = st.soloMasterName || (st.shopName && st.shopName !== 'Брутальный Барбершоп' ? st.shopName : null) || urlShopName || ('Топ-Мастер #' + (window.appDB ? window.appDB.tenantId : '1'));
                 const soloSpec = st.soloMasterSpec || 'Частный мастер • Запись напрямую без ожидания';
 
-                if (badgeTextEl) badgeTextEl.textContent = '✂️ Личная запись к мастеру';
+                if (badgeTextEl) badgeTextEl.textContent = '● Личная запись к мастеру';
+                if (avatarLetterEl) avatarLetterEl.textContent = (soloName.trim().charAt(0) || 'М').toUpperCase();
                 document.title = soloName + ' — Онлайн-запись';
                 document.querySelectorAll('[data-i18n="title"]').forEach(el => { el.textContent = soloName; });
                 document.querySelectorAll('[data-i18n="subtitle"]').forEach(el => {
@@ -474,7 +476,8 @@ const i18n = {
                 const savedName = (st.shopName && st.shopName !== 'Брутальный Барбершоп') ? st.shopName : null;
                 const effectiveName = savedName || urlShopName || (catShop && catShop.name) || customName || formatTenantTitle(window.appDB && window.appDB.tenantId);
 
-                if (badgeTextEl) badgeTextEl.textContent = '💈 Онлайн-запись в салон';
+                if (badgeTextEl) badgeTextEl.textContent = '● Онлайн-запись открыта';
+                if (avatarLetterEl) avatarLetterEl.textContent = (effectiveName.trim().charAt(0) || 'B').toUpperCase();
                 document.title = effectiveName + ' — Онлайн-запись';
                 document.querySelectorAll('[data-i18n="title"]').forEach(el => { el.textContent = effectiveName; });
 
@@ -589,11 +592,11 @@ const i18n = {
                 let avaHtml = '';
                 const photoSrc = m.photo || m.avatar;
                 if (m.isAny) {
-                    avaHtml = `<div class="master-ava" style="width:50px;height:50px;border-radius:50%;background:var(--bg-main);border:1.5px dashed var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0;"><i data-lucide="users" style="width:22px;height:22px;"></i></div>`;
+                    avaHtml = `<div class="master-ava" style="width:48px;height:48px;border-radius:14px;background:var(--navy-soft);border:1.5px dashed var(--navy-line);display:flex;align-items:center;justify-content:center;color:var(--navy);flex-shrink:0;"><i data-lucide="users" style="width:20px;height:20px;"></i></div>`;
                 } else if (photoSrc) {
-                    avaHtml = `<img class="master-ava" src="${photoSrc}" style="width:50px;height:50px;border-radius:50%;object-fit:cover;border:1.5px solid var(--accent);flex-shrink:0;">`;
+                    avaHtml = `<img class="master-ava" src="${photoSrc}" style="width:48px;height:48px;border-radius:14px;object-fit:cover;border:1.5px solid var(--navy-line);flex-shrink:0;">`;
                 } else {
-                    avaHtml = `<div class="master-ava" style="width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg, var(--accent), var(--accent-gold));display:flex;align-items:center;justify-content:center;font-weight:800;color:#06141B;flex-shrink:0;">${(m.name || 'М').charAt(0)}</div>`;
+                    avaHtml = `<div class="master-ava" style="width:48px;height:48px;border-radius:14px;background:#0c192c;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;color:#ffffff;flex-shrink:0;">${(m.name || 'М').charAt(0)}</div>`;
                 }
 
                 card.innerHTML = `<div class="master-card-inner" style="display:flex; align-items:center; gap:14px; flex:1;">

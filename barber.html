@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#06141B">
-    <title>Кабинет Мастера | Barber SaaS</title>
+    <meta name="theme-color" content="#f0f4f9">
+    <title>Кабинет Мастера | BarberMap KG</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -15,16 +15,28 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
     <style>
         :root {
-            --bg-deep: #06141B;
-            --bg-panel: #11212D;
-            --bg-card: #253745;
-            --border-color: #4A5C6A;
-            --gold: #fbbf24;
-            --gold-dark: #f59e0b;
-            --text-main: #F8FAFC;
-            --text-muted: #94A3B8;
-            --green: #10b981;
-            --red: #ef4444;
+            --navy: #0c192c;
+            --navy-light: #182b45;
+            --navy-soft: #f0f4f9;
+            --navy-line: #d5e2f0;
+            --burgundy: #7a1c2d;
+            --burgundy-dark: #5c1220;
+            --burgundy-soft: #fbf0f2;
+            --burgundy-line: #f0cdd3;
+            --bg-deep: #e9ecef;
+            --bg-panel: #ffffff;
+            --bg-card: #f5f7fa;
+            --border-color: #e6ecf2;
+            --gold: #7a1c2d;
+            --gold-dark: #5c1220;
+            --text-main: #0c192c;
+            --text-muted: #6c7a8e;
+            --green: #00873d;
+            --green-bg: #ebf7f0;
+            --red: #c13515;
+            --red-bg: #fdf0ed;
+            --sh: 0 6px 24px rgba(12, 25, 44, 0.08), 0 1px 3px rgba(12, 25, 44, 0.05);
+            --sh-lg: 0 14px 44px rgba(12, 25, 44, 0.14), 0 2px 8px rgba(12, 25, 44, 0.06);
         }
 
         * {
@@ -39,7 +51,8 @@
             color: var(--text-main);
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             min-height: 100vh;
-            padding-bottom: 90px;
+            padding-bottom: 96px;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* Header */
@@ -47,18 +60,18 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(17, 33, 45, 0.95);
-            backdrop-filter: blur(12px);
+            background: #ffffff;
             border-bottom: 1px solid var(--border-color);
-            border-left: 1px solid var(--border-color);
-            border-right: 1px solid var(--border-color);
-            padding: 12px 16px;
+            border-left: 1px solid rgba(12, 25, 44, 0.05);
+            border-right: 1px solid rgba(12, 25, 44, 0.05);
+            padding: 14px 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 12px;
-            max-width: 680px;
+            max-width: 720px;
             margin: 0 auto;
+            box-shadow: 0 4px 16px rgba(12, 25, 44, 0.04);
         }
 
         .master-profile {
@@ -70,21 +83,36 @@
         .master-avatar {
             width: 44px;
             height: 44px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            color: #06141B;
+            border-radius: 14px;
+            background: var(--navy);
+            color: #ffffff;
             font-weight: 800;
             font-size: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 14px rgba(251, 191, 36, 0.3);
+            position: relative;
+            box-shadow: 0 4px 12px rgba(12, 25, 44, 0.15);
+        }
+
+        .master-avatar::after {
+            content: '';
+            position: absolute;
+            right: -2px;
+            bottom: -2px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--green);
+            border: 2px solid #ffffff;
         }
 
         .master-title h1 {
             font-size: 16px;
             font-weight: 800;
             line-height: 1.2;
+            color: var(--navy);
+            letter-spacing: -0.02em;
         }
 
         .master-title p {
@@ -98,9 +126,9 @@
             display: inline-flex;
             align-items: center;
             gap: 7px;
-            padding: 8px 14px;
+            padding: 7px 13px;
             border-radius: 999px;
-            font-size: 12.5px;
+            font-size: 12px;
             font-weight: 800;
             cursor: pointer;
             border: 1px solid var(--border-color);
@@ -108,15 +136,15 @@
         }
 
         .status-toggle-btn.active {
-            background: rgba(16, 185, 129, 0.16);
-            color: #34d399;
-            border-color: rgba(16, 185, 129, 0.45);
+            background: var(--green-bg);
+            color: var(--green);
+            border-color: rgba(0, 135, 61, 0.25);
         }
 
         .status-toggle-btn.paused {
-            background: rgba(245, 158, 11, 0.16);
-            color: var(--gold);
-            border-color: rgba(251, 191, 36, 0.45);
+            background: var(--burgundy-soft);
+            color: var(--burgundy);
+            border-color: var(--burgundy-line);
         }
 
         .status-dot {
@@ -124,7 +152,6 @@
             height: 8px;
             border-radius: 50%;
             background: currentColor;
-            box-shadow: 0 0 8px currentColor;
         }
 
         /* Container */
@@ -139,22 +166,23 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
 
         .stat-card {
-            background: var(--bg-panel);
+            background: #ffffff;
             border: 1px solid var(--border-color);
-            border-radius: 16px;
+            border-radius: 18px;
             padding: 14px 12px;
             position: relative;
             overflow: hidden;
+            box-shadow: var(--sh);
         }
 
         .stat-card.gold-highlight {
-            background: linear-gradient(145deg, #253745 0%, #11212D 100%);
-            border-color: var(--gold);
-            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.15);
+            background: var(--burgundy-soft);
+            border-color: var(--burgundy-line);
+            box-shadow: var(--sh);
         }
 
         .stat-label {
@@ -169,11 +197,11 @@
         .stat-val {
             font-size: 19px;
             font-weight: 800;
-            color: var(--text-main);
+            color: var(--navy);
         }
 
         .stat-card.gold-highlight .stat-val {
-            color: var(--gold);
+            color: var(--burgundy);
         }
 
         .stat-sub {
@@ -193,11 +221,12 @@
         }
 
         .panel-card {
-            background: var(--bg-panel);
+            background: #ffffff;
             border: 1px solid var(--border-color);
-            border-radius: 18px;
-            padding: 16px;
+            border-radius: 22px;
+            padding: 18px;
             margin-bottom: 16px;
+            box-shadow: var(--sh);
         }
 
         .panel-head {
@@ -211,6 +240,7 @@
         .panel-head h2 {
             font-size: 16px;
             font-weight: 800;
+            color: var(--navy);
             display: flex;
             align-items: center;
             gap: 8px;
@@ -223,28 +253,28 @@
             justify-content: space-between;
             gap: 8px;
             margin-bottom: 14px;
-            background: var(--bg-card);
+            background: var(--navy-soft);
             padding: 8px 12px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            border: 1px solid var(--navy-line);
         }
 
         .date-bar input[type="date"] {
             background: transparent;
             border: 0;
-            color: var(--text-main);
+            color: var(--navy);
             font-family: inherit;
             font-size: 14px;
-            font-weight: 700;
+            font-weight: 800;
             outline: none;
         }
 
         .btn-gold {
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            color: #06141B;
+            background: var(--burgundy);
+            color: #ffffff;
             border: none;
-            padding: 9px 14px;
-            border-radius: 10px;
+            padding: 10px 15px;
+            border-radius: 12px;
             font-weight: 800;
             font-size: 13px;
             cursor: pointer;
@@ -252,23 +282,30 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            box-shadow: 0 4px 14px rgba(251, 191, 36, 0.25);
+            box-shadow: 0 4px 14px rgba(122, 28, 45, 0.25);
+            transition: background 0.15s;
+        }
+
+        .btn-gold:hover {
+            background: var(--burgundy-dark);
         }
 
         .btn-outline {
-            background: var(--bg-card);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
+            background: #ffffff;
+            color: var(--navy);
+            border: 1px solid var(--navy-line);
             padding: 8px 13px;
-            border-radius: 10px;
+            border-radius: 11px;
             font-weight: 700;
             font-size: 12.5px;
             cursor: pointer;
+            transition: all 0.15s;
         }
 
         .btn-outline:hover {
-            border-color: var(--gold);
-            color: var(--gold);
+            background: var(--navy-soft);
+            border-color: var(--navy);
+            color: var(--navy);
         }
 
         .single-col-grid {
@@ -281,32 +318,34 @@
             display: flex;
             align-items: stretch;
             gap: 12px;
-            background: var(--bg-card);
+            background: #ffffff;
             border: 1px solid var(--border-color);
-            border-radius: 14px;
+            border-radius: 16px;
             padding: 12px 14px;
             transition: border-color 0.15s;
         }
 
         .slot-row.booked {
-            border-left: 4px solid var(--gold);
-            background: rgba(37, 55, 69, 0.95);
+            border-left: 4px solid var(--burgundy);
+            background: var(--burgundy-soft);
+            border-color: var(--burgundy-line);
         }
 
         .slot-row.completed {
             border-left: 4px solid var(--green);
-            opacity: 0.9;
+            background: var(--green-bg);
+            border-color: rgba(0, 135, 61, 0.25);
         }
 
         .slot-row.free {
-            background: rgba(17, 33, 45, 0.65);
+            background: var(--bg-card);
             border-style: dashed;
         }
 
         .slot-time {
             font-size: 15px;
             font-weight: 800;
-            color: var(--gold);
+            color: var(--burgundy);
             min-width: 54px;
             display: flex;
             align-items: center;
@@ -320,7 +359,7 @@
         .slot-client {
             font-size: 14.5px;
             font-weight: 800;
-            color: var(--text-main);
+            color: var(--navy);
         }
 
         .slot-service {
@@ -346,7 +385,7 @@
 
         .day-btn {
             padding: 10px 4px;
-            border-radius: 10px;
+            border-radius: 12px;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             color: var(--text-muted);
@@ -358,10 +397,10 @@
         }
 
         .day-btn.on {
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            color: #06141B;
-            border-color: var(--gold);
-            box-shadow: 0 3px 10px rgba(251, 191, 36, 0.3);
+            background: var(--navy);
+            color: #ffffff;
+            border-color: var(--navy);
+            box-shadow: 0 3px 10px rgba(12, 25, 44, 0.2);
         }
 
         /* Form Inputs */
@@ -380,17 +419,20 @@
         .form-input {
             width: 100%;
             padding: 11px 13px;
-            border-radius: 10px;
-            background: var(--bg-deep);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
+            border-radius: 12px;
+            background: var(--bg-card);
+            border: 1.5px solid var(--border-color);
+            color: var(--navy);
             font-size: 14px;
             font-weight: 600;
             outline: none;
+            transition: all 0.15s;
         }
 
         .form-input:focus {
-            border-color: var(--gold);
+            background: #ffffff;
+            border-color: var(--navy);
+            box-shadow: 0 0 0 3px rgba(12, 25, 44, 0.08);
         }
 
         /* Services List */
@@ -399,10 +441,10 @@
             align-items: center;
             justify-content: space-between;
             gap: 10px;
-            padding: 12px;
+            padding: 12px 14px;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 14px;
             margin-bottom: 8px;
         }
 
@@ -413,17 +455,17 @@
             left: 50%;
             transform: translateX(-50%);
             width: 100%;
-            max-width: 680px;
+            max-width: 720px;
             height: 68px;
-            background: rgba(17, 33, 45, 0.98);
-            backdrop-filter: blur(12px);
+            background: #ffffff;
             border-top: 1px solid var(--border-color);
-            border-left: 1px solid var(--border-color);
-            border-right: 1px solid var(--border-color);
+            border-left: 1px solid rgba(12, 25, 44, 0.05);
+            border-right: 1px solid rgba(12, 25, 44, 0.05);
             display: flex;
             justify-content: space-around;
             align-items: center;
             z-index: 200;
+            box-shadow: 0 -6px 24px rgba(12, 25, 44, 0.06);
             padding-bottom: env(safe-area-inset-bottom);
         }
 
@@ -441,10 +483,12 @@
             border: none;
             cursor: pointer;
             padding: 8px 0;
+            transition: color 0.15s;
         }
 
         .nav-item.active {
-            color: var(--gold);
+            color: var(--burgundy);
+            font-weight: 800;
         }
 
         .nav-item span.icon {
@@ -455,8 +499,8 @@
         .modal-backdrop {
             position: fixed;
             inset: 0;
-            background: rgba(6, 20, 27, 0.8);
-            backdrop-filter: blur(4px);
+            background: rgba(12, 25, 44, 0.55);
+            backdrop-filter: blur(6px);
             z-index: 300;
             display: none;
             align-items: center;
@@ -471,19 +515,20 @@
         .modal-box {
             width: 100%;
             max-width: 420px;
-            background: var(--bg-panel);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 20px;
+            background: #ffffff;
+            border: 1px solid rgba(12, 25, 44, 0.06);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: var(--sh-lg);
         }
 
         .logout-btn {
             width: 100%;
             padding: 14px;
             border-radius: 14px;
-            background: rgba(239, 68, 68, 0.14);
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            color: #f87171;
+            background: var(--burgundy-soft);
+            border: 1px solid var(--burgundy-line);
+            color: var(--burgundy);
             font-size: 14px;
             font-weight: 800;
             cursor: pointer;
@@ -512,8 +557,8 @@
                 <span class="status-dot"></span>
                 <span id="status-toggle-text">Активен</span>
             </button>
-            <button type="button" onclick="logoutMasterSession()" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35); padding: 7px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s;" title="Выйти в главное меню (выбор роли)">
-                🚪 Выйти
+            <button type="button" onclick="logoutMasterSession()" style="background: var(--burgundy-soft); color: var(--burgundy); border: 1px solid var(--burgundy-line); padding: 7px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s;" title="Выйти в главное меню (выбор роли)">
+                ← Меню
             </button>
         </div>
     </header>

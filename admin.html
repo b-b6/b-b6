@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="ru" data-theme="dark">
+<html lang="ru" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#06141B">
+    <meta name="theme-color" content="#f0f4f9">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="manifest" href="site.webmanifest">
     <link rel="apple-touch-icon" href="assets/pwa-icon-192.png">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/pwa-icon-192.png">
-    <title>Админ Панель — Барбершоп</title>
+    <title>Админ Панель — BarberMap KG</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="barbershops_kg.js"></script>
@@ -23,24 +23,24 @@
     <!-- QR Code Generator -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 
-    <link rel="stylesheet" href="styles/admin.css?v=5">
+    <link rel="stylesheet" href="styles/admin.css?v=6">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         (function() {
-            localStorage.setItem('theme', 'dark');
-            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'light');
+            document.documentElement.setAttribute('data-theme', 'light');
         })();
         function toggleTheme() {
-            document.documentElement.setAttribute('data-theme', 'dark');
+            document.documentElement.setAttribute('data-theme', 'light');
         }
         function updateThemeIcon() {}
     </script>
 </head>
 <body>
-    <div id="auth-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#06141B; z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px;">
-        <div class="admin-card" style="width:100%; max-width:380px; text-align:center; padding:34px 28px; box-shadow:0 16px 40px rgba(0,0,0,0.6);">
-            <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg, #fbbf24, #f59e0b);color:#06141B;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.3rem;margin:0 auto 16px;">✂️</div>
+    <div id="auth-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#e9ecef; z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px;">
+        <div class="admin-card" style="width:100%; max-width:390px; text-align:center; padding:34px 28px; box-shadow:0 14px 44px rgba(12,25,44,0.14);">
+            <div style="width:52px;height:52px;border-radius:16px;background:#0c192c;color:#ffffff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.3rem;margin:0 auto 16px;box-shadow:0 4px 12px rgba(12,25,44,0.2);">✂️</div>
             <h3 style="margin-bottom:6px; color:var(--text-main);">Войти в свой салон</h3>
             <p style="color:var(--text-muted); font-size:0.88rem; margin-bottom:20px;" data-i18n="auth_desc">Введите ID филиала (напр. shine_barbershop) и PIN (7777)</p>
             <input type="text" id="email-input" class="form-control" placeholder="ID салона или Email (admin)" style="margin-bottom:12px;">
@@ -52,9 +52,12 @@
     </div>
 
     <header class="admin-header">
-        <h2 style="margin: 0; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <span data-i18n="admin_title"><span class="accent-text">Админ</span> Панель</span>
-            <span id="header-shop-name" style="font-size:0.88rem; color:var(--accent); font-weight:800;"></span>
+        <h2 style="margin: 0; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <span style="width:32px;height:32px;border-radius:10px;background:#0c192c;color:#fff;display:inline-grid;place-items:center;box-shadow:0 4px 10px rgba(12,25,44,0.2);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px;"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
+            </span>
+            <span data-i18n="admin_title">Barber<span style="color:#7a1c2d;">Map</span> <span class="accent-text">Админ</span></span>
+            <span id="header-shop-name" style="font-size:0.88rem; color:#0c192c; background:#f0f4f9; border:1px solid #d5e2f0; padding:3px 10px; border-radius:999px; font-weight:800;"></span>
         </h2>
         <div class="tabs">
             <div class="tab active" onclick="switchAdminTab('stats', this)" data-i18n="tab_stats">Статистика</div>
@@ -66,13 +69,13 @@
             <div class="tab" onclick="switchAdminTab('reviews', this)" data-i18n="tab_reviews">Отзывы</div>
             <div class="tab" onclick="switchAdminTab('settings', this)" data-i18n="tab_settings">Настройки и Время</div>
         </div>
-        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-            <button id="notif-toggle-btn" onclick="toggleNotifications()" style="border: 1px solid #ff475750; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: var(--transition); background: rgba(255,71,87,0.1); color: #ff4757;">🔕 ВЫКЛ</button>
-            <select class="form-control" id="lang-select" onchange="changeLanguage(this.value)" style="width:auto; padding: 6px 25px 6px 12px; border-radius:6px; font-size:0.8rem; height: auto;">
+        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <button id="notif-toggle-btn" onclick="toggleNotifications()" style="border: 1px solid #f0cdd3; padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: 0.78rem; font-weight: 700; transition: var(--transition); background: #fbf0f2; color: #7a1c2d;">🔕 ВЫКЛ</button>
+            <select class="form-control" id="lang-select" onchange="changeLanguage(this.value)" style="width:auto; padding: 6px 24px 6px 12px; border-radius:999px; font-size:0.78rem; height: auto;">
                 <option value="ru">Русский</option><option value="en">English</option><option value="uz">O'zbek</option><option value="kg">Кыргызча</option>
             </select>
-            <a href="index.html" id="nav-back-to-booking" style="color: var(--accent); text-decoration: none; font-size: 0.84rem; font-weight: 700; white-space:nowrap; padding: 6px 12px; border: 1px solid rgba(251,191,36,0.35); border-radius: 6px; background: rgba(251,191,36,0.08);" data-i18n="nav_back">На сайт записи</a>
-            <button onclick="logoutOwnerAccount()" style="background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.35); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.82rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;" title="Выйти в главное меню (выбор роли)">🚪 Выйти</button>
+            <a href="index.html" id="nav-back-to-booking" style="color: #0c192c; text-decoration: none; font-size: 0.8rem; font-weight: 700; white-space:nowrap; padding: 6px 13px; border: 1px solid #d5e2f0; border-radius: 999px; background: #f0f4f9;" data-i18n="nav_back">На сайт записи</a>
+            <button onclick="logoutOwnerAccount()" style="background: #fbf0f2; color: #7a1c2d; border: 1px solid #f0cdd3; padding: 6px 13px; border-radius: 999px; cursor: pointer; font-size: 0.8rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;" title="Выйти в главное меню (выбор роли)">← Меню</button>
         </div>
     </header>
 
@@ -608,23 +611,23 @@
             </div>
 
             <!-- SESSION LOGOUT CARD -->
-            <div class="admin-card" style="border-color: rgba(239,68,68,0.35);">
-                <h3 style="color:#ef4444;">🚪 Управление сессией и выход</h3>
+            <div class="admin-card" style="border-color: #f0cdd3;">
+                <h3 style="color:#7a1c2d;">🚪 Управление сессией и выход</h3>
                 <p style="color: var(--text-muted); margin-bottom: 14px; font-size: 0.9rem;">
                     Завершить текущую сессию владельца барбершопа на этом устройстве и вернуться на стартовый экран выбора роли («Я Клиент / Владелец / Мастер»).
                 </p>
-                <button type="button" class="btn" style="background:#ef4444; color:#fff; width:auto; padding:13px 26px;" onclick="logoutOwnerAccount()">
-                    🚪 Выйти из аккаунта
+                <button type="button" class="btn" style="background:#7a1c2d; color:#fff; width:auto; padding:13px 26px;" onclick="logoutOwnerAccount()">
+                    ← Выйти в главное меню
                 </button>
             </div>
         </div>
     </main>
 
-    <script src="assets/admin.js?v=5"></script>
+    <script src="assets/admin.js?v=6"></script>
 
     <!-- CUSTOM CONFIRM MODAL HTML structure -->
-    <div id="customConfirmModal" class="modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index:999999; display:none; align-items: center; justify-content: center; background: rgba(6,20,27,0.75); backdrop-filter: blur(6px); transition: opacity 0.25s ease; opacity: 0;">
-        <div class="modal-content" style="background: var(--surface); max-width: 400px; width: 90%; text-align: center; padding: 30px 24px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 20px 50px rgba(0,0,0,0.6);">
+    <div id="customConfirmModal" class="modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index:999999; display:none; align-items: center; justify-content: center; background: rgba(12,25,44,0.55); backdrop-filter: blur(6px); transition: opacity 0.25s ease; opacity: 0;">
+        <div class="modal-content" style="background: #ffffff; max-width: 400px; width: 90%; text-align: center; padding: 30px 24px; border-radius: 24px; border: 1px solid rgba(12,25,44,0.06); box-shadow: 0 14px 44px rgba(12,25,44,0.14);">
             <div style="width: 56px; height: 56px; background: rgba(239,68,68,0.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px auto;">
                 <i data-lucide="alert-triangle" style="width: 28px; height: 28px; color: #ef4444;"></i>
             </div>
