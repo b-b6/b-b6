@@ -129,6 +129,18 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             services: defaultServices, masters: defaultMasters, settings: defaultSettings, products: defaultProducts
         };
 
+        async function getVerifiedGlobalTenants() {
+            let tenants = await window.appDB.getGlobalTenants();
+            if (!Array.isArray(tenants) || tenants.length === 0) {
+                tenants = [
+                    { id: '1001', email: '1001', pin: '1001', role: 'owner', shopName: 'Shine Barbershop', catalogId: 'shine_barbershop', createdAt: new Date().toISOString() },
+                    { id: '2001', email: '2001', pin: '2001', role: 'master', shopName: 'Азамат (Top Barber)', createdAt: new Date().toISOString() }
+                ];
+                await window.appDB.saveGlobalTenants(tenants);
+            }
+            return tenants;
+        }
+
         async function initAdmin() {
             const urlParams = new URLSearchParams(window.location.search);
             const urlTenantId = urlParams.get('id') || urlParams.get('shop');
@@ -142,52 +154,63 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                 window.appDB.tenantId = savedSession.tenantId;
             }
 
-            if (savedSession && savedSession.role === 'owner' && savedSession.tenantId) {
-                sessionStorage.setItem('adminAuth', 'true');
-            }
+            const activeTenantId = String(window.appDB.tenantId || '');
+            const tenants = await getVerifiedGlobalTenants();
+            const tenantRecord = tenants.find(t => String(t.id) === activeTenantId && (t.role || 'owner') === 'owner');
+
+            // STRICT TENANT ISOLATION:
+            // Must exist in Super Admin's issued tenants list AND be authenticated specifically for this exact numeric ID!
+            const isAuthedForThisTenant = Boolean(
+                tenantRecord &&
+                /^\d+$/.test(activeTenantId) &&
+                (
+                    (sessionStorage.getItem('adminAuth') === 'true' && sessionStorage.getItem('adminAuthTenantId') === activeTenantId) ||
+                    (savedSession && savedSession.role === 'owner' && String(savedSession.tenantId) === activeTenantId)
+                )
+            );
 
             const navBack = document.getElementById('nav-back-to-booking');
             if (navBack && window.appDB && window.appDB.tenantId) {
                 navBack.href = `index.html?id=${encodeURIComponent(window.appDB.tenantId)}`;
             }
 
-            if(sessionStorage.getItem('adminAuth') !== 'true') {
+            if (!isAuthedForThisTenant) {
+                sessionStorage.removeItem('adminAuth');
+                sessionStorage.removeItem('adminAuthTenantId');
                 document.getElementById('auth-overlay').style.display = 'flex';
-                if (urlTenantId) {
+                if (urlTenantId && /^\d+$/.test(urlTenantId)) {
                     const emIn = document.getElementById('email-input');
                     if (emIn && !emIn.value) emIn.value = urlTenantId;
                 }
                 return;
             } else {
+                sessionStorage.setItem('adminAuth', 'true');
+                sessionStorage.setItem('adminAuthTenantId', activeTenantId);
                 document.getElementById('auth-overlay').style.display = 'none';
                 let set = await window.appDB.getSettings();
                 Object.assign(store.settings, set);
 
-                let catShop = null;
-                if (Array.isArray(window.BARBERSHOPS_DATA)) {
-                    catShop = window.BARBERSHOPS_DATA.find(s => String(s.id) === String(window.appDB.tenantId));
-                }
                 const resolvedShopName = (store.settings.shopName && store.settings.shopName !== 'Брутальный Барбершоп')
                     ? store.settings.shopName
-                    : (catShop && catShop.name)
-                        || (savedSession && String(savedSession.tenantId) === String(window.appDB.tenantId) ? savedSession.shopName : '')
-                        || window.appDB.tenantId;
+                    : (tenantRecord && tenantRecord.shopName)
+                        || (savedSession && String(savedSession.tenantId) === activeTenantId ? savedSession.shopName : '')
+                        || `Салон #${activeTenantId}`;
 
                 const hdrEl = document.getElementById('header-shop-name');
-                if (hdrEl) hdrEl.innerText = `— ${resolvedShopName}`;
+                if (hdrEl) hdrEl.innerText = `— ${resolvedShopName} (ID: ${activeTenantId})`;
                 document.title = `Админ Панель — ${resolvedShopName}`;
                 if (navBack) {
-                    navBack.href = `index.html?id=${encodeURIComponent(window.appDB.tenantId)}&shopName=${encodeURIComponent(resolvedShopName)}`;
+                    navBack.href = `index.html?id=${encodeURIComponent(activeTenantId)}&shopName=${encodeURIComponent(resolvedShopName)}`;
                 }
 
                 let fullPath = window.BarberMobileBridge
-                    ? window.BarberMobileBridge.getUniversalBookLink(window.appDB.tenantId, false)
-                    : (window.location.origin + window.location.pathname.replace('admin.html', '') + `book.html?id=${window.appDB.tenantId}`);
+                    ? window.BarberMobileBridge.getUniversalBookLink(activeTenantId, false)
+                    : (window.location.origin + window.location.pathname.replace('admin.html', '') + `book.html?id=${activeTenantId}`);
                 let mbLink = document.getElementById('my-booking-link');
                 if(mbLink) { mbLink.href = fullPath; mbLink.innerText = fullPath; }
 
                 if (window.BarberMobileBridge) {
-                    window.BarberMobileBridge.registerPushNotifications(window.appDB.tenantId, 'owner');
+                    window.BarberMobileBridge.registerPushNotifications(activeTenantId, 'owner');
                 }
 
                 if(window.appDB.getGlobalSettings) {
@@ -202,57 +225,38 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
         }
 
         async function checkPin() {
-            const rawQuery = document.getElementById('email-input').value.trim();
-            const pin = document.getElementById('pin-input').value.trim();
-            if (!rawQuery || !pin) {
-                document.getElementById('pin-error').style.display = 'block';
+            const rawId = document.getElementById('email-input').value.replace(/\D/g, '').trim();
+            const pin = document.getElementById('pin-input').value.replace(/\D/g, '').trim();
+            const errEl = document.getElementById('pin-error');
+
+            if (!/^\d+$/.test(rawId) || !/^\d{4}$/.test(pin)) {
+                errEl.textContent = 'Введите цифровой ID салона (только цифры) и 4-значный пароль!';
+                errEl.style.display = 'block';
                 return;
             }
 
-            let resolvedId = rawQuery;
-            let resolvedName = rawQuery;
-
-            // 1. Search by name or phone in 401 catalog + custom locations
-            const q = rawQuery.toLowerCase();
-            const catalog = (window.BARBERSHOPS_DATA || []).slice();
-            const catMatch = catalog.find(b =>
-                String(b.id).toLowerCase() === q ||
-                (b.name && b.name.toLowerCase().includes(q)) ||
-                (b.phone && q.replace(/\D/g, '').length >= 6 && b.phone.replace(/\D/g, '').includes(q.replace(/\D/g, '')))
+            const tenants = await getVerifiedGlobalTenants();
+            const t = tenants.find(x =>
+                String(x.id) === rawId &&
+                String(x.pin) === pin &&
+                (x.role || 'owner') === 'owner'
             );
-            if (catMatch) {
-                resolvedId = catMatch.id;
-                resolvedName = catMatch.name;
-            } else if (q === 'admin' || q === 'admin@barber.uz' || q === 'markazibarbershop1') {
-                resolvedId = 'markazibarbershop1';
-                resolvedName = 'Главный Барбершоп';
-            } else if (q === 'shine' || q === 'shine_barbershop') {
-                resolvedId = 'shine_barbershop';
-                resolvedName = 'Shine Barbershop';
-            }
 
-            const savedOwnerPin = localStorage.getItem(`owner_pin_${resolvedId}`);
-            const tenants = await window.appDB.getGlobalTenants();
-            let t = tenants.find(x => (x.email === rawQuery || x.id === resolvedId) && x.pin === pin);
-
-            if (!t && ((savedOwnerPin && savedOwnerPin === pin) || (!savedOwnerPin && pin.length >= 4) || pin === '7777')) {
-                if (!savedOwnerPin) localStorage.setItem(`owner_pin_${resolvedId}`, pin);
-                t = { id: resolvedId, email: rawQuery, pin: pin, shopName: resolvedName };
-            }
-
-            if(t) {
+            if (t) {
                 localStorage.setItem('tenant_id', t.id);
                 sessionStorage.setItem('adminAuth', 'true');
+                sessionStorage.setItem('adminAuthTenantId', String(t.id));
                 if (window.BarberMobileBridge) {
                     await window.BarberMobileBridge.saveSession({
                         role: 'owner',
-                        tenantId: t.id,
-                        shopName: t.shopName || t.id
+                        tenantId: String(t.id),
+                        shopName: t.shopName || `Салон #${t.id}`
                     });
                 }
                 window.location.href = `admin.html?id=${encodeURIComponent(t.id)}`;
             } else {
-                document.getElementById('pin-error').style.display = 'block';
+                errEl.textContent = 'Доступ запрещён: неверный цифровой ID или 4-значный пароль. Обратитесь к главному администратору.';
+                errEl.style.display = 'block';
             }
         }
 

@@ -9,12 +9,14 @@
     <link rel="manifest" href="site.webmanifest">
     <link rel="apple-touch-icon" href="assets/pwa-icon-192.png">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/pwa-icon-192.png">
-    <title>Barber SaaS - Super Admin (Elite)</title>
-    <script src="assets/db.js"></script>
+    <title>BarberMap KG — Super Admin</title>
+    <script src="barbershops_kg.js"></script>
+    <script src="assets/db.js?v=7"></script>
+    <script src="assets/mobile-bridge.js?v=7"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="styles/super_admin.css?v=6">
+    <link rel="stylesheet" href="styles/super_admin.css?v=7">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
@@ -31,16 +33,16 @@
             <div class="auth-logo">✂️</div>
             <div style="text-align: center; margin-bottom: 30px;">
                 <h2 style="margin:0; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; color:#0c192c;">Barber<span style="color:#7a1c2d;">Map</span> KG</h2>
-                <p style="color:var(--text-muted); font-size:0.9rem; margin-top:8px;">Панель управления Super Admin</p>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin-top:8px;">Вход только для создателя платформы (Super Admin)</p>
             </div>
             
             <div class="form-group">
-                <input type="password" id="super-pin-input" placeholder="••••••••">
+                <input type="password" id="super-pin-input" placeholder="Введите пароль Super Admin (7777)">
             </div>
             
-            <button class="btn-submit" onclick="checkSuperPin()">Kirish</button>
-            <p id="super-err" style="color:var(--accent-red); margin-top:20px; display:none; font-size: 0.9rem; text-align:center; font-weight: 500;">
-                Notog'ri parol!
+            <button class="btn-submit" onclick="checkSuperPin()">Войти в Super Admin</button>
+            <p id="super-err" style="color:var(--accent-red); margin-top:20px; display:none; font-size: 0.9rem; text-align:center; font-weight: 600;">
+                Неверный пароль!
             </p>
         </div>
     </div>
@@ -54,7 +56,8 @@
                 Barber<span style="color:#7a1c2d;">Map</span> <span class="badge-super">SUPER ADMIN</span>
             </div>
             <div class="user-area">
-                master@barber.uz <a onclick="logout()"><i data-lucide="log-out" style="width:16px; display:inline-block; vertical-align:middle; margin-right:5px;"></i> Chiqish</a>
+                <a href="app.html?switch_role=1" style="background:#f0f4f9; color:#0c192c; border-color:#d5e2f0;">← Главное меню</a>
+                <a onclick="logout()"><i data-lucide="log-out" style="width:16px; display:inline-block; vertical-align:middle; margin-right:5px;"></i> Выйти</a>
             </div>
         </div>
 
@@ -62,54 +65,48 @@
             
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-icon" style="color: var(--text-main); background: rgba(255,255,255,0.05);"><i data-lucide="users"></i></div>
+                    <div class="stat-icon"><i data-lucide="users"></i></div>
                     <div class="stat-val" id="st-total">0</div>
-                    <div class="stat-lbl">Jami salonlar (Mijozlar)</div>
+                    <div class="stat-lbl">Всего выдано доступов (Салоны и Мастера)</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon" style="color: var(--accent-gold); background: rgba(226, 192, 68, 0.1);"><i data-lucide="plus"></i></div>
-                    <div class="stat-val" style="color: var(--accent-gold);" id="st-today">0</div>
-                    <div class="stat-lbl">Bugun qo'shilgan</div>
+                    <div class="stat-icon"><i data-lucide="plus"></i></div>
+                    <div class="stat-val" id="st-today">0</div>
+                    <div class="stat-lbl">Выдано сегодня</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon" style="color: var(--accent-green); background: rgba(16, 185, 129, 0.1);"><i data-lucide="radio"></i></div>
-                    <div class="stat-val" style="color: var(--accent-green);" id="st-online">1</div>
-                    <div class="stat-lbl">Hozir onlayn (Siz)</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="color: #a855f7; background: rgba(168, 85, 247, 0.1);"><i data-lucide="mic"></i></div>
-                    <div class="stat-val" style="color: #a855f7;">0</div>
-                    <div class="stat-lbl">Aktiv so'rovlar (AI)</div>
+                    <div class="stat-icon"><i data-lucide="shield-check"></i></div>
+                    <div class="stat-val" id="st-online">Строгий</div>
+                    <div class="stat-lbl">Режим конфиденциальности (ID цифры + 4 PIN)</div>
                 </div>
             </div>
 
             <!-- SECTION TABS -->
             <div class="section-tabs">
                 <button class="stab active" id="stab-tenants" onclick="switchSASection('tenants')">
-                    <i data-lucide="building-2" style="width:17px;height:17px;"></i> Salonlar (Клиенты)
+                    <i data-lucide="key-round" style="width:17px;height:17px;"></i> Выданные доступы (ID + PIN)
                 </button>
                 <button class="stab" id="stab-barbers" onclick="switchSASection('barbers')">
-                    <i data-lucide="map-pin" style="width:17px;height:17px;"></i> 🗺 Карта Барберов
+                    <i data-lucide="map-pin" style="width:17px;height:17px;"></i> 🗺 Каталог на карте
                 </button>
             </div>
 
-            <!-- PANEL 1: TENANTS (EXISTING) -->
+            <!-- PANEL 1: TENANTS -->
             <div class="section-panel active" id="panel-tenants">
             <div class="toolbar">
-                <button class="btn-tool btn-primary" onclick="openModal('add')"><i data-lucide="plus" style="width:18px;"></i> Yangi salon yaratish</button>
-                <button class="btn-tool" onclick="openModal('ai')"><i data-lucide="bot" style="width:18px; color: #a855f7;"></i> AI Kalitini o'rnatish</button>
-                <button class="btn-tool" onclick="devLoginDialog()"><i data-lucide="external-link" style="width:18px; color: var(--accent-blue);"></i> Mijoz sifatida kirish</button>
+                <button class="btn-tool btn-primary" onclick="openAddAccessModal()"><i data-lucide="plus" style="width:18px;"></i> + Выдать доступ (Цифровой ID + 4-значный PIN)</button>
+                <button class="btn-tool" onclick="openModal('ai')"><i data-lucide="bot" style="width:18px; color: #7a1c2d;"></i> Настроить AI ключ</button>
             </div>
 
             <div class="filters-area">
                 <div class="search-box">
                     <i data-lucide="search" style="color:var(--text-muted); width:20px;"></i>
-                    <input type="text" id="search-inp" placeholder="Ism yoki salon bo'yicha qidirish..." onkeyup="filterTable()">
+                    <input type="text" id="search-inp" placeholder="Поиск по цифровому ID, названию салона или имени мастера..." onkeyup="filterTable()">
                 </div>
                 <div class="filter-tabs">
-                    <div class="ftab active" onclick="setStatusFilter('all', this)">Barchasi</div>
-                    <div class="ftab" onclick="setStatusFilter('online', this)">Onlayn</div>
-                    <div class="ftab" onclick="setStatusFilter('offline', this)">Oflayn</div>
+                    <div class="ftab active" onclick="setStatusFilter('all', this)">Все</div>
+                    <div class="ftab" onclick="setStatusFilter('owner', this)">💈 Салоны</div>
+                    <div class="ftab" onclick="setStatusFilter('master', this)">✂️ Мастера (Соло)</div>
                 </div>
             </div>
 
@@ -117,13 +114,13 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Ism / Salon</th>
-                            <th>ID Link</th>
-                            <th>Login / Email</th>
-                            <th>PIN Parol</th>
-                            <th>Sana</th>
-                            <th>Holat</th>
-                            <th>Harakat</th>
+                            <th>Салон / Мастер</th>
+                            <th>Роль</th>
+                            <th>Цифровой ID (только цифры)</th>
+                            <th>PIN-пароль (4 цифры)</th>
+                            <th>Контакт / Примечание</th>
+                            <th>Дата выдачи</th>
+                            <th>Управление доступом</th>
                         </tr>
                     </thead>
                     <tbody id="tenants-list">
@@ -296,18 +293,57 @@
     </div>
 
 
-    <!-- ADD CLIENT MODAL -->
+    <!-- ADD CLIENT / MASTER ACCESS MODAL (NUMERIC ID + 4-DIGIT PIN) -->
     <div class="modal-overlay" id="modal-add">
-        <div class="modal" id="modal-add-inner">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
-                <h2 style="margin:0;">Yangi Salon Qo'shish</h2>
-                <i data-lucide="x" style="cursor:pointer; color:var(--text-muted); transition:0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'" onclick="closeModal('add')"></i>
+        <div class="modal" id="modal-add-inner" style="max-width:460px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+                <h2 style="margin:0; font-size:1.2rem; color:#0c192c;">🔑 Выдать доступ (ID + PIN)</h2>
+                <i data-lucide="x" style="cursor:pointer; color:var(--text-muted);" onclick="closeModal('add')"></i>
             </div>
-            <div class="form-group"><label>Salon nomi</label><input type="text" id="t_name" placeholder="Masalan: Chop-Chop"></div>
-            <div class="form-group"><label>Unikal Link (ID)</label><input type="text" id="t_id" placeholder="shop_chop"></div>
-            <div class="form-group"><label>Mijoz Emaili (Login)</label><input type="email" id="t_email" placeholder="client@mail.ru"></div>
-            <div class="form-group"><label>PIN kodi (Parol)</label><input type="text" id="t_pin" placeholder="1234"></div>
-            <button class="btn-submit" onclick="addTenant()">Yaratish <i data-lucide="arrow-right" style="width:16px; margin-left:8px; vertical-align:middle;"></i></button>
+
+            <div class="form-group">
+                <label>1. Кому выдаём доступ?</label>
+                <select id="t_role" class="form-control" onchange="onRoleSelectInSuperAdmin(this.value)">
+                    <option value="owner">💈 Владелец Барбершопа (Салон — admin.html)</option>
+                    <option value="master">✂️ Мастер (Соло-кабинет — barber.html)</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="sa-catalog-bind-wrap">
+                <label>2. Привязать салон с карты (поиск из 401) или написать свой</label>
+                <input type="text" id="t_catalog_search" class="form-control" placeholder="Поиск по карте (напр. Shine, Legend)..." oninput="searchCatalogForSuperAdmin(this.value)">
+                <div id="sa-catalog-results" style="display:none; max-height:140px; overflow-y:auto; border:1px solid var(--border); border-radius:10px; margin-top:6px; background:#fff;"></div>
+                <input type="hidden" id="t_catalog_id">
+            </div>
+
+            <div class="form-group">
+                <label id="t_name_label">Название барбершопа или Имя мастера</label>
+                <input type="text" id="t_name" placeholder="Например: Shine Barbershop или Азамат">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>Цифровой ID (цифры)</span>
+                        <button type="button" onclick="generateNumericId()" style="background:none; border:none; color:#7a1c2d; font-size:11px; font-weight:800; cursor:pointer;">🎲 Авто</button>
+                    </label>
+                    <input type="text" id="t_id" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')" placeholder="Напр.: 1001" style="font-weight:800; letter-spacing:1px;">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>PIN-пароль (4 цифры)</span>
+                        <button type="button" onclick="generateFourDigitPin()" style="background:none; border:none; color:#7a1c2d; font-size:11px; font-weight:800; cursor:pointer;">🎲 Авто</button>
+                    </label>
+                    <input type="text" id="t_pin" inputmode="numeric" maxlength="4" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)" placeholder="Напр.: 4829" style="font-weight:800; letter-spacing:2px;">
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top:14px;">
+                <label>Телефон / Заметка для вас (необязательно)</label>
+                <input type="text" id="t_email" placeholder="+996 555 00-00-00">
+            </div>
+
+            <button class="btn-submit" onclick="addTenant()">Создать и выдать доступ <i data-lucide="check" style="width:16px; margin-left:6px; vertical-align:middle;"></i></button>
         </div>
     </div>
 
@@ -315,12 +351,12 @@
     <div class="modal-overlay" id="modal-ai">
         <div class="modal" id="modal-ai-inner">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <h2 style="margin:0;">AI Boshqaruvi</h2>
-                <i data-lucide="x" style="cursor:pointer; color:var(--text-muted); transition:0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'" onclick="closeModal('ai')"></i>
+                <h2 style="margin:0;">Управление AI</h2>
+                <i data-lucide="x" style="cursor:pointer; color:var(--text-muted);" onclick="closeModal('ai')"></i>
             </div>
-            <p style="font-size: 0.9rem; color:var(--text-muted); margin-top:-10px; margin-bottom:25px; line-height: 1.5;">Barcha salonlar uchun global OpenRouter API kalitini o'rnating. AI yordamchilari ushbu kalitdan foydalanadi.</p>
-            <div class="form-group"><label>API Kalit</label><input type="password" id="ai-key" placeholder="sk-or-v1-..."></div>
-            <button class="btn-submit" style="background: #a855f7; color: #fff; box-shadow: 0 10px 20px rgba(168, 85, 247, 0.3);" onclick="saveAIKey()">Saqlash</button>
+            <p style="font-size: 0.9rem; color:var(--text-muted); margin-top:-10px; margin-bottom:25px; line-height: 1.5;">Укажите глобальный OpenRouter API ключ для работы ИИ-ассистента во всех салонах.</p>
+            <div class="form-group"><label>API Ключ</label><input type="password" id="ai-key" placeholder="sk-or-v1-..."></div>
+            <button class="btn-submit" onclick="saveAIKey()">Сохранить ключ</button>
         </div>
     </div>
 
@@ -328,30 +364,30 @@
     <div class="modal-overlay" id="modal-settings">
         <div class="modal" id="modal-settings-inner" style="max-width:480px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <h2 style="margin:0;">Salon Sozlamalari</h2>
-                <i data-lucide="x" style="cursor:pointer; color:var(--text-muted); transition:0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'" onclick="closeModal('settings')"></i>
+                <h2 style="margin:0;">Настройки салона</h2>
+                <i data-lucide="x" style="cursor:pointer; color:var(--text-muted);" onclick="closeModal('settings')"></i>
             </div>
             <p id="settings-tenant-label" style="font-size:0.9rem; color:var(--text-muted); margin-top:-10px; margin-bottom:20px;"></p>
 
             <div style="border-bottom:1px solid var(--border); margin-bottom:18px; padding-bottom:4px;">
-                <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:#a855f7;">🤖 Telegram</span>
+                <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:#7a1c2d; font-weight:800;">🤖 Telegram уведомления</span>
             </div>
             <div class="form-group"><label>Bot Token</label><input type="text" id="ts_tg_token" class="form-control" placeholder="123456789:ABCdef..." style="font-family:monospace; font-size:0.85rem;"></div>
-            <div class="form-group"><label>Bot Username (login widget uchun)</label><input type="text" id="ts_tg_botname" class="form-control" placeholder="MyBarberBot"></div>
+            <div class="form-group"><label>Bot Username</label><input type="text" id="ts_tg_botname" class="form-control" placeholder="MyBarberBot"></div>
 
             <div style="border-bottom:1px solid var(--border); margin:18px 0 18px; padding-bottom:4px;">
-                <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:#10b981;">📱 SMS (Eskiz.uz)</span>
+                <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:#00873d; font-weight:800;">📱 SMS интеграция</span>
             </div>
-            <div class="form-group"><label>Eskiz Email</label><input type="email" id="ts_sms_email" class="form-control" placeholder="login@mail.com"></div>
-            <div class="form-group"><label>Eskiz Parol</label><input type="password" id="ts_sms_pass" class="form-control" placeholder="••••••••"></div>
-            <div class="form-group"><label>SMS Matni Shabloni</label><input type="text" id="ts_sms_tpl" class="form-control" placeholder="Hurmatli {name}! Ertaga {time} da uchrashuvingiz bor." style="font-size:0.85rem;"></div>
+            <div class="form-group"><label>SMS Логин / Email</label><input type="email" id="ts_sms_email" class="form-control" placeholder="login@mail.com"></div>
+            <div class="form-group"><label>SMS Пароль</label><input type="password" id="ts_sms_pass" class="form-control" placeholder="••••••••"></div>
+            <div class="form-group"><label>Шаблон SMS</label><input type="text" id="ts_sms_tpl" class="form-control" placeholder="Уважаемый {name}! Ждём вас завтра в {time}." style="font-size:0.85rem;"></div>
 
             <div id="settings-save-status" style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px; min-height:20px;"></div>
-            <button class="btn-submit" onclick="saveTenantSettings()">Saqlash <i data-lucide="save" style="width:16px; margin-left:8px; vertical-align:middle;"></i></button>
+            <button class="btn-submit" onclick="saveTenantSettings()">Сохранить <i data-lucide="save" style="width:16px; margin-left:8px; vertical-align:middle;"></i></button>
         </div>
     </div>
 
-    <script src="assets/super_admin.js"></script>
+    <script src="assets/super_admin.js?v=7"></script>
     <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {

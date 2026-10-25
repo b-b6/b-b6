@@ -644,13 +644,6 @@ body.dragging .map-ctrls{transition:opacity .2s}
           <div class="row">${ICON.clock}<div><div class="k">Часы работы</div><div class="v">${b.h ? (b.h.h24 ? 'Круглосуточно' : `Ежедневно ${b.h.os} – ${b.h.cs}`) : esc(b.hours || 'Не указаны')}</div></div></div>
           <div class="row">${ICON.phone}<div><div class="k">Контакты и запись</div><div class="v">Актуальный телефон и отзывы в 2GIS</div></div>
             <a class="act" href="${link}" target="_blank" rel="noopener">Перейти</a></div>
-          <div class="row" style="background:var(--burgundy-soft); border-radius:12px; margin-top:4px;">
-            <div>
-              <div class="k" style="color:var(--burgundy);">Для владельца филиала</div>
-              <div class="v" style="font-size:12.5px;">Это ваш барбершоп? Управляйте записями и ценами</div>
-            </div>
-            <a class="act" href="app.html?claim_shop=${encodeURIComponent(b.id)}&shop_name=${encodeURIComponent(b.title || b.name || '')}&shop_sub=${encodeURIComponent((b.city || '') + ' • ' + (b.address || ''))}">Подключить →</a>
-          </div>
         </div>
         ${near.length ? `<h3 class="sec-title">Ближайшие барбершопы</h3><div class="near">${near.map(n => card(n.x, n.d)).join('')}</div>` : ''}
         <p class="note">Данные проверены по справочнику 2GIS Кыргызстан.</p>

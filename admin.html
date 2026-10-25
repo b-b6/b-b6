@@ -40,14 +40,14 @@
 <body>
     <div id="auth-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#e9ecef; z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px;">
         <div class="admin-card" style="width:100%; max-width:410px; text-align:center; padding:32px 26px; box-shadow:0 14px 44px rgba(12,25,44,0.14);">
-            <div style="width:52px;height:52px;border-radius:16px;background:#0c192c;color:#ffffff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.3rem;margin:0 auto 14px;box-shadow:0 4px 12px rgba(12,25,44,0.2);">✂️</div>
+            <div style="width:52px;height:52px;border-radius:16px;background:#0c192c;color:#ffffff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.3rem;margin:0 auto 14px;box-shadow:0 4px 12px rgba(12,25,44,0.2);">🔒</div>
             <h3 style="margin-bottom:6px; color:var(--text-main);">Вход в кабинет салона</h3>
-            <p style="color:var(--text-muted); font-size:0.86rem; margin-bottom:16px;" data-i18n="auth_desc">Введите название вашего барбершопа (из 401 на карте) или телефон и PIN</p>
-            <input type="text" id="email-input" class="form-control" placeholder="Название салона или телефон (напр. Shine)" style="margin-bottom:10px;">
-            <input type="password" id="pin-input" class="form-control" value="7777" placeholder="Ваш PIN-код (напр. 7777)" style="margin-bottom:14px;">
-            <button class="btn" style="width:100%" onclick="checkPin()" data-i18n="auth_btn">Войти в салон</button>
-            <p id="pin-error" style="color:var(--danger); margin-top:12px; display:none; font-size:0.85rem; font-weight:600;" data-i18n="auth_error">Укажите название салона и верный PIN</p>
-            <a href="app.html?switch_role=1" style="display:inline-block; margin-top:16px; font-size:0.84rem; color:var(--accent); text-decoration:none; font-weight:700;">← Выбрать из списка 401 салона или создать за 15 сек</a>
+            <p style="color:var(--text-muted); font-size:0.86rem; margin-bottom:16px;">Введите ваш <b>цифровой ID</b> (только цифры) и <b>4-значный пароль</b>, выданные главным администратором</p>
+            <input type="text" id="email-input" class="form-control" inputmode="numeric" pattern="[0-9]*" placeholder="Цифровой ID салона (напр. 1001)" oninput="this.value=this.value.replace(/\D/g,'')" style="margin-bottom:10px;">
+            <input type="password" id="pin-input" class="form-control" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4-значный пароль (4 цифры)" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)" style="margin-bottom:14px;">
+            <button class="btn" style="width:100%" onclick="checkPin()">Войти в салон</button>
+            <p id="pin-error" style="color:var(--danger); margin-top:12px; display:none; font-size:0.85rem; font-weight:600;">Доступ запрещён: неверный цифровой ID или 4-значный пароль</p>
+            <a href="app.html?switch_role=1" style="display:inline-block; margin-top:16px; font-size:0.84rem; color:var(--accent); text-decoration:none; font-weight:700;">← Назад к выбору роли</a>
         </div>
     </div>
 

@@ -34,7 +34,44 @@ window.addEventListener('DOMContentLoaded', async () => {
     const dateInput = document.getElementById('solo-schedule-date');
     if (dateInput) dateInput.value = getTodayIso();
 
-    const tenantId = window.appDB ? window.appDB.tenantId : 'default';
+    const tenantId = String(window.appDB ? window.appDB.tenantId : '');
+    const savedSession = window.BarberMobileBridge ? window.BarberMobileBridge.getSession() : null;
+
+    // STRICT TENANT ISOLATION FOR SOLO MASTER:
+    // Verify that this numeric ID was issued in Super Admin and that the current session is authenticated for this exact ID.
+    let tenants = [];
+    try {
+        tenants = window.appDB && window.appDB.getGlobalTenants
+            ? await window.appDB.getGlobalTenants()
+            : JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
+    } catch (e) {}
+    if (!Array.isArray(tenants) || tenants.length === 0) {
+        tenants = [
+            { id: '1001', email: '1001', pin: '1001', role: 'owner', shopName: 'Shine Barbershop', catalogId: 'shine_barbershop' },
+            { id: '2001', email: '2001', pin: '2001', role: 'master', shopName: 'Азамат (Top Barber)' }
+        ];
+    }
+
+    const masterRecord = tenants.find(t => String(t.id) === tenantId && t.role === 'master');
+    const isAuthedForThisMaster = Boolean(
+        masterRecord &&
+        /^\d+$/.test(tenantId) &&
+        (
+            (sessionStorage.getItem('barberSoloAuth') === 'true' && sessionStorage.getItem('barberSoloAuthTenantId') === tenantId) ||
+            (savedSession && savedSession.role === 'master' && String(savedSession.tenantId) === tenantId)
+        )
+    );
+
+    if (!isAuthedForThisMaster) {
+        sessionStorage.removeItem('barberSoloAuth');
+        sessionStorage.removeItem('barberSoloAuthTenantId');
+        window.location.replace('app.html?switch_role=1');
+        return;
+    }
+
+    sessionStorage.setItem('barberSoloAuth', 'true');
+    sessionStorage.setItem('barberSoloAuthTenantId', tenantId);
+
     const badge = document.getElementById('master-tenant-badge');
     if (badge) badge.textContent = `ID: ${tenantId}`;
 

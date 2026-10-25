@@ -1,4 +1,4 @@
-﻿// BACKGROUND ANIMATION LOGIC
+// BACKGROUND ANIMATION LOGIC
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let width, height;
@@ -145,6 +145,13 @@
                     document.getElementById('ai-key').value = localStorage.getItem('openrouter_api_key') || '';
                 }
                 tenants = await window.appDB.getGlobalTenants();
+                if (!Array.isArray(tenants) || tenants.length === 0) {
+                    tenants = [
+                        { id: '1001', pin: '1001', role: 'owner', shopName: 'Shine Barbershop', email: '+996 555 00-00-00', createdAt: new Date().toLocaleDateString('ru-RU') },
+                        { id: '2001', pin: '2001', role: 'master', shopName: 'Азамат (Top Barber)', email: '+996 555 11-22-33', createdAt: new Date().toLocaleDateString('ru-RU') }
+                    ];
+                    await window.appDB.saveGlobalTenants(tenants);
+                }
             } else {
                 document.getElementById('ai-key').value = localStorage.getItem('openrouter_api_key') || '';
                 console.warn("DB not ready");
@@ -159,56 +166,143 @@
             document.getElementById('st-today').innerText = tenants.filter(t => t.createdAt === todayStr).length;
         }
 
+        function openAddAccessModal() {
+            document.getElementById('t_role').value = 'owner';
+            document.getElementById('t_name').value = '';
+            document.getElementById('t_email').value = '';
+            document.getElementById('t_catalog_search').value = '';
+            document.getElementById('t_catalog_id').value = '';
+            document.getElementById('sa-catalog-results').style.display = 'none';
+            onRoleSelectInSuperAdmin('owner');
+            generateNumericId();
+            generateFourDigitPin();
+            openModal('add');
+        }
+
+        function onRoleSelectInSuperAdmin(role) {
+            const bindWrap = document.getElementById('sa-catalog-bind-wrap');
+            const nameLbl = document.getElementById('t_name_label');
+            if (role === 'master') {
+                if (bindWrap) bindWrap.style.display = 'none';
+                if (nameLbl) nameLbl.textContent = 'Имя и специализация Мастера (Соло)';
+            } else {
+                if (bindWrap) bindWrap.style.display = 'block';
+                if (nameLbl) nameLbl.textContent = 'Название барбершопа';
+            }
+            generateNumericId();
+        }
+
+        function generateNumericId() {
+            const role = document.getElementById('t_role') ? document.getElementById('t_role').value : 'owner';
+            const prefixStart = role === 'master' ? 2001 : 1001;
+            let candidate = prefixStart;
+            const existingIds = new Set(tenants.map(t => String(t.id)));
+            while (existingIds.has(String(candidate))) {
+                candidate++;
+            }
+            const idInp = document.getElementById('t_id');
+            if (idInp) idInp.value = String(candidate);
+        }
+
+        function generateFourDigitPin() {
+            const pin = String(Math.floor(1000 + Math.random() * 9000));
+            const pinInp = document.getElementById('t_pin');
+            if (pinInp) pinInp.value = pin;
+        }
+
+        function searchCatalogForSuperAdmin(query) {
+            const box = document.getElementById('sa-catalog-results');
+            const q = (query || '').trim().toLowerCase();
+            if (q.length < 1) {
+                box.style.display = 'none';
+                return;
+            }
+            const catalog = window.BARBERSHOPS_DATA || [];
+            const matches = catalog.filter(b =>
+                (b.name && b.name.toLowerCase().includes(q)) ||
+                (b.city && b.city.toLowerCase().includes(q)) ||
+                (b.address && b.address.toLowerCase().includes(q))
+            ).slice(0, 10);
+
+            if (matches.length === 0) {
+                box.style.display = 'none';
+                return;
+            }
+
+            box.innerHTML = matches.map(b => {
+                const sId = String(b.id || '').replace(/'/g, '');
+                const sName = String(b.name || '').replace(/'/g, '');
+                return `<div style="padding:8px 12px; border-bottom:1px solid var(--border); cursor:pointer; display:flex; justify-content:space-between; align-items:center;" onclick="selectCatalogShopInSA('${sId}', '${sName}')">
+                    <div>
+                        <div style="font-weight:700; font-size:0.84rem; color:#0c192c;">${b.name}</div>
+                        <div style="font-size:0.72rem; color:var(--text-muted);">${b.city || ''} • ${b.address || ''}</div>
+                    </div>
+                    <span style="font-size:0.74rem; font-weight:800; color:#7a1c2d;">Привязать →</span>
+                </div>`;
+            }).join('');
+            box.style.display = 'block';
+        }
+
+        function selectCatalogShopInSA(catId, catName) {
+            document.getElementById('t_catalog_id').value = catId;
+            document.getElementById('t_catalog_search').value = catName;
+            document.getElementById('t_name').value = catName;
+            document.getElementById('sa-catalog-results').style.display = 'none';
+        }
+
         function renderTenants() {
             const list = document.getElementById('tenants-list');
             list.innerHTML = '';
             
             if (tenants.length === 0) {
-                list.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 60px; color:var(--text-muted); font-size: 1.1rem;">Hozircha mijozlar mavjud emas.<br><span style="font-size:0.9rem; margin-top:10px; display:inline-block;">Yangi salon yaratish tugmasini bosing.</span></td></tr>';
+                list.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 60px; color:var(--text-muted); font-size: 1rem;">Доступы пока не выданы.<br><span style="font-size:0.88rem; margin-top:8px; display:inline-block;">Нажмите «+ Выдать доступ (Цифровой ID + 4-значный PIN)».</span></td></tr>';
                 return;
             }
 
             tenants.forEach((t, i) => {
-                let link = `index.html?id=${t.id}`;
-                let initial = t.shopName ? t.shopName.charAt(0).toUpperCase() : 'B';
-                let cClass = avatarColors[i % avatarColors.length];
-                
-                // simulate random online status based on index for the mockup feel
-                let isOn = (i%2===0);
-                
-                // Animating rows
-                let delay = i * 0.1;
+                const isMaster = t.role === 'master';
+                const initial = t.shopName ? t.shopName.charAt(0).toUpperCase() : (isMaster ? 'М' : 'Б');
+                const roleBadge = isMaster
+                    ? `<span class="badge-status" style="background:#f0f4f9; color:#0c192c; border:1px solid #d5e2f0;">✂️ Мастер (Соло)</span>`
+                    : `<span class="badge-status on" style="background:#fbf0f2; color:#7a1c2d; border:1px solid #f0cdd3;">💈 Салон (Владелец)</span>`;
                 
                 list.innerHTML += `
-                <tr style="animation: fadeUp 0.5s ${delay}s both;">
+                <tr data-role="${isMaster ? 'master' : 'owner'}">
                     <td>
                         <div class="t-user">
-                            <div class="t-avatar ${cClass}">${initial}<div class="status-dot ${isOn ? 'dot-on':'dot-off'}"></div></div>
+                            <div class="t-avatar">${initial}<div class="status-dot dot-on"></div></div>
                             <div>
-                                <div class="t-name">${t.shopName}</div>
-                                <div class="t-sub">${t.id}</div>
+                                <div class="t-name">${t.shopName || ('Кабинет #' + t.id)}</div>
+                                <div class="t-sub">${isMaster ? 'Личный кабинет мастера' : 'Админ-панель салона'}</div>
                             </div>
                         </div>
                     </td>
+                    <td>${roleBadge}</td>
                     <td>
-                        <button class="btn-link" onclick="copyLink('${link}')" title="Nusxa Olish">
-                            <i data-lucide="copy" style="width:16px;"></i> <span class="link-text">${t.id}</span>
-                        </button>
+                        <span style="display:inline-block; background:#0c192c; color:#ffffff; padding:5px 12px; border-radius:8px; font-family:monospace; font-size:1rem; font-weight:800; letter-spacing:1px;">
+                            ${t.id}
+                        </span>
                     </td>
-                    <td class="link-text">${t.email}</td>
-                    <td style="font-family: monospace; font-size:1.1rem; letter-spacing:2px; color:var(--text-main);">${t.pin}</td>
+                    <td>
+                        <span style="display:inline-block; background:#fbf0f2; color:#7a1c2d; border:1px solid #f0cdd3; padding:5px 12px; border-radius:8px; font-family:monospace; font-size:1rem; font-weight:800; letter-spacing:2px;">
+                            ${t.pin}
+                        </span>
+                    </td>
+                    <td class="link-text">${t.email || '—'}</td>
                     <td style="color: var(--text-muted);">${t.createdAt || '-'}</td>
-                    <td>
-                        <span class="badge-status ${isOn ? 'on':''}"><i data-lucide="circle" fill="currentColor" style="width:10px;"></i> ${isOn ? 'Onlayn':'Oflayn'}</span>
-                    </td>
-                    <td style="display:flex; gap:8px; align-items:center;">
-                        <button class="btn-block" style="background:rgba(99,102,241,0.15); color:#818cf8; border-color:#818cf8;" onclick="openTenantSettings('${t.id}')"><i data-lucide="settings" style="width:16px; display:inline-block; vertical-align:middle;"></i> Sozlamalar</button>
-                        <button class="btn-block" onclick="deleteTenant('${t.id}')"><i data-lucide="trash-2" style="width:16px; display:inline-block; vertical-align:middle;"></i> Bloklash</button>
+                    <td style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                        <button class="btn-link" onclick="copyCredentialsForClient('${t.id}', '${t.pin}', '${(t.shopName || '').replace(/'/g, '')}', '${isMaster ? 'master' : 'owner'}')" title="Скопировать ID и PIN для отправки в WhatsApp">
+                            📋 Доступ
+                        </button>
+                        <button class="btn-link" style="background:#0c192c; color:#fff;" onclick="loginAsTenantFromSA('${t.id}', '${(t.shopName || '').replace(/'/g, '')}', '${isMaster ? 'master' : 'owner'}')" title="Войти в этот кабинет">
+                            🔑 Войти
+                        </button>
+                        <button class="btn-block" style="background:#f0f4f9; color:#0c192c; border-color:#d5e2f0;" onclick="openTenantSettings('${t.id}')">⚙️</button>
+                        <button class="btn-block" onclick="deleteTenant('${t.id}')">🚫 Забрать доступ</button>
                     </td>
                 </tr>`;
             });
             lucide.createIcons();
-            
             filterTable();
         }
         
@@ -224,28 +318,63 @@
         function filterTable() {
             let val = document.getElementById('search-inp').value.toLowerCase();
             let rows = document.querySelectorAll('#tenants-list tr');
-            rows.forEach((tr, i) => {
+            rows.forEach((tr) => {
                 if(!tr.querySelector('.t-name')) return;
                 let text = tr.innerText.toLowerCase();
                 let matchesSearch = text.includes(val);
-                let isOnline = (i % 2 === 0);
-                let matchesStatus = activeStatusFilter === 'all' || (activeStatusFilter === 'online' && isOnline) || (activeStatusFilter === 'offline' && !isOnline);
+                let rowRole = tr.getAttribute('data-role') || 'owner';
+                let matchesStatus = activeStatusFilter === 'all' || activeStatusFilter === rowRole;
                 tr.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
             });
         }
 
         async function addTenant() {
+            const role = document.getElementById('t_role') ? document.getElementById('t_role').value : 'owner';
             const email = document.getElementById('t_email').value.trim();
-            const pin = document.getElementById('t_pin').value.trim();
-            const id = document.getElementById('t_id').value.trim().toLowerCase().replace(/\s+/g, '_'); 
+            const pin = document.getElementById('t_pin').value.trim().replace(/\D/g, '');
+            const id = document.getElementById('t_id').value.trim().replace(/\D/g, '');
             const name = document.getElementById('t_name').value.trim();
+            const catalogId = document.getElementById('t_catalog_id') ? document.getElementById('t_catalog_id').value.trim() : '';
 
-            if (!email || !pin || !id || !name) return alert("Barcha maydonlarni to'ldiring!");
-            if (tenants.find(t => t.id === id || t.email === email)) return alert('Bu Email yoki ID allaqachon mavjud!');
+            if (!name) return alert('Укажите название барбершопа или имя мастера!');
+            if (!/^\d+$/.test(id)) return alert('Цифровой ID должен состоять ТОЛЬКО из цифр (например: 1001)!');
+            if (!/^\d{4}$/.test(pin)) return alert('PIN-пароль должен состоять ровно из 4 цифр (например: 4829)!');
+            if (tenants.find(t => String(t.id) === String(id))) return alert('Этот цифровой ID уже занят! Нажмите «🎲 Авто», чтобы сгенерировать свободный ID.');
 
-            const newT = { email, pin, id, shopName: name, createdAt: new Date().toLocaleDateString('ru-RU') };
+            const newT = {
+                id: String(id),
+                pin: String(pin),
+                role: role,
+                shopName: name,
+                email: email || '—',
+                catalogId: catalogId || '',
+                createdAt: new Date().toLocaleDateString('ru-RU')
+            };
             tenants.push(newT);
             if(window.appDB) await window.appDB.saveGlobalTenants(tenants);
+
+            // Initialize tenant settings so their cabinet immediately displays the right name & catalog details
+            const sKey = id + '_barber_settings';
+            try {
+                const cur = JSON.parse(localStorage.getItem(sKey) || '{}');
+                cur.shopName = name;
+                if (role === 'master') {
+                    cur.soloMode = true;
+                    cur.soloMasterName = name;
+                    cur.soloPin = pin;
+                } else if (catalogId && Array.isArray(window.BARBERSHOPS_DATA)) {
+                    const catShop = window.BARBERSHOPS_DATA.find(b => String(b.id) === String(catalogId));
+                    if (catShop) {
+                        cur.city = catShop.city || 'Бишкек';
+                        cur.address = catShop.address || '';
+                        cur.phone = catShop.phone || email || '';
+                        cur.lat = catShop.lat;
+                        cur.lon = catShop.lon;
+                    }
+                }
+                localStorage.setItem(sKey, JSON.stringify(cur));
+            } catch (e) {}
+
             renderStats();
             renderTenants();
             
@@ -258,26 +387,40 @@
         }
 
         async function deleteTenant(id) {
-            if(!confirm('Ishonchingiz komilmi? Bu mijozni bloklaysizmi?')) return;
-            tenants = tenants.filter(t => t.id !== id);
+            if(!confirm(`Закрыть доступ для цифрового ID ${id}? Владелец/мастер больше не сможет войти в кабинет.`)) return;
+            tenants = tenants.filter(t => String(t.id) !== String(id));
             if(window.appDB) await window.appDB.saveGlobalTenants(tenants);
             renderStats();
             renderTenants();
         }
 
-        function copyLink(path) {
-            const fullLink = window.location.origin + window.location.pathname.replace('super_admin.html', '') + path;
-            navigator.clipboard.writeText(fullLink).then(() => {
-                alert('Nusxa olindi!');
+        function copyCredentialsForClient(id, pin, name, role) {
+            const roleTitle = role === 'master' ? 'Личный кабинет Мастера (Соло)' : 'Админ-панель Владельца Барбершопа';
+            const baseUrl = window.location.origin + window.location.pathname.replace('super_admin.html', '') + 'app.html';
+            const text = `✂️ BarberMap KG — Доступ открыт!\n🏢 ${name} (${roleTitle})\n\n🔢 Ваш цифровой ID: ${id}\n🔑 Ваш 4-значный PIN: ${pin}\n🌐 Вход в систему: ${baseUrl}`;
+            navigator.clipboard.writeText(text).then(() => {
+                alert(`✅ Данные доступа для «${name}» (ID: ${id}, PIN: ${pin}) скопированы! Отправьте их клиенту в WhatsApp или Telegram.`);
             });
         }
 
-        function devLoginDialog() {
-            let t = prompt("Mijoz ID sini kiriting (Masalan: shop_zara)");
-            if(t) {
-                localStorage.setItem('tenant_id', t);
+        function loginAsTenantFromSA(id, name, role) {
+            if (window.BarberMobileBridge) {
+                window.BarberMobileBridge.saveSession({
+                    role: role,
+                    tenantId: String(id),
+                    masterId: String(id),
+                    masterName: name,
+                    shopName: name
+                });
+            }
+            if (role === 'master') {
+                sessionStorage.setItem('barberSoloAuth', 'true');
+                sessionStorage.setItem('barberSoloAuthTenantId', String(id));
+                window.open(`barber.html?id=${encodeURIComponent(id)}`, '_blank');
+            } else {
                 sessionStorage.setItem('adminAuth', 'true');
-                window.open('admin.html', '_blank');
+                sessionStorage.setItem('adminAuthTenantId', String(id));
+                window.open(`admin.html?id=${encodeURIComponent(id)}`, '_blank');
             }
         }
 

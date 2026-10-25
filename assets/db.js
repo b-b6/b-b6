@@ -292,23 +292,36 @@ class BarberDB {
     // --- SaaS GLOBAL ARCHITECTURE ---
     async getGlobalTenants() {
         await this.initPromise;
-        if(!this.useFirebase) return JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
+        let localList = [];
+        try {
+            localList = JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
+        } catch (e) {}
+
+        if (!this.useFirebase) return localList;
         try {
             const docRef = this.fsTools.doc(this.fs, `global/saas`);
             const snap = await Promise.race([
                 this.fsTools.getDoc(docRef),
                 new Promise((_, rej) => setTimeout(() => rej(new Error('Global tenants read timeout')), 5000))
             ]);
-            return snap.exists() ? (snap.data().tenants || []) : [];
+            const remoteList = snap.exists() ? (snap.data().tenants || []) : [];
+            if (remoteList.length > 0) {
+                try { localStorage.setItem('global_saas_tenants', JSON.stringify(remoteList)); } catch (e) {}
+                return remoteList;
+            }
+            return localList;
         } catch(e) {
             console.warn('⚠️ getGlobalTenants failed:', e.message);
-            return JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
+            return localList;
         }
     }
 
     async saveGlobalTenants(tenantsList) {
         await this.initPromise;
-        if(!this.useFirebase) { localStorage.setItem('global_saas_tenants', JSON.stringify(tenantsList)); return true; }
+        try {
+            localStorage.setItem('global_saas_tenants', JSON.stringify(tenantsList));
+        } catch (e) {}
+        if(!this.useFirebase) { return true; }
         try {
             const docRef = this.fsTools.doc(this.fs, `global/saas`);
             await Promise.race([
@@ -318,7 +331,6 @@ class BarberDB {
             return true;
         } catch(e) {
             console.warn('⚠️ saveGlobalTenants failed:', e.message);
-            localStorage.setItem('global_saas_tenants', JSON.stringify(tenantsList));
             return true;
         }
     }
