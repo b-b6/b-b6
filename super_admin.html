@@ -130,44 +130,55 @@
             </div>
             </div><!-- /panel-tenants -->
 
-            <!-- PANEL 2: BARBER MAP MANAGEMENT -->
+            <!-- PANEL 2: BARBER MAP MANAGEMENT (401 САЛОН КР — ВЫБОР С КАРТЫ) -->
             <div class="section-panel" id="panel-barbers">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
                     <div>
-                        <h2 style="margin:0; font-size:1.3rem;">🗺 Управление картой барберов</h2>
-                        <p style="color:var(--text-muted); font-size:0.9rem; margin-top:5px;">Добавляйте барберов из Instagram — они появятся на карте Ташкента в приложении клиентов.</p>
+                        <h2 style="margin:0; font-size:1.25rem; color:#0c192c;">🗺 Карта 401 барбершопа КР — Привязка и выдача доступа</h2>
+                        <p style="color:var(--text-muted); font-size:0.88rem; margin-top:4px;">Нажмите на любой салон прямо на карте (или в списке справа), чтобы привязать его и выдать владельцу цифровой ID и 4-значный PIN.</p>
                     </div>
-                    <button class="btn-tool btn-primary" style="flex-shrink:0;" onclick="openAddBarberModal()">
-                        <i data-lucide="plus" style="width:18px;"></i> + Добавить барбера
-                    </button>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                        <button class="btn-tool" onclick="openAddBarberModal()">
+                            <i data-lucide="map-pin" style="width:16px;"></i> + Новая точка на карту
+                        </button>
+                        <button class="btn-tool btn-primary" onclick="openAddAccessModal()">
+                            <i data-lucide="key-round" style="width:16px;"></i> 🔑 Выдать доступ с карты
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Быстрый фильтр по городам КР -->
+                <div id="sa-map-city-chips" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+                    <button type="button" class="ftab active" onclick="filterSAMapByCity('all', this)">Все (401)</button>
+                    <button type="button" class="ftab" onclick="filterSAMapByCity('Бишкек', this)">Бишкек</button>
+                    <button type="button" class="ftab" onclick="filterSAMapByCity('Ош', this)">Ош</button>
+                    <button type="button" class="ftab" onclick="filterSAMapByCity('Джалал-Абад', this)">Джалал-Абад</button>
+                    <button type="button" class="ftab" onclick="filterSAMapByCity('Каракол', this)">Каракол</button>
+                    <button type="button" class="ftab" onclick="filterSAMapByCity('Токмок', this)">Токмок</button>
+                    <button type="button" class="ftab" onclick="filterSAMapByCity('Нарын', this)">Нарын</button>
+                    <button type="button" class="ftab" onclick="filterSAMapByCity('Балыкчы', this)">Балыкчы</button>
+                    <button type="button" class="ftab" onclick="filterSAMapByCity('Узген', this)">Узген</button>
                 </div>
 
                 <div class="barber-map-wrap">
-                    <!-- Live map preview -->
+                    <!-- Live map of 401 KG barbershops -->
                     <div>
-                        <div style="font-size:0.8rem; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); margin-bottom:10px; font-weight:600;">📍 Предпросмотр карты</div>
-                        <div id="sa-leaflet-map" style="height:480px;"></div>
+                        <div style="font-size:0.78rem; text-transform:uppercase; letter-spacing:0.6px; color:var(--text-muted); margin-bottom:8px; font-weight:700;">
+                            📍 Нажмите на метку салона на карте, чтобы выдать ему цифровой ID и 4-значный PIN
+                        </div>
+                        <div id="sa-leaflet-map" style="height:510px; border-radius:16px; border:1px solid var(--border);"></div>
                     </div>
 
-                    <!-- Barber list panel -->
+                    <!-- Barbershop list panel -->
                     <div class="barber-manager-panel">
-                        <div style="font-size:0.8rem; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); font-weight:600; margin-bottom:4px;">
-                            Барберы в каталоге (<span id="barber-count">0</span>)
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px;">
+                            <div style="font-size:0.78rem; text-transform:uppercase; letter-spacing:0.6px; color:var(--text-muted); font-weight:700;">
+                                Салоны на карте (<span id="barber-count">0</span>)
+                            </div>
                         </div>
-                        <div style="max-height: 420px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; padding-right:4px;" id="sa-barber-list">
+                        <input type="text" id="sa-map-search-inp" class="form-control" placeholder="Поиск салона по названию или улице..." oninput="renderSABarberList()" style="margin-bottom:8px; padding:9px 12px; font-size:0.84rem;">
+                        <div style="max-height: 430px; overflow-y:auto; display:flex; flex-direction:column; gap:8px; padding-right:4px;" id="sa-barber-list">
                             <!-- Rendered by JS -->
-                        </div>
-
-                        <div style="margin-top:auto; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:12px; padding:14px;">
-                            <div style="font-size:0.8rem; font-weight:700; color:var(--accent-gold); margin-bottom:8px;">💡 Как добавить барбера</div>
-                            <ol style="font-size:0.82rem; color:var(--text-muted); margin:0; padding-left:16px; line-height:1.8;">
-                                <li>Находите барбера в Instagram</li>
-                                <li>Нажимаете «+ Добавить барбера»</li>
-                                <li>Вводите имя, @instagram, район</li>
-                                <li>Тыкаете на карте точку (координаты)</li>
-                                <li>Загружаете 3–5 лучших фото работ</li>
-                                <li>Сохраняете — он появляется на карте!</li>
-                            </ol>
                         </div>
                     </div>
                 </div>
@@ -293,15 +304,15 @@
     </div>
 
 
-    <!-- ADD CLIENT / MASTER ACCESS MODAL (NUMERIC ID + 4-DIGIT PIN) -->
-    <div class="modal-overlay" id="modal-add">
-        <div class="modal" id="modal-add-inner" style="max-width:460px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
-                <h2 style="margin:0; font-size:1.2rem; color:#0c192c;">🔑 Выдать доступ (ID + PIN)</h2>
+    <!-- ADD CLIENT / MASTER ACCESS MODAL (NUMERIC ID + 4-DIGIT PIN + INTERACTIVE MAP PICKER) -->
+    <div class="modal-overlay" id="modal-add" style="align-items:flex-start; padding-top:20px; overflow-y:auto;">
+        <div class="modal" id="modal-add-inner" style="max-width:620px; max-height:92vh; overflow-y:auto; padding:24px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                <h2 style="margin:0; font-size:1.2rem; color:#0c192c;">🔑 Выдать доступ (ID + PIN) и привязать с карты</h2>
                 <i data-lucide="x" style="cursor:pointer; color:var(--text-muted);" onclick="closeModal('add')"></i>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="margin-bottom:12px;">
                 <label>1. Кому выдаём доступ?</label>
                 <select id="t_role" class="form-control" onchange="onRoleSelectInSuperAdmin(this.value)">
                     <option value="owner">💈 Владелец Барбершопа (Салон — admin.html)</option>
@@ -309,22 +320,58 @@
                 </select>
             </div>
 
-            <div class="form-group" id="sa-catalog-bind-wrap">
-                <label>2. Привязать салон с карты (поиск из 401) или написать свой</label>
-                <input type="text" id="t_catalog_search" class="form-control" placeholder="Поиск по карте (напр. Shine, Legend)..." oninput="searchCatalogForSuperAdmin(this.value)">
-                <div id="sa-catalog-results" style="display:none; max-height:140px; overflow-y:auto; border:1px solid var(--border); border-radius:10px; margin-top:6px; background:#fff;"></div>
+            <div class="form-group" id="sa-catalog-bind-wrap" style="margin-bottom:14px;">
+                <label style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+                    <span>2. Выберите салон прямо на карте (из 401 точки КР) или в поиске</span>
+                    <button type="button" id="sa-toggle-bind-map-btn" onclick="toggleBindMapInModal()" style="background:#f0f4f9; border:1px solid #d5e2f0; color:#0c192c; padding:3px 10px; border-radius:999px; font-size:11.5px; font-weight:800; cursor:pointer;">
+                        🗺 Скрыть/показать карту
+                    </button>
+                </label>
+
+                <!-- Карточка уже выбранного с карты салона -->
+                <div id="sa-bound-shop-card" style="display:none; background:#e7f6ed; border:1.5px solid rgba(0,135,61,0.35); border-radius:12px; padding:10px 12px; margin-bottom:8px; align-items:center; justify-content:space-between; gap:10px;">
+                    <div style="min-width:0;">
+                        <div style="font-size:0.86rem; font-weight:800; color:#0c192c;" id="sa-bound-shop-title">Салон выбран</div>
+                        <div style="font-size:0.75rem; color:#00873d; font-weight:700;" id="sa-bound-shop-sub">✓ Привязан к точке на карте</div>
+                    </div>
+                    <button type="button" onclick="clearBoundShopInSA()" style="background:#fff; border:1px solid #d5e2f0; color:#7a1c2d; padding:4px 10px; border-radius:999px; font-size:0.75rem; font-weight:800; cursor:pointer; flex-shrink:0;">✕ Сбросить</button>
+                </div>
+
+                <!-- Поиск по названию / улице -->
+                <input type="text" id="t_catalog_search" class="form-control" placeholder="🔍 Быстрый поиск по названию или улице (или нажмите на точку на карте ниже)..." oninput="searchCatalogForSuperAdmin(this.value)" style="margin-bottom:6px;">
+                <div id="sa-catalog-results" style="display:none; max-height:150px; overflow-y:auto; border:1px solid var(--border); border-radius:10px; margin-bottom:8px; background:#fff; box-shadow:0 6px 20px rgba(12,25,44,0.08);"></div>
+
+                <!-- Интерактивная карта прямо внутри модального окна выдачи доступа -->
+                <div id="sa-bind-map-box" style="border:1.5px solid #d5e2f0; border-radius:14px; padding:8px; background:#f0f4f9;">
+                    <div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:6px; align-items:center;">
+                        <span style="font-size:11px; font-weight:700; color:#5a6578; margin-right:2px;">Город:</span>
+                        <button type="button" onclick="focusBindMapCity('Бишкек', 42.8746, 74.5698, 12)" style="background:#fff; border:1px solid #d5e2f0; color:#0c192c; padding:3px 8px; border-radius:999px; font-size:11px; font-weight:700; cursor:pointer;">Бишкек</button>
+                        <button type="button" onclick="focusBindMapCity('Ош', 40.5140, 72.8161, 13)" style="background:#fff; border:1px solid #d5e2f0; color:#0c192c; padding:3px 8px; border-radius:999px; font-size:11px; font-weight:700; cursor:pointer;">Ош</button>
+                        <button type="button" onclick="focusBindMapCity('Джалал-Абад', 40.9333, 73.0000, 13)" style="background:#fff; border:1px solid #d5e2f0; color:#0c192c; padding:3px 8px; border-radius:999px; font-size:11px; font-weight:700; cursor:pointer;">Джалал-Абад</button>
+                        <button type="button" onclick="focusBindMapCity('Каракол', 42.4907, 78.3936, 13)" style="background:#fff; border:1px solid #d5e2f0; color:#0c192c; padding:3px 8px; border-radius:999px; font-size:11px; font-weight:700; cursor:pointer;">Каракол</button>
+                        <button type="button" onclick="focusBindMapCity('Токмок', 42.8419, 75.3015, 13)" style="background:#fff; border:1px solid #d5e2f0; color:#0c192c; padding:3px 8px; border-radius:999px; font-size:11px; font-weight:700; cursor:pointer;">Токмок</button>
+                        <button type="button" onclick="focusBindMapCity('all', 41.5000, 74.7000, 7)" style="background:#0c192c; border:1px solid #0c192c; color:#fff; padding:3px 8px; border-radius:999px; font-size:11px; font-weight:700; cursor:pointer;">Весь КР</button>
+                    </div>
+                    <div id="sa-bind-leaflet-map" style="height:245px; width:100%; border-radius:10px; border:1px solid #d5e2f0;"></div>
+                    <div style="font-size:11px; color:#5a6578; margin-top:5px; font-weight:600;">
+                        💡 Нажмите на <b>любую бордовую метку салона</b> на карте, чтобы привязать его, или нажмите на пустое место карты, чтобы поставить новую точку.
+                    </div>
+                </div>
+
                 <input type="hidden" id="t_catalog_id">
+                <input type="hidden" id="t_custom_lat">
+                <input type="hidden" id="t_custom_lon">
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="margin-bottom:12px;">
                 <label id="t_name_label">Название барбершопа или Имя мастера</label>
-                <input type="text" id="t_name" placeholder="Например: Shine Barbershop или Азамат">
+                <input type="text" id="t_name" placeholder="Подставится автоматически при клике на карту (или введите вручную)">
             </div>
 
             <div class="form-row">
                 <div class="form-group" style="margin-bottom:0;">
                     <label style="display:flex; justify-content:space-between; align-items:center;">
-                        <span>Цифровой ID (цифры)</span>
+                        <span>Цифровой ID (только цифры)</span>
                         <button type="button" onclick="generateNumericId()" style="background:none; border:none; color:#7a1c2d; font-size:11px; font-weight:800; cursor:pointer;">🎲 Авто</button>
                     </label>
                     <input type="text" id="t_id" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')" placeholder="Напр.: 1001" style="font-weight:800; letter-spacing:1px;">
@@ -338,8 +385,8 @@
                 </div>
             </div>
 
-            <div class="form-group" style="margin-top:14px;">
-                <label>Телефон / Заметка для вас (необязательно)</label>
+            <div class="form-group" style="margin-top:12px; margin-bottom:14px;">
+                <label>Телефон / Контакт (необязательно)</label>
                 <input type="text" id="t_email" placeholder="+996 555 00-00-00">
             </div>
 
@@ -437,60 +484,157 @@
             lucide.createIcons();
         }
 
-        // ── INIT SUPER ADMIN MAP PREVIEW ──
+        // ── INIT SUPER ADMIN MAP PREVIEW (401 KG BARBERSHOPS) ──
+        let activeSACityFilter = 'all';
+
+        function getFullKGCatalogForSA() {
+            const base = (window.BARBERSHOPS_DATA || []).slice();
+            try {
+                const customMap = window.BarberMobileBridge ? window.BarberMobileBridge.getCustomLocationsLocal() : {};
+                Object.keys(customMap).forEach(id => {
+                    if (!base.some(b => String(b.id) === String(id))) {
+                        base.unshift(customMap[id]);
+                    }
+                });
+            } catch (e) {}
+            barbersCatalog.forEach(b => {
+                if (!base.some(x => String(x.id) === String(b.id))) {
+                    base.unshift({
+                        id: b.id,
+                        name: b.name,
+                        city: b.district || 'Бишкек',
+                        address: b.address || '',
+                        phone: b.phone || '',
+                        lat: b.lat,
+                        lon: b.lng || b.lon,
+                        rating: b.rating || 5.0
+                    });
+                }
+            });
+            return base;
+        }
+
+        function filterSAMapByCity(city, btnEl) {
+            activeSACityFilter = city;
+            document.querySelectorAll('#sa-map-city-chips .ftab').forEach(b => b.classList.remove('active'));
+            if (btnEl) btnEl.classList.add('active');
+            renderSABarberList();
+            renderSAMarkers(true);
+        }
+
         function initSAMap() {
-            if (saMap) { saMap.invalidateSize(); renderSAMarkers(); return; }
-            saMap = L.map('sa-leaflet-map', { center: [41.3150, 69.2790], zoom: 12 });
+            if (saMap) { saMap.invalidateSize(); renderSAMarkers(false); return; }
+            saMap = L.map('sa-leaflet-map', { center: [42.8746, 74.5698], zoom: 12 });
             L.tileLayer('https://tile{s}.maps.2gis.com/tiles?x={x}&y={y}&z={z}&v=1.5&key=fb2542a3-ea70-441d-9b49-bbc1b26168c5', {
                 attribution: '&copy; 2GIS', subdomains: '0123', maxZoom: 19
             }).addTo(saMap);
-            renderSAMarkers();
+            renderSAMarkers(false);
         }
 
-        function renderSAMarkers() {
+        function renderSAMarkers(fitBoundsNow) {
             if (!saMap) return;
             saMap.eachLayer(l => { if (l instanceof L.Marker) saMap.removeLayer(l); });
-            barbersCatalog.forEach(b => {
-                if (!b.lat || !b.lng) return;
+            const allShops = getFullKGCatalogForSA().filter(b =>
+                activeSACityFilter === 'all' || (b.city && b.city === activeSACityFilter)
+            );
+            const boundsArr = [];
+            allShops.forEach(b => {
+                const lat = parseFloat(b.lat);
+                const lon = parseFloat(b.lon != null ? b.lon : b.lng);
+                if (isNaN(lat) || isNaN(lon)) return;
+                boundsArr.push([lat, lon]);
+
+                const boundTenant = (window.tenants || []).find(t =>
+                    (t.catalogId && String(t.catalogId) === String(b.id)) ||
+                    (t.shopName && b.name && t.shopName.toLowerCase() === b.name.toLowerCase())
+                );
+                const bg = boundTenant ? '#00873d' : '#7a1c2d';
+                const badgeText = boundTenant ? `🔑 ID:${boundTenant.id}` : '✂️';
+
                 const ico = L.divIcon({
                     className: '',
-                    html: `<div style="background:#111827;color:#ffffff;padding:4px 10px;border-radius:999px;font-weight:700;font-size:11px;white-space:nowrap;border:2px solid #ffffff;box-shadow:0 4px 12px rgba(0,0,0,0.18);">✂️ ${b.name}</div>`,
-                    iconSize: [110, 28], iconAnchor: [55, 28]
+                    html: `<div style="background:${bg};color:#ffffff;padding:3px 8px;border-radius:999px;font-weight:800;font-size:11px;white-space:nowrap;border:2px solid #ffffff;box-shadow:0 3px 10px rgba(12,25,44,0.22);cursor:pointer;">${badgeText} ${(b.name || '').slice(0, 18)}</div>`,
+                    iconSize: [120, 26], iconAnchor: [60, 26]
                 });
-                L.marker([b.lat, b.lng], { icon: ico }).addTo(saMap)
-                    .bindTooltip(`✂️ ${b.name}`, { permanent: false });
+                const marker = L.marker([lat, lon], { icon: ico }).addTo(saMap);
+                const safeId = String(b.id || '').replace(/'/g, '');
+                const safeName = String(b.name || '').replace(/'/g, '');
+                const popupHtml = `
+                    <div style="min-width:210px; font-family:'Inter',sans-serif; padding:4px 2px;">
+                        <div style="font-weight:800; font-size:13.5px; color:#0c192c; margin-bottom:3px;">${b.name || 'Барбершоп'}</div>
+                        <div style="font-size:11.5px; color:#5a6578; margin-bottom:8px;">📍 ${b.city || 'Бишкек'} • ${b.address || ''}</div>
+                        ${boundTenant
+                            ? `<div style="background:#e7f6ed; color:#00873d; padding:5px 8px; border-radius:8px; font-size:11.5px; font-weight:800; margin-bottom:8px;">✓ Доступ уже выдан: ID <b>${boundTenant.id}</b> / PIN <b>${boundTenant.pin}</b></div>`
+                            : ''
+                        }
+                        <button type="button" onclick="issueAccessFromMapPin('${safeId}', '${safeName}')" style="width:100%; background:#7a1c2d; color:#fff; border:none; padding:7px 10px; border-radius:999px; font-size:11.5px; font-weight:800; cursor:pointer;">
+                            🔑 Привязать и выдать ID + PIN
+                        </button>
+                    </div>
+                `;
+                marker.bindPopup(popupHtml);
             });
+            if (fitBoundsNow && boundsArr.length > 0) {
+                saMap.fitBounds(boundsArr, { maxZoom: 15, padding: [24, 24] });
+            }
+        }
+
+        function issueAccessFromMapPin(catId, catName) {
+            openAddAccessModal(catId, catName);
         }
 
         // ── RENDER BARBER LIST IN SIDE PANEL ──
         function renderSABarberList() {
             const container = document.getElementById('sa-barber-list');
-            document.getElementById('barber-count').textContent = barbersCatalog.length;
-            if (barbersCatalog.length === 0) {
+            const q = (document.getElementById('sa-map-search-inp')?.value || '').trim().toLowerCase();
+            const allShops = getFullKGCatalogForSA().filter(b => {
+                if (activeSACityFilter !== 'all' && b.city !== activeSACityFilter) return false;
+                if (!q) return true;
+                return (b.name && b.name.toLowerCase().includes(q)) ||
+                       (b.address && b.address.toLowerCase().includes(q)) ||
+                       (b.city && b.city.toLowerCase().includes(q));
+            });
+
+            document.getElementById('barber-count').textContent = allShops.length;
+            if (allShops.length === 0) {
                 container.innerHTML = `<div style="text-align:center; padding:30px 20px; color:var(--text-muted); font-size:0.9rem;">
-                    <div style="font-size:2rem; margin-bottom:10px;">💈</div>
-                    Барберов ещё нет.<br>Нажмите «+ Добавить барбера» чтобы начать!
+                    Ничего не найдено по запросу.
                 </div>`;
                 return;
             }
-            container.innerHTML = barbersCatalog.map(b => `
-                <div class="barber-card-sa">
-                    <div class="bca-placeholder">✂️</div>
+            container.innerHTML = allShops.slice(0, 80).map(b => {
+                const safeId = String(b.id || '').replace(/'/g, '');
+                const safeName = String(b.name || '').replace(/'/g, '');
+                const boundTenant = (window.tenants || []).find(t =>
+                    (t.catalogId && String(t.catalogId) === String(b.id)) ||
+                    (t.shopName && b.name && t.shopName.toLowerCase() === b.name.toLowerCase())
+                );
+                return `
+                <div class="barber-card-sa" style="cursor:pointer;" onclick="focusSASalonOnMap('${safeId}')">
+                    <div class="bca-placeholder" style="background:${boundTenant ? '#e7f6ed' : '#f0f4f9'}; color:${boundTenant ? '#00873d' : '#0c192c'};">${boundTenant ? '🔑' : '💈'}</div>
                     <div class="bc-info">
                         <div class="bc-name">${b.name}</div>
-                        <div class="bc-meta">${b.instaHandle || ''} &bull; ${b.district || ''} &bull; ⭐${b.rating || '—'}</div>
+                        <div class="bc-meta">${b.city || 'Бишкек'} &bull; ${b.address || ''}</div>
+                        ${boundTenant ? `<div style="font-size:11px; color:#00873d; font-weight:800; margin-top:2px;">ID: ${boundTenant.id} • PIN: ${boundTenant.pin}</div>` : ''}
                     </div>
                     <div class="bc-actions">
-                        <button class="icon-btn" onclick="openEditBarberModal('${b.id}')" title="Редактировать">
-                            <i data-lucide="pencil" style="width:14px;height:14px;"></i>
-                        </button>
-                        <button class="icon-btn del" onclick="deleteBarber('${b.id}')" title="Удалить">
-                            <i data-lucide="trash-2" style="width:14px;height:14px;"></i>
+                        <button class="btn-link" style="padding:5px 10px; font-size:11px;" onclick="event.stopPropagation(); issueAccessFromMapPin('${safeId}', '${safeName}')" title="Выдать цифровой ID и PIN этому салону">
+                            🔑 Выдать ID
                         </button>
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
             lucide.createIcons();
+        }
+
+        function focusSASalonOnMap(catId) {
+            const shop = getFullKGCatalogForSA().find(b => String(b.id) === String(catId));
+            if (!shop || !saMap) return;
+            const lat = parseFloat(shop.lat);
+            const lon = parseFloat(shop.lon != null ? shop.lon : shop.lng);
+            if (!isNaN(lat) && !isNaN(lon)) {
+                saMap.setView([lat, lon], 16);
+            }
         }
 
         // ── OPEN ADD BARBER MODAL ──

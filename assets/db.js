@@ -31,6 +31,15 @@ class BarberDB {
         }
 
         if (urlTenant) {
+            try {
+                const globalTenants = JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
+                if (Array.isArray(globalTenants)) {
+                    const bound = globalTenants.find(t => t.catalogId && String(t.catalogId) === String(urlTenant));
+                    if (bound && bound.id) {
+                        urlTenant = String(bound.id);
+                    }
+                }
+            } catch (e) {}
             this.tenantId = urlTenant;
             try { localStorage.setItem('tenant_id', urlTenant); } catch(e) {}
         } else {

@@ -551,10 +551,22 @@ body.dragging .map-ctrls{transition:opacity .2s}
       b.score - a.score);
   }
 
+  function resolveBookingTargetId(b) {
+    try {
+      const tenants = JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
+      if (Array.isArray(tenants)) {
+        const bound = tenants.find(t => t.catalogId && String(t.catalogId) === String(b.id));
+        if (bound && bound.id) return String(bound.id);
+      }
+    } catch (e) {}
+    return String(b.id);
+  }
+
   function card(b, d) {
     const st = statusOf(b);
     const dist = d != null ? d : (state.me ? distKm(state.me, b) : null);
     const meta = [b.kind, state.city === 'all' || d != null ? b.city : null, dist != null ? fmtDist(dist) : null].filter(Boolean).join(' · ');
+    const targetId = resolveBookingTargetId(b);
     return `<div class="card" data-id="${esc(b.id)}" role="button" tabindex="0">
       <div class="av">${esc(b.letter)}${st.known && st.open ? '<span class="dot-open"></span>' : ''}</div>
       <div class="card-main">
@@ -564,7 +576,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
         <div class="card-addr">${esc(b.address)}</div>
         <div class="card-foot">
           ${st.known ? `<span class="st-pill ${st.open ? 'open' : 'closed'}" data-st="${esc(b.id)}">${st.text}</span>` : '<span></span>'}
-          <a href="index.html?id=${encodeURIComponent(b.id)}&shopName=${encodeURIComponent(b.title || b.name || '')}" class="quick-book-link" onclick="event.stopPropagation()">
+          <a href="index.html?id=${encodeURIComponent(targetId)}&shopName=${encodeURIComponent(b.title || b.name || '')}" class="quick-book-link" onclick="event.stopPropagation()">
             ✂️ Записаться
           </a>
         </div>
@@ -632,7 +644,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
         </div>
         <div class="d-stats">${stats.join('<span class="dot"></span>')}</div>
         <div class="actions">
-          <a class="btn primary" href="index.html?id=${encodeURIComponent(b.id)}&shopName=${encodeURIComponent(b.title || b.name || '')}">
+          <a class="btn primary" href="index.html?id=${encodeURIComponent(resolveBookingTargetId(b))}&shopName=${encodeURIComponent(b.title || b.name || '')}">
             ${ICON.calendar}Записаться
           </a>
           <button class="btn navy" data-act="route">${ICON.route}Маршрут</button>

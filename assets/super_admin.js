@@ -166,17 +166,126 @@
             document.getElementById('st-today').innerText = tenants.filter(t => t.createdAt === todayStr).length;
         }
 
-        function openAddAccessModal() {
+        let saBindMap = null;
+        let saBindCustomMarker = null;
+
+        function openAddAccessModal(preselectedCatalogId, preselectedCatalogName) {
             document.getElementById('t_role').value = 'owner';
             document.getElementById('t_name').value = '';
             document.getElementById('t_email').value = '';
             document.getElementById('t_catalog_search').value = '';
             document.getElementById('t_catalog_id').value = '';
+            const customLatEl = document.getElementById('t_custom_lat');
+            const customLonEl = document.getElementById('t_custom_lon');
+            if (customLatEl) customLatEl.value = '';
+            if (customLonEl) customLonEl.value = '';
+            const boundCard = document.getElementById('sa-bound-shop-card');
+            if (boundCard) boundCard.style.display = 'none';
             document.getElementById('sa-catalog-results').style.display = 'none';
             onRoleSelectInSuperAdmin('owner');
             generateNumericId();
             generateFourDigitPin();
             openModal('add');
+
+            setTimeout(() => {
+                initBindMapInModal();
+                if (preselectedCatalogId) {
+                    selectCatalogShopInSA(preselectedCatalogId, preselectedCatalogName);
+                }
+            }, 180);
+        }
+
+        function toggleBindMapInModal() {
+            const box = document.getElementById('sa-bind-map-box');
+            if (!box) return;
+            if (box.style.display === 'none') {
+                box.style.display = 'block';
+                setTimeout(() => initBindMapInModal(), 100);
+            } else {
+                box.style.display = 'none';
+            }
+        }
+
+        function focusBindMapCity(city, lat, lon, zoom) {
+            if (!saBindMap) return;
+            saBindMap.setView([lat, lon], zoom || 12);
+        }
+
+        function initBindMapInModal() {
+            const mapContainer = document.getElementById('sa-bind-leaflet-map');
+            if (!mapContainer) return;
+
+            if (!saBindMap) {
+                saBindMap = L.map('sa-bind-leaflet-map', { center: [42.8746, 74.5698], zoom: 12 });
+                L.tileLayer('https://tile{s}.maps.2gis.com/tiles?x={x}&y={y}&z={z}&v=1.5&key=fb2542a3-ea70-441d-9b49-bbc1b26168c5', {
+                    attribution: '&copy; 2GIS', subdomains: '0123', maxZoom: 19
+                }).addTo(saBindMap);
+
+                // Allow clicking empty space on map to set custom coordinates for a brand-new salon
+                saBindMap.on('click', function(e) {
+                    const lat = e.latlng.lat.toFixed(6);
+                    const lon = e.latlng.lng.toFixed(6);
+                    const customLatEl = document.getElementById('t_custom_lat');
+                    const customLonEl = document.getElementById('t_custom_lon');
+                    if (customLatEl) customLatEl.value = lat;
+                    if (customLonEl) customLonEl.value = lon;
+                    document.getElementById('t_catalog_id').value = '';
+
+                    if (saBindCustomMarker) {
+                        saBindCustomMarker.setLatLng(e.latlng);
+                    } else {
+                        saBindCustomMarker = L.marker(e.latlng).addTo(saBindMap);
+                    }
+
+                    const boundCard = document.getElementById('sa-bound-shop-card');
+                    const boundTitle = document.getElementById('sa-bound-shop-title');
+                    const boundSub = document.getElementById('sa-bound-shop-sub');
+                    if (boundCard && boundTitle && boundSub) {
+                        boundTitle.textContent = `📍 Новая точка на карте (${lat}, ${lon})`;
+                        boundSub.textContent = '✓ Координаты сохранены — введите название салона ниже';
+                        boundCard.style.display = 'flex';
+                    }
+                });
+            } else {
+                saBindMap.invalidateSize();
+            }
+
+            renderBindMapMarkers();
+        }
+
+        function renderBindMapMarkers() {
+            if (!saBindMap) return;
+            const selectedId = document.getElementById('t_catalog_id')?.value || '';
+            saBindMap.eachLayer(l => {
+                if (l instanceof L.Marker && l !== saBindCustomMarker) {
+                    saBindMap.removeLayer(l);
+                }
+            });
+
+            const catalog = window.BARBERSHOPS_DATA || [];
+            catalog.forEach(b => {
+                const lat = parseFloat(b.lat);
+                const lon = parseFloat(b.lon != null ? b.lon : b.lng);
+                if (isNaN(lat) || isNaN(lon)) return;
+
+                const isSelected = String(b.id) === String(selectedId);
+                const boundTenant = tenants.find(t => t.catalogId && String(t.catalogId) === String(b.id));
+                const bg = isSelected ? '#00873d' : (boundTenant ? '#0c192c' : '#7a1c2d');
+                const prefix = isSelected ? '✓ ' : (boundTenant ? `🔑${boundTenant.id} ` : '💈 ');
+
+                const ico = L.divIcon({
+                    className: '',
+                    html: `<div style="background:${bg};color:#ffffff;padding:3px 8px;border-radius:999px;font-weight:800;font-size:10.5px;white-space:nowrap;border:2px solid #ffffff;box-shadow:0 3px 8px rgba(12,25,44,0.25);cursor:pointer;">${prefix}${(b.name || '').slice(0, 16)}</div>`,
+                    iconSize: [110, 24],
+                    iconAnchor: [55, 24]
+                });
+
+                const marker = L.marker([lat, lon], { icon: ico, zIndexOffset: isSelected ? 1000 : 0 }).addTo(saBindMap);
+                marker.on('click', function(ev) {
+                    L.DomEvent.stopPropagation(ev);
+                    selectCatalogShopInSA(b.id, b.name);
+                });
+            });
         }
 
         function onRoleSelectInSuperAdmin(role) {
@@ -188,6 +297,7 @@
             } else {
                 if (bindWrap) bindWrap.style.display = 'block';
                 if (nameLbl) nameLbl.textContent = 'Название барбершопа';
+                setTimeout(() => initBindMapInModal(), 100);
             }
             generateNumericId();
         }
@@ -222,7 +332,7 @@
                 (b.name && b.name.toLowerCase().includes(q)) ||
                 (b.city && b.city.toLowerCase().includes(q)) ||
                 (b.address && b.address.toLowerCase().includes(q))
-            ).slice(0, 10);
+            ).slice(0, 12);
 
             if (matches.length === 0) {
                 box.style.display = 'none';
@@ -235,19 +345,65 @@
                 return `<div style="padding:8px 12px; border-bottom:1px solid var(--border); cursor:pointer; display:flex; justify-content:space-between; align-items:center;" onclick="selectCatalogShopInSA('${sId}', '${sName}')">
                     <div>
                         <div style="font-weight:700; font-size:0.84rem; color:#0c192c;">${b.name}</div>
-                        <div style="font-size:0.72rem; color:var(--text-muted);">${b.city || ''} • ${b.address || ''}</div>
+                        <div style="font-size:0.72rem; color:var(--text-muted);">📍 ${b.city || ''} • ${b.address || ''}</div>
                     </div>
-                    <span style="font-size:0.74rem; font-weight:800; color:#7a1c2d;">Привязать →</span>
+                    <span style="font-size:0.74rem; font-weight:800; color:#7a1c2d;">Выбрать на карте →</span>
                 </div>`;
             }).join('');
             box.style.display = 'block';
         }
 
         function selectCatalogShopInSA(catId, catName) {
+            const catalog = window.BARBERSHOPS_DATA || [];
+            const shop = catalog.find(b => String(b.id) === String(catId));
+            const resolvedName = (shop && shop.name) || catName || catId;
+
             document.getElementById('t_catalog_id').value = catId;
-            document.getElementById('t_catalog_search').value = catName;
-            document.getElementById('t_name').value = catName;
+            document.getElementById('t_catalog_search').value = resolvedName;
+            document.getElementById('t_name').value = resolvedName;
+            if (shop && shop.phone && !document.getElementById('t_email').value) {
+                document.getElementById('t_email').value = shop.phone;
+            }
             document.getElementById('sa-catalog-results').style.display = 'none';
+
+            if (saBindCustomMarker && saBindMap) {
+                saBindMap.removeLayer(saBindCustomMarker);
+                saBindCustomMarker = null;
+            }
+
+            const boundCard = document.getElementById('sa-bound-shop-card');
+            const boundTitle = document.getElementById('sa-bound-shop-title');
+            const boundSub = document.getElementById('sa-bound-shop-sub');
+            if (boundCard && boundTitle && boundSub) {
+                boundTitle.textContent = `📍 Привязан с карты: ${resolvedName}`;
+                boundSub.textContent = shop ? `✓ ${shop.city || 'Бишкек'} • ${shop.address || ''}` : '✓ Выбран из каталога карты КР';
+                boundCard.style.display = 'flex';
+            }
+
+            if (shop && saBindMap) {
+                const lat = parseFloat(shop.lat);
+                const lon = parseFloat(shop.lon != null ? shop.lon : shop.lng);
+                if (!isNaN(lat) && !isNaN(lon)) {
+                    saBindMap.setView([lat, lon], 16);
+                }
+                renderBindMapMarkers();
+            }
+        }
+
+        function clearBoundShopInSA() {
+            document.getElementById('t_catalog_id').value = '';
+            document.getElementById('t_catalog_search').value = '';
+            const customLatEl = document.getElementById('t_custom_lat');
+            const customLonEl = document.getElementById('t_custom_lon');
+            if (customLatEl) customLatEl.value = '';
+            if (customLonEl) customLonEl.value = '';
+            if (saBindCustomMarker && saBindMap) {
+                saBindMap.removeLayer(saBindCustomMarker);
+                saBindCustomMarker = null;
+            }
+            const boundCard = document.getElementById('sa-bound-shop-card');
+            if (boundCard) boundCard.style.display = 'none';
+            renderBindMapMarkers();
         }
 
         function renderTenants() {
@@ -335,8 +491,10 @@
             const id = document.getElementById('t_id').value.trim().replace(/\D/g, '');
             const name = document.getElementById('t_name').value.trim();
             const catalogId = document.getElementById('t_catalog_id') ? document.getElementById('t_catalog_id').value.trim() : '';
+            const customLat = parseFloat(document.getElementById('t_custom_lat')?.value || '');
+            const customLon = parseFloat(document.getElementById('t_custom_lon')?.value || '');
 
-            if (!name) return alert('Укажите название барбершопа или имя мастера!');
+            if (!name) return alert('Укажите название барбершопа или выберите салон кликом на карте!');
             if (!/^\d+$/.test(id)) return alert('Цифровой ID должен состоять ТОЛЬКО из цифр (например: 1001)!');
             if (!/^\d{4}$/.test(pin)) return alert('PIN-пароль должен состоять ровно из 4 цифр (например: 4829)!');
             if (tenants.find(t => String(t.id) === String(id))) return alert('Этот цифровой ID уже занят! Нажмите «🎲 Авто», чтобы сгенерировать свободный ID.');
@@ -347,7 +505,7 @@
                 role: role,
                 shopName: name,
                 email: email || '—',
-                catalogId: catalogId || '',
+                catalogId: catalogId || ((!isNaN(customLat) && !isNaN(customLon)) ? String(id) : ''),
                 createdAt: new Date().toLocaleDateString('ru-RU')
             };
             tenants.push(newT);
@@ -371,12 +529,31 @@
                         cur.lat = catShop.lat;
                         cur.lon = catShop.lon;
                     }
+                } else if (!isNaN(customLat) && !isNaN(customLon)) {
+                    cur.city = 'Бишкек';
+                    cur.lat = customLat;
+                    cur.lon = customLon;
+                    cur.phone = email || '';
+                    if (window.BarberMobileBridge && window.BarberMobileBridge.saveBarbershopLocation) {
+                        await window.BarberMobileBridge.saveBarbershopLocation(String(id), {
+                            name: name,
+                            city: 'Бишкек',
+                            address: 'Точка с карты Super Admin',
+                            phone: email || '',
+                            lat: customLat,
+                            lon: customLon,
+                            rating: 5.0,
+                            reviews: 1
+                        });
+                    }
                 }
                 localStorage.setItem(sKey, JSON.stringify(cur));
             } catch (e) {}
 
             renderStats();
             renderTenants();
+            if (typeof window.renderSABarberList === 'function') window.renderSABarberList();
+            if (typeof window.renderSAMarkers === 'function') window.renderSAMarkers(false);
             
             document.getElementById('t_email').value = '';
             document.getElementById('t_pin').value = '';
