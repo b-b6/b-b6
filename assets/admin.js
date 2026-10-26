@@ -37,8 +37,10 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                 table_client_name: 'Имя клиента', table_client_phone: 'Телефон', table_client_last: 'Крайний визит',
                 set_bkp_title: 'Резервное копирование и Бухгалтерия', set_bkp_desc: 'Скачайте всю историю записей в формате CSV (открывается в Excel) себе на ПК.', btn_export: 'Скачать базу записей (.csv)',
                 set_shop_title: 'Общие настройки салона (Мой Сайт)', set_shop_link: 'Ссылка на вашу онлайн-запись (отправьте ее клиентам):', label_shop_name: 'Название вашего сайта (Отображается клиентам)', btn_save_shop: 'Сохранить название сайта',
-                set_design_title: 'Настройки Дизайна (White-Label)', set_design_desc: 'Кастомизируйте внешний вид вашего сайта.', label_accent: 'Акцентный цвет', label_font: 'Шрифт заголовков', label_bg: 'Фоновое изображение',
-                check_ai: 'Отключить рекламный баннер AI подбора', check_stat: 'Скрыть блок живой статистики (Записи сегодня)', btn_save_design: 'Сохранить дизайн',
+                set_design_title: 'Фирменный стиль и модули сайта', set_design_desc: 'Настройте акцентный цвет кнопок и включите или отключите нужные разделы сайта.', label_accent: 'Фирменный цвет кнопок и акцентов',
+                mod_ai_title: 'ИИ-подбор стрижки (AI Vision)', mod_ai_desc: 'Интеллектуальный анализ формы лица и стрижек',
+                mod_stats_title: 'Блок живой статистики', mod_stats_desc: 'Счетчики: мастеров, записей сегодня, рейтинг и клиенты',
+                mod_reviews_title: 'Отзывы клиентов', mod_reviews_desc: 'Блок реальных оценок и отзывов внизу страницы', btn_save_design: 'Сохранить настройки стиля',
                 set_sec_title: 'Безопасность (Логин и Пароль)', set_sec_desc: 'Измените свой логин (Email) и PIN-код для входа.', btn_change_pin: 'Изменить PIN-код',
                 msg_empty_bk: 'Пока нет ни одной записи.', msg_empty_rev: 'Отзывов пока нет', msg_no_data: 'Нет данных'
             },
@@ -58,8 +60,10 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                 table_client_name: 'Client Name', table_client_phone: 'Phone', table_client_last: 'Last visit',
                 set_bkp_title: 'Backup & Accounting', set_bkp_desc: 'Download the entire booking history in CSV format (opens in Excel).', btn_export: 'Download booking database (.csv)',
                 set_shop_title: 'General Salon Settings (My Site)', set_shop_link: 'Link to your online booking (send to clients):', label_shop_name: 'Your site name (Shown to clients)', btn_save_shop: 'Save site name',
-                set_design_title: 'Design Settings (White-Label)', set_design_desc: 'Customize the appearance of your website.', label_accent: 'Accent color', label_font: 'Heading font', label_bg: 'Background image',
-                check_ai: 'Disable AI selection promo banner', check_stat: 'Hide live stats block (Today\'s bookings)', btn_save_design: 'Save design',
+                set_design_title: 'Brand Style & Modules', set_design_desc: 'Customize your accent button color and toggle sections on your booking website.', label_accent: 'Brand accent color',
+                mod_ai_title: 'AI Style Selection (AI Vision)', mod_ai_desc: 'Face shape analysis and haircut recommendations',
+                mod_stats_title: 'Live statistics block', mod_stats_desc: 'Counters: barbers, today\'s bookings, rating and clients',
+                mod_reviews_title: 'Customer reviews', mod_reviews_desc: 'Client ratings and feedback at the bottom of the page', btn_save_design: 'Save Style Settings',
                 set_sec_title: 'Security (Login & Password)', set_sec_desc: 'Change your login (Email) and PIN code.', btn_change_pin: 'Change PIN',
                 msg_empty_bk: 'No bookings yet.', msg_empty_rev: 'No reviews yet', msg_no_data: 'No data'
             },
@@ -79,8 +83,10 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                 table_client_name: 'Mijoz ismi', table_client_phone: 'Telefon', table_client_last: 'So\'nggi tashrif',
                 set_bkp_title: 'Zaxira nusxa va Buxgalteriya', set_bkp_desc: 'Barcha yozuvlar tarixini CSV formatida yuklab oling (Excelda ochiladi).', btn_export: 'Yozuvlar bazasini yuklab olish (.csv)',
                 set_shop_title: 'Umumiy salon sozlamalari (Mening saytim)', set_shop_link: 'Onlayn yozilish havolasi (mijozlarga yuboring):', label_shop_name: 'Saytingiz nomi (Mijozlarga ko\'rinadi)', btn_save_shop: 'Sayt nomini saqlash',
-                set_design_title: 'Dizayn sozlamalari (White-Label)', set_design_desc: 'Saytingizning ko\'rinishini moslang.', label_accent: 'Aksent rangi', label_font: 'Sarlavha shrifti', label_bg: 'Fon tasviri',
-                check_ai: 'AI tanlovi reklama bannerini o\'chirish', check_stat: 'Jonli statistika blokini yashirish', btn_save_design: 'Dizaynni saqlash',
+                set_design_title: 'Brend uslubi va modullari', set_design_desc: 'Tugmalar rangini sozlang va saytdagi kerakli bo\'limlarni yoqing yoki o\'chiring.', label_accent: 'Brend aksent rangi',
+                mod_ai_title: 'AI soch turmagi tanlovi (AI Vision)', mod_ai_desc: 'Yuz shaklini tahlil qilish va soch turmagini tavsiya etish',
+                mod_stats_title: 'Jonli statistika bloki', mod_stats_desc: 'Ustalar, bugungi yozuvlar, reyting va mijozlar hisoblagichi',
+                mod_reviews_title: 'Mijozlar sharhlari', mod_reviews_desc: 'Sahifa pastidagi haqiqiy baholar va sharhlar', btn_save_design: 'Uslub sozlamalarini saqlash',
                 set_sec_title: 'Xavfsizlik (Login va Parol)', set_sec_desc: 'Login (Email) va PIN kodingizni o\'zgartiring.', btn_change_pin: 'PIN kodni o\'zgartirish',
                 msg_empty_bk: 'Hozircha hech qanday yozuv yo\'q.', msg_empty_rev: 'Hozircha sharhlar yo\'q', msg_no_data: 'Ma\'lumot yo\'q'
             },
@@ -100,8 +106,10 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                 table_client_name: 'Кардардын аты', table_client_phone: 'Телефон', table_client_last: 'Акыркы келүү',
                 set_bkp_title: 'Камдык көчүрмө жана Бухгалтерия', set_bkp_desc: 'Бардык жазуулар тарыхын CSV форматында жүктөп алыңыз.', btn_export: 'Жазуулар базасын жүктөп алуу (.csv)',
                 set_shop_title: 'Салондун жалпы жөндөөлөрү (Менин сайтым)', set_shop_link: 'Онлайн жазылуу шилтемеси (кардарларга жибериңиз):', label_shop_name: 'Сайтыңыздын аталышы (Кардарларга көрүнөт)', btn_save_shop: 'Сайттын атын сактоо',
-                set_design_title: 'Дизайн жөндөөлөрү (White-Label)', set_design_desc: 'Сайтыңыздын дизайнын ыңгайлаштырыңыз.', label_accent: 'Акцент түсү', label_font: 'Аталыш шрифти', label_bg: 'Фон сүрөтү',
-                check_ai: 'AI тандоо жарнак баннерин өчүрүү', check_stat: 'Жандуу статистика блогун жашыруу', btn_save_design: 'Дизайнды сактоо',
+                set_design_title: 'Фирмалык стиль жана сайттын модулдары', set_design_desc: 'Баскычтардын түсүн ыңгайлаштырыңыз жана сайттагы керектүү бөлүмдөрдү күйгүзүңүз же өчүрүңүз.', label_accent: 'Фирмалык акцент түсү',
+                mod_ai_title: 'ЖИ чач кыркуу тандоосу (AI Vision)', mod_ai_desc: 'Бет түзүлүшүн талдоо жана ылайыктуу образ тандоо',
+                mod_stats_title: 'Жандуу статистика блогу', mod_stats_desc: 'Усталар, бүгүнкү жазуулар, рейтинг жана кардарлар',
+                mod_reviews_title: 'Кардарлардын пикирлери', mod_reviews_desc: 'Беттин төмөн жагындагы кардарлардын баалоолору', btn_save_design: 'Стиль жөндөөлөрүн сактоо',
                 set_sec_title: 'Коопсуздук (Логин жана Сырсөз)', set_sec_desc: 'Логин (Email) жана PIN кодуңузду өзгөртүңүз.', btn_change_pin: 'PIN кодду өзгөртүү',
                 msg_empty_bk: 'Азырынча жазуулар жок.', msg_empty_rev: 'Азырынча пикирлер жок', msg_no_data: 'Маалымат жок'
             }
@@ -423,13 +431,13 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             if(document.getElementById('sms_eskiz_password')) document.getElementById('sms_eskiz_password').value = set.sms_eskiz_password || '';
             if(document.getElementById('sms_template')) document.getElementById('sms_template').value = set.sms_template || 'Hurmatli {name}! Ertaga {time} da {master} bilan uchrashuvingiz bor.';
             
-            if(set.design) {
-                if(document.getElementById('set_theme_color')) document.getElementById('set_theme_color').value = set.design.accentColor || '#ffffff';
-                if(document.getElementById('set_theme_font')) document.getElementById('set_theme_font').value = set.design.fontFamily || 'Syncopate, sans-serif';
-                if(document.getElementById('set_theme_bg')) document.getElementById('set_theme_bg').value = set.design.bgImage || 'assets/bg_1.jpg';
-                if(document.getElementById('set_hide_ai')) document.getElementById('set_hide_ai').checked = !!set.design.hideAi;
-                if(document.getElementById('set_hide_stats')) document.getElementById('set_hide_stats').checked = !!set.design.hideStats;
+            const des = set.design || {};
+            if(document.getElementById('set_theme_color')) {
+                document.getElementById('set_theme_color').value = (des.accentColor && des.accentColor !== '#ffffff') ? des.accentColor : '#7a1c2d';
             }
+            if(document.getElementById('set_show_ai')) document.getElementById('set_show_ai').checked = des.hideAi !== true;
+            if(document.getElementById('set_show_stats')) document.getElementById('set_show_stats').checked = des.hideStats !== true;
+            if(document.getElementById('set_show_reviews')) document.getElementById('set_show_reviews').checked = des.hideReviews !== true;
             
             let tenants = await window.appDB.getGlobalTenants();
             let myT = tenants.find(t => String(t.id) === String(window.appDB.tenantId));
@@ -768,11 +776,15 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
 
         async function saveDesignSettings(btn) {
             if(!store.settings.design) store.settings.design = {};
-            store.settings.design.accentColor = document.getElementById('set_theme_color').value;
-            store.settings.design.fontFamily = document.getElementById('set_theme_font').value;
-            store.settings.design.bgImage = document.getElementById('set_theme_bg').value;
-            store.settings.design.hideAi = document.getElementById('set_hide_ai').checked;
-            store.settings.design.hideStats = document.getElementById('set_hide_stats').checked;
+            const colEl = document.getElementById('set_theme_color');
+            const showAiEl = document.getElementById('set_show_ai');
+            const showStatsEl = document.getElementById('set_show_stats');
+            const showReviewsEl = document.getElementById('set_show_reviews');
+
+            store.settings.design.accentColor = colEl ? colEl.value : '#7a1c2d';
+            store.settings.design.hideAi = showAiEl ? !showAiEl.checked : false;
+            store.settings.design.hideStats = showStatsEl ? !showStatsEl.checked : false;
+            store.settings.design.hideReviews = showReviewsEl ? !showReviewsEl.checked : false;
             
             try {
                 await window.appDB.saveSettings(store.settings);

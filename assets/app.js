@@ -541,11 +541,17 @@ const i18n = {
             if (st && st.design) {
                 const des = st.design;
                 if (des.accentColor && des.accentColor.toLowerCase() !== '#ffffff' && des.accentColor.toLowerCase() !== '#fff') {
+                    document.documentElement.style.setProperty('--burgundy', des.accentColor);
                     document.documentElement.style.setProperty('--accent', des.accentColor);
+                    document.documentElement.style.setProperty('--accent-brand', des.accentColor);
+                    document.documentElement.style.setProperty('--burgundy-soft', des.accentColor + '14');
+                    document.documentElement.style.setProperty('--burgundy-line', des.accentColor + '33');
                 }
                 let stEl = document.getElementById('live-stats-wrap');
                 if (stEl) stEl.style.display = des.hideStats ? 'none' : '';
                 if (!solo && aiWrap) aiWrap.style.display = des.hideAi ? 'none' : '';
+                let revEl = document.getElementById('public-reviews');
+                if (revEl) revEl.style.display = des.hideReviews ? 'none' : '';
             }
         }
 

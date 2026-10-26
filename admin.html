@@ -383,49 +383,69 @@
             </div>
 
             <div class="admin-card" id="design-settings-card">
-                <h3 data-i18n="set_design_title">Настройки Дизайна (White-Label)</h3>
-                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;" data-i18n="set_design_desc">Кастомизируйте внешний вид вашего сайта.</p>
-                <div class="flex-row">
-                    <div class="form-group" style="margin: 0; flex: 1;">
-                        <label data-i18n="label_accent">Акцентный цвет</label>
-                        <select id="set_theme_color" class="form-control">
-                            <option value="#ffffff">Классический белый</option>
-                            <option value="#5e6ad2">Техно-Синий</option>
-                            <option value="#eab308">Золотой Барбер</option>
-                            <option value="#ef4444">Малиновый / Красный</option>
-                            <option value="#10b981">Неоновый Зеленый</option>
-                        </select>
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+                    <div style="width:38px; height:38px; border-radius:10px; background:rgba(122,28,45,0.08); border:1px solid rgba(122,28,45,0.2); display:flex; align-items:center; justify-content:center; color:#7a1c2d; flex-shrink:0;">
+                        <i data-lucide="palette" style="width:20px;height:20px;"></i>
                     </div>
-                    <div class="form-group" style="margin: 0; flex: 1;">
-                        <label data-i18n="label_font">Шрифт заголовков</label>
-                        <select id="set_theme_font" class="form-control">
-                            <option value="Syncopate, sans-serif">Брутальный (Syncopate)</option>
-                            <option value="Inter, sans-serif">Современный (Inter)</option>
-                            <option value="Georgia, serif">Классический (С засечками)</option>
-                        </select>
+                    <div>
+                        <h3 style="margin:0; font-size:1.15rem;" data-i18n="set_design_title">Фирменный стиль и модули сайта</h3>
+                        <p style="color: var(--text-muted); margin:2px 0 0; font-size: 0.86rem;" data-i18n="set_design_desc">Настройте акцентный цвет кнопок и включите или отключите нужные разделы сайта.</p>
                     </div>
                 </div>
-                
-                <div class="form-group" style="margin-top: 15px;">
-                    <label data-i18n="label_bg">Фоновое изображение</label>
-                    <select id="set_theme_bg" class="form-control">
-                        <option value="assets/bg_1.jpg">Абстракция 1 (Стандарт)</option>
-                        <option value="assets/bg_2.jpg">Геометрия Хайтек</option>
-                        <option value="assets/bg_3.jpg">Абстрактный Дым</option>
-                        <option value="none">Без фона (Просто цвет)</option>
+
+                <div class="form-group" style="margin-top:16px;">
+                    <label data-i18n="label_accent" style="font-weight:600; margin-bottom:6px; display:block;">Фирменный цвет кнопок и акцентов</label>
+                    <select id="set_theme_color" class="form-control" style="font-weight:600;">
+                        <option value="#7a1c2d">🍷 Благородный бордовый (По умолчанию)</option>
+                        <option value="#111827">🖤 Премиум графит / Черный</option>
+                        <option value="#1d4ed8">🔵 Сапфировый королевский</option>
+                        <option value="#047857">🟢 Изумрудный барбер</option>
+                        <option value="#b45309">🟡 Теплый янтарь / Бронза</option>
+                        <option value="#4338ca">🟣 Глубокий индиго</option>
                     </select>
                 </div>
 
-                <div style="margin-top: 15px; background: rgba(255,255,255,0.02); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
-                    <label style="display:flex; align-items:center; gap:10px; margin-bottom:10px; cursor:pointer;">
-                        <input type="checkbox" id="set_hide_ai" style="width:18px;height:18px;"> <span data-i18n="check_ai">Отключить рекламный баннер AI подбора</span>
+                <div style="margin-top: 16px; background: rgba(0,0,0,0.02); padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border);">
+                    <div style="font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:12px;">Отображение разделов на сайте:</div>
+                    
+                    <label style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; cursor:pointer; padding-bottom:10px; border-bottom:1px solid var(--border);">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span style="font-size:1.25rem;">🤖</span>
+                            <div>
+                                <div style="font-weight:600; font-size:0.92rem; color:var(--text-main);" data-i18n="mod_ai_title">ИИ-подбор стрижки (AI Vision)</div>
+                                <div style="font-size:0.78rem; color:var(--text-muted);" data-i18n="mod_ai_desc">Интеллектуальный анализ формы лица и стрижек</div>
+                            </div>
+                        </div>
+                        <input type="checkbox" id="set_show_ai" checked style="width:20px; height:20px; cursor:pointer; accent-color:#7a1c2d;">
                     </label>
-                    <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
-                        <input type="checkbox" id="set_hide_stats" style="width:18px;height:18px;"> <span data-i18n="check_stat">Скрыть блок живой статистики (Записи сегодня)</span>
+
+                    <label style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; cursor:pointer; padding-bottom:10px; border-bottom:1px solid var(--border);">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span style="font-size:1.25rem;">📊</span>
+                            <div>
+                                <div style="font-weight:600; font-size:0.92rem; color:var(--text-main);" data-i18n="mod_stats_title">Блок живой статистики</div>
+                                <div style="font-size:0.78rem; color:var(--text-muted);" data-i18n="mod_stats_desc">Счетчики: мастеров, записей сегодня, рейтинг и клиенты</div>
+                            </div>
+                        </div>
+                        <input type="checkbox" id="set_show_stats" checked style="width:20px; height:20px; cursor:pointer; accent-color:#7a1c2d;">
+                    </label>
+
+                    <label style="display:flex; align-items:center; justify-content:space-between; gap:12px; cursor:pointer;">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span style="font-size:1.25rem;">⭐</span>
+                            <div>
+                                <div style="font-weight:600; font-size:0.92rem; color:var(--text-main);" data-i18n="mod_reviews_title">Отзывы клиентов</div>
+                                <div style="font-size:0.78rem; color:var(--text-muted);" data-i18n="mod_reviews_desc">Блок реальных оценок и отзывов внизу страницы</div>
+                            </div>
+                        </div>
+                        <input type="checkbox" id="set_show_reviews" checked style="width:20px; height:20px; cursor:pointer; accent-color:#7a1c2d;">
                     </label>
                 </div>
                 
-                <button class="btn" style="margin-top: 20px; width: auto; padding: 10px 20px; display:inline-flex; align-items:center; gap:8px;" onclick="saveDesignSettings(this)"><i data-lucide="palette" style="width:18px;height:18px;"></i> <span data-i18n="btn_save_design">Сохранить дизайн</span></button>
+                <button class="btn" style="margin-top: 18px; width: auto; padding: 10px 22px; display:inline-flex; align-items:center; gap:8px;" onclick="saveDesignSettings(this)">
+                    <i data-lucide="check" style="width:18px;height:18px;"></i>
+                    <span data-i18n="btn_save_design">Сохранить настройки стиля</span>
+                </button>
             </div>
 
             <div class="admin-card">
