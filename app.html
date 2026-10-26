@@ -824,7 +824,11 @@
                 box.style.display = 'none';
                 return;
             }
-            const catalog = window.BARBERSHOPS_DATA || [];
+            const baseCatalog = window.BARBERSHOPS_DATA || [];
+            const customLocs = (window.BarberMobileBridge && typeof window.BarberMobileBridge.getCustomLocationsLocal === 'function')
+                ? window.BarberMobileBridge.getCustomLocationsLocal()
+                : [];
+            const catalog = [...customLocs, ...baseCatalog];
             const matches = catalog.filter(b =>
                 (b.name && b.name.toLowerCase().includes(q)) ||
                 (b.city && b.city.toLowerCase().includes(q)) ||

@@ -80,7 +80,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         window.BarberMobileBridge.registerPushNotifications(tenantId, 'master');
     }
 
-    await loadSoloStateFromDB();
+    await loadSoloStateFromDB(masterRecord);
     renderSoloHeader();
     renderWorkDaysUI();
     await renderSoloServices();
@@ -89,24 +89,32 @@ window.addEventListener('DOMContentLoaded', async () => {
     initSubscriptions();
 });
 
-async function loadSoloStateFromDB() {
+const DAY_CODE_TO_NUM = { 'ВС': 0, 'ПН': 1, 'ВТ': 2, 'СР': 3, 'ЧТ': 4, 'ПТ': 5, 'СБ': 6 };
+
+function mapWorkDaysToNumbers(daysArr) {
+    if (!Array.isArray(daysArr)) return [1, 2, 3, 4, 5, 6];
+    return daysArr.map(d => DAY_CODE_TO_NUM[d]).filter(n => typeof n === 'number');
+}
+
+async function loadSoloStateFromDB(masterRecord) {
     if (!window.appDB) return;
     try {
         const settings = (await window.appDB.getSettings()) || {};
         const masters = (await window.appDB.getMasters()) || [];
         const primaryMaster = masters[0] || { id: 1, name: 'Мастер', spec: 'Барбер' };
 
-        const defaultName = 'Топ-Мастер #' + (window.appDB.tenantId || '1');
+        const defaultName = (masterRecord && masterRecord.shopName) || ('Топ-Мастер #' + (window.appDB.tenantId || '1'));
+        const defaultPin = (masterRecord && masterRecord.pin) || '1111';
         soloProfile = {
             id: primaryMaster.id || 1,
             name: settings.soloMasterName || (primaryMaster.name && primaryMaster.name !== 'Мастер' ? primaryMaster.name : defaultName),
             spec: settings.soloMasterSpec || (primaryMaster.spec && primaryMaster.spec !== 'Барбер' ? primaryMaster.spec : 'Fade • Борода • Классика'),
             active: settings.soloMasterActive !== undefined ? Boolean(settings.soloMasterActive) : true,
             workDays: Array.isArray(settings.soloWorkDays) ? settings.soloWorkDays : ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'],
-            workStart: settings.soloWorkStart || settings.workStart || '10:00',
-            workEnd: settings.soloWorkEnd || settings.workEnd || '21:00',
+            workStart: settings.soloWorkStart || settings.workStart || settings.openTime || '10:00',
+            workEnd: settings.soloWorkEnd || settings.workEnd || settings.closeTime || '21:00',
             commissionPct: Number(settings.soloCommissionPct || primaryMaster.commission || primaryMaster.share || 60),
-            pin: settings.soloPin || settings.adminPin || '1111'
+            pin: settings.soloPin || settings.adminPin || defaultPin
         };
 
         if (!settings.soloMode || !settings.soloMasterName) {
@@ -117,8 +125,10 @@ async function loadSoloStateFromDB() {
                 soloMasterSpec: soloProfile.spec,
                 soloMasterActive: soloProfile.active,
                 soloWorkDays: soloProfile.workDays,
+                workingDays: mapWorkDaysToNumbers(soloProfile.workDays),
                 openTime: soloProfile.workStart,
-                closeTime: soloProfile.workEnd
+                closeTime: soloProfile.workEnd,
+                soloPin: soloProfile.pin
             });
         }
 
@@ -194,12 +204,24 @@ window.saveSoloProfile = async function (showToast) {
     const startInput = document.getElementById('solo-work-start');
     const endInput = document.getElementById('solo-work-end');
 
+    if (showToast && pinInput) {
+        const cleanPin = pinInput.value.replace(/\D/g, '').trim();
+        if (!/^\d{4}$/.test(cleanPin)) {
+            alert('PIN-код для входа должен состоять ровно из 4 цифр!');
+            return;
+        }
+        soloProfile.pin = cleanPin;
+    } else if (pinInput && /^\d{4}$/.test(pinInput.value.replace(/\D/g, '').trim())) {
+        soloProfile.pin = pinInput.value.replace(/\D/g, '').trim();
+    }
+
     if (nameInput && nameInput.value.trim()) soloProfile.name = nameInput.value.trim();
     if (specInput && specInput.value.trim()) soloProfile.spec = specInput.value.trim();
-    if (pinInput && pinInput.value.trim()) soloProfile.pin = pinInput.value.trim();
     if (commInput) soloProfile.commissionPct = Math.min(100, Math.max(1, Number(commInput.value) || 60));
     if (startInput && startInput.value) soloProfile.workStart = startInput.value;
     if (endInput && endInput.value) soloProfile.workEnd = endInput.value;
+
+    const numericWorkingDays = mapWorkDaysToNumbers(soloProfile.workDays);
 
     if (window.appDB) {
         try {
@@ -210,11 +232,15 @@ window.saveSoloProfile = async function (showToast) {
                 soloMasterName: soloProfile.name,
                 soloMasterSpec: soloProfile.spec,
                 soloMasterActive: soloProfile.active,
+                active: soloProfile.active,
                 soloWorkDays: soloProfile.workDays,
+                workingDays: numericWorkingDays,
                 soloWorkStart: soloProfile.workStart,
                 soloWorkEnd: soloProfile.workEnd,
                 workStart: soloProfile.workStart,
                 workEnd: soloProfile.workEnd,
+                openTime: soloProfile.workStart,
+                closeTime: soloProfile.workEnd,
                 soloCommissionPct: soloProfile.commissionPct,
                 soloPin: soloProfile.pin
             };
@@ -230,13 +256,27 @@ window.saveSoloProfile = async function (showToast) {
                 commission: soloProfile.commissionPct,
                 share: soloProfile.commissionPct,
                 active: soloProfile.active,
-                workDays: soloProfile.workDays
+                workDays: soloProfile.workDays,
+                workingDays: numericWorkingDays
             };
             if (masters.length === 0) {
                 await window.appDB.saveMasters([updatedMaster]);
             } else {
                 masters[0] = { ...masters[0], ...updatedMaster };
                 await window.appDB.saveMasters(masters);
+            }
+
+            // Sync updated name & 4-digit PIN to global_saas_tenants so app.html login & Super Admin stay in sync
+            if (window.appDB.getGlobalTenants && window.appDB.saveGlobalTenants) {
+                const tenants = await window.appDB.getGlobalTenants();
+                const myT = Array.isArray(tenants) ? tenants.find(t => String(t.id) === String(window.appDB.tenantId)) : null;
+                if (myT) {
+                    myT.shopName = soloProfile.name;
+                    if (/^\d{4}$/.test(String(soloProfile.pin))) {
+                        myT.pin = String(soloProfile.pin);
+                    }
+                    await window.appDB.saveGlobalTenants(tenants);
+                }
             }
         } catch (e) {
             console.error('saveSoloProfile error:', e);
@@ -626,17 +666,17 @@ function initSubscriptions() {
     try {
         if (!window.firebase || !firebase.firestore || !window.appDB) return;
         const db = firebase.firestore();
-        const tenantId = window.appDB.tenantId;
-        db.collection('branches').doc(tenantId).onSnapshot(doc => {
+        const tenantId = String(window.appDB.tenantId);
+        db.collection('tenants').doc(tenantId).collection('data').doc('last_push').onSnapshot(doc => {
             if (!doc.exists) return;
             const data = doc.data();
-            if (data && data.last_push && data.last_push.timestamp > lastSeenPushTs) {
-                lastSeenPushTs = data.last_push.timestamp;
+            if (data && data.timestamp > lastSeenPushTs) {
+                lastSeenPushTs = data.timestamp;
                 if (window.BarberMobileBridge) {
                     window.BarberMobileBridge.playNotificationSound();
                     window.BarberMobileBridge.showLocalNotification(
-                        data.last_push.title || '✂️ Новая запись!',
-                        data.last_push.body || ''
+                        data.title || '✂️ Новая запись!',
+                        data.body || ''
                     );
                 }
             }

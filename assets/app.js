@@ -409,13 +409,22 @@ const i18n = {
             if (isSoloBookingMode()) {
                 const s = store.settings || {};
                 const urlShopName = new URLSearchParams(window.location.search).get('shopName');
-                const soloName = s.soloMasterName || s.shopName || urlShopName || ('Топ-Мастер #' + (window.appDB ? window.appDB.tenantId : '1'));
+                const catInfo = typeof getCatalogBarbershopInfo === 'function' ? getCatalogBarbershopInfo() : null;
+                const soloName = s.soloMasterName || s.shopName || urlShopName || (catInfo && catInfo.name) || ('Топ-Мастер #' + (window.appDB ? window.appDB.tenantId : '1'));
+                const dayMap = { 'ВС': 0, 'ПН': 1, 'ВТ': 2, 'СР': 3, 'ЧТ': 4, 'ПТ': 5, 'СБ': 6 };
+                let resolvedDays = [1, 2, 3, 4, 5, 6, 0];
+                if (Array.isArray(s.workingDays)) {
+                    resolvedDays = s.workingDays;
+                } else if (Array.isArray(s.soloWorkDays)) {
+                    resolvedDays = s.soloWorkDays.map(d => dayMap[d]).filter(v => v !== undefined);
+                }
+                const isActive = s.soloMasterActive !== undefined ? Boolean(s.soloMasterActive) : (s.active !== false);
                 return [{
                     id: window.appDB ? String(window.appDB.tenantId) : 'solo_1',
                     name: soloName,
                     description: s.soloMasterSpec || 'Частный мастер • Индивидуальная запись',
-                    workingDays: Array.isArray(s.workingDays) ? s.workingDays : [1, 2, 3, 4, 5, 6, 0],
-                    active: s.active !== false
+                    workingDays: resolvedDays,
+                    active: isActive
                 }];
             }
             return store.masters;
@@ -424,8 +433,8 @@ const i18n = {
             const st = store.settings || {};
             return {
                 ...st,
-                openTime: st.openTime || '10:00',
-                closeTime: st.closeTime || '21:00'
+                openTime: st.openTime || st.soloWorkStart || '10:00',
+                closeTime: st.closeTime || st.soloWorkEnd || '21:00'
             };
         }
 
@@ -673,6 +682,12 @@ const i18n = {
             const today = new Date(); const disabledDates = getDB(DB_DISABLED_DATES);
             let masters = getMasters();
             let selMaster = masters.find(m => m.id === bookingData.masterId);
+            if (selMaster && selMaster.active === false) {
+                container.innerHTML = `<div style="grid-column:1/-1; padding:18px; text-align:center; background:rgba(243,156,18,0.1); border:1px solid rgba(243,156,18,0.35); border-radius:14px; color:#f39c12; font-weight:700; font-size:0.9rem;">⏸ Мастер временно приостановил приём онлайн-записей</div>`;
+                const tp = document.getElementById('time-picker');
+                if (tp) tp.style.display = 'none';
+                return;
+            }
             let mDays = selMaster ? (selMaster.workingDays || [1,2,3,4,5,6,0]) : [1,2,3,4,5,6,0];
 
             for(let i=0; i<14; i++) {
