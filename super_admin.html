@@ -16,9 +16,11 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="styles/super_admin.css?v=7">
+    <link rel="stylesheet" href="styles/super_admin.css?v=8">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 </head>
 <body>
 
@@ -87,11 +89,11 @@
                     <i data-lucide="key-round" style="width:17px;height:17px;"></i> Выданные доступы (ID + PIN)
                 </button>
                 <button class="stab" id="stab-requests" onclick="switchSASection('requests')" style="position:relative;">
-                    <i data-lucide="bell-ring" style="width:17px;height:17px;"></i> 🔔 Заявки на доступ
+                    <i data-lucide="bell-ring" style="width:17px;height:17px;"></i> Заявки на доступ
                     <span id="sa-req-badge" style="display:none; background:#7a1c2d; color:#fff; padding:2px 8px; border-radius:999px; font-size:0.75rem; font-weight:800; margin-left:6px;">0</span>
                 </button>
                 <button class="stab" id="stab-barbers" onclick="switchSASection('barbers')">
-                    <i data-lucide="map-pin" style="width:17px;height:17px;"></i> 🗺 Каталог на карте
+                    <i data-lucide="map-pin" style="width:17px;height:17px;"></i> Каталог на карте (401)
                 </button>
             </div>
 
@@ -100,7 +102,7 @@
             <!-- Блок быстрых новых заявок (если кто-то попросил доступ у админа) -->
             <div id="sa-pending-requests-banner" style="display:none; background:#fbf0f2; border:1.5px solid #f0cdd3; border-radius:16px; padding:14px 18px; margin-bottom:18px; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
                 <div style="display:flex; align-items:center; gap:12px;">
-                    <div style="width:40px; height:40px; border-radius:12px; background:#7a1c2d; color:#fff; display:grid; place-items:center; font-size:1.1rem; font-weight:800;">🔔</div>
+                    <div style="width:40px; height:40px; border-radius:12px; background:#7a1c2d; color:#fff; display:grid; place-items:center; font-size:1.1rem; font-weight:800;"><i data-lucide="bell-ring" style="width:20px;height:20px;"></i></div>
                     <div>
                         <div style="font-weight:800; color:#0c192c; font-size:0.95rem;" id="sa-pending-banner-title">Новые заявки на получение ID и пароля!</div>
                         <div style="font-size:0.82rem; color:#5a6578; font-weight:600;">Владельцы салонов или мастера просят выдать им цифровой ID и 4-значный PIN</div>
@@ -112,7 +114,7 @@
             </div>
 
             <div class="toolbar">
-                <button class="btn-tool btn-primary" onclick="openAddAccessModal()"><i data-lucide="plus" style="width:18px;"></i> + Выдать доступ (Цифровой ID + 4-значный PIN)</button>
+                <button class="btn-tool btn-primary" onclick="openAddAccessModal()"><i data-lucide="plus" style="width:18px;"></i> Выдать доступ (Цифровой ID + 4-значный PIN)</button>
                 <button class="btn-tool" onclick="openModal('ai')"><i data-lucide="phone-call" style="width:18px; color: #7a1c2d;"></i> Мой WhatsApp и AI-ключ</button>
             </div>
 
@@ -123,8 +125,8 @@
                 </div>
                 <div class="filter-tabs">
                     <div class="ftab active" onclick="setStatusFilter('all', this)">Все</div>
-                    <div class="ftab" onclick="setStatusFilter('owner', this)">💈 Салоны</div>
-                    <div class="ftab" onclick="setStatusFilter('master', this)">✂️ Мастера (Соло)</div>
+                    <div class="ftab" onclick="setStatusFilter('owner', this)">Салоны</div>
+                    <div class="ftab" onclick="setStatusFilter('master', this)">Мастера (Соло)</div>
                 </div>
             </div>
 
@@ -152,7 +154,7 @@
             <div class="section-panel" id="panel-requests">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
                     <div>
-                        <h2 style="margin:0; font-size:1.25rem; color:#0c192c;">🔔 Заявки на получение ID и 4-значного пароля</h2>
+                        <h2 style="margin:0; font-size:1.25rem; color:#0c192c; display:flex; align-items:center; gap:8px;"><i data-lucide="bell-ring" style="width:20px;height:20px;color:#7a1c2d;"></i> Заявки на получение ID и 4-значного пароля</h2>
                         <p style="color:var(--text-muted); font-size:0.88rem; margin-top:4px;">Когда владелец салона или мастер нажимает «Попросить доступ у Админа», его заявка появляется здесь. Нажмите «Одобрить», чтобы в 1 клик выдать ему цифровой ID и 4-значный PIN.</p>
                     </div>
                     <button class="btn-tool" onclick="loadAndRenderAccessRequests()">
@@ -184,15 +186,15 @@
             <div class="section-panel" id="panel-barbers">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
                     <div>
-                        <h2 style="margin:0; font-size:1.25rem; color:#0c192c;">🗺 Карта 401 барбершопа КР — Привязка и выдача доступа</h2>
+                        <h2 style="margin:0; font-size:1.25rem; color:#0c192c; display:flex; align-items:center; gap:8px;"><i data-lucide="map" style="width:21px;height:21px;color:#7a1c2d;"></i> Карта 401 барбершопа КР — Привязка и выдача доступа</h2>
                         <p style="color:var(--text-muted); font-size:0.88rem; margin-top:4px;">Нажмите на любой салон прямо на карте (или в списке справа), чтобы привязать его и выдать владельцу цифровой ID и 4-значный PIN.</p>
                     </div>
                     <div style="display:flex; gap:8px; flex-wrap:wrap;">
                         <button class="btn-tool" onclick="openAddBarberModal()">
-                            <i data-lucide="map-pin" style="width:16px;"></i> + Новая точка на карту
+                            <i data-lucide="map-pin" style="width:16px;"></i> Новая точка на карту
                         </button>
                         <button class="btn-tool btn-primary" onclick="openAddAccessModal()">
-                            <i data-lucide="key-round" style="width:16px;"></i> 🔑 Выдать доступ с карты
+                            <i data-lucide="key-round" style="width:16px;"></i> Выдать доступ с карты
                         </button>
                     </div>
                 </div>
@@ -213,8 +215,8 @@
                 <div class="barber-map-wrap">
                     <!-- Live map of 401 KG barbershops -->
                     <div>
-                        <div style="font-size:0.78rem; text-transform:uppercase; letter-spacing:0.6px; color:var(--text-muted); margin-bottom:8px; font-weight:700;">
-                            📍 Нажмите на метку салона на карте, чтобы выдать ему цифровой ID и 4-значный PIN
+                        <div style="font-size:0.78rem; text-transform:uppercase; letter-spacing:0.6px; color:var(--text-muted); margin-bottom:8px; font-weight:700; display:flex; align-items:center; gap:6px;">
+                            <i data-lucide="mouse-pointer-click" style="width:14px;height:14px;color:#7a1c2d;"></i> Нажмите на метку салона на карте, чтобы выдать ему цифровой ID и 4-значный PIN
                         </div>
                         <div id="sa-leaflet-map" style="height:510px; border-radius:16px; border:1px solid var(--border);"></div>
                     </div>
@@ -358,23 +360,23 @@
     <div class="modal-overlay" id="modal-add" style="align-items:flex-start; padding-top:20px; overflow-y:auto;">
         <div class="modal" id="modal-add-inner" style="max-width:620px; max-height:92vh; overflow-y:auto; padding:24px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-                <h2 style="margin:0; font-size:1.2rem; color:#0c192c;">🔑 Выдать доступ (ID + PIN) и привязать с карты</h2>
+                <h2 style="margin:0; font-size:1.2rem; color:#0c192c; display:flex; align-items:center; gap:8px;"><i data-lucide="key-round" style="width:20px;height:20px;color:#7a1c2d;"></i> Выдать доступ (ID + PIN) и привязать с карты</h2>
                 <i data-lucide="x" style="cursor:pointer; color:var(--text-muted);" onclick="closeModal('add')"></i>
             </div>
 
             <div class="form-group" style="margin-bottom:12px;">
                 <label>1. Кому выдаём доступ?</label>
                 <select id="t_role" class="form-control" onchange="onRoleSelectInSuperAdmin(this.value)">
-                    <option value="owner">💈 Владелец Барбершопа (Салон — admin.html)</option>
-                    <option value="master">✂️ Мастер (Соло-кабинет — barber.html)</option>
+                    <option value="owner">Владелец Барбершопа (Салон — admin.html)</option>
+                    <option value="master">Мастер (Соло-кабинет — barber.html)</option>
                 </select>
             </div>
 
             <div class="form-group" id="sa-catalog-bind-wrap" style="margin-bottom:14px;">
                 <label style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
                     <span>2. Выберите салон прямо на карте (из 401 точки КР) или в поиске</span>
-                    <button type="button" id="sa-toggle-bind-map-btn" onclick="toggleBindMapInModal()" style="background:#f0f4f9; border:1px solid #d5e2f0; color:#0c192c; padding:3px 10px; border-radius:999px; font-size:11.5px; font-weight:800; cursor:pointer;">
-                        🗺 Скрыть/показать карту
+                    <button type="button" id="sa-toggle-bind-map-btn" onclick="toggleBindMapInModal()" style="background:#f0f4f9; border:1px solid #d5e2f0; color:#0c192c; padding:4px 11px; border-radius:999px; font-size:11.5px; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:5px;">
+                        <i data-lucide="map" style="width:13px;height:13px;"></i> Скрыть/показать карту
                     </button>
                 </label>
 
@@ -382,13 +384,13 @@
                 <div id="sa-bound-shop-card" style="display:none; background:#e7f6ed; border:1.5px solid rgba(0,135,61,0.35); border-radius:12px; padding:10px 12px; margin-bottom:8px; align-items:center; justify-content:space-between; gap:10px;">
                     <div style="min-width:0;">
                         <div style="font-size:0.86rem; font-weight:800; color:#0c192c;" id="sa-bound-shop-title">Салон выбран</div>
-                        <div style="font-size:0.75rem; color:#00873d; font-weight:700;" id="sa-bound-shop-sub">✓ Привязан к точке на карте</div>
+                        <div style="font-size:0.75rem; color:#00873d; font-weight:700;" id="sa-bound-shop-sub">Привязан к точке на карте</div>
                     </div>
                     <button type="button" onclick="clearBoundShopInSA()" style="background:#fff; border:1px solid #d5e2f0; color:#7a1c2d; padding:4px 10px; border-radius:999px; font-size:0.75rem; font-weight:800; cursor:pointer; flex-shrink:0;">✕ Сбросить</button>
                 </div>
 
                 <!-- Поиск по названию / улице -->
-                <input type="text" id="t_catalog_search" class="form-control" placeholder="🔍 Быстрый поиск по названию или улице (или нажмите на точку на карте ниже)..." oninput="searchCatalogForSuperAdmin(this.value)" style="margin-bottom:6px;">
+                <input type="text" id="t_catalog_search" class="form-control" placeholder="Быстрый поиск по названию или улице (или нажмите на точку на карте ниже)..." oninput="searchCatalogForSuperAdmin(this.value)" style="margin-bottom:6px;">
                 <div id="sa-catalog-results" style="display:none; max-height:150px; overflow-y:auto; border:1px solid var(--border); border-radius:10px; margin-bottom:8px; background:#fff; box-shadow:0 6px 20px rgba(12,25,44,0.08);"></div>
 
                 <!-- Интерактивная карта прямо внутри модального окна выдачи доступа -->
@@ -403,8 +405,9 @@
                         <button type="button" onclick="focusBindMapCity('all', 41.5000, 74.7000, 7)" style="background:#0c192c; border:1px solid #0c192c; color:#fff; padding:3px 8px; border-radius:999px; font-size:11px; font-weight:700; cursor:pointer;">Весь КР</button>
                     </div>
                     <div id="sa-bind-leaflet-map" style="height:245px; width:100%; border-radius:10px; border:1px solid #d5e2f0;"></div>
-                    <div style="font-size:11px; color:#5a6578; margin-top:5px; font-weight:600;">
-                        💡 Нажмите на <b>любую бордовую метку салона</b> на карте, чтобы привязать его, или нажмите на пустое место карты, чтобы поставить новую точку.
+                    <div style="font-size:11px; color:#5a6578; margin-top:6px; font-weight:600; display:flex; align-items:center; gap:5px;">
+                        <i data-lucide="info" style="width:13px;height:13px;color:#7a1c2d;flex-shrink:0;"></i>
+                        <span>Нажмите на кружок кластера, чтобы приблизить район, или на метку салона, чтобы привязать его.</span>
                     </div>
                 </div>
 
@@ -578,22 +581,44 @@
             renderSAMarkers(true);
         }
 
+        let saClusterGroup = null;
+
         function initSAMap() {
             if (saMap) { saMap.invalidateSize(); renderSAMarkers(false); return; }
             saMap = L.map('sa-leaflet-map', { center: [42.8746, 74.5698], zoom: 12 });
             L.tileLayer('https://tile{s}.maps.2gis.com/tiles?x={x}&y={y}&z={z}&v=1.5&key=fb2542a3-ea70-441d-9b49-bbc1b26168c5', {
-                attribution: '&copy; 2GIS', subdomains: '0123', maxZoom: 19
+                attribution: '&copy; 2GIS', subdomains: '0123', maxZoom: 19, className: 'tiles-soft'
             }).addTo(saMap);
+            if (L.markerClusterGroup) {
+                saClusterGroup = L.markerClusterGroup({
+                    showCoverageOnHover: false,
+                    maxClusterRadius: 46,
+                    disableClusteringAtZoom: 16,
+                    spiderfyOnMaxZoom: true,
+                    iconCreateFunction: c => {
+                        const n = c.getChildCount();
+                        const s = n < 10 ? 36 : n < 50 ? 42 : 48;
+                        return L.divIcon({ html: `<div class="cl">${n}</div>`, className: 'cl-wrap', iconSize: [s, s] });
+                    }
+                });
+                saMap.addLayer(saClusterGroup);
+            }
             renderSAMarkers(false);
         }
 
         function renderSAMarkers(fitBoundsNow) {
             if (!saMap) return;
-            saMap.eachLayer(l => { if (l instanceof L.Marker) saMap.removeLayer(l); });
+            if (saClusterGroup) {
+                saClusterGroup.clearLayers();
+            } else {
+                saMap.eachLayer(l => { if (l instanceof L.Marker) saMap.removeLayer(l); });
+            }
             const allShops = getFullKGCatalogForSA().filter(b =>
                 activeSACityFilter === 'all' || (b.city && b.city === activeSACityFilter)
             );
             const boundsArr = [];
+            const markersToAdd = [];
+
             allShops.forEach(b => {
                 const lat = parseFloat(b.lat);
                 const lon = parseFloat(b.lon != null ? b.lon : b.lng);
@@ -604,32 +629,41 @@
                     (t.catalogId && String(t.catalogId) === String(b.id)) ||
                     (t.shopName && b.name && t.shopName.toLowerCase() === b.name.toLowerCase())
                 );
-                const bg = boundTenant ? '#00873d' : '#7a1c2d';
-                const badgeText = boundTenant ? `🔑 ID:${boundTenant.id}` : '✂️';
+                const shortName = String(b.name || 'Салон').replace(/,\s*(барбершоп|мужская парикмахерская|парикмахерская|салон красоты)/i, '').trim();
+                const pinClass = boundTenant ? 'pin sel' : 'pin bound';
+                const idTag = boundTenant ? `<span style="opacity:0.9;font-size:10px;">#${boundTenant.id}</span>` : '';
 
                 const ico = L.divIcon({
-                    className: '',
-                    html: `<div style="background:${bg};color:#ffffff;padding:3px 8px;border-radius:999px;font-weight:800;font-size:11px;white-space:nowrap;border:2px solid #ffffff;box-shadow:0 3px 10px rgba(12,25,44,0.22);cursor:pointer;">${badgeText} ${(b.name || '').slice(0, 18)}</div>`,
-                    iconSize: [120, 26], iconAnchor: [60, 26]
+                    className: 'pin-wrap',
+                    iconSize: [0, 0],
+                    html: `<div class="${pinClass}"><b>${shortName}</b>${idTag}</div>`
                 });
-                const marker = L.marker([lat, lon], { icon: ico }).addTo(saMap);
+                const marker = L.marker([lat, lon], { icon: ico, riseOnHover: true });
                 const safeId = String(b.id || '').replace(/'/g, '');
                 const safeName = String(b.name || '').replace(/'/g, '');
                 const popupHtml = `
                     <div style="min-width:210px; font-family:'Inter',sans-serif; padding:4px 2px;">
                         <div style="font-weight:800; font-size:13.5px; color:#0c192c; margin-bottom:3px;">${b.name || 'Барбершоп'}</div>
-                        <div style="font-size:11.5px; color:#5a6578; margin-bottom:8px;">📍 ${b.city || 'Бишкек'} • ${b.address || ''}</div>
+                        <div style="font-size:11.5px; color:#5a6578; margin-bottom:8px;">${b.city || 'Бишкек'} • ${b.address || ''}</div>
                         ${boundTenant
-                            ? `<div style="background:#e7f6ed; color:#00873d; padding:5px 8px; border-radius:8px; font-size:11.5px; font-weight:800; margin-bottom:8px;">✓ Доступ уже выдан: ID <b>${boundTenant.id}</b> / PIN <b>${boundTenant.pin}</b></div>`
+                            ? `<div style="background:#e7f6ed; color:#00873d; padding:5px 8px; border-radius:8px; font-size:11.5px; font-weight:800; margin-bottom:8px;">✓ Доступ выдан: ID <b>${boundTenant.id}</b> / PIN <b>${boundTenant.pin}</b></div>`
                             : ''
                         }
-                        <button type="button" onclick="issueAccessFromMapPin('${safeId}', '${safeName}')" style="width:100%; background:#7a1c2d; color:#fff; border:none; padding:7px 10px; border-radius:999px; font-size:11.5px; font-weight:800; cursor:pointer;">
-                            🔑 Привязать и выдать ID + PIN
+                        <button type="button" onclick="issueAccessFromMapPin('${safeId}', '${safeName}')" style="width:100%; background:#7a1c2d; color:#fff; border:none; padding:8px 12px; border-radius:999px; font-size:11.5px; font-weight:800; cursor:pointer;">
+                            Привязать и выдать ID + PIN →
                         </button>
                     </div>
                 `;
                 marker.bindPopup(popupHtml);
+                markersToAdd.push(marker);
             });
+
+            if (saClusterGroup) {
+                saClusterGroup.addLayers(markersToAdd);
+            } else {
+                markersToAdd.forEach(m => m.addTo(saMap));
+            }
+
             if (fitBoundsNow && boundsArr.length > 0) {
                 saMap.fitBounds(boundsArr, { maxZoom: 15, padding: [24, 24] });
             }
@@ -661,21 +695,22 @@
             container.innerHTML = allShops.slice(0, 80).map(b => {
                 const safeId = String(b.id || '').replace(/'/g, '');
                 const safeName = String(b.name || '').replace(/'/g, '');
+                const letter = (String(b.name || 'Б').trim().match(/[A-Za-zА-Яа-яЁё0-9]/) || ['Б'])[0].toUpperCase();
                 const boundTenant = (window.tenants || []).find(t =>
                     (t.catalogId && String(t.catalogId) === String(b.id)) ||
                     (t.shopName && b.name && t.shopName.toLowerCase() === b.name.toLowerCase())
                 );
                 return `
                 <div class="barber-card-sa" style="cursor:pointer;" onclick="focusSASalonOnMap('${safeId}')">
-                    <div class="bca-placeholder" style="background:${boundTenant ? '#e7f6ed' : '#f0f4f9'}; color:${boundTenant ? '#00873d' : '#0c192c'};">${boundTenant ? '🔑' : '💈'}</div>
+                    <div class="bca-placeholder" style="background:${boundTenant ? '#e7f6ed' : '#f0f4f9'}; color:${boundTenant ? '#00873d' : '#0c192c'}; border-color:${boundTenant ? 'rgba(0,135,61,0.3)' : '#d5e2f0'};">${letter}</div>
                     <div class="bc-info">
                         <div class="bc-name">${b.name}</div>
                         <div class="bc-meta">${b.city || 'Бишкек'} &bull; ${b.address || ''}</div>
                         ${boundTenant ? `<div style="font-size:11px; color:#00873d; font-weight:800; margin-top:2px;">ID: ${boundTenant.id} • PIN: ${boundTenant.pin}</div>` : ''}
                     </div>
                     <div class="bc-actions">
-                        <button class="btn-link" style="padding:5px 10px; font-size:11px;" onclick="event.stopPropagation(); issueAccessFromMapPin('${safeId}', '${safeName}')" title="Выдать цифровой ID и PIN этому салону">
-                            🔑 Выдать ID
+                        <button class="btn-link" style="padding:6px 11px; font-size:11.5px; display:inline-flex; align-items:center; gap:5px;" onclick="event.stopPropagation(); issueAccessFromMapPin('${safeId}', '${safeName}')" title="Выдать цифровой ID и PIN этому салону">
+                            <i data-lucide="key-round" style="width:13px;height:13px;"></i> Выдать ID
                         </button>
                     </div>
                 </div>`;

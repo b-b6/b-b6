@@ -687,6 +687,91 @@ table td {
     color: var(--text-secondary);
 }
 
+/* ── NEAT MAP PINS & CLUSTERS (MATCHING BARBERMAP KG) ── */
+.pin-wrap, .cl-wrap {
+    background: none !important;
+    border: 0 !important;
+}
+
+.pin {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translate(-50%, -50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #ffffff;
+    color: var(--navy);
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(12, 25, 44, 0.18), 0 0 0 1px rgba(12, 25, 44, 0.08);
+    transition: transform 0.15s ease, background 0.15s, color 0.15s, box-shadow 0.15s;
+    cursor: pointer;
+}
+
+.pin b {
+    font-weight: 700;
+    max-width: 112px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pin:hover {
+    transform: translate(-50%, -50%) scale(1.07);
+    box-shadow: 0 4px 14px rgba(122, 28, 45, 0.28);
+}
+
+.pin.sel {
+    background: #00873d;
+    color: #ffffff;
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 135, 61, 0.4);
+}
+
+.pin.bound {
+    background: var(--burgundy);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(122, 28, 45, 0.35);
+}
+
+.cl {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--navy);
+    color: #ffffff;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: 12.5px;
+    box-shadow: 0 0 0 4px rgba(122, 28, 45, 0.25), 0 4px 14px rgba(12, 25, 44, 0.35);
+    transition: transform 0.15s ease;
+    cursor: pointer;
+}
+
+.cl:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 5px rgba(122, 28, 45, 0.35), 0 6px 18px rgba(12, 25, 44, 0.42);
+}
+
+.bca-placeholder {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--navy-soft);
+    border: 1px solid var(--navy-line);
+    color: var(--navy);
+    font-weight: 800;
+    font-size: 15px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+}
+
 @media (max-width: 900px) {
     .barber-map-wrap {
         grid-template-columns: 1fr;

@@ -172,6 +172,7 @@
         }
 
         let saBindMap = null;
+        let saBindCluster = null;
         let saBindCustomMarker = null;
 
         function openAddAccessModal(preselectedCatalogId, preselectedCatalogName) {
@@ -223,8 +224,23 @@
             if (!saBindMap) {
                 saBindMap = L.map('sa-bind-leaflet-map', { center: [42.8746, 74.5698], zoom: 12 });
                 L.tileLayer('https://tile{s}.maps.2gis.com/tiles?x={x}&y={y}&z={z}&v=1.5&key=fb2542a3-ea70-441d-9b49-bbc1b26168c5', {
-                    attribution: '&copy; 2GIS', subdomains: '0123', maxZoom: 19
+                    attribution: '&copy; 2GIS', subdomains: '0123', maxZoom: 19, className: 'tiles-soft'
                 }).addTo(saBindMap);
+
+                if (L.markerClusterGroup) {
+                    saBindCluster = L.markerClusterGroup({
+                        showCoverageOnHover: false,
+                        maxClusterRadius: 44,
+                        disableClusteringAtZoom: 16,
+                        spiderfyOnMaxZoom: true,
+                        iconCreateFunction: c => {
+                            const n = c.getChildCount();
+                            const s = n < 10 ? 34 : n < 50 ? 40 : 46;
+                            return L.divIcon({ html: `<div class="cl">${n}</div>`, className: 'cl-wrap', iconSize: [s, s] });
+                        }
+                    });
+                    saBindMap.addLayer(saBindCluster);
+                }
 
                 // Allow clicking empty space on map to set custom coordinates for a brand-new salon
                 saBindMap.on('click', function(e) {
@@ -246,10 +262,11 @@
                     const boundTitle = document.getElementById('sa-bound-shop-title');
                     const boundSub = document.getElementById('sa-bound-shop-sub');
                     if (boundCard && boundTitle && boundSub) {
-                        boundTitle.textContent = `📍 Новая точка на карте (${lat}, ${lon})`;
+                        boundTitle.textContent = `Новая точка на карте (${lat}, ${lon})`;
                         boundSub.textContent = '✓ Координаты сохранены — введите название салона ниже';
                         boundCard.style.display = 'flex';
                     }
+                    renderBindMapMarkers();
                 });
             } else {
                 saBindMap.invalidateSize();
@@ -261,13 +278,19 @@
         function renderBindMapMarkers() {
             if (!saBindMap) return;
             const selectedId = document.getElementById('t_catalog_id')?.value || '';
-            saBindMap.eachLayer(l => {
-                if (l instanceof L.Marker && l !== saBindCustomMarker) {
-                    saBindMap.removeLayer(l);
-                }
-            });
+            if (saBindCluster) {
+                saBindCluster.clearLayers();
+            } else {
+                saBindMap.eachLayer(l => {
+                    if (l instanceof L.Marker && l !== saBindCustomMarker) {
+                        saBindMap.removeLayer(l);
+                    }
+                });
+            }
 
             const catalog = window.BARBERSHOPS_DATA || [];
+            const markersToAdd = [];
+
             catalog.forEach(b => {
                 const lat = parseFloat(b.lat);
                 const lon = parseFloat(b.lon != null ? b.lon : b.lng);
@@ -275,22 +298,35 @@
 
                 const isSelected = String(b.id) === String(selectedId);
                 const boundTenant = tenants.find(t => t.catalogId && String(t.catalogId) === String(b.id));
-                const bg = isSelected ? '#00873d' : (boundTenant ? '#0c192c' : '#7a1c2d');
-                const prefix = isSelected ? '✓ ' : (boundTenant ? `🔑${boundTenant.id} ` : '💈 ');
+                const shortName = String(b.name || 'Салон').replace(/,\s*(барбершоп|мужская парикмахерская|парикмахерская|салон красоты)/i, '').trim();
+                const pinClass = isSelected ? 'pin sel' : (boundTenant ? 'pin' : 'pin bound');
+                const prefix = isSelected ? '✓ ' : (boundTenant ? `#${boundTenant.id} ` : '');
 
                 const ico = L.divIcon({
-                    className: '',
-                    html: `<div style="background:${bg};color:#ffffff;padding:3px 8px;border-radius:999px;font-weight:800;font-size:10.5px;white-space:nowrap;border:2px solid #ffffff;box-shadow:0 3px 8px rgba(12,25,44,0.25);cursor:pointer;">${prefix}${(b.name || '').slice(0, 16)}</div>`,
-                    iconSize: [110, 24],
-                    iconAnchor: [55, 24]
+                    className: 'pin-wrap',
+                    iconSize: [0, 0],
+                    html: `<div class="${pinClass}"><b>${prefix}${shortName}</b></div>`
                 });
 
-                const marker = L.marker([lat, lon], { icon: ico, zIndexOffset: isSelected ? 1000 : 0 }).addTo(saBindMap);
+                const marker = L.marker([lat, lon], { icon: ico, zIndexOffset: isSelected ? 1000 : 0, riseOnHover: true });
                 marker.on('click', function(ev) {
                     L.DomEvent.stopPropagation(ev);
                     selectCatalogShopInSA(b.id, b.name);
                 });
+
+                if (isSelected) {
+                    // Add selected marker directly to map so it stays visible even inside a cluster
+                    marker.addTo(saBindMap);
+                } else {
+                    markersToAdd.push(marker);
+                }
             });
+
+            if (saBindCluster) {
+                saBindCluster.addLayers(markersToAdd);
+            } else {
+                markersToAdd.forEach(m => m.addTo(saBindMap));
+            }
         }
 
         function onRoleSelectInSuperAdmin(role) {
@@ -380,7 +416,7 @@
             const boundTitle = document.getElementById('sa-bound-shop-title');
             const boundSub = document.getElementById('sa-bound-shop-sub');
             if (boundCard && boundTitle && boundSub) {
-                boundTitle.textContent = `📍 Привязан с карты: ${resolvedName}`;
+                boundTitle.textContent = `Привязан с карты: ${resolvedName}`;
                 boundSub.textContent = shop ? `✓ ${shop.city || 'Бишкек'} • ${shop.address || ''}` : '✓ Выбран из каталога карты КР';
                 boundCard.style.display = 'flex';
             }
@@ -424,8 +460,8 @@
                 const isMaster = t.role === 'master';
                 const initial = t.shopName ? t.shopName.charAt(0).toUpperCase() : (isMaster ? 'М' : 'Б');
                 const roleBadge = isMaster
-                    ? `<span class="badge-status" style="background:#f0f4f9; color:#0c192c; border:1px solid #d5e2f0;">✂️ Мастер (Соло)</span>`
-                    : `<span class="badge-status on" style="background:#fbf0f2; color:#7a1c2d; border:1px solid #f0cdd3;">💈 Салон (Владелец)</span>`;
+                    ? `<span class="badge-status" style="background:#f0f4f9; color:#0c192c; border:1px solid #d5e2f0;">Мастер (Соло)</span>`
+                    : `<span class="badge-status on" style="background:#fbf0f2; color:#7a1c2d; border:1px solid #f0cdd3;">Салон (Владелец)</span>`;
                 
                 list.innerHTML += `
                 <tr data-role="${isMaster ? 'master' : 'owner'}">
@@ -453,13 +489,13 @@
                     <td style="color: var(--text-muted);">${t.createdAt || '-'}</td>
                     <td style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
                         <button class="btn-link" onclick="copyCredentialsForClient('${t.id}', '${t.pin}', '${(t.shopName || '').replace(/'/g, '')}', '${isMaster ? 'master' : 'owner'}')" title="Скопировать ID и PIN для отправки в WhatsApp">
-                            📋 Доступ
+                            <i data-lucide="copy" style="width:13px;height:13px;"></i> Доступ
                         </button>
                         <button class="btn-link" style="background:#0c192c; color:#fff;" onclick="loginAsTenantFromSA('${t.id}', '${(t.shopName || '').replace(/'/g, '')}', '${isMaster ? 'master' : 'owner'}')" title="Войти в этот кабинет">
-                            🔑 Войти
+                            <i data-lucide="log-in" style="width:13px;height:13px;"></i> Войти
                         </button>
-                        <button class="btn-block" style="background:#f0f4f9; color:#0c192c; border-color:#d5e2f0;" onclick="openTenantSettings('${t.id}')">⚙️</button>
-                        <button class="btn-block" onclick="deleteTenant('${t.id}')">🚫 Забрать доступ</button>
+                        <button class="btn-block" style="background:#f0f4f9; color:#0c192c; border-color:#d5e2f0;" onclick="openTenantSettings('${t.id}')"><i data-lucide="settings" style="width:14px;height:14px;"></i></button>
+                        <button class="btn-block" onclick="deleteTenant('${t.id}')"><i data-lucide="trash-2" style="width:13px;height:13px;"></i> Забрать доступ</button>
                     </td>
                 </tr>`;
             });
