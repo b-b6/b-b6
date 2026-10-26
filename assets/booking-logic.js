@@ -118,10 +118,42 @@
         return false;
     }
 
+    function normalizePhone(phone) {
+        if (!phone || typeof phone !== 'string') return '';
+        const digits = phone.replace(/\D/g, '');
+        if (digits.length >= 9) {
+            return digits.slice(-9); // берём значащие 9 цифр, исключая различия префиксов +996, 0555 и 996555
+        }
+        return digits;
+    }
+
+    function normalizeName(name) {
+        if (!name || typeof name !== 'string') return '';
+        return name.trim().toLowerCase().replace(/\s+/g, ' ');
+    }
+
+    function intervalsOverlap(startA, durA, startB, durB) {
+        const endA = startA + (durA || 60);
+        const endB = startB + (durB || 60);
+        return Math.max(startA, startB) < Math.min(endA, endB);
+    }
+
+    function getActiveBookingsForPhone(existingItems, phone, nowDate = new Date()) {
+        const normPhone = normalizePhone(phone);
+        if (!normPhone) return [];
+        const todayIso = getLocalIsoDate(nowDate);
+        const list = Array.isArray(existingItems) ? existingItems : [];
+        return list.filter(b => {
+            if (b.status === 'cancelled') return false;
+            if (!b.date || b.date < todayIso) return false;
+            return normalizePhone(b.phone) === normPhone;
+        });
+    }
+
     /**
      * @param {Array} existingItems — все записи (в т.ч. cancelled — отфильтруем)
-     * @param {object} candidate — { date, time, masterId, serviceKey }
-     * @param {object} ctx — { masters, services, settings, allowPast }
+     * @param {object} candidate — { date, time, masterId, serviceKey, name, phone }
+     * @param {object} ctx — { masters, services, settings, allowPast, allowAdminBypass }
      * @returns {string|null} — null если ок, иначе код ошибки
      */
     function validateNewBooking(existingItems, candidate, ctx) {
@@ -145,6 +177,39 @@
         }
 
         const existing = (existingItems || []).filter(b => b.status !== 'cancelled');
+
+        // 3. Защита от спама и лимиты по номеру телефона (если не ручной ввод админа)
+        if (!ctx.allowAdminBypass && candidate.phone) {
+            const activeForPhone = getActiveBookingsForPhone(existing, candidate.phone);
+
+            // Квота: максимум 4 активные записи на один номер
+            if (activeForPhone.length >= 4) {
+                return '⚠️ На этот номер телефона уже оформлено 4 активные записи (максимум для онлайн-бронирования). Для записи большего количества людей свяжитесь с администратором напрямую.';
+            }
+
+            // Запрет наложения времени для одного и того же человека
+            const candStartMins = parseTimeToMinutes(candidate.time, 0);
+            const candNormName = normalizeName(candidate.name);
+
+            const hasDoubleBooking = activeForPhone.some(b => {
+                if (b.date !== candidate.date) return false;
+                const bStartMins = parseTimeToMinutes(b.time, 0);
+                const bDur = serviceDuration(b.serviceKey, services);
+                const overlaps = intervalsOverlap(candStartMins, dur, bStartMins, bDur);
+                if (!overlaps) return false;
+
+                // Если имена совпадают — это один и тот же человек (дубль)
+                // Если имена разные (например, отец и сын: «Азамат» и «Тимур») — разрешаем!
+                const bNormName = normalizeName(b.name);
+                if (!candNormName || !bNormName) return true;
+                return candNormName === bNormName;
+            });
+
+            if (hasDoubleBooking) {
+                return '⚠️ На этот номер и имя уже есть запись на пересекающееся время. Если вы записываете другого человека (друга или сына), укажите его имя в поле «Ваше имя».';
+            }
+        }
+
         const bookedMap = buildBookedMapForDate(existing, candidate.date, rawAvailableTimes, services);
         const numMasters = Math.max(1, masters.filter(m => m.active !== false).length || masters.length);
 
@@ -164,6 +229,10 @@
         buildBookedMapForDate,
         slotIntervalBlocked,
         validateNewBooking,
-        serviceDuration
+        serviceDuration,
+        normalizePhone,
+        normalizeName,
+        intervalsOverlap,
+        getActiveBookingsForPhone
     };
 })(typeof window !== 'undefined' ? window : globalThis);

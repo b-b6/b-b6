@@ -1153,6 +1153,17 @@ const i18n = {
             const btnSubmit = document.getElementById('btn-submit');
             if (btnSubmit) btnSubmit.disabled = true;
 
+            // Защита от спам-ботов / флуда (пауза минимум 15 секунд между бронированиями с устройства)
+            const lastBookingTime = parseInt(localStorage.getItem('barber_last_booking_time') || '0', 10);
+            const now = Date.now();
+            if (now - lastBookingTime < 15000) {
+                const waitSec = Math.ceil((15000 - (now - lastBookingTime)) / 1000);
+                alert(`Пожалуйста, подождите ${waitSec} сек. перед созданием следующей записи.`);
+                bookingFinalizeInProgress = false;
+                if (btnSubmit) validateForm();
+                return;
+            }
+
             let myHistory = getDB(DB_MY_HISTORY);
             
             bookingData.id = Date.now().toString();
@@ -1172,6 +1183,7 @@ const i18n = {
                 status: 'confirmed'
             };
 
+            let committedEntry = dbEntry;
             try {
                 const result = await window.appDB.commitNewBooking(dbEntry, {
                     masters: getMasters(),
@@ -1179,6 +1191,8 @@ const i18n = {
                     settings: getSettings()
                 });
                 store.bookings = result.items;
+                committedEntry = result.entry || result.items.find(x => String(x.id) === String(dbEntry.id)) || dbEntry;
+                localStorage.setItem('barber_last_booking_time', Date.now().toString());
             } catch (err) {
                 alert(err.message || 'Не удалось записаться. Выберите другое время.');
                 bookingFinalizeInProgress = false;
@@ -1199,9 +1213,9 @@ const i18n = {
             triggerHaptic('success');
 
             // Send notification to Telegram bot & FCM Push Notification to Owner/Master devices
-            sendTelegramPush(dbEntry);
+            sendTelegramPush(committedEntry);
             if (window.BarberMobileBridge && window.BarberMobileBridge.sendBookingPushNotification) {
-                window.BarberMobileBridge.sendBookingPushNotification(window.appDB.tenantId, dbEntry);
+                window.BarberMobileBridge.sendBookingPushNotification(window.appDB.tenantId, committedEntry);
             }
 
             // Hide BackButton in Telegram Mini App on success screen
@@ -1216,6 +1230,18 @@ const i18n = {
                 renderReviewAuthGate();
             } else {
                 showFullReviewForm();
+            }
+
+            // Обновляем текст экрана успеха в зависимости от статуса (обычная или групповая бронь)
+            const successTitleEl = document.querySelector('#step-success [data-i18n="success_title"]');
+            const successDescEl = document.querySelector('#step-success [data-i18n="success_desc"]');
+            const L = i18n[currentLang] || i18n.ru;
+            if (committedEntry.isGroupBooking || committedEntry.status === 'pending_confirmation') {
+                if (successTitleEl) successTitleEl.innerText = '👥 Групповая заявка принята!';
+                if (successDescEl) successDescEl.innerText = `Вы забронировали ${committedEntry.groupIndex || '3-4'}-е место на этот номер. Администратор свяжется с вами по телефону для подтверждения.`;
+            } else {
+                if (successTitleEl) successTitleEl.innerText = L.success_title;
+                if (successDescEl) successDescEl.innerText = L.success_desc;
             }
 
             document.getElementById('stepper').style.display = 'none';
@@ -1272,11 +1298,19 @@ const i18n = {
                 const serviceStr = b.service || (b.serviceRuName || 'Стрижка');
                 const priceStr = b.price ? `${b.price} сом` : '';
 
+                let statusBadge = '';
+                if (b.status === 'pending_confirmation') {
+                    statusBadge = `<span style="background:rgba(245,158,11,0.18); border:1px solid rgba(245,158,11,0.4); color:#b45309; padding:2px 7px; border-radius:8px; font-size:0.73rem; font-weight:700;">⏳ Ожидает звонка</span>`;
+                } else if (b.status === 'confirmed') {
+                    statusBadge = `<span style="background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.3); color:#15803d; padding:2px 7px; border-radius:8px; font-size:0.73rem; font-weight:700;">✅ Подтверждена</span>`;
+                }
+
                 return `
                     <div class="my-booking-item" style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 12px; margin-top:8px; background:rgba(255,255,255,0.78); border:1px solid rgba(139,26,43,0.18); border-radius:12px; flex-wrap:wrap;">
                         <div style="flex:1; min-width:160px;">
-                            <div style="font-weight:700; color:var(--text-main); font-size:0.92rem; display:flex; align-items:center; gap:6px;">
+                            <div style="font-weight:700; color:var(--text-main); font-size:0.92rem; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                                 <span>📅 ${dateStr} в ${b.time}</span>
+                                ${statusBadge}
                             </div>
                             <div style="font-size:0.82rem; color:var(--text-secondary); margin-top:2px;">
                                 <span>✂️ ${serviceStr}</span>${priceStr ? ` • <strong>${priceStr}</strong>` : ''} • <span>👤 ${masterStr}</span>
@@ -1428,13 +1462,20 @@ const i18n = {
             const chatId = parts[1];
             if (!chatId) return;
 
-            const msg = '✂️ Новая онлайн-запись в барбершоп!\n\n' +
+            let header = '✂️ Новая онлайн-запись в барбершоп!\n\n';
+            if (entry.isGroupBooking || entry.status === 'pending_confirmation') {
+                header = '🚨 ВНИМАНИЕ: ГРУППОВАЯ БРОНЬ (' + (entry.groupIndex || '3-4') + ' чел. на один номер)!\n' +
+                         '⚠️ Требуется звонок клиенту для подтверждения!\n\n';
+            }
+
+            const msg = header +
                         '👤 Клиент: ' + (entry.name || 'Не указано') + '\n' +
                         '📞 Телефон: ' + (entry.phone || 'Не указан') + '\n' +
                         '💈 Услуга: ' + (entry.service || 'Стрижка') + '\n' +
                         '✂️ Мастер: ' + (entry.masterName || 'Любой') + '\n' +
                         '📅 Дата: ' + (entry.date || '') + ' в ' + (entry.time || '') + '\n' +
-                        '💰 Стоимость: ' + (entry.price || '0');
+                        '💰 Стоимость: ' + (entry.price || '0') +
+                        (entry.isGroupBooking ? '\n📌 Статус: Ожидает подтверждения (звонка)' : '');
             
             try {
                 fetch('https://api.telegram.org/bot' + botToken + '/sendMessage', {

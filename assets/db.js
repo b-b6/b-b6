@@ -288,7 +288,9 @@ class BarberDB {
             date: safe.date,
             time: safe.time,
             masterId: safe.masterId,
-            serviceKey: safe.serviceKey
+            serviceKey: safe.serviceKey,
+            name: safe.name,
+            phone: safe.phone
         };
 
         if (!ctx || !ctx.masters || !ctx.services || !ctx.settings) {
@@ -305,9 +307,20 @@ class BarberDB {
                 e.code = err;
                 throw e;
             }
+
+            // Умная групповая бронь: 1-я и 2-я запись подтверждаются сразу, 3-я и 4-я требуют подтверждения админа
+            const activeCount = BL.getActiveBookingsForPhone(all, safe.phone).length;
+            if (activeCount >= 2 && !ctx.allowAdminBypass) {
+                safe.status = 'pending_confirmation';
+                safe.isGroupBooking = true;
+                safe.groupIndex = activeCount + 1;
+            } else if (!safe.status) {
+                safe.status = 'confirmed';
+            }
+
             all.push(safe);
             await this._save(type, all);
-            return { ok: true, items: all };
+            return { ok: true, items: all, entry: safe };
         }
 
         const docRef = this.fsTools.doc(this.fs, `tenants/${this.tenantId}/data/${type}`);
@@ -325,11 +338,21 @@ class BarberDB {
                 e.code = err;
                 throw e;
             }
+
+            const activeCount = BL.getActiveBookingsForPhone(items, safe.phone).length;
+            if (activeCount >= 2 && !ctx.allowAdminBypass) {
+                safe.status = 'pending_confirmation';
+                safe.isGroupBooking = true;
+                safe.groupIndex = activeCount + 1;
+            } else if (!safe.status) {
+                safe.status = 'confirmed';
+            }
+
             transaction.set(docRef, { items: [...items, safe] });
         });
 
         let finalItems = await this._get(type, []);
-        return { ok: true, items: finalItems };
+        return { ok: true, items: finalItems, entry: safe };
     }
 
     async addBooking(booking) {
