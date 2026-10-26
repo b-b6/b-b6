@@ -623,20 +623,66 @@
                     <button type="button" class="day-btn" data-day="ВС" onclick="toggleWorkDay('ВС')">ВС</button>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px;">
+                <div style="margin-top: 16px;">
+                    <label style="font-size: 11.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 8px;">Быстрые шаблоны смен:</label>
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;">
+                        <button type="button" class="btn-outline" style="padding: 6px 11px; font-size: 12px;" onclick="applySoloHoursPreset('09:00','20:00')">🕘 09:00 – 20:00</button>
+                        <button type="button" class="btn-outline" style="padding: 6px 11px; font-size: 12px;" onclick="applySoloHoursPreset('10:00','21:00')">🕙 10:00 – 21:00 (Стандарт)</button>
+                        <button type="button" class="btn-outline" style="padding: 6px 11px; font-size: 12px;" onclick="applySoloHoursPreset('10:00','22:00')">🕙 10:00 – 22:00</button>
+                        <button type="button" class="btn-outline" style="padding: 6px 11px; font-size: 12px;" onclick="applySoloHoursPreset('10:00','23:30')">🌙 10:00 – 23:30</button>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <div class="form-group">
-                        <label>Начало смены</label>
-                        <input type="time" id="solo-work-start" class="form-input" value="10:00" onchange="saveSoloProfile()">
+                        <label>Открытие (Начало смены)</label>
+                        <select id="solo-work-start" class="form-input" onchange="saveSoloProfile()">
+                            <option value="06:00">06:00 (Утро)</option>
+                            <option value="06:30">06:30</option>
+                            <option value="07:00">07:00</option>
+                            <option value="07:30">07:30</option>
+                            <option value="08:00">08:00</option>
+                            <option value="08:30">08:30</option>
+                            <option value="09:00">09:00</option>
+                            <option value="09:30">09:30</option>
+                            <option value="10:00" selected>10:00 (Стандарт)</option>
+                            <option value="10:30">10:30</option>
+                            <option value="11:00">11:00</option>
+                            <option value="11:30">11:30</option>
+                            <option value="12:00">12:00</option>
+                            <option value="12:30">12:30</option>
+                            <option value="13:00">13:00</option>
+                            <option value="14:00">14:00</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label>Конец смены</label>
-                        <input type="time" id="solo-work-end" class="form-input" value="21:00" onchange="saveSoloProfile()">
+                        <label>Закрытие (Конец смены)</label>
+                        <select id="solo-work-end" class="form-input" onchange="saveSoloProfile()">
+                            <option value="16:00">16:00</option>
+                            <option value="17:00">17:00</option>
+                            <option value="17:30">17:30</option>
+                            <option value="18:00">18:00</option>
+                            <option value="18:30">18:30</option>
+                            <option value="19:00">19:00</option>
+                            <option value="19:30">19:30</option>
+                            <option value="20:00">20:00</option>
+                            <option value="20:30">20:30</option>
+                            <option value="21:00" selected>21:00 (Стандарт)</option>
+                            <option value="21:30">21:30</option>
+                            <option value="22:00">22:00</option>
+                            <option value="22:30">22:30</option>
+                            <option value="23:00">23:00</option>
+                            <option value="23:30">23:30</option>
+                            <option value="24:00">00:00 (Полночь)</option>
+                            <option value="01:00">01:00 (Ночь)</option>
+                            <option value="02:00">02:00 (Ночь)</option>
+                        </select>
                     </div>
                 </div>
 
                 <div class="form-group" style="margin-top: 6px;">
                     <label>Мой процент от стрижек (%)</label>
-                    <input type="number" id="solo-commission-input" class="form-input" min="10" max="100" step="5" value="60" onchange="saveSoloProfile()">
+                    <input type="number" id="solo-commission-input" class="form-input" min="10" max="100" step="5" value="100" onchange="saveSoloProfile()">
                     <small style="font-size: 11.5px; color: var(--text-muted); display: block; margin-top: 4px;">
                         Для частного соло-мастера на аренде кресла укажите 100%, для мастера на проценте — ваш % (например, 50% или 60%).
                     </small>
@@ -705,10 +751,62 @@
                     <label>4-значный PIN-код для входа (ровно 4 цифры)</label>
                     <input type="password" id="solo-pin-input" class="form-input" inputmode="numeric" maxlength="4" placeholder="1111" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)">
                 </div>
-                <button class="btn-gold" style="width: 100%;" onclick="saveSoloProfile(true)">💾 Сохранить настройки</button>
+                <button class="btn-gold" style="width: 100%;" onclick="saveSoloProfile(true)">💾 Сохранить настройки профиля</button>
+            </div>
 
-                <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0 12px;">
-                <button class="logout-btn" onclick="logoutMasterSession()">
+            <!-- TELEGRAM NOTIFICATIONS -->
+            <div class="panel-card">
+                <div class="panel-head">
+                    <h2>🤖 Telegram Уведомления</h2>
+                </div>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+                    Получайте уведомления о каждой новой записи прямо в свой личный Telegram.
+                </p>
+                <div class="form-group">
+                    <label>Токен бота и Chat ID (формат: bot_token@@chat_id)</label>
+                    <input type="text" id="solo-tg-token" class="form-input" placeholder="123456789:ABCdefGHI@@5994589913">
+                    <small style="font-size: 11.5px; color: var(--text-muted); display: block; margin-top: 4px;">
+                        Создайте бота в @BotFather и укажите ваш Chat ID.
+                    </small>
+                </div>
+                <button class="btn-gold" style="width: 100%;" onclick="saveSoloTelegram()">💾 Сохранить Telegram</button>
+            </div>
+
+            <!-- BOOKKEEPING / CSV EXPORT -->
+            <div class="panel-card">
+                <div class="panel-head">
+                    <h2>📊 Бухгалтерия и База записей</h2>
+                </div>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+                    Скачайте всю историю клиентов и заработанных сумм в формате Excel (.csv) на своё устройство.
+                </p>
+                <button class="btn-outline" style="width: 100%; border-color: #059669; color: #059669; font-weight: 700; padding: 10px;" onclick="exportSoloBookingsToCSV()">
+                    📥 Скачать базу записей (.csv / Excel)
+                </button>
+            </div>
+
+            <!-- THEME ACCENT COLOR -->
+            <div class="panel-card">
+                <div class="panel-head">
+                    <h2>🎨 Фирменный цвет страницы записи</h2>
+                </div>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+                    Выберите цвет кнопок и активных элементов для страницы записи:
+                </p>
+                <div class="form-group">
+                    <select id="solo-theme-color" class="form-input" onchange="saveSoloDesign()">
+                        <option value="#7a1c2d">🍷 Благородный бордовый (По умолчанию)</option>
+                        <option value="#111827">🖤 Премиум графит / Черный</option>
+                        <option value="#1d4ed8">🔵 Сапфировый королевский</option>
+                        <option value="#047857">🟢 Изумрудный барбер</option>
+                        <option value="#b45309">🟡 Теплый янтарь / Бронза</option>
+                        <option value="#4338ca">🟣 Глубокий индиго</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="panel-card" style="text-align:center;">
+                <button class="logout-btn" style="width:100%; margin:0;" onclick="logoutMasterSession()">
                     🚪 Выйти из аккаунта (Сменить роль)
                 </button>
             </div>
@@ -763,6 +861,7 @@
     </nav>
 
     <script src="assets/db.js?v=9"></script>
+    <script src="assets/booking-logic.js?v=9"></script>
     <script src="assets/mobile-bridge.js?v=9"></script>
     <script src="assets/barber.js?v=9"></script>
 </body>

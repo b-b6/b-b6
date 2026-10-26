@@ -138,6 +138,8 @@ async function loadSoloStateFromDB(masterRecord) {
         const commInput = document.getElementById('solo-commission-input');
         const startInput = document.getElementById('solo-work-start');
         const endInput = document.getElementById('solo-work-end');
+        const tgInput = document.getElementById('solo-tg-token');
+        const colorInput = document.getElementById('solo-theme-color');
 
         if (nameInput) nameInput.value = soloProfile.name;
         if (specInput) specInput.value = soloProfile.spec;
@@ -145,6 +147,10 @@ async function loadSoloStateFromDB(masterRecord) {
         if (commInput) commInput.value = soloProfile.commissionPct;
         if (startInput) startInput.value = soloProfile.workStart;
         if (endInput) endInput.value = soloProfile.workEnd;
+        if (tgInput) tgInput.value = settings.telegram_bot_token || '';
+        if (colorInput && settings.design && settings.design.accentColor) {
+            colorInput.value = settings.design.accentColor;
+        }
     } catch (e) {
         console.warn('loadSoloStateFromDB error:', e);
     }
@@ -349,19 +355,31 @@ window.renderSoloSchedule = function () {
     if (statPctEl) statPctEl.textContent = String(pct);
     if (statNetEl) statNetEl.textContent = `${netEarnings.toLocaleString('ru-RU')} с`;
 
-    // Build 1-column hourly slots from workStart to workEnd
-    const startH = parseInt((soloProfile.workStart || '10:00').split(':')[0], 10) || 10;
-    const endH = parseInt((soloProfile.workEnd || '21:00').split(':')[0], 10) || 21;
+    // Build 1-column slots from workStart to workEnd using BookingLogic (with 30-min granularity and night shift support)
+    const rawSlots = (window.BookingLogic && window.BookingLogic.buildRawAvailableTimes)
+        ? window.BookingLogic.buildRawAvailableTimes(soloProfile.workStart || '10:00', soloProfile.workEnd || '21:00')
+        : [];
 
-    const slotsSet = new Set();
-    for (let h = startH; h <= endH; h++) {
-        slotsSet.add(`${String(h).padStart(2, '0')}:00`);
+    const slotsSet = new Set(rawSlots);
+    if (slotsSet.size === 0) {
+        const startH = parseInt((soloProfile.workStart || '10:00').split(':')[0], 10) || 10;
+        const endH = parseInt((soloProfile.workEnd || '21:00').split(':')[0], 10) || 21;
+        for (let h = startH; h <= endH; h++) {
+            slotsSet.add(`${String(h).padStart(2, '0')}:00`);
+            slotsSet.add(`${String(h).padStart(2, '0')}:30`);
+        }
     }
     bookings.forEach(b => {
         if (b.time) slotsSet.add(b.time);
     });
 
-    const sortedTimes = Array.from(slotsSet).sort();
+    const parseMinutes = (t) => {
+        const parts = String(t).split(':').map(Number);
+        let m = (parts[0] || 0) * 60 + (parts[1] || 0);
+        if (parts[0] < 6) m += 24 * 60; // night shift e.g. 00:00, 01:00
+        return m;
+    };
+    const sortedTimes = Array.from(slotsSet).sort((a, b) => parseMinutes(a) - parseMinutes(b));
 
     const container = document.getElementById('solo-slots-container');
     if (!container) return;
@@ -369,6 +387,20 @@ window.renderSoloSchedule = function () {
     container.innerHTML = sortedTimes.map(timeStr => {
         const booking = bookings.find(b => b.time === timeStr);
         if (booking) {
+            if (booking.isBreak) {
+                return `
+                    <div class="slot-row" style="background:#fffbeb; border:1px dashed #f59e0b; padding:10px 14px; border-radius:12px; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between;">
+                        <div class="slot-time" style="color:#b45309; font-weight:800; font-size:15px;">${timeStr}</div>
+                        <div class="slot-info" style="display:flex; align-items:center; gap:8px;">
+                            <span style="font-size:13px; font-weight:700; color:#b45309;">☕️ Перерыв / Обед</span>
+                            <span style="font-size:11px; color:#d97706; background:#fef3c7; border:1px solid #fde68a; padding:2px 7px; border-radius:6px; font-weight:600;">Онлайн закрыто</span>
+                        </div>
+                        <div class="slot-actions">
+                            <button class="btn-outline" style="padding:6px 11px; font-size:11.5px; border-color:#f59e0b; color:#b45309; background:#fff;" onclick="toggleSoloBreak('${timeStr}')">✕ Снять</button>
+                        </div>
+                    </div>
+                `;
+            }
             const isDone = booking.status === 'completed';
             const clientName = booking.name || booking.clientName || 'Клиент';
             const clientPhone = booking.phone || booking.clientPhone || '—';
@@ -403,8 +435,9 @@ window.renderSoloSchedule = function () {
                     <div class="slot-info" style="display: flex; align-items: center;">
                         <span style="font-size: 13px; color: var(--text-muted); font-weight: 600;">Свободное окно</span>
                     </div>
-                    <div class="slot-actions">
+                    <div class="slot-actions" style="display:flex; gap:6px;">
                         <button class="btn-outline" onclick="openAddBookingModal('${timeStr}')">+ Записать</button>
+                        <button class="btn-outline" style="color:#b45309; border-color:rgba(217,119,6,0.35); padding:6px 9px;" onclick="toggleSoloBreak('${timeStr}')" title="Поставить перерыв / Обед">☕️</button>
                     </div>
                 </div>
             `;
@@ -684,3 +717,139 @@ function initSubscriptions() {
         });
     } catch (e) {}
 }
+
+// ================= ADMIN-GRADE EXTENSIONS FOR SOLO MASTER =================
+
+// 1. Shift presets (e.g. 09:00-20:00, 10:00-21:00, etc.)
+window.applySoloHoursPreset = function (start, end) {
+    const startSelect = document.getElementById('solo-work-start');
+    const endSelect = document.getElementById('solo-work-end');
+    if (startSelect) startSelect.value = start;
+    if (endSelect) endSelect.value = end;
+    soloProfile.workStart = start;
+    soloProfile.workEnd = end;
+    window.saveSoloProfile(false);
+    renderSoloSchedule();
+    if (window.BarberMobileBridge && window.BarberMobileBridge.vibrate) {
+        window.BarberMobileBridge.vibrate(25);
+    }
+};
+
+// 2. Break / Lunch slot toggle (blocks online booking interval for clients)
+window.toggleSoloBreak = async function (timeStr) {
+    if (!window.appDB) return;
+    const dateInput = document.getElementById('solo-schedule-date');
+    const dateStr = (dateInput && dateInput.value) ? dateInput.value : getTodayIso();
+    const bookings = (await window.appDB.getBookings()) || [];
+
+    const existingBreakIndex = bookings.findIndex(b => b.date === dateStr && b.time === timeStr && b.isBreak);
+    if (existingBreakIndex >= 0) {
+        bookings.splice(existingBreakIndex, 1);
+        await window.appDB.saveBookings(bookings);
+        soloBookingsCache = bookings;
+        renderSoloSchedule();
+        if (window.BarberMobileBridge && window.BarberMobileBridge.vibrate) {
+            window.BarberMobileBridge.vibrate(25);
+        }
+        return;
+    }
+
+    const existingClient = bookings.find(b => b.date === dateStr && b.time === timeStr && b.status !== 'cancelled' && !b.isBreak);
+    if (existingClient) {
+        alert('⚠️ В этот слот уже записан клиент (' + (existingClient.name || 'Клиент') + '). Сначала перенесите или отмените запись!');
+        return;
+    }
+
+    const breakItem = {
+        id: 'break_' + Date.now(),
+        date: dateStr,
+        time: timeStr,
+        masterId: soloProfile.id || 1,
+        masterName: soloProfile.name,
+        name: '☕️ Перерыв / Обед',
+        clientName: '☕️ Перерыв / Обед',
+        phone: '',
+        service: 'Перерыв',
+        price: 0,
+        duration: 30,
+        status: 'confirmed',
+        isBreak: true,
+        createdAt: new Date().toISOString()
+    };
+
+    bookings.push(breakItem);
+    await window.appDB.saveBookings(bookings);
+    soloBookingsCache = bookings;
+    renderSoloSchedule();
+    if (window.BarberMobileBridge && window.BarberMobileBridge.vibrate) {
+        window.BarberMobileBridge.vibrate(25);
+    }
+};
+
+// 3. Telegram notification setup
+window.saveSoloTelegram = async function () {
+    const tgInput = document.getElementById('solo-tg-token');
+    const val = tgInput ? tgInput.value.trim() : '';
+    if (!window.appDB) return;
+    try {
+        const settings = (await window.appDB.getSettings()) || {};
+        settings.telegram_bot_token = val;
+        await window.appDB.saveSettings(settings);
+        alert(val ? '✅ Telegram токен сохранен! Новые онлайн-записи будут приходить ботом.' : 'ℹ️ Telegram токен очищен.');
+    } catch (e) {
+        console.error('saveSoloTelegram error:', e);
+        alert('Ошибка при сохранении Telegram токена');
+    }
+};
+
+// 4. Booking database export to CSV/Excel
+window.exportSoloBookingsToCSV = async function () {
+    if (!window.appDB) return;
+    const bookings = (await window.appDB.getBookings()) || [];
+    if (!bookings.length) {
+        alert('Список записей пока пуст!');
+        return;
+    }
+
+    let csv = '\uFEFF'; // BOM for UTF-8 in Excel
+    csv += 'Дата;Время;Клиент;Телефон;Услуга;Сумма (сом);Статус\n';
+    bookings.forEach(b => {
+        if (b.isBreak) return; // Do not export break records to client accounting
+        const date = b.date || '';
+        const time = b.time || '';
+        const name = (b.name || b.clientName || 'Клиент').replace(/;/g, ' ');
+        const phone = (b.phone || b.clientPhone || '').replace(/;/g, ' ');
+        const service = (b.service || b.serviceName || 'Услуга').replace(/;/g, ' ');
+        const price = b.price || 0;
+        const status = b.status === 'completed' ? 'Выполнено' : (b.status === 'cancelled' ? 'Отменено' : 'Запланировано');
+        csv += `${date};${time};${name};${phone};${service};${price};${status}\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    const safeName = (soloProfile.name || 'master').replace(/[^a-zA-Z0-9а-яА-ЯёЁ_-]/g, '_');
+    link.download = `solo_bookings_${safeName}_${getTodayIso()}.csv`;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
+
+// 5. Theme accent color save
+window.saveSoloDesign = async function () {
+    const colorSelect = document.getElementById('solo-theme-color');
+    const color = colorSelect ? colorSelect.value : '#7a1c2d';
+    if (!window.appDB) return;
+    try {
+        const settings = (await window.appDB.getSettings()) || {};
+        settings.design = settings.design || {};
+        settings.design.accentColor = color;
+        await window.appDB.saveSettings(settings);
+        if (window.BarberMobileBridge && window.BarberMobileBridge.vibrate) {
+            window.BarberMobileBridge.vibrate(25);
+        }
+    } catch (e) {
+        console.error('saveSoloDesign error:', e);
+    }
+};
