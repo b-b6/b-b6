@@ -288,7 +288,9 @@
                 });
             }
 
-            const catalog = window.BARBERSHOPS_DATA || [];
+            const catalog = typeof window.getFullKGCatalogForSA === 'function'
+                ? window.getFullKGCatalogForSA()
+                : (window.BARBERSHOPS_DATA || []);
             const markersToAdd = [];
 
             catalog.forEach(b => {
@@ -368,7 +370,9 @@
                 box.style.display = 'none';
                 return;
             }
-            const catalog = window.BARBERSHOPS_DATA || [];
+            const catalog = typeof window.getFullKGCatalogForSA === 'function'
+                ? window.getFullKGCatalogForSA()
+                : (window.BARBERSHOPS_DATA || []);
             const matches = catalog.filter(b =>
                 (b.name && b.name.toLowerCase().includes(q)) ||
                 (b.city && b.city.toLowerCase().includes(q)) ||
@@ -386,7 +390,7 @@
                 return `<div style="padding:8px 12px; border-bottom:1px solid var(--border); cursor:pointer; display:flex; justify-content:space-between; align-items:center;" onclick="selectCatalogShopInSA('${sId}', '${sName}')">
                     <div>
                         <div style="font-weight:700; font-size:0.84rem; color:#0c192c;">${b.name}</div>
-                        <div style="font-size:0.72rem; color:var(--text-muted);">📍 ${b.city || ''} • ${b.address || ''}</div>
+                        <div style="font-size:0.72rem; color:var(--text-muted);">${b.city || ''} • ${b.address || ''}</div>
                     </div>
                     <span style="font-size:0.74rem; font-weight:800; color:#7a1c2d;">Выбрать на карте →</span>
                 </div>`;
@@ -395,7 +399,9 @@
         }
 
         function selectCatalogShopInSA(catId, catName) {
-            const catalog = window.BARBERSHOPS_DATA || [];
+            const catalog = typeof window.getFullKGCatalogForSA === 'function'
+                ? window.getFullKGCatalogForSA()
+                : (window.BARBERSHOPS_DATA || []);
             const shop = catalog.find(b => String(b.id) === String(catId));
             const resolvedName = (shop && shop.name) || catName || catId;
 

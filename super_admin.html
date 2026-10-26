@@ -11,8 +11,8 @@
     <link rel="icon" type="image/png" sizes="32x32" href="assets/pwa-icon-192.png">
     <title>BarberMap KG — Super Admin</title>
     <script src="barbershops_kg.js"></script>
-    <script src="assets/db.js?v=7"></script>
-    <script src="assets/mobile-bridge.js?v=7"></script>
+    <script src="assets/db.js?v=8"></script>
+    <script src="assets/mobile-bridge.js?v=8"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
@@ -241,116 +241,162 @@
 
     <!-- ═══════════ MODALS ═══════════ -->
 
-    <!-- ADD BARBER MODAL -->
-    <div class="modal-overlay" id="modal-barber-add" style="align-items:flex-start; padding-top:30px; transition: opacity 0.25s ease;">
-        <div class="modal" id="modal-barber-add-inner" style="max-width:640px; max-height:90vh; overflow-y:auto; padding:30px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; position:sticky; top:0; background:var(--glass-bg); backdrop-filter:blur(20px); padding:5px 0 15px; border-bottom:1px solid var(--glass-border); margin-left:-30px; margin-right:-30px; padding-left:30px; padding-right:30px; z-index:2;">
+    <!-- ADD BARBER / NEW SALON POINT MODAL (KYRGYZSTAN) -->
+    <div class="modal-overlay" id="modal-barber-add" style="align-items:flex-start; padding-top:20px; overflow-y:auto; transition: opacity 0.25s ease;">
+        <div class="modal" id="modal-barber-add-inner" style="max-width:650px; max-height:92vh; overflow-y:auto; padding:26px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border);">
                 <div>
-                    <h2 style="margin:0; font-size:1.2rem;" id="ab-modal-title">✂️ Добавить Барбера</h2>
-                    <p style="margin:4px 0 0; font-size:0.8rem; color:var(--text-muted);">Заполните профиль мастера из Instagram</p>
+                    <h2 style="margin:0; font-size:1.22rem; color:#0c192c; display:flex; align-items:center; gap:8px;" id="ab-modal-title">
+                        <i data-lucide="map-pin-plus" style="width:20px;height:20px;color:#7a1c2d;"></i> Новая точка на карту Кыргызстана
+                    </h2>
+                    <p style="margin:4px 0 0; font-size:0.8rem; color:var(--text-muted);" id="ab-modal-subtitle">Добавьте новый барбершоп на общую карту КР и при желании сразу выдайте цифровой ID + PIN</p>
                 </div>
-                <i data-lucide="x" style="cursor:pointer; color:var(--text-muted); transition:0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'" onclick="closeModal('barber-add')"></i>
+                <i data-lucide="x" style="cursor:pointer; color:var(--text-muted); flex-shrink:0;" onclick="closeModal('barber-add')"></i>
             </div>
 
-            <!-- Row 1 -->
-            <div class="form-row" style="margin-bottom:16px;">
+            <!-- Row 1: Salon Name & City -->
+            <div class="form-row" style="margin-bottom:14px;">
                 <div>
-                    <label class="form-label-sa">👤 Имя / Название</label>
-                    <input type="text" id="ab-name" class="form-control-sa" placeholder="Шохрух Fade">
+                    <label class="form-label-sa">Название барбершопа / салона</label>
+                    <input type="text" id="ab-name" class="form-control-sa" placeholder="Напр.: Royal Barber" oninput="updatePickMarkerLabel()">
                 </div>
                 <div>
-                    <label class="form-label-sa">📸 Instagram @</label>
-                    <input type="text" id="ab-insta" class="form-control-sa" placeholder="@barber_tashkent">
-                </div>
-            </div>
-            <div style="margin-bottom:16px;">
-                <label class="form-label-sa">✍️ Резюме / О мастере</label>
-                <textarea id="ab-bio" class="form-control-sa" rows="3" style="resize:none;" placeholder="Специалист по Skin Fade и оформлению бороды. 6 лет опыта..."></textarea>
-            </div>
-
-            <!-- Row 2 -->
-            <div class="form-row" style="margin-bottom:16px;">
-                <div>
-                    <label class="form-label-sa">📍 Район</label>
-                    <select id="ab-district" class="form-control-sa">
-                        <option value="Юнусабад">Юнусабад</option>
-                        <option value="Центр (Ц-1)">Центр (Ц-1)</option>
-                        <option value="Чиланзар">Чиланзар</option>
-                        <option value="Мирзо-Улугбек">Мирзо-Улугбек</option>
-                        <option value="Яшнабад">Яшнабад</option>
-                        <option value="Сергели">Сергели</option>
+                    <label class="form-label-sa">Город (Кыргызстан)</label>
+                    <select id="ab-district" class="form-control-sa" onchange="panPickMapToCity(this.value)">
+                        <option value="Бишкек">Бишкек</option>
+                        <option value="Ош">Ош</option>
+                        <option value="Джалал-Абад">Джалал-Абад</option>
+                        <option value="Каракол">Каракол</option>
+                        <option value="Токмок">Токмок</option>
+                        <option value="Нарын">Нарын</option>
+                        <option value="Балыкчы">Балыкчы</option>
+                        <option value="Узген">Узген</option>
                     </select>
                 </div>
-                <div>
-                    <label class="form-label-sa">⭐ Рейтинг (1–5)</label>
-                    <input type="number" id="ab-rating" class="form-control-sa" min="1" max="5" step="0.1" value="4.9">
+            </div>
+
+            <!-- Row 2: Address with Geocode Search -->
+            <div style="margin-bottom:14px;">
+                <label class="form-label-sa">Точный адрес (улица, дом, ориентир)</label>
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="ab-address" class="form-control-sa" style="flex:1;" placeholder="Напр.: пр. Чуй, 155 (рядом с ЦУМ)">
+                    <button type="button" class="btn-link" onclick="geocodePickAddress()" style="white-space:nowrap; padding:0 14px; font-weight:800; display:inline-flex; align-items:center; gap:5px;" title="Найти этот адрес на карте">
+                        <i data-lucide="search" style="width:14px;height:14px;"></i> Найти на карте
+                    </button>
                 </div>
             </div>
-            <div style="margin-bottom:16px;">
-                <label class="form-label-sa">🏠 Адрес (текстом)</label>
-                <input type="text" id="ab-address" class="form-control-sa" placeholder="Юнусабад 4-й квартал, д. 12">
-            </div>
-            <div class="form-row" style="margin-bottom:16px;">
+
+            <!-- Row 3: Phone & Working Hours -->
+            <div class="form-row" style="margin-bottom:14px;">
                 <div>
-                    <label class="form-label-sa">📞 Телефон / Telegram</label>
-                    <input type="text" id="ab-phone" class="form-control-sa" placeholder="+998901234567">
+                    <label class="form-label-sa">Телефон / WhatsApp</label>
+                    <input type="text" id="ab-phone" class="form-control-sa" placeholder="+996 555 00-00-00">
                 </div>
                 <div>
-                    <label class="form-label-sa">💼 Опыт работы</label>
-                    <input type="text" id="ab-exp" class="form-control-sa" placeholder="6 лет">
+                    <label class="form-label-sa">График работы</label>
+                    <input type="text" id="ab-exp" class="form-control-sa" placeholder="10:00 – 21:00" value="10:00 – 21:00">
+                </div>
+            </div>
+
+            <!-- Row 4: Instagram & Rating -->
+            <div class="form-row" style="margin-bottom:14px;">
+                <div>
+                    <label class="form-label-sa">Instagram @ (необязательно)</label>
+                    <input type="text" id="ab-insta" class="form-control-sa" placeholder="@barber_bishkek">
+                </div>
+                <div>
+                    <label class="form-label-sa">Рейтинг (1.0 – 5.0)</label>
+                    <input type="number" id="ab-rating" class="form-control-sa" min="1" max="5" step="0.1" value="5.0">
                 </div>
             </div>
 
             <!-- Map coordinate picker -->
-            <div style="margin-bottom:16px;">
-                <label class="form-label-sa">🗺 Координаты на карте (тыкните пальцем)</label>
-                <div class="map-pick-banner">
-                    <i data-lucide="crosshair" style="width:16px; flex-shrink:0;"></i>
-                    <span>Нажмите на карту ниже, чтобы выбрать точное местоположение барбера</span>
+            <div style="margin-bottom:16px; background:#f8fafd; border:1px solid var(--border); border-radius:14px; padding:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+                    <label class="form-label-sa" style="margin:0; color:#0c192c;">Точка на карте (нажмите на здание или перетащите метку)</label>
+                    <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                        <button type="button" class="ftab" style="padding:3px 9px; font-size:0.72rem;" onclick="panPickMapToCity('Бишкек')">Бишкек</button>
+                        <button type="button" class="ftab" style="padding:3px 9px; font-size:0.72rem;" onclick="panPickMapToCity('Ош')">Ош</button>
+                        <button type="button" class="ftab" style="padding:3px 9px; font-size:0.72rem;" onclick="panPickMapToCity('Джалал-Абад')">Джалал-Абад</button>
+                        <button type="button" class="ftab" style="padding:3px 9px; font-size:0.72rem;" onclick="panPickMapToCity('Каракол')">Каракол</button>
+                        <button type="button" class="ftab" style="padding:3px 9px; font-size:0.72rem;" onclick="panPickMapToCity('Токмок')">Токмок</button>
+                    </div>
                 </div>
-                <div id="barber-pick-map"></div>
+                <div id="barber-pick-map" style="height:260px; border-radius:12px; border:1px solid #d5e2f0;"></div>
                 <div class="form-row" style="margin-top:10px;">
                     <div>
                         <label class="form-label-sa">Широта (lat)</label>
-                        <input type="number" id="ab-lat" class="form-control-sa" step="0.0001" placeholder="41.3644" value="41.3644">
+                        <input type="number" id="ab-lat" class="form-control-sa" step="0.0001" placeholder="42.8746" value="42.8746" onchange="syncPickMapFromInputs()">
                     </div>
                     <div>
-                        <label class="form-label-sa">Долгота (lng)</label>
-                        <input type="number" id="ab-lng" class="form-control-sa" step="0.0001" placeholder="69.2882" value="69.2882">
+                        <label class="form-label-sa">Долгота (lon)</label>
+                        <input type="number" id="ab-lng" class="form-control-sa" step="0.0001" placeholder="74.5698" value="74.5698" onchange="syncPickMapFromInputs()">
                     </div>
                 </div>
             </div>
 
-            <!-- Work photo URLs (simple text inputs for URL-based workflow) -->
-            <div style="margin-bottom:20px;">
-                <label class="form-label-sa">📷 Фото работ (URL из Instagram, до 5 шт.)</label>
-                <div id="photo-url-inputs" style="display:flex; flex-direction:column; gap:8px;">
-                    <input type="url" class="form-control-sa photo-url-inp" placeholder="https://instagram.com/p/.../media/?size=l">
-                    <input type="url" class="form-control-sa photo-url-inp" placeholder="https://...">
-                    <input type="url" class="form-control-sa photo-url-inp" placeholder="https://...">
+            <!-- Instant Access Issuance (Numeric ID + 4-digit PIN) -->
+            <div id="ab-issue-access-wrap" style="margin-bottom:16px; background:#fbf0f2; border:1.5px solid #f0cdd3; border-radius:14px; padding:14px;">
+                <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-weight:800; font-size:0.9rem; color:#7a1c2d; margin:0;">
+                    <input type="checkbox" id="ab-issue-access" checked onchange="toggleAbIssueAccess(this.checked)" style="width:18px; height:18px; accent-color:#7a1c2d; cursor:pointer;">
+                    <i data-lucide="key-round" style="width:16px;height:16px;"></i>
+                    Сразу выдать цифровой ID и 4-значный PIN владельцу этой точки
+                </label>
+                <div id="ab-issue-access-fields" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;">
+                    <div>
+                        <label class="form-label-sa" style="color:#0c192c;">Цифровой ID (только цифры)</label>
+                        <div style="display:flex; gap:6px;">
+                            <input type="text" id="ab-tenant-id" class="form-control-sa" inputmode="numeric" placeholder="1005" oninput="this.value = this.value.replace(/\D/g, '')" style="font-weight:800; letter-spacing:1px;">
+                            <button type="button" class="btn-link" onclick="generateAbAccessCredentials(true, false)" style="white-space:nowrap; padding:0 10px;">Авто</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label-sa" style="color:#0c192c;">Пароль (ровно 4 цифры)</label>
+                        <div style="display:flex; gap:6px;">
+                            <input type="text" id="ab-tenant-pin" class="form-control-sa" inputmode="numeric" maxlength="4" placeholder="4829" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 4)" style="font-weight:800; letter-spacing:2px;">
+                            <button type="button" class="btn-link" onclick="generateAbAccessCredentials(false, true)" style="white-space:nowrap; padding:0 10px;">4 цифры</button>
+                        </div>
+                    </div>
                 </div>
-                <button onclick="addPhotoUrlField()" style="background:transparent; border:1px dashed var(--glass-border); color:var(--text-muted); padding:8px 14px; border-radius:8px; cursor:pointer; font-size:0.82rem; margin-top:8px; width:100%;">+ Добавить ещё фото</button>
             </div>
 
-            <!-- Services -->
-            <div style="margin-bottom:20px;">
-                <label class="form-label-sa">💰 Услуги и цены</label>
-                <div id="ab-services-inputs" style="display:flex; flex-direction:column; gap:8px;">
-                    <div class="form-row">
-                        <input type="text" class="form-control-sa srv-name" placeholder="Стрижка + Fade">
-                        <input type="text" class="form-control-sa srv-price" placeholder="120.000 сум">
+            <!-- Collapsible Extra Details: Bio, Services (сом), Photos -->
+            <details style="margin-bottom:16px; background:#f8fafd; border:1px solid var(--border); border-radius:12px; padding:10px 14px;">
+                <summary style="cursor:pointer; font-weight:700; font-size:0.84rem; color:#0c192c; outline:none;">
+                    Дополнительно: услуги (в сомах), описание и фото работ (необязательно)
+                </summary>
+                <div style="margin-top:12px;">
+                    <div style="margin-bottom:12px;">
+                        <label class="form-label-sa">Описание салона / мастеров</label>
+                        <textarea id="ab-bio" class="form-control-sa" rows="2" style="resize:none;" placeholder="Мужские стрижки, фейд, оформление бороды..."></textarea>
                     </div>
-                    <div class="form-row">
-                        <input type="text" class="form-control-sa srv-name" placeholder="Оформление Бороды">
-                        <input type="text" class="form-control-sa srv-price" placeholder="70.000 сум">
+                    <div style="margin-bottom:12px;">
+                        <label class="form-label-sa">Услуги и цены (в сомах)</label>
+                        <div id="ab-services-inputs" style="display:flex; flex-direction:column; gap:8px;">
+                            <div class="form-row">
+                                <input type="text" class="form-control-sa srv-name" placeholder="Мужская стрижка">
+                                <input type="text" class="form-control-sa srv-price" placeholder="500 сом">
+                            </div>
+                            <div class="form-row">
+                                <input type="text" class="form-control-sa srv-name" placeholder="Стрижка + Борода">
+                                <input type="text" class="form-control-sa srv-price" placeholder="800 сом">
+                            </div>
+                        </div>
+                        <button type="button" onclick="addServiceRow()" style="background:transparent; border:1px dashed var(--glass-border); color:var(--text-muted); padding:7px 14px; border-radius:8px; cursor:pointer; font-size:0.8rem; margin-top:8px; width:100%;">+ Добавить услугу</button>
+                    </div>
+                    <div>
+                        <label class="form-label-sa">Фото салона / работ (URL, до 5 шт.)</label>
+                        <div id="photo-url-inputs" style="display:flex; flex-direction:column; gap:8px;">
+                            <input type="url" class="form-control-sa photo-url-inp" placeholder="https://...">
+                        </div>
+                        <button type="button" onclick="addPhotoUrlField()" style="background:transparent; border:1px dashed var(--glass-border); color:var(--text-muted); padding:7px 14px; border-radius:8px; cursor:pointer; font-size:0.8rem; margin-top:8px; width:100%;">+ Добавить ещё фото</button>
                     </div>
                 </div>
-                <button onclick="addServiceRow()" style="background:transparent; border:1px dashed var(--glass-border); color:var(--text-muted); padding:8px 14px; border-radius:8px; cursor:pointer; font-size:0.82rem; margin-top:8px; width:100%;">+ Добавить услугу</button>
-            </div>
+            </details>
 
-            <div id="ab-save-status" style="font-size:0.85rem; color:var(--text-muted); min-height:20px; margin-bottom:10px;"></div>
-            <button class="btn-submit" onclick="saveBarberToCatalog()">
-                💾 Сохранить — Опубликовать на карте <i data-lucide="arrow-right" style="width:16px; margin-left:8px; vertical-align:middle;"></i>
+            <div id="ab-save-status" style="font-size:0.85rem; color:var(--text-muted); min-height:20px; margin-bottom:10px; font-weight:700;"></div>
+            <button class="btn-submit" onclick="saveBarberToCatalog()" style="display:flex; align-items:center; justify-content:center; gap:8px;">
+                <i data-lucide="check-circle-2" style="width:18px;height:18px;"></i> Опубликовать точку на карте КР
             </button>
         </div>
     </div>
@@ -491,7 +537,7 @@
         </div>
     </div>
 
-    <script src="assets/super_admin.js?v=7"></script>
+    <script src="assets/super_admin.js?v=8"></script>
     <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
@@ -546,31 +592,48 @@
         // ── INIT SUPER ADMIN MAP PREVIEW (401 KG BARBERSHOPS) ──
         let activeSACityFilter = 'all';
 
+        const KG_CITY_COORDS = {
+            'Бишкек': [42.8746, 74.5698],
+            'Ош': [40.5140, 72.8161],
+            'Джалал-Абад': [40.9332, 73.0033],
+            'Каракол': [42.4907, 78.3936],
+            'Токмок': [42.8419, 75.3015],
+            'Нарын': [41.4287, 75.9911],
+            'Балыкчы': [42.4602, 76.1871],
+            'Узген': [40.7699, 73.3007]
+        };
+
         function getFullKGCatalogForSA() {
-            const base = (window.BARBERSHOPS_DATA || []).slice();
+            const base = (window.BARBERSHOPS_DATA || []).map(b => Object.assign({}, b));
+            const customItems = [];
             try {
                 const customMap = window.BarberMobileBridge ? window.BarberMobileBridge.getCustomLocationsLocal() : {};
                 Object.keys(customMap).forEach(id => {
-                    if (!base.some(b => String(b.id) === String(id))) {
-                        base.unshift(customMap[id]);
+                    const c = Object.assign({}, customMap[id], { isCustom: true });
+                    const existingIdx = base.findIndex(b => String(b.id) === String(id));
+                    if (existingIdx !== -1) {
+                        base.splice(existingIdx, 1);
                     }
+                    customItems.push(c);
                 });
             } catch (e) {}
             barbersCatalog.forEach(b => {
-                if (!base.some(x => String(x.id) === String(b.id))) {
-                    base.unshift({
+                if (!customItems.some(x => String(x.id) === String(b.id)) && !base.some(x => String(x.id) === String(b.id))) {
+                    customItems.push({
                         id: b.id,
                         name: b.name,
                         city: b.district || 'Бишкек',
                         address: b.address || '',
                         phone: b.phone || '',
+                        hours: b.experience || '10:00 – 21:00',
                         lat: b.lat,
-                        lon: b.lng || b.lon,
-                        rating: b.rating || 5.0
+                        lon: b.lng != null ? b.lng : b.lon,
+                        rating: b.rating || 5.0,
+                        isCustom: true
                     });
                 }
             });
-            return base;
+            return customItems.concat(base);
         }
 
         function filterSAMapByCity(city, btnEl) {
@@ -627,6 +690,7 @@
 
                 const boundTenant = (window.tenants || []).find(t =>
                     (t.catalogId && String(t.catalogId) === String(b.id)) ||
+                    (String(t.id) === String(b.id)) ||
                     (t.shopName && b.name && t.shopName.toLowerCase() === b.name.toLowerCase())
                 );
                 const shortName = String(b.name || 'Салон').replace(/,\s*(барбершоп|мужская парикмахерская|парикмахерская|салон красоты)/i, '').trim();
@@ -641,8 +705,14 @@
                 const marker = L.marker([lat, lon], { icon: ico, riseOnHover: true });
                 const safeId = String(b.id || '').replace(/'/g, '');
                 const safeName = String(b.name || '').replace(/'/g, '');
+                const customActionsHtml = b.isCustom ? `
+                    <div style="display:flex; gap:6px; margin-top:6px;">
+                        <button type="button" onclick="openEditBarberModal('${safeId}')" style="flex:1; background:#f0f4f9; color:#0c192c; border:1px solid #d5e2f0; padding:6px 10px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer;">Изменить</button>
+                        <button type="button" onclick="deleteCustomMapPoint('${safeId}')" style="background:#fbf0f2; color:#7a1c2d; border:1px solid #f0cdd3; padding:6px 10px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer;">Удалить</button>
+                    </div>
+                ` : '';
                 const popupHtml = `
-                    <div style="min-width:210px; font-family:'Inter',sans-serif; padding:4px 2px;">
+                    <div style="min-width:215px; font-family:'Inter',sans-serif; padding:4px 2px;">
                         <div style="font-weight:800; font-size:13.5px; color:#0c192c; margin-bottom:3px;">${b.name || 'Барбершоп'}</div>
                         <div style="font-size:11.5px; color:#5a6578; margin-bottom:8px;">${b.city || 'Бишкек'} • ${b.address || ''}</div>
                         ${boundTenant
@@ -652,6 +722,7 @@
                         <button type="button" onclick="issueAccessFromMapPin('${safeId}', '${safeName}')" style="width:100%; background:#7a1c2d; color:#fff; border:none; padding:8px 12px; border-radius:999px; font-size:11.5px; font-weight:800; cursor:pointer;">
                             Привязать и выдать ID + PIN →
                         </button>
+                        ${customActionsHtml}
                     </div>
                 `;
                 marker.bindPopup(popupHtml);
@@ -698,13 +769,25 @@
                 const letter = (String(b.name || 'Б').trim().match(/[A-Za-zА-Яа-яЁё0-9]/) || ['Б'])[0].toUpperCase();
                 const boundTenant = (window.tenants || []).find(t =>
                     (t.catalogId && String(t.catalogId) === String(b.id)) ||
+                    (String(t.id) === String(b.id)) ||
                     (t.shopName && b.name && t.shopName.toLowerCase() === b.name.toLowerCase())
                 );
+                const customBadge = b.isCustom
+                    ? `<span style="background:#fbf0f2; color:#7a1c2d; border:1px solid #f0cdd3; padding:1px 6px; border-radius:999px; font-size:9.5px; font-weight:800; margin-left:5px;">Добавлен</span>`
+                    : '';
+                const customBtns = b.isCustom ? `
+                    <button class="btn-block" style="background:#f0f4f9; color:#0c192c; border-color:#d5e2f0; padding:6px 8px;" onclick="event.stopPropagation(); openEditBarberModal('${safeId}')" title="Редактировать точку">
+                        <i data-lucide="pencil" style="width:12px;height:12px;"></i>
+                    </button>
+                    <button class="btn-block" style="padding:6px 8px;" onclick="event.stopPropagation(); deleteCustomMapPoint('${safeId}')" title="Удалить точку с карты">
+                        <i data-lucide="trash-2" style="width:12px;height:12px;"></i>
+                    </button>
+                ` : '';
                 return `
                 <div class="barber-card-sa" style="cursor:pointer;" onclick="focusSASalonOnMap('${safeId}')">
                     <div class="bca-placeholder" style="background:${boundTenant ? '#e7f6ed' : '#f0f4f9'}; color:${boundTenant ? '#00873d' : '#0c192c'}; border-color:${boundTenant ? 'rgba(0,135,61,0.3)' : '#d5e2f0'};">${letter}</div>
                     <div class="bc-info">
-                        <div class="bc-name">${b.name}</div>
+                        <div class="bc-name">${b.name}${customBadge}</div>
                         <div class="bc-meta">${b.city || 'Бишкек'} &bull; ${b.address || ''}</div>
                         ${boundTenant ? `<div style="font-size:11px; color:#00873d; font-weight:800; margin-top:2px;">ID: ${boundTenant.id} • PIN: ${boundTenant.pin}</div>` : ''}
                     </div>
@@ -712,6 +795,7 @@
                         <button class="btn-link" style="padding:6px 11px; font-size:11.5px; display:inline-flex; align-items:center; gap:5px;" onclick="event.stopPropagation(); issueAccessFromMapPin('${safeId}', '${safeName}')" title="Выдать цифровой ID и PIN этому салону">
                             <i data-lucide="key-round" style="width:13px;height:13px;"></i> Выдать ID
                         </button>
+                        ${customBtns}
                     </div>
                 </div>`;
             }).join('');
@@ -728,79 +812,127 @@
             }
         }
 
-        // ── OPEN ADD BARBER MODAL ──
+        function toggleAbIssueAccess(checked) {
+            const fields = document.getElementById('ab-issue-access-fields');
+            if (fields) fields.style.display = checked ? 'grid' : 'none';
+            if (checked) {
+                const idInp = document.getElementById('ab-tenant-id');
+                const pinInp = document.getElementById('ab-tenant-pin');
+                if (idInp && !idInp.value) generateAbAccessCredentials(true, false);
+                if (pinInp && !pinInp.value) generateAbAccessCredentials(false, true);
+            }
+        }
+
+        function generateAbAccessCredentials(genId, genPin) {
+            if (genId) {
+                let candidate = 1001;
+                const existingIds = new Set((window.tenants || []).map(t => String(t.id)));
+                while (existingIds.has(String(candidate))) candidate++;
+                const idInp = document.getElementById('ab-tenant-id');
+                if (idInp) idInp.value = String(candidate);
+            }
+            if (genPin) {
+                const pin = String(Math.floor(1000 + Math.random() * 9000));
+                const pinInp = document.getElementById('ab-tenant-pin');
+                if (pinInp) pinInp.value = pin;
+            }
+        }
+
+        // ── OPEN ADD BARBER / NEW SALON POINT MODAL (KYRGYZSTAN) ──
         function openAddBarberModal() {
             editingBarberId = null;
-            document.getElementById('ab-modal-title').textContent = '✂️ Добавить Барбера';
+            const titleEl = document.getElementById('ab-modal-title');
+            if (titleEl) {
+                titleEl.innerHTML = `<i data-lucide="map-pin-plus" style="width:20px;height:20px;color:#7a1c2d;"></i> Новая точка на карту Кыргызстана`;
+            }
             document.getElementById('ab-name').value = '';
             document.getElementById('ab-insta').value = '';
             document.getElementById('ab-bio').value = '';
-            document.getElementById('ab-district').value = 'Юнусабад';
-            document.getElementById('ab-rating').value = '4.9';
+            document.getElementById('ab-district').value = 'Бишкек';
+            document.getElementById('ab-rating').value = '5.0';
             document.getElementById('ab-address').value = '';
             document.getElementById('ab-phone').value = '';
-            document.getElementById('ab-exp').value = '';
-            document.getElementById('ab-lat').value = '41.3644';
-            document.getElementById('ab-lng').value = '69.2882';
+            document.getElementById('ab-exp').value = '10:00 – 21:00';
+            document.getElementById('ab-lat').value = '42.8746';
+            document.getElementById('ab-lng').value = '74.5698';
             document.getElementById('ab-save-status').textContent = '';
+
+            const issueWrap = document.getElementById('ab-issue-access-wrap');
+            if (issueWrap) issueWrap.style.display = 'block';
+            const issueChk = document.getElementById('ab-issue-access');
+            if (issueChk) issueChk.checked = true;
+            generateAbAccessCredentials(true, true);
+            toggleAbIssueAccess(true);
 
             // Reset photo URLs
             const photoContainer = document.getElementById('photo-url-inputs');
-            photoContainer.innerHTML = [1,2,3].map(() =>
-                `<input type="url" class="form-control-sa photo-url-inp" placeholder="https://...">`
-            ).join('');
+            photoContainer.innerHTML = `<input type="url" class="form-control-sa photo-url-inp" placeholder="https://...">`;
 
-            // Reset services
+            // Reset services (in KGS сом)
             const srvContainer = document.getElementById('ab-services-inputs');
             srvContainer.innerHTML = `
                 <div class="form-row">
-                    <input type="text" class="form-control-sa srv-name" placeholder="Стрижка + Fade">
-                    <input type="text" class="form-control-sa srv-price" placeholder="120.000 сум">
+                    <input type="text" class="form-control-sa srv-name" placeholder="Мужская стрижка" value="Мужская стрижка">
+                    <input type="text" class="form-control-sa srv-price" placeholder="500 сом" value="500 сом">
                 </div>
                 <div class="form-row">
-                    <input type="text" class="form-control-sa srv-name" placeholder="Оформление Бороды">
-                    <input type="text" class="form-control-sa srv-price" placeholder="70.000 сум">
+                    <input type="text" class="form-control-sa srv-name" placeholder="Стрижка + Борода" value="Стрижка + Борода">
+                    <input type="text" class="form-control-sa srv-price" placeholder="800 сом" value="800 сом">
                 </div>`;
 
             const ov = document.getElementById('modal-barber-add');
             ov.style.display = 'flex';
             ov.style.opacity = '0';
             setTimeout(() => { ov.style.opacity = '1'; }, 10);
-            setTimeout(initPickMap, 200);
+            setTimeout(initPickMap, 180);
             lucide.createIcons();
         }
 
-        // ── OPEN EDIT BARBER MODAL ──
+        // ── OPEN EDIT BARBER / CUSTOM POINT MODAL ──
         function openEditBarberModal(barberId) {
-            const b = barbersCatalog.find(x => x.id === barberId);
+            const customMap = window.BarberMobileBridge ? window.BarberMobileBridge.getCustomLocationsLocal() : {};
+            const b = barbersCatalog.find(x => String(x.id) === String(barberId)) ||
+                      customMap[String(barberId)] ||
+                      getFullKGCatalogForSA().find(x => String(x.id) === String(barberId));
             if (!b) return;
-            editingBarberId = barberId;
-            document.getElementById('ab-modal-title').textContent = '✏️ Редактировать Барбера';
+            editingBarberId = String(barberId);
+            const titleEl = document.getElementById('ab-modal-title');
+            if (titleEl) {
+                titleEl.innerHTML = `<i data-lucide="pencil" style="width:20px;height:20px;color:#7a1c2d;"></i> Редактировать точку на карте КР`;
+            }
             document.getElementById('ab-name').value = b.name || '';
             document.getElementById('ab-insta').value = b.instaHandle || '';
             document.getElementById('ab-bio').value = b.bio || '';
-            document.getElementById('ab-district').value = b.district || 'Юнусабад';
-            document.getElementById('ab-rating').value = b.rating || 4.9;
+            document.getElementById('ab-district').value = b.city || b.district || 'Бишкек';
+            document.getElementById('ab-rating').value = b.rating || 5.0;
             document.getElementById('ab-address').value = b.address || '';
             document.getElementById('ab-phone').value = b.phone || '';
-            document.getElementById('ab-exp').value = b.experience || '';
-            document.getElementById('ab-lat').value = b.lat || 41.3644;
-            document.getElementById('ab-lng').value = b.lng || 69.2882;
+            document.getElementById('ab-exp').value = b.hours || b.experience || '10:00 – 21:00';
+            const latVal = parseFloat(b.lat) || 42.8746;
+            const lonVal = parseFloat(b.lon != null ? b.lon : b.lng) || 74.5698;
+            document.getElementById('ab-lat').value = latVal;
+            document.getElementById('ab-lng').value = lonVal;
             document.getElementById('ab-save-status').textContent = '';
+
+            const issueChk = document.getElementById('ab-issue-access');
+            if (issueChk) {
+                issueChk.checked = false;
+                toggleAbIssueAccess(false);
+            }
 
             // Fill photos
             const photoContainer = document.getElementById('photo-url-inputs');
-            const photos = b.photos || ['', '', ''];
+            const photos = (b.photos && b.photos.length) ? b.photos : [''];
             photoContainer.innerHTML = photos.map(p =>
                 `<input type="url" class="form-control-sa photo-url-inp" value="${p}" placeholder="https://...">`
-            ).join('') + (photos.length < 5 ? `<input type="url" class="form-control-sa photo-url-inp" placeholder="https://...">` : '');
+            ).join('');
 
             // Fill services
             const srvContainer = document.getElementById('ab-services-inputs');
             srvContainer.innerHTML = (b.services || []).map(s => `
                 <div class="form-row">
                     <input type="text" class="form-control-sa srv-name" value="${s.name}" placeholder="Услуга">
-                    <input type="text" class="form-control-sa srv-price" value="${s.price}" placeholder="0 сум">
+                    <input type="text" class="form-control-sa srv-price" value="${s.price}" placeholder="500 сом">
                 </div>`).join('');
             if (!srvContainer.innerHTML) addServiceRow();
 
@@ -810,18 +942,100 @@
             setTimeout(() => { ov2.style.opacity = '1'; }, 10);
             setTimeout(() => {
                 initPickMap();
-                if (pickMarker && b.lat && b.lng) {
-                    pickMarker.setLatLng([b.lat, b.lng]);
-                    pickMap.setView([b.lat, b.lng], 15);
+                if (pickMarker) {
+                    pickMarker.setLatLng([latVal, lonVal]);
+                    pickMap.setView([latVal, lonVal], 15);
+                    updatePickMarkerLabel();
                 }
-            }, 200);
+            }, 180);
             lucide.createIcons();
+        }
+
+        function getPickMarkerIcon() {
+            const rawName = (document.getElementById('ab-name')?.value || '').trim() || 'Новая точка';
+            const safeLabel = rawName.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return L.divIcon({
+                className: 'pin-wrap',
+                iconSize: [0, 0],
+                html: `<div class="pin sel"><b>${safeLabel}</b></div>`
+            });
+        }
+
+        function updatePickMarkerLabel() {
+            if (pickMarker) {
+                pickMarker.setIcon(getPickMarkerIcon());
+            }
+        }
+
+        function panPickMapToCity(city) {
+            const coords = KG_CITY_COORDS[city] || KG_CITY_COORDS['Бишкек'];
+            const sel = document.getElementById('ab-district');
+            if (sel && sel.value !== city) sel.value = city;
+            document.getElementById('ab-lat').value = coords[0].toFixed(4);
+            document.getElementById('ab-lng').value = coords[1].toFixed(4);
+            if (pickMap && pickMarker) {
+                pickMarker.setLatLng(coords);
+                pickMap.setView(coords, 13);
+            }
+        }
+
+        function syncPickMapFromInputs() {
+            const lat = parseFloat(document.getElementById('ab-lat').value);
+            const lng = parseFloat(document.getElementById('ab-lng').value);
+            if (!isNaN(lat) && !isNaN(lng) && pickMap && pickMarker) {
+                pickMarker.setLatLng([lat, lng]);
+                pickMap.setView([lat, lng], 15);
+            }
+        }
+
+        async function geocodePickAddress() {
+            const addr = (document.getElementById('ab-address')?.value || '').trim();
+            const city = document.getElementById('ab-district')?.value || 'Бишкек';
+            const statusEl = document.getElementById('ab-save-status');
+            if (!addr) {
+                if (statusEl) {
+                    statusEl.style.color = 'var(--accent-red)';
+                    statusEl.textContent = 'Введите улицу или ориентир для поиска на карте.';
+                }
+                return;
+            }
+            if (statusEl) {
+                statusEl.style.color = 'var(--text-muted)';
+                statusEl.textContent = 'Ищем адрес на карте Кыргызстана...';
+            }
+            try {
+                const q = encodeURIComponent(`${addr}, ${city}, Кыргызстан`);
+                const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=kg&limit=1&q=${q}`);
+                const data = await res.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    const lat = parseFloat(data[0].lat);
+                    const lon = parseFloat(data[0].lon);
+                    document.getElementById('ab-lat').value = lat.toFixed(6);
+                    document.getElementById('ab-lng').value = lon.toFixed(6);
+                    if (pickMap && pickMarker) {
+                        pickMarker.setLatLng([lat, lon]);
+                        pickMap.setView([lat, lon], 16);
+                    }
+                    if (statusEl) {
+                        statusEl.style.color = 'var(--accent-green)';
+                        statusEl.textContent = '✓ Адрес найден на карте! При необходимости подвиньте метку точнее.';
+                    }
+                } else if (statusEl) {
+                    statusEl.style.color = 'var(--accent-red)';
+                    statusEl.textContent = 'Точный адрес не найден автоматически — просто нажмите на нужное место на карте.';
+                }
+            } catch (e) {
+                if (statusEl) {
+                    statusEl.style.color = 'var(--accent-red)';
+                    statusEl.textContent = 'Не удалось выполнить поиск — выберите точку кликом на карте.';
+                }
+            }
         }
 
         // ── INIT PICK-A-POINT MAP IN MODAL ──
         function initPickMap() {
-            const lat = parseFloat(document.getElementById('ab-lat').value) || 41.3644;
-            const lng = parseFloat(document.getElementById('ab-lng').value) || 69.2882;
+            const lat = parseFloat(document.getElementById('ab-lat').value) || 42.8746;
+            const lng = parseFloat(document.getElementById('ab-lng').value) || 74.5698;
 
             if (pickMap) {
                 pickMap.remove();
@@ -831,10 +1045,10 @@
 
             pickMap = L.map('barber-pick-map', { center: [lat, lng], zoom: 14 });
             L.tileLayer('https://tile{s}.maps.2gis.com/tiles?x={x}&y={y}&z={z}&v=1.5&key=fb2542a3-ea70-441d-9b49-bbc1b26168c5', {
-                attribution: '&copy; 2GIS', subdomains: '0123', maxZoom: 19
+                attribution: '&copy; 2GIS', subdomains: '0123', maxZoom: 19, className: 'tiles-soft'
             }).addTo(pickMap);
 
-            pickMarker = L.marker([lat, lng], { draggable: true }).addTo(pickMap);
+            pickMarker = L.marker([lat, lng], { draggable: true, icon: getPickMarkerIcon() }).addTo(pickMap);
 
             pickMarker.on('dragend', function(e) {
                 const pos = e.target.getLatLng();
@@ -867,25 +1081,52 @@
             row.className = 'form-row';
             row.innerHTML = `
                 <input type="text" class="form-control-sa srv-name" placeholder="Услуга">
-                <input type="text" class="form-control-sa srv-price" placeholder="0 сум">
+                <input type="text" class="form-control-sa srv-price" placeholder="500 сом">
             `;
             container.appendChild(row);
         }
 
-        // ── SAVE BARBER ──
-        function saveBarberToCatalog() {
+        // ── SAVE BARBER / NEW SALON POINT ON KYRGYZSTAN MAP ──
+        async function saveBarberToCatalog() {
             const statusEl = document.getElementById('ab-save-status');
             const name = document.getElementById('ab-name').value.trim();
-            if (!name) { statusEl.textContent = '❌ Введите имя барбера!'; statusEl.style.color = 'var(--accent-red)'; return; }
+            if (!name) {
+                statusEl.textContent = 'Введите название барбершопа / салона!';
+                statusEl.style.color = 'var(--accent-red)';
+                return;
+            }
 
             const lat = parseFloat(document.getElementById('ab-lat').value);
             const lng = parseFloat(document.getElementById('ab-lng').value);
 
             if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-                statusEl.textContent = '❌ Некорректные координаты!';
+                statusEl.textContent = 'Некорректные координаты на карте!';
                 statusEl.style.color = 'var(--accent-red)';
                 return;
             }
+
+            const issueAccess = document.getElementById('ab-issue-access')?.checked;
+            let issuedTenantId = (document.getElementById('ab-tenant-id')?.value || '').replace(/\D/g, '');
+            let issuedTenantPin = (document.getElementById('ab-tenant-pin')?.value || '').replace(/\D/g, '');
+
+            if (issueAccess) {
+                if (!/^\d+$/.test(issuedTenantId)) {
+                    statusEl.textContent = 'Цифровой ID должен содержать только цифры!';
+                    statusEl.style.color = 'var(--accent-red)';
+                    return;
+                }
+                if (!/^\d{4}$/.test(issuedTenantPin)) {
+                    statusEl.textContent = 'Пароль (PIN) должен состоять ровно из 4 цифр!';
+                    statusEl.style.color = 'var(--accent-red)';
+                    return;
+                }
+            }
+
+            const city = document.getElementById('ab-district').value || 'Бишкек';
+            const address = document.getElementById('ab-address').value.trim() || 'Указано на карте';
+            const phone = document.getElementById('ab-phone').value.trim();
+            const hours = document.getElementById('ab-exp').value.trim() || '10:00 – 21:00';
+            const rating = parseFloat(document.getElementById('ab-rating').value) || 5.0;
 
             const photos = Array.from(document.querySelectorAll('.photo-url-inp'))
                 .map(i => i.value.trim()).filter(Boolean);
@@ -897,22 +1138,25 @@
                 if (el.value.trim()) services.push({ name: el.value.trim(), price: srvPrices[idx]?.value.trim() || '' });
             });
 
-            // Use first photo as avatar, fallback to placeholder
             const avatarUrl = photos[0] || 'assets/master_1.jpg';
+            const pointId = editingBarberId || (issueAccess ? String(issuedTenantId) : ('kg_' + Date.now()));
 
             const barberData = {
-                id: editingBarberId || ('b_' + Date.now()),
+                id: pointId,
                 name,
                 instaHandle: document.getElementById('ab-insta').value.trim(),
                 bio: document.getElementById('ab-bio').value.trim(),
-                district: document.getElementById('ab-district').value,
-                rating: parseFloat(document.getElementById('ab-rating').value) || 4.9,
-                reviewsCount: editingBarberId ? (barbersCatalog.find(x => x.id === editingBarberId)?.reviewsCount || 0) : 0,
-                address: document.getElementById('ab-address').value.trim(),
-                phone: document.getElementById('ab-phone').value.trim(),
-                experience: document.getElementById('ab-exp').value.trim(),
+                district: city,
+                city: city,
+                rating: rating,
+                reviewsCount: editingBarberId ? (barbersCatalog.find(x => String(x.id) === String(editingBarberId))?.reviewsCount || 25) : 25,
+                address: address,
+                phone: phone,
+                experience: hours,
+                hours: hours,
                 lat: lat,
                 lng: lng,
+                lon: lng,
                 photos,
                 services,
                 avatar: avatarUrl,
@@ -920,31 +1164,94 @@
             };
 
             if (editingBarberId) {
-                const idx = barbersCatalog.findIndex(x => x.id === editingBarberId);
+                const idx = barbersCatalog.findIndex(x => String(x.id) === String(editingBarberId));
                 if (idx !== -1) barbersCatalog[idx] = barberData;
+                else barbersCatalog.unshift(barberData);
             } else {
                 barbersCatalog.unshift(barberData);
             }
 
-            saveBarbersCatalogLocal();
+            await saveBarbersCatalogLocal();
+
+            // Save to BarberMobileBridge so barbermap_kg.html displays this point immediately on the client map
+            if (window.BarberMobileBridge && window.BarberMobileBridge.saveBarbershopLocation) {
+                await window.BarberMobileBridge.saveBarbershopLocation(pointId, {
+                    name: name,
+                    city: city,
+                    address: address,
+                    phone: phone,
+                    hours: hours,
+                    lat: lat,
+                    lon: lng,
+                    rating: rating,
+                    reviews: 25
+                });
+            }
+
+            // If "Сразу выдать цифровой ID и 4-значный PIN" is checked, create/update the tenant right away
+            if (issueAccess && issuedTenantId && issuedTenantPin) {
+                const existingIdx = (window.tenants || []).findIndex(t => String(t.id) === String(issuedTenantId));
+                const newTenantObj = {
+                    id: String(issuedTenantId),
+                    pin: String(issuedTenantPin),
+                    role: 'owner',
+                    shopName: name,
+                    email: phone || '—',
+                    catalogId: String(pointId),
+                    customLat: lat,
+                    customLon: lng,
+                    createdAt: new Date().toLocaleDateString('ru-RU')
+                };
+                if (existingIdx !== -1) {
+                    window.tenants[existingIdx] = newTenantObj;
+                } else {
+                    window.tenants.push(newTenantObj);
+                }
+                if (window.appDB) await window.appDB.saveGlobalTenants(window.tenants);
+
+                const sKey = String(issuedTenantId) + '_barber_settings';
+                try {
+                    const cur = JSON.parse(localStorage.getItem(sKey) || '{}');
+                    cur.shopName = name;
+                    cur.city = city;
+                    cur.address = address;
+                    cur.phone = phone;
+                    cur.lat = lat;
+                    cur.lon = lng;
+                    localStorage.setItem(sKey, JSON.stringify(cur));
+                } catch (e) {}
+
+                if (typeof renderStats === 'function') renderStats();
+                if (typeof renderTenants === 'function') renderTenants();
+            }
 
             statusEl.style.color = 'var(--accent-green)';
-            statusEl.textContent = `✅ Барбер «${name}» сохранён и опубликован!`;
+            statusEl.textContent = issueAccess
+                ? `✓ Точка «${name}» опубликована на карте КР! Выдан ID: ${issuedTenantId}, PIN: ${issuedTenantPin}`
+                : `✓ Точка «${name}» успешно сохранена и опубликована на карте КР!`;
 
             setTimeout(() => {
                 closeModal('barber-add');
                 renderSABarberList();
-                renderSAMarkers();
-            }, 800);
+                renderSAMarkers(false);
+                if (saMap) saMap.setView([lat, lng], 16);
+            }, 650);
         }
 
-        // ── DELETE BARBER ──
-        function deleteBarber(barberId) {
-            if (!confirm('Удалить этого барбера из каталога?')) return;
-            barbersCatalog = barbersCatalog.filter(b => b.id !== barberId);
-            saveBarbersCatalogLocal();
+        // ── DELETE CUSTOM MAP POINT / BARBER ──
+        async function deleteCustomMapPoint(pointId) {
+            if (!confirm('Удалить эту добавленную точку с карты?')) return;
+            barbersCatalog = barbersCatalog.filter(b => String(b.id) !== String(pointId));
+            await saveBarbersCatalogLocal();
+            if (window.BarberMobileBridge && window.BarberMobileBridge.deleteBarbershopLocation) {
+                await window.BarberMobileBridge.deleteBarbershopLocation(pointId);
+            }
             renderSABarberList();
-            renderSAMarkers();
+            renderSAMarkers(false);
+        }
+
+        function deleteBarber(barberId) {
+            deleteCustomMapPoint(barberId);
         }
 
         // ── CLOSE BARBER MODAL (extends original closeModal) ──

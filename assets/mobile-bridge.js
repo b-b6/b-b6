@@ -184,6 +184,25 @@
             return entry;
         },
 
+        async deleteBarbershopLocation(pointId) {
+            const all = this.getCustomLocationsLocal();
+            delete all[String(pointId)];
+            localStorage.setItem(CUSTOM_LOCATIONS_KEY, JSON.stringify(all));
+            try {
+                if (window.appDB && window.appDB.useFirebase && window.appDB.fs) {
+                    const { doc, getDoc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+                    const ref = doc(window.appDB.fs, 'global/data_locations');
+                    const snap = await getDoc(ref);
+                    if (snap.exists() && snap.data().items) {
+                        const remoteMap = snap.data().items;
+                        delete remoteMap[String(pointId)];
+                        await setDoc(ref, { items: remoteMap });
+                    }
+                }
+            } catch (e) {}
+            return true;
+        },
+
         async syncRemoteLocationsToMap() {
             try {
                 if (window.appDB && window.appDB.useFirebase && window.appDB.fs) {
