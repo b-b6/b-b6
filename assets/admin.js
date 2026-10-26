@@ -284,12 +284,18 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             window.appDB.subscribe('barber_reviews', data => { store.reviews = data; loadAdminData(); });
             
             store.bookings = await window.appDB.getBookings();
-            let srv = await window.appDB.getServices(); if(srv.length) store.services = srv;
-            let mst = await window.appDB.getMasters(); if(mst.length) store.masters = mst;
+            let srv = await window.appDB.getServices();
+            if (srv.length) store.services = srv;
+            else await window.appDB.saveServices(store.services); // фиксируем дефолтные услуги в базе → клиент видит то же самое
+            let mst = await window.appDB.getMasters();
+            if (mst.length) store.masters = mst;
+            else await window.appDB.saveMasters(store.masters); // фиксируем дефолтных мастеров в базе → клиент видит то же самое
             let prd = await window.appDB.getProducts(); if(prd.length) store.products = prd;
             store.reviews = await window.appDB.getReviews();
             
             loadAdminData();
+            // Обновляем сетку каждую минуту, чтобы прошедшее время блокировалось автоматически
+            setInterval(() => { try { renderCalendarGrid(); } catch (e) {} }, 60000);
         }
 
         async function loadAdminData() {
@@ -386,12 +392,25 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             }
         }
 
+        // Устанавливает значение в <select> часов; если такого варианта нет (старое значение) — добавляет его
+        function setTimeSelectValue(selId, value, fallback) {
+            const el = document.getElementById(selId);
+            if (!el) return;
+            const v = (value && /^\d{1,2}:\d{2}$/.test(value)) ? value.padStart(5, '0') : fallback;
+            if (el.tagName === 'SELECT' && !Array.from(el.options).some(o => o.value === v)) {
+                const opt = document.createElement('option');
+                opt.value = v; opt.textContent = v;
+                el.appendChild(opt);
+            }
+            el.value = v;
+        }
+
         // SETTINGS & SCHEDULE
         async function renderSettingsTab() {
             let set = await window.appDB.getSettings();
             Object.assign(store.settings, set);
-            document.getElementById('set_open').value = set.openTime || '10:00';
-            document.getElementById('set_close').value = set.closeTime || '21:00';
+            setTimeSelectValue('set_open', set.openTime, '10:00');
+            setTimeSelectValue('set_close', set.closeTime, '21:00');
             document.getElementById('set_tg_token').value = set.telegram_bot_token || '';
             if(set.telegram_bot_name) localStorage.setItem('telegram_bot_name', set.telegram_bot_name);
             if(document.getElementById('set_shop_name')) document.getElementById('set_shop_name').value = set.shopName || '';
@@ -685,8 +704,24 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             });
         }
         async function saveSettings(btn) {
-            store.settings.openTime = document.getElementById('set_open').value || '10:00';
-            store.settings.closeTime = document.getElementById('set_close').value || '21:00';
+            const openVal = document.getElementById('set_open').value || '10:00';
+            const closeVal = document.getElementById('set_close').value || '21:00';
+            const BL = window.BookingLogic;
+            if (BL) {
+                const oM = BL.parseTimeToMinutes(openVal, 600);
+                const cM = BL.parseTimeToMinutes(closeVal, 1260);
+                const isOvernight = cM <= 4 * 60; // закрытие 00:00–04:00 = ночная смена
+                if (!isOvernight && cM <= oM) {
+                    alert('Время закрытия должно быть позже времени открытия!');
+                    return;
+                }
+                if (!isOvernight && cM - oM < 60) {
+                    alert('Рабочий день должен длиться минимум 1 час.');
+                    return;
+                }
+            }
+            store.settings.openTime = openVal;
+            store.settings.closeTime = closeVal;
             store.settings.telegram_bot_token = document.getElementById('set_tg_token').value;
             if(document.getElementById('set_shop_name')) store.settings.shopName = document.getElementById('set_shop_name').value;
             if(document.getElementById('sms_eskiz_email')) store.settings.sms_eskiz_email = document.getElementById('sms_eskiz_email').value;
@@ -699,12 +734,25 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                 localStorage.setItem(window.appDB.tenantId + '_barber_settings', JSON.stringify(store.settings));
 
                 let tenants = await window.appDB.getGlobalTenants();
-                let myT = tenants.find(t => t.id === window.appDB.tenantId);
+                let myT = tenants.find(t => String(t.id) === String(window.appDB.tenantId));
                 if(myT && store.settings.shopName) {
                     myT.shopName = store.settings.shopName;
                     await window.appDB.saveGlobalTenants(tenants);
-                    document.getElementById('header-shop-name').innerText = `— ${myT.shopName}`;
+                    document.getElementById('header-shop-name').innerText = `— ${myT.shopName} (ID: ${myT.id})`;
                 }
+
+                // Обновляем часы работы и на общей карте клиентов (точка салона)
+                try {
+                    const closeLabel = store.settings.closeTime === '24:00' ? '00:00' : store.settings.closeTime;
+                    const hoursStr = `${store.settings.openTime} – ${closeLabel}`;
+                    const customLocs = window.BarberMobileBridge ? window.BarberMobileBridge.getCustomLocationsLocal() : {};
+                    const locId = (myT && myT.catalogId) ? String(myT.catalogId) : String(window.appDB.tenantId);
+                    if (customLocs && customLocs[locId] && window.BarberMobileBridge.saveBarbershopLocation) {
+                        await window.BarberMobileBridge.saveBarbershopLocation(locId, { ...customLocs[locId], hours: hoursStr });
+                    }
+                } catch (e) {}
+
+                renderCalendarGrid();
 
                 if(btn) { let o = btn.innerHTML; btn.innerHTML = '<i data-lucide="check" style="width:18px;height:18px;"></i> Сохранено'; btn.style.background = 'rgba(46,213,115,0.2)'; lucide.createIcons(); setTimeout(() => { btn.innerHTML = o; btn.style.background = ''; lucide.createIcons(); }, 1500); }
             } catch(e) {
@@ -1543,8 +1591,10 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
 
         function renderCalendarGrid() {
             let container = document.getElementById('calendar-grid');
+            if (!container) return;
+            const BL = window.BookingLogic;
             let todayObjDate = new Date();
-            let today = todayObjDate.toISOString().split('T')[0];
+            let today = BL ? BL.getLocalIsoDate(todayObjDate) : todayObjDate.toISOString().split('T')[0];
             let dayOfWeek = todayObjDate.getDay();
             
             document.getElementById('grid-today-date').innerText = todayObjDate.toLocaleDateString('ru-RU', {day:'numeric', month:'long'});
@@ -1562,19 +1612,22 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             }
 
             let html = '<tr><th style="width: 80px;">Время</th>';
-            mastersCopy.forEach(m => { html += `<th>${m.name}</th>`; });
+            mastersCopy.forEach(m => { html += `<th>${m.name}${m.active === false ? ' <span style="color:#ff6464;font-size:0.7rem;">(пауза)</span>' : ''}</th>`; });
             html += '</tr>';
-            
-            let tObj = new Date(`2000-01-01T${settings.openTime}:00`);
-            let eObj = new Date(`2000-01-01T${settings.closeTime}:00`);
+
+            // Та же сетка, что видит клиент (поддержка ночных смен 10:00 – 01:00)
+            const slotsMeta = BL
+                ? BL.buildRawAvailableTimesWithMeta(settings.openTime, settings.closeTime)
+                : [];
 
             // To handle rowspans, track skip counts per master
             let skipCells = {};
-            masters.forEach(m => skipCells[m.id] = 0);
+            mastersCopy.forEach(m => skipCells[m.id] = 0);
             
-            while(tObj < eObj) {
-                let ts = tObj.toTimeString().substring(0,5);
-                html += `<tr><td style="color:var(--text-muted); font-size:0.9rem;">${ts}</td>`;
+            slotsMeta.forEach(slotObj => {
+                let ts = slotObj.time;
+                const isPast = BL.isSlotInPast(today, slotObj.minuteOffset);
+                html += `<tr><td style="color:var(--text-muted); font-size:0.9rem;${isPast ? 'opacity:0.45;' : ''}">${ts}</td>`;
 
                 mastersCopy.forEach(m => {
                     let mDays = m.workingDays || [1,2,3,4,5,6,0];
@@ -1593,10 +1646,10 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                     let b = bookings.find(x => x.time === ts && x.masterId === m.id);
                     if (b) {
                         // Calculate duration in 30-min chunks
-                        let serv = allServices.find(s => s.id === b.serviceKey || s.strings.ru.title === b.service) || {};
+                        let serv = allServices.find(s => String(s.id) === String(b.serviceKey) || (s.strings && s.strings.ru && s.strings.ru.title === b.service)) || {};
                         let duration = parseInt(serv.duration) || 60; 
                         // MUST be integer to prevent decimal rowspan which completely breaks HTML tables
-                        let chunks = Math.round(duration / 30);
+                        let chunks = Math.ceil(duration / 30);
                         let rowSpan = Math.max(1, chunks);
                         
                         skipCells[m.id] = rowSpan - 1;
@@ -1607,14 +1660,15 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                         else if (st === 'in_progress') { bdCol = '#1e90ff'; icon = '<i data-lucide="play-circle" style="width:14px;height:14px;color:#1e90ff;"></i>'; }
                         
                         html += `<td rowspan="${rowSpan}" draggable="true" ondragstart="dragBooking(event, '${b.id}')" class="grid-cell-booked timeline-card" style="border-color:${bdCol}; cursor: grab;" ondragend="this.classList.remove('dragging')"><div class="grid-cell-booked-inner" style="display:flex;align-items:center;justify-content:center;gap:4px;">${icon} ${b.name}</div><div class="grid-cell-booked-sub">${b.service}</div></td>`;
+                    } else if (isPast) {
+                        html += `<td style="color:var(--text-muted); opacity:0.35; font-size:0.8rem; text-align:center;" title="Время прошло">—</td>`;
                     } else {
                         html += `<td class="grid-cell-empty timeline-cell" onclick="fastBook('${ts}', '${m.id}')" ondragover="event.preventDefault()" ondragenter="this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropBooking(event, '${ts}', '${m.id}')">+ ${ts}</td>`;
                     }
                 });
                 
                 html += '</tr>';
-                tObj.setMinutes(tObj.getMinutes() + 30); // 30 Minute step!
-            }
+            });
             container.innerHTML = html;
         }
 
@@ -2033,7 +2087,8 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                 const result = await window.appDB.commitNewBooking(newBooking, {
                     masters: store.masters,
                     services: store.services,
-                    settings: store.settings
+                    settings: store.settings,
+                    allowPast: true // админ может внести запись «задним числом» (клиент пришёл без записи)
                 });
                 store.bookings = result.items;
             } catch (e) {
@@ -2051,7 +2106,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
         }
 
         function fastBook(time, masterId) {
-            document.getElementById('manual_date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('manual_date').value = window.BookingLogic ? window.BookingLogic.getLocalIsoDate() : new Date().toISOString().split('T')[0];
             document.getElementById('manual_time').value = time;
             document.getElementById('manual_master').value = masterId;
             document.getElementById('manual_client_name').focus();

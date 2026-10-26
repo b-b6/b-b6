@@ -79,18 +79,14 @@ const i18n = {
         const DB_REVIEWS = 'barber_reviews';
         const DB_DISABLED_DATES = 'barber_disabled_dates';
 
+        // ВАЖНО: дефолты 1-в-1 совпадают с admin.js, чтобы клиент видел ровно то же, что и владелец в админке
         const defaultServices = [
-            { id: 'haircut', price: 800, duration: 45, strings: { ru:{title:"Мужская стрижка", desc:"Классическая или модельная стрижка с мытьем и укладкой"}, en:{title:"Men's Haircut", desc:"Classic haircut with wash and styling"}, uz:{title:"Erkaklar soch turmagi", desc:"Klassik soch turmagi va yuvish"}, kg:{title:"Эркектердин чач жасалгасы", desc:"Классикалык чач кыркуу"} } },
-            { id: 'combo', price: 1200, duration: 60, strings: { ru:{title:"Стрижка + Борода", desc:"Комплексный уход: стрижка волос и моделирование бороды"}, en:{title:"Haircut + Beard", desc:"Full combo: haircut and beard shaping"}, uz:{title:"Soch va Soqol", desc:"Kompleks parvarish: soch va soqol"}, kg:{title:"Чач жана Сакал", desc:"Чач жана сакал комплекси"} } },
-            { id: 'beard', price: 500, duration: 30, strings: { ru:{title:"Моделирование бороды", desc:"Придание формы, распаривание и контуринг опасной бритвой"}, en:{title:"Beard Trim & Shape", desc:"Shaping, hot towel and straight razor contour"}, uz:{title:"Soqol turmagi", desc:"Soqolga shakl berish va tozalash"}, kg:{title:"Сакал тууралоо", desc:"Сакалга форма берүү"} } },
-            { id: 'clipper', price: 500, duration: 30, strings: { ru:{title:"Стрижка под машинку", desc:"Стрижка одной или несколькими насадками"}, en:{title:"Buzz Cut / Clipper", desc:"Short haircut using clippers"}, uz:{title:"Mashinkada soch olish", desc:"Mashinka yordamida soch olish"}, kg:{title:"Машинка менен кыркуу", desc:"Машинка менен кыска чач"} } },
-            { id: 'royal_shave', price: 700, duration: 45, strings: { ru:{title:"Королевское бритьё", desc:"Традиционное бритьё с горячими компрессами и премиум маслами"}, en:{title:"Royal Shave", desc:"Traditional hot towel straight razor shave"}, uz:{title:"Qirollik soqol olish", desc:"Issiq kompress va moylar bilan soqol olish"}, kg:{title:"Падышалык кырынуу", desc:"Ысык компресс менен кырынуу"} } },
-            { id: 'kids', price: 600, duration: 45, strings: { ru:{title:"Детская стрижка (до 12 лет)", desc:"Стильная стрижка для юных джентльменов"}, en:{title:"Kids Haircut", desc:"Haircut for kids under 12"}, uz:{title:"Bolalar soch turmagi", desc:"12 yoshgacha bolalar uchun"}, kg:{title:"Балдар чач жасалгасы", desc:"12 жашка чейинки балдарга"} } }
+            { id: 'haircut', price: 1500, duration: 60, strings: { ru: { title: "Мужская стрижка", desc: "Мытье головы, стрижка, укладка" }, en: { title: "Men's Haircut", desc: "Hair wash, haircut, styling" }, uz: { title: "Erkaklar soch turmagi", desc: "Soch yuvish, soch kesish, turmaklash" }, kg: { title: "Эркектердин чач кыркуусу", desc: "Чач жуу, чач кыркуу, жасалгалоо" } } },
+            { id: 'beard', price: 1000, duration: 30, strings: { ru: { title: "Оформление бороды", desc: "Распаривание, коррекция формы, масло" }, en: { title: "Beard Styling", desc: "Steaming, shaping, oil" }, uz: { title: "Soqol olish", desc: "Bug'lash, shakl berish, yog'" }, kg: { title: "Сакал коюу", desc: "Буулоо, форма берүү, май" } } }
         ];
         const defaultMasters = [
-            { id: 'm1', name: 'Азамат (Топ-Барбер)', description: 'Опыт 7 лет • Эксперт по классике и фейдам', district: 'Бишкек', lat: 42.8746, lng: 74.5976, workingDays: [1,2,3,4,5,6,0] },
-            { id: 'm2', name: 'Тимур (Шеф-Мастер)', description: 'Опыт 9 лет • Моделирование бороды и опасная бритва', district: 'Бишкек', lat: 42.8756, lng: 74.5986, workingDays: [1,2,3,4,5,6,0] },
-            { id: 'm3', name: 'Бекзат (Барбер-стилист)', description: 'Опыт 5 лет • Трендовые кроп и текстурные стрижки', district: 'Бишкек', lat: 42.8736, lng: 74.5966, workingDays: [1,2,3,4,5,6,0] }
+            { id: 'm1', name: 'Мастер Алексей', share: 50, productShare: 10, workingDays: [1,2,3,4,5,6,0] },
+            { id: 'm2', name: 'Мастер Иван', share: 50, productShare: 10, workingDays: [1,2,3,4,5,6,0] }
         ];
         const defaultSettings = { openTime: '10:00', closeTime: '21:00' };
 
@@ -443,10 +439,10 @@ const i18n = {
         let bookingFinalizeInProgress = false;
 
         function renderLiveStats() {
-            const masters = getMasters();
+            const masters = getMasters().filter(m => m.active !== false);
             const bookings = getDB(DB_BOOKINGS).filter(b => b.status !== 'cancelled');
             const reviews = getDB(DB_REVIEWS);
-            const todayIso = new Date().toISOString().split('T')[0];
+            const todayIso = window.BookingLogic ? window.BookingLogic.getLocalIsoDate() : new Date().toISOString().split('T')[0];
             const todayCount = bookings.filter(b => b.date === todayIso).length;
             const totalClients = [...new Set(bookings.map(b => b.phone).filter(Boolean))].length || bookings.length;
             let avgRating = '5.0';
@@ -522,7 +518,9 @@ const i18n = {
                     if (catShop.city && catShop.address) addrParts.push(`📍 ${catShop.city}, ${catShop.address}`);
                     else if (catShop.address) addrParts.push(`📍 ${catShop.address}`);
                     else if (catShop.city) addrParts.push(`📍 ${catShop.city}`);
-                    if (catShop.hours) addrParts.push(`🕒 ${catShop.hours}`);
+                    // Часы работы берём из настроек админки (приоритет), а не из старого каталога карты
+                    if (st.openTime && st.closeTime) addrParts.push(`🕒 ${st.openTime}–${st.closeTime === '24:00' ? '00:00' : st.closeTime}`);
+                    else if (catShop.hours) addrParts.push(`🕒 ${catShop.hours}`);
                     if (catShop.phone) addrParts.push(`📞 ${catShop.phone}`);
                     document.querySelectorAll('[data-i18n="subtitle"]').forEach(el => {
                         el.textContent = addrParts.join(' • ');
@@ -586,16 +584,29 @@ const i18n = {
             }).catch(err => console.warn('Background sync error:', err));
 
             // Подписка на обновления в реальном времени
-            window.appDB.subscribe('barber_bookings', data => { store.bookings = data || []; renderLiveStats(); loadMyBookings(); if(currentStep===3) renderTimes(); });
+            window.appDB.subscribe('barber_bookings', data => { store.bookings = data || []; renderLiveStats(); loadMyBookings(); if(currentStep===3 && bookingData.date) renderTimes(); });
             window.appDB.subscribe('barber_reviews', data => { store.reviews = data || []; renderLiveStats(); renderPublicReviews(); });
-            window.appDB.subscribe('barber_masters', data => { if(data && data.length) { store.masters = data; if(currentStep===2) renderMastersUI(); } });
+            window.appDB.subscribe('barber_masters', data => { if(data && data.length) { store.masters = data; renderLiveStats(); if(currentStep===2) renderMastersUI(); if(currentStep===3) renderDates(); } });
             window.appDB.subscribe('barber_services', data => { if(data && data.length) store.services = data; if(currentStep===1) renderServicesUI(); });
             window.appDB.subscribe('barber_settings', data => {
                 if(data && typeof data === 'object' && !Array.isArray(data) && Object.keys(data).length) {
                     store.settings = data;
                 }
                 applySettings(store.settings);
+                // Админ изменил часы работы — мгновенно перестраиваем календарь и слоты
+                if (currentStep === 3) renderDates();
             });
+
+            // Каждую минуту обновляем слоты: прошедшее время автоматически исчезает
+            setInterval(() => {
+                if (currentStep !== 3) return;
+                const prevTime = bookingData.time;
+                renderDates(); // пересчитывает доступные даты (сегодня может закончиться)
+                if (bookingData.date && prevTime) {
+                    bookingData.time = prevTime;
+                    renderTimes(); // если выбранное время уже прошло — оно сбросится, кнопка заблокируется
+                }
+            }, 60000);
 
             handleGoogleRedirectResult();
         }
@@ -689,21 +700,48 @@ const i18n = {
                 return;
             }
             let mDays = selMaster ? (selMaster.workingDays || [1,2,3,4,5,6,0]) : [1,2,3,4,5,6,0];
+            const BL = window.BookingLogic;
+            const settingsNow = getSettings();
+            const todayIso = BL.getLocalIsoDate(today);
+            const slotsMetaToday = BL.buildRawAvailableTimesWithMeta(settingsNow.openTime, settingsNow.closeTime);
+            const todayHasFutureSlots = slotsMetaToday.some(s => !BL.isSlotInPast(todayIso, s.minuteOffset));
+            let firstAvailableCard = null;
+            let firstAvailableIso = null;
+            let selectedStillValid = false;
 
             for(let i=0; i<14; i++) {
                 let d = new Date(today); d.setDate(d.getDate() + i);
-                let isoDate = d.toISOString().split('T')[0];
+                let isoDate = BL.getLocalIsoDate(d);
                 
                 let dayOfWeek = d.getDay();
                 let masterNotWorking = bookingData.masterId !== 'any' && !mDays.includes(dayOfWeek);
-                let isDateDisabled = disabledDates.includes(isoDate) || masterNotWorking;
+                let todayIsOver = (i === 0 && !todayHasFutureSlots);
+                let isDateDisabled = disabledDates.includes(isoDate) || masterNotWorking || todayIsOver;
                 
                 let card = document.createElement('div'); card.className = `date-card ${isDateDisabled ? 'disabled' : ''}`;
-                card.innerHTML = `<div class="day">${d.toLocaleDateString(locales[currentLang], { weekday: 'short' })}</div><div class="num">${d.getDate()}</div>`;
+                const dayLabel = i === 0 ? 'Сегодня' : (i === 1 ? 'Завтра' : d.toLocaleDateString(locales[currentLang], { weekday: 'short' }));
+                card.innerHTML = `<div class="day">${dayLabel}</div><div class="num">${d.getDate()}</div>`;
+                if (todayIsOver) card.title = 'Рабочий день уже закончился';
+                else if (masterNotWorking) card.title = 'Выходной у мастера';
                 
-                if (!isDateDisabled) card.onclick = () => selectDate(isoDate, card);
-                if (bookingData.date === isoDate && !isDateDisabled) { card.classList.add('selected'); selectDate(isoDate, card); }
+                if (!isDateDisabled) {
+                    card.onclick = () => selectDate(isoDate, card);
+                    if (!firstAvailableCard) { firstAvailableCard = card; firstAvailableIso = isoDate; }
+                }
                 container.appendChild(card);
+                if (bookingData.date === isoDate && !isDateDisabled) { selectedStillValid = true; selectDate(isoDate, card); }
+            }
+
+            // Если ранее выбранная дата стала недоступной (прошла / выходной) — сбрасываем её
+            if (!selectedStillValid) {
+                bookingData.date = null; bookingData.time = null;
+                const tp = document.getElementById('time-picker');
+                if (tp) tp.style.display = 'none';
+                const btn3 = document.getElementById('btn-next-3');
+                if (btn3) btn3.disabled = true;
+                if (!firstAvailableCard) {
+                    container.insertAdjacentHTML('beforeend', `<div style="grid-column:1/-1; padding:14px; text-align:center; color:var(--text-muted); font-size:0.88rem;">Нет доступных дат в ближайшие 2 недели</div>`);
+                }
             }
         }
 
@@ -718,78 +756,59 @@ const i18n = {
         function renderTimes() {
             const container = document.getElementById('times-container'); container.innerHTML = '';
             document.getElementById('time-picker').style.display = 'block';
-            
-            let allBookings = store.bookings.filter(b => b.status !== 'cancelled');
-            let settings = getSettings();
-            let allServices = getServices();
-            let durInMinutes = bookingData.duration || 60;
-            let blocksNeeded = Math.max(1, durInMinutes / 30);
-            
-            // Generate available times based on settings (every 30 mins)
-            let rawAvailableTimes = [];
-            let tObj = new Date(`2000-01-01T${settings.openTime}:00`);
-            let eObj = new Date(`2000-01-01T${settings.closeTime}:00`);
-            
-            while(tObj < eObj) {
-                let ts = tObj.toTimeString().substring(0,5);
-                rawAvailableTimes.push(ts);
-                tObj.setMinutes(tObj.getMinutes() + 30);
-            }
+            if (!bookingData.date) return;
 
-            // Create a map of booked slots
-            let bookedMap = {}; 
-            allBookings.filter(b => b.date === bookingData.date).forEach(b => {
-                let sDur = 60; 
-                let bSrv = allServices.find(s => String(s.id) === String(b.serviceKey) || getServiceStrings(s, 'ru').ruTitle === b.service);
-                if (bSrv && bSrv.duration) sDur = bSrv.duration;
-                
-                let bSlots = Math.max(1, sDur / 30);
-                
-                let tIdx = rawAvailableTimes.indexOf(b.time);
-                if(tIdx !== -1) {
-                    for(let k=0; k<bSlots; k++) {
-                        if (tIdx+k < rawAvailableTimes.length) {
-                            let bkTime = rawAvailableTimes[tIdx+k];
-                            if(!bookedMap[bkTime]) bookedMap[bkTime] = [];
-                            bookedMap[bkTime].push(b.masterId);
-                        }
-                    }
-                }
-            });
+            const BL = window.BookingLogic;
+            const settings = getSettings();
+            const allServices = getServices();
+            const durInMinutes = bookingData.duration || 60;
 
-            // Master logic
-            let numMasters = getMasters().length;
+            // Единая сетка слотов (поддержка ночных смен, например 10:00 – 01:00)
+            const slotsMeta = BL.buildRawAvailableTimesWithMeta(settings.openTime, settings.closeTime);
+            const rawAvailableTimes = slotsMeta.map(s => s.time);
+            const allBookings = store.bookings.filter(b => b.status !== 'cancelled');
+            const bookedMap = BL.buildBookedMapForDate(allBookings, bookingData.date, rawAvailableTimes, allServices);
 
-            rawAvailableTimes.forEach((time, index) => {
-                let disabled = false;
-                
-                // Do we have enough continuous blocks?
-                for(let k=0; k<blocksNeeded; k++) {
-                    if (index + k >= rawAvailableTimes.length) {
-                        disabled = true; break;
-                    }
-                    let checkTime = rawAvailableTimes[index+k];
-                    let slotsBooked = bookedMap[checkTime] || [];
-                    
-                    if(bookingData.masterId === 'any') {
-                        if (slotsBooked.length >= numMasters || slotsBooked.includes('any')) disabled = true;
-                    } else {
-                        if (slotsBooked.includes(bookingData.masterId) || slotsBooked.includes('any')) disabled = true;
-                    }
+            // Для «Любой мастер» учитываем только активных мастеров, работающих в этот день недели
+            const dow = new Date(bookingData.date + 'T12:00:00').getDay();
+            const workingMasters = getMasters().filter(m => m.active !== false && (m.workingDays || [1,2,3,4,5,6,0]).includes(dow));
+            const numMasters = Math.max(1, workingMasters.length);
+
+            let availableCount = 0;
+            slotsMeta.forEach(slotObj => {
+                const time = slotObj.time;
+                const isPast = BL.isSlotInPast(bookingData.date, slotObj.minuteOffset);
+                const isBlocked = BL.slotIntervalBlocked(bookedMap, rawAvailableTimes, time, bookingData.masterId, numMasters, durInMinutes);
+                const disabled = isPast || isBlocked;
+
+                // Прошедшее время сегодня не показываем вообще — клиент видит только актуальные слоты
+                if (isPast) {
+                    if (bookingData.time === time) bookingData.time = null;
+                    return;
                 }
 
-                let slot = document.createElement('div'); slot.className = `time-slot ${disabled ? 'disabled' : ''}`; slot.innerText = time;
-                if (!disabled) slot.onclick = () => {
-                    bookingData.time = time;
-                    document.querySelectorAll('.time-slot').forEach(c => c.classList.remove('selected'));
-                    slot.classList.add('selected');
-                    document.getElementById('btn-next-3').disabled = false;
-                };
+                let slot = document.createElement('div');
+                slot.className = `time-slot ${disabled ? 'disabled' : ''}`;
+                slot.innerText = time;
+                if (isBlocked) slot.title = 'Занято';
+                if (!disabled) {
+                    availableCount++;
+                    slot.onclick = () => {
+                        bookingData.time = time;
+                        document.querySelectorAll('.time-slot').forEach(c => c.classList.remove('selected'));
+                        slot.classList.add('selected');
+                        document.getElementById('btn-next-3').disabled = false;
+                    };
+                }
                 if (bookingData.time === time && !disabled) slot.classList.add('selected');
-                else if (bookingData.time === time && disabled) bookingData.time = null; // deselect if blocked
-                
+                else if (bookingData.time === time && disabled) bookingData.time = null;
                 container.appendChild(slot);
             });
+
+            if (availableCount === 0) {
+                container.innerHTML = `<div style="grid-column:1/-1; padding:16px; text-align:center; background:var(--bg-main); border:1px dashed var(--border); border-radius:12px; color:var(--text-muted); font-size:0.88rem; font-weight:600;">На этот день свободного времени нет — выберите другую дату</div>`;
+            }
+            document.getElementById('btn-next-3').disabled = !bookingData.time;
         }
 
         // STEPPER CONTROL (With Solo-Master Mode Support — Skips Step 2 Master Selection)
@@ -1190,7 +1209,7 @@ const i18n = {
             let allBookings = store.bookings;
             
             // Find latest future/today booking
-            let todayIso = new Date().toISOString().split('T')[0];
+            let todayIso = window.BookingLogic ? window.BookingLogic.getLocalIsoDate() : new Date().toISOString().split('T')[0];
             let activeBooking = null;
             
             for(let i=myHist.length-1; i>=0; i--) {

@@ -310,8 +310,8 @@ body.dragging .map-ctrls{transition:opacity .2s}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script src="barbershops_kg.js"></script>
-<script src="assets/db.js?v=8"></script>
-<script src="assets/mobile-bridge.js?v=8"></script>
+<script src="assets/db.js?v=9"></script>
+<script src="assets/mobile-bridge.js?v=9"></script>
 
 <script>
 (() => {
@@ -567,10 +567,13 @@ body.dragging .map-ctrls{transition:opacity .2s}
     try {
       const tenants = JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
       if (Array.isArray(tenants)) {
+        const bName = String(b.name || b.title || '').trim().toLowerCase();
         const bound = tenants.find(t =>
           (t.catalogId && String(t.catalogId) === String(b.id)) ||
           (String(t.id) === String(b.id)) ||
-          (t.shopName && b.name && t.shopName.toLowerCase() === b.name.toLowerCase())
+          (bName && String(t.id).toLowerCase() === bName) ||
+          (t.shopName && bName && String(t.shopName).trim().toLowerCase() === bName) ||
+          (t.customLat && b.lat && Math.abs(Number(t.customLat) - Number(b.lat)) < 0.0005 && Math.abs(Number(t.customLon) - Number(b.lon != null ? b.lon : b.lng)) < 0.0005)
         );
         if (bound && bound.id) return String(bound.id);
       }

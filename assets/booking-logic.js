@@ -1,30 +1,72 @@
 /**
- * Единая логика сетки слотов (шаг 30 мин) и проверки пересечений с renderTimes на index.html.
+ * Единая логика сетки слотов (шаг 30 мин), ночных смен и отключения прошедшего времени.
  */
 (function BookingLogic(global) {
     const STEP_MIN = 30;
 
-    function padTime(openTime, closeTime) {
-        const ot = openTime && openTime.length >= 5 ? openTime.substring(0, 5) : '10:00';
-        const ct = closeTime && closeTime.length >= 5 ? closeTime.substring(0, 5) : '21:00';
-        return [ot, ct];
+    function getLocalIsoDate(d = new Date()) {
+        const yr = d.getFullYear();
+        const mo = String(d.getMonth() + 1).padStart(2, '0');
+        const da = String(d.getDate()).padStart(2, '0');
+        return `${yr}-${mo}-${da}`;
+    }
+
+    function parseTimeToMinutes(timeStr, defaultMins) {
+        if (!timeStr || typeof timeStr !== 'string') return defaultMins;
+        const m = timeStr.trim().match(/^(\d{1,2}):(\d{2})/);
+        if (!m) return defaultMins;
+        const hh = parseInt(m[1], 10);
+        const mm = parseInt(m[2], 10);
+        if (isNaN(hh) || isNaN(mm) || hh < 0 || hh > 24 || mm < 0 || mm > 59) return defaultMins;
+        return hh * 60 + mm;
+    }
+
+    function buildRawAvailableTimesWithMeta(openTime, closeTime) {
+        let openMins = parseTimeToMinutes(openTime, 10 * 60);
+        let closeMins = parseTimeToMinutes(closeTime, 21 * 60);
+
+        openMins = Math.floor(openMins / STEP_MIN) * STEP_MIN;
+        closeMins = Math.round(closeMins / STEP_MIN) * STEP_MIN;
+
+        if (closeMins <= openMins) {
+            // Если указано закрытие ночью (00:00 – 04:00), считаем это переходом через полночь (+24ч)
+            if (closeMins <= 4 * 60) {
+                closeMins += 24 * 60;
+            } else {
+                closeMins = Math.max(openMins + 60, 21 * 60);
+            }
+        }
+
+        const slots = [];
+        for (let m = openMins; m < closeMins; m += STEP_MIN) {
+            const wrapped = m % (24 * 60);
+            const hh = String(Math.floor(wrapped / 60)).padStart(2, '0');
+            const mm = String(wrapped % 60).padStart(2, '0');
+            slots.push({
+                time: `${hh}:${mm}`,
+                minuteOffset: m
+            });
+        }
+        return slots;
     }
 
     function buildRawAvailableTimes(openTime, closeTime) {
-        const [ot, ct] = padTime(openTime, closeTime);
-        const rawAvailableTimes = [];
-        let tObj = new Date(`2000-01-01T${ot}:00`);
-        let eObj = new Date(`2000-01-01T${ct}:00`);
-        while (tObj < eObj) {
-            rawAvailableTimes.push(tObj.toTimeString().substring(0, 5));
-            tObj.setMinutes(tObj.getMinutes() + STEP_MIN);
-        }
-        return rawAvailableTimes;
+        return buildRawAvailableTimesWithMeta(openTime, closeTime).map(s => s.time);
+    }
+
+    function isSlotInPast(isoDate, slotMinuteOffset, nowDate = new Date()) {
+        if (!isoDate) return false;
+        const todayIso = getLocalIsoDate(nowDate);
+        if (isoDate < todayIso) return true;
+        if (isoDate > todayIso) return false;
+        const nowMins = nowDate.getHours() * 60 + nowDate.getMinutes();
+        return slotMinuteOffset <= nowMins;
     }
 
     function serviceDuration(serviceKey, allServices) {
-        const bSrv = allServices.find(s => s.id === serviceKey);
-        return bSrv && bSrv.duration ? bSrv.duration : 60;
+        const list = Array.isArray(allServices) ? allServices : [];
+        const bSrv = list.find(s => String(s.id) === String(serviceKey));
+        return bSrv && bSrv.duration ? Number(bSrv.duration) : 60;
     }
 
     /**
@@ -32,15 +74,17 @@
      */
     function buildBookedMapForDate(existingBookings, date, rawAvailableTimes, allServices) {
         const bookedMap = {};
-        existingBookings
+        const list = Array.isArray(existingBookings) ? existingBookings : [];
+        const services = Array.isArray(allServices) ? allServices : [];
+        list
             .filter(b => b.status !== 'cancelled' && b.date === date)
             .forEach(b => {
-                let sDur = serviceDuration(b.serviceKey, allServices);
+                let sDur = serviceDuration(b.serviceKey, services);
                 if (!b.serviceKey && b.service) {
-                    const byTitle = allServices.find(s => s.strings && s.strings.ru && s.strings.ru.title === b.service);
-                    if (byTitle && byTitle.duration) sDur = byTitle.duration;
+                    const byTitle = services.find(s => s.strings && s.strings.ru && s.strings.ru.title === b.service);
+                    if (byTitle && byTitle.duration) sDur = Number(byTitle.duration);
                 }
-                const bSlots = Math.max(1, sDur / STEP_MIN);
+                const bSlots = Math.max(1, Math.ceil(sDur / STEP_MIN));
                 const tIdx = rawAvailableTimes.indexOf(b.time);
                 if (tIdx === -1) return;
                 for (let k = 0; k < bSlots; k++) {
@@ -58,7 +102,7 @@
      * true = слот с этой стартовой меткой занят (как disabled в UI).
      */
     function slotIntervalBlocked(bookedMap, rawAvailableTimes, timeStart, masterId, numMasters, durMinutes) {
-        const blocksNeeded = Math.max(1, durMinutes / STEP_MIN);
+        const blocksNeeded = Math.max(1, Math.ceil((durMinutes || 60) / STEP_MIN));
         const index = rawAvailableTimes.indexOf(timeStart);
         if (index === -1 || index + blocksNeeded > rawAvailableTimes.length) return true;
 
@@ -77,7 +121,7 @@
     /**
      * @param {Array} existingItems — все записи (в т.ч. cancelled — отфильтруем)
      * @param {object} candidate — { date, time, masterId, serviceKey }
-     * @param {object} ctx — { masters, services, settings }
+     * @param {object} ctx — { masters, services, settings, allowPast }
      * @returns {string|null} — null если ок, иначе код ошибки
      */
     function validateNewBooking(existingItems, candidate, ctx) {
@@ -90,10 +134,19 @@
         }
 
         const dur = serviceDuration(candidate.serviceKey, services);
-        const rawAvailableTimes = buildRawAvailableTimes(settings.openTime, settings.closeTime);
-        const existing = existingItems.filter(b => b.status !== 'cancelled');
+        const slotsMeta = buildRawAvailableTimesWithMeta(settings.openTime, settings.closeTime);
+        const rawAvailableTimes = slotsMeta.map(s => s.time);
+
+        if (!ctx.allowPast) {
+            const foundSlot = slotsMeta.find(s => s.time === candidate.time);
+            if (foundSlot && isSlotInPast(candidate.date, foundSlot.minuteOffset)) {
+                return '⏰ Это время уже прошло. Пожалуйста, выберите актуальное время.';
+            }
+        }
+
+        const existing = (existingItems || []).filter(b => b.status !== 'cancelled');
         const bookedMap = buildBookedMapForDate(existing, candidate.date, rawAvailableTimes, services);
-        const numMasters = Math.max(1, masters.length);
+        const numMasters = Math.max(1, masters.filter(m => m.active !== false).length || masters.length);
 
         if (slotIntervalBlocked(bookedMap, rawAvailableTimes, candidate.time, candidate.masterId, numMasters, dur)) {
             return 'SLOT_TAKEN';
@@ -103,7 +156,11 @@
 
     global.BookingLogic = {
         STEP_MIN,
+        getLocalIsoDate,
+        parseTimeToMinutes,
+        buildRawAvailableTimesWithMeta,
         buildRawAvailableTimes,
+        isSlotInPast,
         buildBookedMapForDate,
         slotIntervalBlocked,
         validateNewBooking,

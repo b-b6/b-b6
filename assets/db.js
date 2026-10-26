@@ -30,15 +30,14 @@ class BarberDB {
             }
         }
 
+        const urlShopName = urlParams.get('shopName') || '';
+        this.rawUrlTenant = urlTenant || '';
+        this.urlShopName = urlShopName;
+
         if (urlTenant) {
             try {
                 const globalTenants = JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
-                if (Array.isArray(globalTenants)) {
-                    const bound = globalTenants.find(t => t.catalogId && String(t.catalogId) === String(urlTenant));
-                    if (bound && bound.id) {
-                        urlTenant = String(bound.id);
-                    }
-                }
+                urlTenant = this._resolveTenantIdFromCatalog(urlTenant, urlShopName, globalTenants);
             } catch (e) {}
             this.tenantId = urlTenant;
             try { localStorage.setItem('tenant_id', urlTenant); } catch(e) {}
@@ -68,6 +67,47 @@ class BarberDB {
         this.initPromise = this._initFirebase();
     }
     
+    _resolveTenantIdFromCatalog(rawTenant, urlShopName, tenantsList) {
+        if (!rawTenant || !Array.isArray(tenantsList) || tenantsList.length === 0) return rawTenant;
+        const rawStr = String(rawTenant).trim();
+        const shopStr = String(urlShopName || '').trim();
+        const shopLower = shopStr.toLowerCase();
+
+        // 1. Exact tenant ID match
+        const exact = tenantsList.find(t => String(t.id) === rawStr);
+        if (exact && exact.id) return String(exact.id);
+
+        // 2. Bound catalogId match
+        const byCat = tenantsList.find(t => t.catalogId && String(t.catalogId) === rawStr);
+        if (byCat && byCat.id) return String(byCat.id);
+
+        // 3. URL shopName matches a tenant ID (e.g. ?id=shop_179...&shopName=0203) or tenant shopName
+        if (shopStr) {
+            const byShopId = tenantsList.find(t => String(t.id) === shopStr);
+            if (byShopId && byShopId.id) return String(byShopId.id);
+
+            const byShopTitle = tenantsList.find(t => t.shopName && String(t.shopName).trim().toLowerCase() === shopLower);
+            if (byShopTitle && byShopTitle.id) return String(byShopTitle.id);
+        }
+
+        // 4. Check custom map locations & BARBERSHOPS_DATA for point name matching tenant ID or shopName
+        try {
+            const customLocs = JSON.parse(localStorage.getItem('barber_custom_map_locations') || '{}');
+            const locObj = customLocs[rawStr] || (Array.isArray(window.BARBERSHOPS_DATA) ? window.BARBERSHOPS_DATA.find(s => String(s.id) === rawStr) : null);
+            if (locObj && locObj.name) {
+                const locName = String(locObj.name).trim();
+                const locLower = locName.toLowerCase();
+                const byLocId = tenantsList.find(t => String(t.id) === locName);
+                if (byLocId && byLocId.id) return String(byLocId.id);
+
+                const byLocTitle = tenantsList.find(t => t.shopName && String(t.shopName).trim().toLowerCase() === locLower);
+                if (byLocTitle && byLocTitle.id) return String(byLocTitle.id);
+            }
+        } catch (e) {}
+
+        return rawStr;
+    }
+
     async _initFirebase() {
         const configStr = `{
             "apiKey": "AIzaSyDQvE3XhMCae6rmpYMhmTA057KG0CuT0t4",
@@ -102,9 +142,9 @@ class BarberDB {
                 if (testSnap && testSnap.exists() && Array.isArray(testSnap.data().tenants)) {
                     const remoteTenants = testSnap.data().tenants;
                     try { localStorage.setItem('global_saas_tenants', JSON.stringify(remoteTenants)); } catch (e) {}
-                    const bound = remoteTenants.find(t => t.catalogId && String(t.catalogId) === String(this.tenantId));
-                    if (bound && bound.id) {
-                        this.tenantId = String(bound.id);
+                    const resolved = this._resolveTenantIdFromCatalog(this.rawUrlTenant || this.tenantId, this.urlShopName, remoteTenants);
+                    if (resolved && resolved !== this.tenantId) {
+                        this.tenantId = String(resolved);
                         try { localStorage.setItem('tenant_id', this.tenantId); } catch (e) {}
                     }
                 }

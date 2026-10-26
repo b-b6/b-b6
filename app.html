@@ -12,8 +12,8 @@
     <title>BarberMap KG — Выбор роли</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="assets/db.js?v=6"></script>
-    <script src="assets/mobile-bridge.js?v=6"></script>
+    <script src="assets/db.js?v=9"></script>
+    <script src="assets/mobile-bridge.js?v=9"></script>
     <script src="barbershops_kg.js"></script>
 
     <style>
@@ -825,9 +825,10 @@
                 return;
             }
             const baseCatalog = window.BARBERSHOPS_DATA || [];
-            const customLocs = (window.BarberMobileBridge && typeof window.BarberMobileBridge.getCustomLocationsLocal === 'function')
+            const customLocsRaw = (window.BarberMobileBridge && typeof window.BarberMobileBridge.getCustomLocationsLocal === 'function')
                 ? window.BarberMobileBridge.getCustomLocationsLocal()
-                : [];
+                : {};
+            const customLocs = Array.isArray(customLocsRaw) ? customLocsRaw : Object.values(customLocsRaw || {});
             const catalog = [...customLocs, ...baseCatalog];
             const matches = catalog.filter(b =>
                 (b.name && b.name.toLowerCase().includes(q)) ||

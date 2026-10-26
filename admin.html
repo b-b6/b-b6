@@ -13,10 +13,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="barbershops_kg.js"></script>
-    <script src="assets/booking-logic.js"></script>
+    <script src="assets/booking-logic.js?v=9"></script>
     <!-- Import DB Layer & Mobile Bridge -->
-    <script src="assets/db.js"></script>
-    <script src="assets/mobile-bridge.js"></script>
+    <script src="assets/db.js?v=9"></script>
+    <script src="assets/mobile-bridge.js?v=9"></script>
     <!-- Leaflet Interactive Map for Pinning Barbershop Coordinates -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -429,16 +429,16 @@
             </div>
 
             <div class="admin-card">
-                <h3 data-i18n="set_sec_title">Безопасность (Логин и Пароль)</h3>
-                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;" data-i18n="set_sec_desc">Измените свой логин (Email) и PIN-код для входа.</p>
+                <h3 data-i18n="set_sec_title">Безопасность (Цифровой ID и PIN-пароль)</h3>
+                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;" data-i18n="set_sec_desc">Ваш цифровой ID салона и 4-значный PIN-код для входа.</p>
                 <div class="flex-row">
                     <div class="form-group" style="margin: 0; flex: 1;">
-                        <label>Ваш Логин (Email)</label>
-                        <input type="email" id="set_new_email" class="form-control" placeholder="admin@example.com" readonly style="opacity:0.6; cursor:not-allowed;">
+                        <label>Ваш Цифровой ID (и Телефон)</label>
+                        <input type="text" id="set_new_email" class="form-control" placeholder="ID салона" readonly style="opacity:0.6; cursor:not-allowed;">
                     </div>
                     <div class="form-group" style="margin: 0; flex: 1;">
-                        <label>Ваш PIN-код</label>
-                        <input type="text" id="set_new_pin" class="form-control" placeholder="1234">
+                        <label>Ваш 4-значный PIN-код</label>
+                        <input type="text" id="set_new_pin" class="form-control" placeholder="1234" inputmode="numeric" maxlength="4">
                     </div>
                 </div>
                 <button class="btn" style="margin-top: 15px; width: auto;" onclick="changeMyCredentials()"><span data-i18n="btn_change_pin">Изменить PIN-код</span></button>
@@ -446,10 +446,58 @@
 
             <div class="admin-card">
                 <h3>Рабочие часы (Открытие и закрытие салона)</h3>
-                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">Общие часы, когда салон может принимать клиентов.</p>
+                <p style="color: var(--text-muted); margin-bottom: 12px; font-size: 0.9rem;">Выберите время начала и окончания приёма клиентов (шаг слотов записи — 30 минут).</p>
+                <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;">
+                    <button type="button" class="btn btn-outline" style="width:auto; padding:6px 12px; font-size:0.78rem; margin:0;" onclick="document.getElementById('set_open').value='09:00'; document.getElementById('set_close').value='20:00';">🕘 09:00 – 20:00</button>
+                    <button type="button" class="btn btn-outline" style="width:auto; padding:6px 12px; font-size:0.78rem; margin:0;" onclick="document.getElementById('set_open').value='10:00'; document.getElementById('set_close').value='21:00';">🕙 10:00 – 21:00 (Стандарт)</button>
+                    <button type="button" class="btn btn-outline" style="width:auto; padding:6px 12px; font-size:0.78rem; margin:0;" onclick="document.getElementById('set_open').value='10:00'; document.getElementById('set_close').value='22:00';">🕙 10:00 – 22:00</button>
+                    <button type="button" class="btn btn-outline" style="width:auto; padding:6px 12px; font-size:0.78rem; margin:0;" onclick="document.getElementById('set_open').value='10:00'; document.getElementById('set_close').value='23:30';">🌙 10:00 – 23:30</button>
+                </div>
                 <div class="flex-row">
-                    <div class="form-group" style="margin: 0; flex: 1;"><label>Открытие</label><input type="time" id="set_open" class="form-control"></div>
-                    <div class="form-group" style="margin: 0; flex: 1;"><label>Закрытие</label><input type="time" id="set_close" class="form-control"></div>
+                    <div class="form-group" style="margin: 0; flex: 1;">
+                        <label>Открытие (Начало смены)</label>
+                        <select id="set_open" class="form-control" style="appearance:auto; cursor:pointer;">
+                            <option value="06:00">06:00 (Утро)</option>
+                            <option value="06:30">06:30</option>
+                            <option value="07:00">07:00</option>
+                            <option value="07:30">07:30</option>
+                            <option value="08:00">08:00</option>
+                            <option value="08:30">08:30</option>
+                            <option value="09:00">09:00</option>
+                            <option value="09:30">09:30</option>
+                            <option value="10:00" selected>10:00 (Стандарт)</option>
+                            <option value="10:30">10:30</option>
+                            <option value="11:00">11:00</option>
+                            <option value="11:30">11:30</option>
+                            <option value="12:00">12:00</option>
+                            <option value="12:30">12:30</option>
+                            <option value="13:00">13:00</option>
+                            <option value="14:00">14:00</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin: 0; flex: 1;">
+                        <label>Закрытие (Конец смены)</label>
+                        <select id="set_close" class="form-control" style="appearance:auto; cursor:pointer;">
+                            <option value="16:00">16:00</option>
+                            <option value="17:00">17:00</option>
+                            <option value="17:30">17:30</option>
+                            <option value="18:00">18:00</option>
+                            <option value="18:30">18:30</option>
+                            <option value="19:00">19:00</option>
+                            <option value="19:30">19:30</option>
+                            <option value="20:00">20:00</option>
+                            <option value="20:30">20:30</option>
+                            <option value="21:00" selected>21:00 (Стандарт)</option>
+                            <option value="21:30">21:30</option>
+                            <option value="22:00">22:00</option>
+                            <option value="22:30">22:30</option>
+                            <option value="23:00">23:00</option>
+                            <option value="23:30">23:30</option>
+                            <option value="24:00">00:00 (Полночь)</option>
+                            <option value="01:00">01:00 (Ночь)</option>
+                            <option value="02:00">02:00 (Ночь)</option>
+                        </select>
+                    </div>
                 </div>
                 <button class="btn" style="margin-top: 20px; width: auto; padding: 14px 30px; display:inline-flex; align-items:center; gap:8px;" onclick="saveSettings(this)"><i data-lucide="save" style="width:18px;height:18px;"></i> Сохранить настройки</button>
             </div>
@@ -626,7 +674,7 @@
         </div>
     </main>
 
-    <script src="assets/admin.js?v=6"></script>
+    <script src="assets/admin.js?v=9"></script>
 
     <!-- CUSTOM CONFIRM MODAL HTML structure -->
     <div id="customConfirmModal" class="modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index:999999; display:none; align-items: center; justify-content: center; background: rgba(12,25,44,0.55); backdrop-filter: blur(6px); transition: opacity 0.25s ease; opacity: 0;">
