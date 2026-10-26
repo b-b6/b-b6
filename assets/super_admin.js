@@ -144,6 +144,10 @@
                 } else {
                     document.getElementById('ai-key').value = localStorage.getItem('openrouter_api_key') || '';
                 }
+                const adminPhoneEl = document.getElementById('sa-admin-phone');
+                if (adminPhoneEl) {
+                    adminPhoneEl.value = gSet.superAdminPhone || '';
+                }
                 tenants = await window.appDB.getGlobalTenants();
                 if (!Array.isArray(tenants) || tenants.length === 0) {
                     tenants = [
@@ -158,6 +162,7 @@
             }
             renderStats();
             renderTenants();
+            await loadAndRenderAccessRequests();
         }
         
         function renderStats() {
@@ -609,6 +614,8 @@
             if(window.appDB) {
                 let gSet = await window.appDB.getGlobalSettings();
                 gSet.aiKey = key;
+                const adminPhone = document.getElementById('sa-admin-phone') ? document.getElementById('sa-admin-phone').value.trim() : '';
+                if (adminPhone) gSet.superAdminPhone = adminPhone;
                 await window.appDB.saveGlobalSettings(gSet);
             }
 
@@ -623,6 +630,155 @@
                 btn.innerHTML = originalText;
                 btn.style.background = '#a855f7';
             }, 2000);
+        }
+
+        // ═══ ACCESS REQUESTS ("Попросить доступ у Админа") ═══
+        let accessRequests = [];
+
+        async function loadAndRenderAccessRequests() {
+            try {
+                accessRequests = window.appDB && window.appDB.getAccessRequests
+                    ? await window.appDB.getAccessRequests()
+                    : JSON.parse(localStorage.getItem('global_access_requests') || '[]');
+            } catch (e) {
+                accessRequests = [];
+            }
+            if (!Array.isArray(accessRequests)) accessRequests = [];
+
+            const pendingCount = accessRequests.filter(r => r.status === 'pending').length;
+            const badge = document.getElementById('sa-req-badge');
+            const banner = document.getElementById('sa-pending-requests-banner');
+            const bannerTitle = document.getElementById('sa-pending-banner-title');
+
+            if (badge) {
+                badge.textContent = pendingCount;
+                badge.style.display = pendingCount > 0 ? 'inline-block' : 'none';
+            }
+            if (banner) {
+                banner.style.display = pendingCount > 0 ? 'flex' : 'none';
+                if (bannerTitle) {
+                    bannerTitle.textContent = `🔔 Новые заявки на получение ID и пароля (${pendingCount})!`;
+                }
+            }
+
+            const tbody = document.getElementById('access-requests-list');
+            if (!tbody) return;
+
+            if (accessRequests.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:50px 20px; color:var(--text-muted);">
+                    Пока нет новых заявок на доступ.<br>
+                    <span style="font-size:0.85rem;">Когда владелец салона или мастер нажмёт «Попросить доступ у Админа» в окне входа, заявка появится здесь.</span>
+                </td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = accessRequests.map(r => {
+                const isMaster = r.role === 'master';
+                const roleBadge = isMaster
+                    ? `<span class="badge-status" style="background:#f0f4f9; color:#0c192c; border:1px solid #d5e2f0;">✂️ Мастер</span>`
+                    : `<span class="badge-status on" style="background:#fbf0f2; color:#7a1c2d; border:1px solid #f0cdd3;">💈 Салон</span>`;
+
+                const statusHtml = r.status === 'approved'
+                    ? `<div style="font-weight:800; color:#00873d; font-size:0.85rem;">✅ Одобрено<br><span style="font-family:monospace; color:#0c192c;">ID: ${r.issuedId} • PIN: ${r.issuedPin}</span></div>`
+                    : `<span style="background:#fff4e6; color:#b86b14; padding:4px 10px; border-radius:999px; font-size:0.78rem; font-weight:800;">⏳ Ждёт вашего решения</span>`;
+
+                const cleanPhone = (r.phone || '').replace(/\D/g, '');
+                const baseUrl = window.location.origin + window.location.pathname.replace('super_admin.html', '') + 'app.html';
+                const waMsg = encodeURIComponent(
+                    `✂️ BarberMap KG — Ваш доступ открыт!\n🏢 ${r.name}\n\n🔢 Ваш цифровой ID: ${r.issuedId || ''}\n🔑 Ваш 4-значный пароль: ${r.issuedPin || ''}\n🌐 Вход в кабинет: ${baseUrl}`
+                );
+
+                return `<tr>
+                    <td style="font-weight:800; color:#0c192c;">${r.name || '—'}</td>
+                    <td>${roleBadge}</td>
+                    <td style="font-weight:700;">${r.phone || '—'}</td>
+                    <td style="color:var(--text-muted); font-size:0.84rem;">${r.address || 'Бишкек'}${r.catalogId ? ' <span style="color:#00873d;font-weight:700;">(📍 С карты)</span>' : ''}</td>
+                    <td style="color:var(--text-muted); font-size:0.82rem;">${r.createdAt || '—'}</td>
+                    <td>${statusHtml}</td>
+                    <td style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+                        ${r.status === 'pending'
+                            ? `<button class="btn-link" style="background:#00873d; color:#fff;" onclick="approveAccessRequest('${r.reqId}')">✅ Одобрить (Выдать ID+PIN)</button>`
+                            : (cleanPhone ? `<a class="btn-link" href="https://wa.me/${cleanPhone}?text=${waMsg}" target="_blank" rel="noopener" style="text-decoration:none;">💬 Отправить в WhatsApp</a>` : '')
+                        }
+                        <button class="btn-block" onclick="deleteAccessRequest('${r.reqId}')">🗑</button>
+                    </td>
+                </tr>`;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        async function approveAccessRequest(reqId) {
+            const req = accessRequests.find(r => r.reqId === reqId);
+            if (!req) return;
+
+            const isMaster = req.role === 'master';
+            const prefixStart = isMaster ? 2001 : 1001;
+            let nextId = prefixStart;
+            const existingIds = new Set(tenants.map(t => String(t.id)));
+            while (existingIds.has(String(nextId))) {
+                nextId++;
+            }
+            const generatedPin = String(Math.floor(1000 + Math.random() * 9000));
+
+            const newT = {
+                id: String(nextId),
+                pin: generatedPin,
+                role: isMaster ? 'master' : 'owner',
+                shopName: req.name,
+                email: req.phone || '—',
+                catalogId: req.catalogId || '',
+                createdAt: new Date().toLocaleDateString('ru-RU')
+            };
+
+            tenants.push(newT);
+            if (window.appDB) await window.appDB.saveGlobalTenants(tenants);
+
+            const sKey = String(nextId) + '_barber_settings';
+            try {
+                const cur = JSON.parse(localStorage.getItem(sKey) || '{}');
+                cur.shopName = req.name;
+                cur.phone = req.phone || '';
+                if (isMaster) {
+                    cur.soloMode = true;
+                    cur.soloMasterName = req.name;
+                    cur.soloPin = generatedPin;
+                } else if (req.catalogId && Array.isArray(window.BARBERSHOPS_DATA)) {
+                    const catShop = window.BARBERSHOPS_DATA.find(b => String(b.id) === String(req.catalogId));
+                    if (catShop) {
+                        cur.city = catShop.city || 'Бишкек';
+                        cur.address = catShop.address || '';
+                        cur.lat = catShop.lat;
+                        cur.lon = catShop.lon;
+                    }
+                }
+                localStorage.setItem(sKey, JSON.stringify(cur));
+            } catch (e) {}
+
+            req.status = 'approved';
+            req.issuedId = String(nextId);
+            req.issuedPin = generatedPin;
+
+            if (window.appDB && window.appDB.saveAccessRequests) {
+                await window.appDB.saveAccessRequests(accessRequests);
+            } else {
+                localStorage.setItem('global_access_requests', JSON.stringify(accessRequests));
+            }
+
+            renderStats();
+            renderTenants();
+            await loadAndRenderAccessRequests();
+
+            copyCredentialsForClient(String(nextId), generatedPin, req.name, isMaster ? 'master' : 'owner');
+        }
+
+        async function deleteAccessRequest(reqId) {
+            accessRequests = accessRequests.filter(r => r.reqId !== reqId);
+            if (window.appDB && window.appDB.saveAccessRequests) {
+                await window.appDB.saveAccessRequests(accessRequests);
+            } else {
+                localStorage.setItem('global_access_requests', JSON.stringify(accessRequests));
+            }
+            await loadAndRenderAccessRequests();
         }
 
         // ═══ TENANT SETTINGS ═══

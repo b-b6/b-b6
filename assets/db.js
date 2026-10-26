@@ -379,6 +379,47 @@ class BarberDB {
             return true;
         }
     }
+
+    async getAccessRequests() {
+        await this.initPromise;
+        const localReqs = JSON.parse(localStorage.getItem('global_access_requests') || '[]');
+        if (!this.useFirebase) return localReqs;
+        try {
+            const docRef = this.fsTools.doc(this.fs, `global/access_requests`);
+            const snap = await Promise.race([
+                this.fsTools.getDoc(docRef),
+                new Promise((_, rej) => setTimeout(() => rej(new Error('Access requests read timeout')), 5000))
+            ]);
+            const remoteReqs = snap.exists() ? (snap.data().requests || []) : [];
+            if (remoteReqs.length > 0 || localReqs.length === 0) {
+                try { localStorage.setItem('global_access_requests', JSON.stringify(remoteReqs)); } catch (e) {}
+                return remoteReqs;
+            }
+            return localReqs;
+        } catch (e) {
+            console.warn('⚠️ getAccessRequests failed:', e.message);
+            return localReqs;
+        }
+    }
+
+    async saveAccessRequests(requestsList) {
+        await this.initPromise;
+        try {
+            localStorage.setItem('global_access_requests', JSON.stringify(requestsList));
+        } catch (e) {}
+        if (!this.useFirebase) return true;
+        try {
+            const docRef = this.fsTools.doc(this.fs, `global/access_requests`);
+            await Promise.race([
+                this.fsTools.setDoc(docRef, { requests: requestsList }),
+                new Promise((_, rej) => setTimeout(() => rej(new Error('Access requests save timeout')), 5000))
+            ]);
+            return true;
+        } catch (e) {
+            console.warn('⚠️ saveAccessRequests failed:', e.message);
+            return true;
+        }
+    }
 }
 
 const db = new BarberDB();

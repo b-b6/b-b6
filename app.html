@@ -540,25 +540,38 @@
                 <button type="button" class="close-btn" onclick="closeRoleModals()"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
             </div>
 
-            <div style="background:var(--navy-soft); border:1px solid var(--navy-line); border-radius:14px; padding:10px 12px; margin-bottom:14px; font-size:12px; color:var(--navy); font-weight:600; line-height:1.45;">
-                🔒 <b>Закрытый доступ:</b> у каждого салона строго своя админка. Введите ваш <b>цифровой ID</b> и <b>4-значный пароль</b>, выданные главным администратором платформы.
+            <!-- Блок входа по выданным ID и PIN -->
+            <div id="owner-login-view">
+                <div style="background:var(--navy-soft); border:1px solid var(--navy-line); border-radius:14px; padding:10px 12px; margin-bottom:14px; font-size:12px; color:var(--navy); font-weight:600; line-height:1.45;">
+                    🔒 <b>Закрытый доступ:</b> у каждого салона строго своя админка. Введите ваш <b>цифровой ID</b> и <b>4-значный пароль</b>, выданные главным администратором.
+                </div>
+
+                <div class="form-group">
+                    <label style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>1. Цифровой ID салона (только цифры)</span>
+                        <button type="button" onclick="openRequestAccessModal('owner')" style="background:none; border:none; color:var(--burgundy); font-size:11.5px; font-weight:800; cursor:pointer; text-decoration:underline;">Попросить у админа →</button>
+                    </label>
+                    <input type="text" id="owner-id-input" class="inp" inputmode="numeric" pattern="[0-9]*" placeholder="Например: 1001" oninput="this.value=this.value.replace(/\D/g,'')">
+                </div>
+
+                <div class="form-group">
+                    <label style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>2. Четырёхзначный пароль (4 цифры)</span>
+                        <button type="button" onclick="openRequestAccessModal('owner')" style="background:none; border:none; color:var(--burgundy); font-size:11.5px; font-weight:800; cursor:pointer; text-decoration:underline;">Нет пароля?</button>
+                    </label>
+                    <input type="password" id="owner-pin-input" class="inp" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="•••• (4 цифры)" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)">
+                </div>
+
+                <button type="button" class="btn-gold" onclick="submitOwnerLogin()">
+                    Войти в кабинет салона <i data-lucide="arrow-right" style="width:18px;height:18px;"></i>
+                </button>
+
+                <button type="button" onclick="openRequestAccessModal('owner')" style="width:100%; margin-top:10px; padding:11px 14px; border-radius:14px; border:1.5px dashed var(--burgundy-line); background:var(--burgundy-soft); color:var(--burgundy); font-family:var(--font-sans); font-size:13px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+                    🔑 Нет ID и пароля? Попросить доступ у Админа
+                </button>
+
+                <div class="err-msg" id="owner-err">Неверный цифровой ID или 4-значный пароль</div>
             </div>
-
-            <div class="form-group">
-                <label>1. Цифровой ID салона (только цифры)</label>
-                <input type="text" id="owner-id-input" class="inp" inputmode="numeric" pattern="[0-9]*" placeholder="Например: 1001" oninput="this.value=this.value.replace(/\D/g,'')">
-            </div>
-
-            <div class="form-group">
-                <label>2. Четырёхзначный пароль (4 цифры)</label>
-                <input type="password" id="owner-pin-input" class="inp" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="•••• (4 цифры)" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)">
-            </div>
-
-            <button type="button" class="btn-gold" onclick="submitOwnerLogin()">
-                Войти в кабинет салона <i data-lucide="arrow-right" style="width:18px;height:18px;"></i>
-            </button>
-
-            <div class="err-msg" id="owner-err">Неверный цифровой ID или 4-значный пароль</div>
         </div>
     </div>
 
@@ -575,19 +588,94 @@
             </div>
 
             <div class="form-group">
-                <label>1. Цифровой ID мастера (только цифры)</label>
+                <label style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>1. Цифровой ID мастера (только цифры)</span>
+                    <button type="button" onclick="openRequestAccessModal('master')" style="background:none; border:none; color:var(--burgundy); font-size:11.5px; font-weight:800; cursor:pointer; text-decoration:underline;">Попросить у админа →</button>
+                </label>
                 <input type="text" id="solo-id-input" class="inp" inputmode="numeric" pattern="[0-9]*" placeholder="Например: 2001" oninput="this.value=this.value.replace(/\D/g,'')">
             </div>
 
             <div class="form-group">
-                <label>2. Четырёхзначный пароль (4 цифры)</label>
+                <label style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>2. Четырёхзначный пароль (4 цифры)</span>
+                    <button type="button" onclick="openRequestAccessModal('master')" style="background:none; border:none; color:var(--burgundy); font-size:11.5px; font-weight:800; cursor:pointer; text-decoration:underline;">Нет пароля?</button>
+                </label>
                 <input type="password" id="solo-pin-input" class="inp" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="•••• (4 цифры)" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)">
             </div>
 
             <button type="button" class="btn-gold" onclick="submitMasterLogin()">
                 Войти в кабинет мастера <i data-lucide="arrow-right" style="width:18px;height:18px;"></i>
             </button>
+
+            <button type="button" onclick="openRequestAccessModal('master')" style="width:100%; margin-top:10px; padding:11px 14px; border-radius:14px; border:1.5px dashed var(--burgundy-line); background:var(--burgundy-soft); color:var(--burgundy); font-family:var(--font-sans); font-size:13px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+                🔑 Нет ID и пароля? Попросить доступ у Админа
+            </button>
+
             <div class="err-msg" id="solo-err">Неверный цифровой ID или 4-значный пароль</div>
+        </div>
+    </div>
+
+    <!-- ══════════ MODAL 3: ЗАПРОСИТЬ ДОСТУП У ГЛАВНОГО АДМИНА (ID + 4-ЗНАЧНЫЙ ПАРОЛЬ) ══════════ -->
+    <div class="modal-overlay" id="request-access-modal">
+        <div class="modal-box">
+            <div class="modal-top">
+                <h2 id="req-modal-title"><i data-lucide="key-round" style="width:22px;height:22px;"></i> Запросить ID и пароль</h2>
+                <button type="button" class="close-btn" onclick="closeRoleModals()"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
+            </div>
+
+            <div style="background:var(--navy-soft); border:1px solid var(--navy-line); border-radius:14px; padding:10px 12px; margin-bottom:14px; font-size:12px; color:var(--navy); font-weight:600; line-height:1.45;">
+                📩 Оставьте заявку главному администратору <b>BarberMap KG</b>. Как только админ одобрит её в Супер-Админке, вы получите личный <b>цифровой ID</b> и <b>4-значный пароль</b>.
+            </div>
+
+            <input type="hidden" id="req-role-input" value="owner">
+            <input type="hidden" id="req-catalog-id-input" value="">
+
+            <div class="form-group" id="req-shop-search-wrap">
+                <label>Ваш салон на карте (если он уже есть среди 401 точки)</label>
+                <input type="text" id="req-catalog-search" class="inp" placeholder="Начните вводить название салона на карте..." oninput="searchCatalogForRequest(this.value)">
+                <div class="shop-search-results" id="req-catalog-results"></div>
+            </div>
+
+            <div class="form-group">
+                <label id="req-name-label">1. Название вашего барбершопа *</label>
+                <input type="text" id="req-name-input" class="inp" placeholder="Например: Shine Barbershop">
+            </div>
+
+            <div class="form-group">
+                <label>2. Ваш номер телефона (WhatsApp для получения ID и PIN) *</label>
+                <input type="tel" id="req-phone-input" class="inp" placeholder="+996 555 00-00-00" oninput="checkExistingRequestStatus(this.value)">
+            </div>
+
+            <div class="form-group">
+                <label>3. Город / Адрес (необязательно)</label>
+                <input type="text" id="req-address-input" class="inp" placeholder="Бишкек, ул. Киевская...">
+            </div>
+
+            <!-- Статус, если заявка уже одобрена админом -->
+            <div id="req-approved-box" style="display:none; background:var(--green-bg); border:1.5px solid rgba(0,135,61,0.35); border-radius:16px; padding:14px; margin-bottom:12px; text-align:center;">
+                <div style="font-size:13px; font-weight:800; color:var(--green); margin-bottom:6px;">🎉 Администратор одобрил ваш доступ!</div>
+                <div style="font-size:14px; color:var(--navy); font-weight:800; margin-bottom:8px;" id="req-approved-creds">ID: — • PIN: —</div>
+                <button type="button" id="req-approved-login-btn" style="background:var(--green); color:#fff; border:none; padding:8px 16px; border-radius:999px; font-size:12.5px; font-weight:800; cursor:pointer;">
+                    Войти в кабинет прямо сейчас →
+                </button>
+            </div>
+
+            <!-- Подтверждение после отправки заявки -->
+            <div id="req-success-box" style="display:none; background:var(--navy-soft); border:1.5px solid var(--navy-line); border-radius:16px; padding:14px; margin-bottom:12px;">
+                <div style="font-size:13.5px; font-weight:800; color:var(--navy); margin-bottom:4px;">✅ Заявка отправлена в Супер-Админку!</div>
+                <div style="font-size:12px; color:var(--muted); line-height:1.4; margin-bottom:10px;">
+                    Главный администратор увидит ваш запрос и выдаст вам персональный цифровой ID и 4-значный пароль. Вы также можете сразу написать админу в WhatsApp:
+                </div>
+                <a id="req-wa-btn" href="#" target="_blank" rel="noopener" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:10px 14px; border-radius:12px; background:#00873d; color:#ffffff; font-size:13px; font-weight:800; text-decoration:none;">
+                    💬 Написать Админу в WhatsApp
+                </a>
+            </div>
+
+            <button type="button" class="btn-gold" id="req-submit-btn" onclick="submitAccessRequestFromApp()">
+                📨 Отправить запрос Админу <i data-lucide="send" style="width:17px;height:17px;"></i>
+            </button>
+
+            <div class="err-msg" id="req-err">Укажите название и ваш номер телефона</div>
         </div>
     </div>
 
@@ -630,7 +718,16 @@
                 return;
             }
 
-            // B. Check Saved Owner / Master Session (only if numeric ID exists in Super Admin list)
+            // B. Check if opened with ?request_access=owner or master
+            const reqAccessRole = params.get('request_access');
+            if (reqAccessRole === 'owner' || reqAccessRole === 'master') {
+                window.addEventListener('DOMContentLoaded', () => {
+                    openRequestAccessModal(reqAccessRole);
+                });
+                return;
+            }
+
+            // C. Check Saved Owner / Master Session (only if numeric ID exists in Super Admin list)
             if (!params.get('logged_out') && !params.get('switch_role')) {
                 const session = window.BarberMobileBridge.getSession();
                 if (session && session.tenantId && /^\d+$/.test(String(session.tenantId))) {
@@ -664,12 +761,14 @@
 
         // 3. STRICT NUMERIC ID + 4-DIGIT PIN LOGIN (ISSUED ONLY VIA SUPER ADMIN)
         function openOwnerModal() {
+            closeRoleModals();
             document.getElementById('owner-modal').classList.add('active');
             document.getElementById('owner-err').style.display = 'none';
             setTimeout(() => document.getElementById('owner-id-input').focus(), 60);
         }
 
         function openMasterModal() {
+            closeRoleModals();
             document.getElementById('master-modal').classList.add('active');
             document.getElementById('solo-err').style.display = 'none';
             setTimeout(() => document.getElementById('solo-id-input').focus(), 60);
@@ -677,6 +776,197 @@
 
         function closeRoleModals() {
             document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+        }
+
+        // 4. REQUEST ACCESS FROM SUPER ADMIN (FOR SALON OWNER OR SOLO MASTER)
+        function openRequestAccessModal(role) {
+            closeRoleModals();
+            const r = role === 'master' ? 'master' : 'owner';
+            document.getElementById('req-role-input').value = r;
+            document.getElementById('req-catalog-id-input').value = '';
+            document.getElementById('req-catalog-search').value = '';
+            document.getElementById('req-catalog-results').style.display = 'none';
+            document.getElementById('req-err').style.display = 'none';
+            document.getElementById('req-success-box').style.display = 'none';
+            document.getElementById('req-approved-box').style.display = 'none';
+            document.getElementById('req-submit-btn').style.display = 'flex';
+
+            const shopWrap = document.getElementById('req-shop-search-wrap');
+            const nameLbl = document.getElementById('req-name-label');
+            const nameInp = document.getElementById('req-name-input');
+            const titleEl = document.getElementById('req-modal-title');
+
+            if (r === 'master') {
+                shopWrap.style.display = 'none';
+                nameLbl.textContent = '1. Ваше имя и специализация (Мастер) *';
+                nameInp.placeholder = 'Например: Азамат (Top Barber)';
+                titleEl.innerHTML = '✂️ Запросить ID и пароль Мастера';
+            } else {
+                shopWrap.style.display = 'block';
+                nameLbl.textContent = '1. Название вашего барбершопа *';
+                nameInp.placeholder = 'Например: Shine Barbershop';
+                titleEl.innerHTML = '🏢 Запросить ID и пароль Салона';
+            }
+
+            const savedPhone = localStorage.getItem('last_req_phone') || '';
+            if (savedPhone) {
+                document.getElementById('req-phone-input').value = savedPhone;
+                checkExistingRequestStatus(savedPhone);
+            }
+
+            document.getElementById('request-access-modal').classList.add('active');
+        }
+
+        function searchCatalogForRequest(query) {
+            const box = document.getElementById('req-catalog-results');
+            const q = (query || '').trim().toLowerCase();
+            if (q.length < 1) {
+                box.style.display = 'none';
+                return;
+            }
+            const catalog = window.BARBERSHOPS_DATA || [];
+            const matches = catalog.filter(b =>
+                (b.name && b.name.toLowerCase().includes(q)) ||
+                (b.city && b.city.toLowerCase().includes(q)) ||
+                (b.address && b.address.toLowerCase().includes(q))
+            ).slice(0, 10);
+
+            if (matches.length === 0) {
+                box.style.display = 'none';
+                return;
+            }
+
+            box.innerHTML = matches.map(b => {
+                const sId = String(b.id || '').replace(/'/g, '');
+                const sName = String(b.name || '').replace(/'/g, '');
+                const sAddr = `${b.city || 'Бишкек'}, ${b.address || ''}`.replace(/'/g, '');
+                const sPhone = String(b.phone || '').replace(/'/g, '');
+                return `<div class="shop-search-item" onclick="selectCatalogForRequest('${sId}', '${sName}', '${sAddr}', '${sPhone}')">
+                    <div>
+                        <div style="font-weight:700; font-size:0.86rem; color:var(--navy);">${b.name}</div>
+                        <div style="font-size:0.74rem; color:var(--muted);">📍 ${b.city || ''} • ${b.address || ''}</div>
+                    </div>
+                    <span style="font-size:0.75rem; font-weight:800; color:var(--burgundy);">Мой салон →</span>
+                </div>`;
+            }).join('');
+            box.style.display = 'block';
+        }
+
+        function selectCatalogForRequest(id, name, addr, phone) {
+            document.getElementById('req-catalog-id-input').value = id;
+            document.getElementById('req-catalog-search').value = name;
+            document.getElementById('req-name-input').value = name;
+            if (addr) document.getElementById('req-address-input').value = addr;
+            if (phone && !document.getElementById('req-phone-input').value) {
+                document.getElementById('req-phone-input').value = phone;
+            }
+            document.getElementById('req-catalog-results').style.display = 'none';
+        }
+
+        async function checkExistingRequestStatus(phoneVal) {
+            const digits = (phoneVal || '').replace(/\D/g, '');
+            const approvedBox = document.getElementById('req-approved-box');
+            if (digits.length < 6) {
+                approvedBox.style.display = 'none';
+                return;
+            }
+            try {
+                const reqs = window.appDB && window.appDB.getAccessRequests
+                    ? await window.appDB.getAccessRequests()
+                    : JSON.parse(localStorage.getItem('global_access_requests') || '[]');
+                const found = (reqs || []).find(r =>
+                    r.status === 'approved' &&
+                    r.issuedId &&
+                    r.issuedPin &&
+                    (r.phone || '').replace(/\D/g, '').includes(digits.slice(-6))
+                );
+                if (found) {
+                    document.getElementById('req-approved-creds').textContent = `Цифровой ID: ${found.issuedId} • Пароль: ${found.issuedPin}`;
+                    const btn = document.getElementById('req-approved-login-btn');
+                    btn.onclick = () => {
+                        if (found.role === 'master') {
+                            openMasterModal();
+                            document.getElementById('solo-id-input').value = found.issuedId;
+                            document.getElementById('solo-pin-input').value = found.issuedPin;
+                            submitMasterLogin();
+                        } else {
+                            openOwnerModal();
+                            document.getElementById('owner-id-input').value = found.issuedId;
+                            document.getElementById('owner-pin-input').value = found.issuedPin;
+                            submitOwnerLogin();
+                        }
+                    };
+                    approvedBox.style.display = 'block';
+                } else {
+                    approvedBox.style.display = 'none';
+                }
+            } catch (e) {}
+        }
+
+        async function submitAccessRequestFromApp() {
+            const role = document.getElementById('req-role-input').value || 'owner';
+            const catalogId = document.getElementById('req-catalog-id-input').value.trim();
+            const name = document.getElementById('req-name-input').value.trim();
+            const phone = document.getElementById('req-phone-input').value.trim();
+            const address = document.getElementById('req-address-input').value.trim();
+            const errEl = document.getElementById('req-err');
+
+            if (!name || phone.replace(/\D/g, '').length < 6) {
+                errEl.textContent = 'Пожалуйста, укажите название/имя и ваш рабочий номер телефона!';
+                errEl.style.display = 'block';
+                return;
+            }
+            errEl.style.display = 'none';
+            localStorage.setItem('last_req_phone', phone);
+
+            let reqs = [];
+            try {
+                reqs = window.appDB && window.appDB.getAccessRequests
+                    ? await window.appDB.getAccessRequests()
+                    : JSON.parse(localStorage.getItem('global_access_requests') || '[]');
+            } catch (e) {}
+            if (!Array.isArray(reqs)) reqs = [];
+
+            const newReq = {
+                reqId: 'req_' + Date.now(),
+                role: role,
+                name: name,
+                phone: phone,
+                address: address || 'Бишкек',
+                catalogId: catalogId || '',
+                status: 'pending',
+                createdAt: new Date().toLocaleString('ru-RU')
+            };
+
+            reqs.unshift(newReq);
+            if (window.appDB && window.appDB.saveAccessRequests) {
+                await window.appDB.saveAccessRequests(reqs);
+            } else {
+                localStorage.setItem('global_access_requests', JSON.stringify(reqs));
+            }
+
+            // Build WhatsApp deep link to Super Admin if configured
+            let adminPhone = '';
+            try {
+                const gSet = window.appDB && window.appDB.getGlobalSettings
+                    ? await window.appDB.getGlobalSettings()
+                    : JSON.parse(localStorage.getItem('global_saas_settings') || '{}');
+                adminPhone = (gSet && gSet.superAdminPhone ? gSet.superAdminPhone : '').replace(/\D/g, '');
+            } catch (e) {}
+
+            const roleLabel = role === 'master' ? 'Мастер (Соло-кабинет)' : 'Владелец барбершопа (Салон)';
+            const waText = encodeURIComponent(
+                `Здравствуйте! Прошу выдать цифровой ID и 4-значный пароль в BarberMap KG.\n` +
+                `👤 Роль: ${roleLabel}\n` +
+                `🏢 Название/Имя: ${name}\n` +
+                `📍 Адрес: ${address || 'КР'}\n` +
+                `📞 Телефон: ${phone}`
+            );
+            const waBtn = document.getElementById('req-wa-btn');
+            waBtn.href = adminPhone ? `https://wa.me/${adminPhone}?text=${waText}` : `https://wa.me/?text=${waText}`;
+
+            document.getElementById('req-submit-btn').style.display = 'none';
+            document.getElementById('req-success-box').style.display = 'block';
         }
 
         async function submitOwnerLogin() {

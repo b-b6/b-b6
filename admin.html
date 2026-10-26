@@ -46,6 +46,9 @@
             <input type="text" id="email-input" class="form-control" inputmode="numeric" pattern="[0-9]*" placeholder="Цифровой ID салона (напр. 1001)" oninput="this.value=this.value.replace(/\D/g,'')" style="margin-bottom:10px;">
             <input type="password" id="pin-input" class="form-control" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="4-значный пароль (4 цифры)" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)" style="margin-bottom:14px;">
             <button class="btn" style="width:100%" onclick="checkPin()">Войти в салон</button>
+            <a href="app.html?request_access=owner" style="display:flex; align-items:center; justify-content:center; gap:6px; width:100%; margin-top:10px; padding:10px 14px; border-radius:12px; border:1.5px dashed #f0cdd3; background:#fbf0f2; color:#7a1c2d; font-size:0.84rem; font-weight:800; text-decoration:none;">
+                🔑 Нет ID и пароля? Попросить у Админа
+            </a>
             <p id="pin-error" style="color:var(--danger); margin-top:12px; display:none; font-size:0.85rem; font-weight:600;">Доступ запрещён: неверный цифровой ID или 4-значный пароль</p>
             <a href="app.html?switch_role=1" style="display:inline-block; margin-top:16px; font-size:0.84rem; color:var(--accent); text-decoration:none; font-weight:700;">← Назад к выбору роли</a>
         </div>
