@@ -408,12 +408,27 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             }
             
             let tenants = await window.appDB.getGlobalTenants();
-            let myT = tenants.find(t => t.id === window.appDB.tenantId);
+            let myT = tenants.find(t => String(t.id) === String(window.appDB.tenantId));
             if(myT) {
                 let emEl = document.getElementById('set_new_email');
                 let pinEl = document.getElementById('set_new_pin');
                 if(emEl && !emEl.value) emEl.value = myT.email || '';
                 if(pinEl && !pinEl.value) pinEl.value = myT.pin || '';
+                if (!set.shopName && myT.shopName) {
+                    set.shopName = myT.shopName;
+                    store.settings.shopName = myT.shopName;
+                    if (document.getElementById('set_shop_name')) document.getElementById('set_shop_name').value = myT.shopName;
+                }
+                if (myT.catalogId && Array.isArray(window.BARBERSHOPS_DATA)) {
+                    const catShop = window.BARBERSHOPS_DATA.find(b => String(b.id) === String(myT.catalogId));
+                    if (catShop) {
+                        if (!set.city) set.city = catShop.city || 'Бишкек';
+                        if (!set.address) set.address = catShop.address || '';
+                        if (!set.lat) set.lat = catShop.lat;
+                        if (!set.lon) set.lon = catShop.lon;
+                        Object.assign(store.settings, set);
+                    }
+                }
             }
 
             const dDates = store.disabledDates || [];
@@ -586,7 +601,13 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             await window.appDB.saveSettings(store.settings);
 
             if (window.BarberMobileBridge && window.BarberMobileBridge.saveBarbershopLocation) {
-                await window.BarberMobileBridge.saveBarbershopLocation(window.appDB.tenantId, {
+                let targetLocId = window.appDB.tenantId;
+                try {
+                    const tenants = JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
+                    const myT = Array.isArray(tenants) ? tenants.find(t => String(t.id) === String(window.appDB.tenantId)) : null;
+                    if (myT && myT.catalogId) targetLocId = String(myT.catalogId);
+                } catch (e) {}
+                await window.BarberMobileBridge.saveBarbershopLocation(targetLocId, {
                     name: shopName,
                     city: city,
                     address: address,
@@ -712,12 +733,12 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
         }
 
         async function changeMyCredentials() {
-            let newPin = document.getElementById('set_new_pin').value.trim();
-            if(!newPin) return alert('Укажите новый PIN-код!');
+            let newPin = document.getElementById('set_new_pin').value.replace(/\D/g, '').trim();
+            if (!/^\d{4}$/.test(newPin)) return alert('PIN-код должен состоять ровно из 4 цифр!');
             if(!confirm('ВНИМАНИЕ! После изменения PIN-кода вам нужно будет войти заново. Продолжить?')) return;
             
             let tenants = await window.appDB.getGlobalTenants();
-            let myT = tenants.find(t => t.id === window.appDB.tenantId);
+            let myT = tenants.find(t => String(t.id) === String(window.appDB.tenantId));
             if(myT) {
                 myT.pin = newPin;
                 await window.appDB.saveGlobalTenants(tenants);
@@ -1085,10 +1106,10 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             let sent = 0, failed = 0;
 
             for(const b of tomorrowBookings) {
-                // Normalize phone: strip non-digits, ensure starts with 998
+                // Normalize phone: strip non-digits, ensure starts with 996 (Kyrgyzstan)
                 let phone = (b.phone || '').replace(/\D/g, '');
-                if(phone.startsWith('0')) phone = '998' + phone.slice(1);
-                if(!phone.startsWith('998')) phone = '998' + phone;
+                if(phone.startsWith('0')) phone = '996' + phone.slice(1);
+                if(!phone.startsWith('996')) phone = '996' + phone;
                 if(phone.length < 12) { failed++; continue; }
 
                 let msg = template

@@ -93,12 +93,21 @@ class BarberDB {
                 this.fs = getFirestore(app);
                 this.app = app;
                 
-                // Verify connection with a test read
+                // Verify connection with a test read and sync global tenants for catalogId -> numeric tenantId resolution
                 const testRef = doc(this.fs, `global/saas`);
-                await Promise.race([
+                const testSnap = await Promise.race([
                     getDoc(testRef),
                     new Promise((_, rej) => setTimeout(() => rej(new Error('Firestore read timeout')), 5000))
                 ]);
+                if (testSnap && testSnap.exists() && Array.isArray(testSnap.data().tenants)) {
+                    const remoteTenants = testSnap.data().tenants;
+                    try { localStorage.setItem('global_saas_tenants', JSON.stringify(remoteTenants)); } catch (e) {}
+                    const bound = remoteTenants.find(t => t.catalogId && String(t.catalogId) === String(this.tenantId));
+                    if (bound && bound.id) {
+                        this.tenantId = String(bound.id);
+                        try { localStorage.setItem('tenant_id', this.tenantId); } catch (e) {}
+                    }
+                }
                 
                 this.useFirebase = true;
                 console.log("🔥 Firebase SaaS Connected (Tenant:", this.tenantId, ")");
@@ -419,6 +428,35 @@ class BarberDB {
             console.warn('⚠️ saveAccessRequests failed:', e.message);
             return true;
         }
+    }
+
+    async seedTenantSettings(targetTenantId, settingsObj, servicesList) {
+        await this.initPromise;
+        const tid = String(targetTenantId);
+        try {
+            localStorage.setItem(tid + '_barber_settings', JSON.stringify(settingsObj || {}));
+            if (Array.isArray(servicesList) && servicesList.length > 0) {
+                localStorage.setItem(tid + '_barber_services', JSON.stringify(servicesList));
+            }
+        } catch (e) {}
+        if (!this.useFirebase) return true;
+        try {
+            const setRef = this.fsTools.doc(this.fs, `tenants/${tid}/data/barber_settings`);
+            await Promise.race([
+                this.fsTools.setDoc(setRef, { items: settingsObj || {}, updatedAt: new Date().toISOString() }),
+                new Promise((_, rej) => setTimeout(() => rej(new Error('seedTenantSettings timeout')), 5000))
+            ]);
+            if (Array.isArray(servicesList) && servicesList.length > 0) {
+                const srvRef = this.fsTools.doc(this.fs, `tenants/${tid}/data/barber_services`);
+                await Promise.race([
+                    this.fsTools.setDoc(srvRef, { items: servicesList, updatedAt: new Date().toISOString() }),
+                    new Promise((_, rej) => setTimeout(() => rej(new Error('seedTenantServices timeout')), 5000))
+                ]);
+            }
+        } catch (e) {
+            console.warn('⚠️ seedTenantSettings remote sync fallback:', e.message);
+        }
+        return true;
     }
 }
 

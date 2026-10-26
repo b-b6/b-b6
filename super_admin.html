@@ -1190,7 +1190,8 @@
 
             // If "Сразу выдать цифровой ID и 4-значный PIN" is checked, create/update the tenant right away
             if (issueAccess && issuedTenantId && issuedTenantPin) {
-                const existingIdx = (window.tenants || []).findIndex(t => String(t.id) === String(issuedTenantId));
+                if (!Array.isArray(window.tenants)) window.tenants = tenants || [];
+                const existingIdx = window.tenants.findIndex(t => String(t.id) === String(issuedTenantId));
                 const newTenantObj = {
                     id: String(issuedTenantId),
                     pin: String(issuedTenantPin),
@@ -1207,6 +1208,7 @@
                 } else {
                     window.tenants.push(newTenantObj);
                 }
+                tenants = window.tenants;
                 if (window.appDB) await window.appDB.saveGlobalTenants(window.tenants);
 
                 const sKey = String(issuedTenantId) + '_barber_settings';
@@ -1219,6 +1221,18 @@
                     cur.lat = lat;
                     cur.lon = lng;
                     localStorage.setItem(sKey, JSON.stringify(cur));
+
+                    const formattedServices = services.map((s, idx) => ({
+                        id: 'srv_' + idx + '_' + Date.now(),
+                        price: parseInt(String(s.price).replace(/\D/g, '')) || 500,
+                        duration: 45,
+                        strings: {
+                            ru: { title: s.name, desc: 'Профессиональная работа мастера' }
+                        }
+                    }));
+                    if (window.appDB && window.appDB.seedTenantSettings) {
+                        await window.appDB.seedTenantSettings(String(issuedTenantId), cur, formattedServices);
+                    }
                 } catch (e) {}
 
                 if (typeof renderStats === 'function') renderStats();

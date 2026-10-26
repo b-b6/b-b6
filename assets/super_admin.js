@@ -63,7 +63,8 @@
 
         // APP LOGIC
         const MASTER_HASH = "927f655a4a671752b5fc6613ae2dc48c0ed302f5aa283c6ae24ce0e00ca0e1f3";
-        let tenants = [];
+        var tenants = [];
+        window.tenants = tenants;
         const avatarColors = ['av-purple', 'av-green', 'av-blue', 'av-red', 'av-orange'];
 
         async function checkSuperPin() {
@@ -156,12 +157,15 @@
                     ];
                     await window.appDB.saveGlobalTenants(tenants);
                 }
+                window.tenants = tenants;
             } else {
                 document.getElementById('ai-key').value = localStorage.getItem('openrouter_api_key') || '';
                 console.warn("DB not ready");
             }
             renderStats();
             renderTenants();
+            if (typeof window.renderSABarberList === 'function') window.renderSABarberList();
+            if (typeof window.renderSAMarkers === 'function') window.renderSAMarkers(false);
             await loadAndRenderAccessRequests();
         }
         
@@ -556,6 +560,7 @@
                 createdAt: new Date().toLocaleDateString('ru-RU')
             };
             tenants.push(newT);
+            window.tenants = tenants;
             if(window.appDB) await window.appDB.saveGlobalTenants(tenants);
 
             // Initialize tenant settings so their cabinet immediately displays the right name & catalog details
@@ -567,14 +572,17 @@
                     cur.soloMode = true;
                     cur.soloMasterName = name;
                     cur.soloPin = pin;
-                } else if (catalogId && Array.isArray(window.BARBERSHOPS_DATA)) {
-                    const catShop = window.BARBERSHOPS_DATA.find(b => String(b.id) === String(catalogId));
+                } else if (catalogId) {
+                    const fullCat = typeof window.getFullKGCatalogForSA === 'function'
+                        ? window.getFullKGCatalogForSA()
+                        : (window.BARBERSHOPS_DATA || []);
+                    const catShop = fullCat.find(b => String(b.id) === String(catalogId));
                     if (catShop) {
                         cur.city = catShop.city || 'Бишкек';
                         cur.address = catShop.address || '';
                         cur.phone = catShop.phone || email || '';
                         cur.lat = catShop.lat;
-                        cur.lon = catShop.lon;
+                        cur.lon = catShop.lon != null ? catShop.lon : catShop.lng;
                     }
                 } else if (!isNaN(customLat) && !isNaN(customLon)) {
                     cur.city = 'Бишкек';
@@ -595,6 +603,9 @@
                     }
                 }
                 localStorage.setItem(sKey, JSON.stringify(cur));
+                if (window.appDB && window.appDB.seedTenantSettings) {
+                    await window.appDB.seedTenantSettings(String(id), cur);
+                }
             } catch (e) {}
 
             renderStats();
@@ -613,9 +624,12 @@
         async function deleteTenant(id) {
             if(!confirm(`Закрыть доступ для цифрового ID ${id}? Владелец/мастер больше не сможет войти в кабинет.`)) return;
             tenants = tenants.filter(t => String(t.id) !== String(id));
+            window.tenants = tenants;
             if(window.appDB) await window.appDB.saveGlobalTenants(tenants);
             renderStats();
             renderTenants();
+            if (typeof window.renderSABarberList === 'function') window.renderSABarberList();
+            if (typeof window.renderSAMarkers === 'function') window.renderSAMarkers(false);
         }
 
         function copyCredentialsForClient(id, pin, name, role) {
@@ -773,6 +787,7 @@
             };
 
             tenants.push(newT);
+            window.tenants = tenants;
             if (window.appDB) await window.appDB.saveGlobalTenants(tenants);
 
             const sKey = String(nextId) + '_barber_settings';
@@ -794,6 +809,9 @@
                     }
                 }
                 localStorage.setItem(sKey, JSON.stringify(cur));
+                if (window.appDB && window.appDB.seedTenantSettings) {
+                    await window.appDB.seedTenantSettings(String(nextId), cur);
+                }
             } catch (e) {}
 
             req.status = 'approved';

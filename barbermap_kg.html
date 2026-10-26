@@ -310,7 +310,8 @@ body.dragging .map-ctrls{transition:opacity .2s}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script src="barbershops_kg.js"></script>
-<script src="assets/mobile-bridge.js"></script>
+<script src="assets/db.js?v=8"></script>
+<script src="assets/mobile-bridge.js?v=8"></script>
 
 <script>
 (() => {
@@ -384,64 +385,75 @@ body.dragging .map-ctrls{transition:opacity .2s}
   }
 
   /* ================= data ================= */
-  let rawCatalog = (window.BARBERSHOPS_DATA || []).slice();
+  let DATA = [];
+  let byId = new Map();
+  let CITIES = [];
 
-  // Merge custom coordinates & new branches saved from admin.html
-  if (window.BarberMobileBridge && window.BarberMobileBridge.getCustomLocationsLocal) {
-    try {
-      const customLocs = window.BarberMobileBridge.getCustomLocationsLocal() || {};
-      Object.keys(customLocs).forEach(tenantId => {
-        const item = customLocs[tenantId];
-        if (item && isFinite(item.lat) && isFinite(item.lon)) {
-          const idx = rawCatalog.findIndex(b => String(b.id) === String(tenantId));
-          if (idx >= 0) {
-            rawCatalog[idx] = {
-              ...rawCatalog[idx],
-              lat: item.lat,
-              lon: item.lon,
-              name: item.name || rawCatalog[idx].name,
-              address: item.address || rawCatalog[idx].address,
-              city: item.city || rawCatalog[idx].city
-            };
-          } else {
-            rawCatalog.unshift({
-              id: item.id,
-              name: item.name || 'Барбершоп',
-              city: item.city || 'Бишкек',
-              address: item.address || 'Адрес указан на карте',
-              lat: item.lat,
-              lon: item.lon,
-              rating: item.rating || 5.0,
-              reviews: item.reviews || 25,
-              hours: item.hours || '10:00 - 21:00'
-            });
+  function buildCatalogData() {
+    let rawCatalog = (window.BARBERSHOPS_DATA || []).slice();
+
+    // Merge custom coordinates & new branches saved from admin.html / super_admin.html
+    if (window.BarberMobileBridge && window.BarberMobileBridge.getCustomLocationsLocal) {
+      try {
+        const customLocs = window.BarberMobileBridge.getCustomLocationsLocal() || {};
+        Object.keys(customLocs).forEach(tenantId => {
+          const item = customLocs[tenantId];
+          if (item && isFinite(item.lat) && isFinite(item.lon)) {
+            const idx = rawCatalog.findIndex(b => String(b.id) === String(tenantId));
+            if (idx >= 0) {
+              rawCatalog[idx] = {
+                ...rawCatalog[idx],
+                lat: item.lat,
+                lon: item.lon,
+                name: item.name || rawCatalog[idx].name,
+                address: item.address || rawCatalog[idx].address,
+                city: item.city || rawCatalog[idx].city,
+                phone: item.phone || rawCatalog[idx].phone || ''
+              };
+            } else {
+              rawCatalog.unshift({
+                id: item.id,
+                name: item.name || 'Барбершоп',
+                city: item.city || 'Бишкек',
+                address: item.address || 'Адрес указан на карте',
+                phone: item.phone || '',
+                lat: item.lat,
+                lon: item.lon,
+                rating: item.rating || 5.0,
+                reviews: item.reviews || 25,
+                hours: item.hours || '10:00 - 21:00'
+              });
+            }
           }
-        }
-      });
-    } catch(e) {
-      console.warn('Error applying custom admin locations:', e);
+        });
+      } catch(e) {
+        console.warn('Error applying custom admin locations:', e);
+      }
     }
+
+    DATA = rawCatalog
+      .filter(b => isFinite(+b.lat) && isFinite(+b.lon))
+      .map(b => {
+        const n = splitName(b.name);
+        const rating = +b.rating || 0, reviews = +(b.reviews ?? b.reviews_count) || 0;
+        const shortTitle = n.title.replace(/barbershop|барбершоп|мужская парикмахерская/ig, '').trim() || n.title;
+        return {
+          id: String(b.id), name: b.name, city: b.city || '', address: b.address || '',
+          phone: b.phone || '',
+          lat: +b.lat, lon: +b.lon, rating, reviews,
+          hours: b.hours ?? b.working_hours, link: b.link ?? b.link_2gis ?? '',
+          title: n.title || b.name, short: shortTitle.slice(0, 16), kind: n.kind,
+          h: parseHours(b.hours ?? b.working_hours),
+          letter: ((n.title || '').match(/[A-Za-zА-Яа-яЁё0-9]/) || ['B'])[0].toUpperCase(),
+          search: `${b.name} ${b.address} ${b.city}`.toLowerCase(),
+          score: (rating * reviews + 4.4 * 8) / (reviews + 8),
+        };
+      });
+    byId = new Map(DATA.map(b => [b.id, b]));
+    CITIES = [...DATA.reduce((m, b) => m.set(b.city, (m.get(b.city) || 0) + 1), new Map())].sort((a, b) => b[1] - a[1]);
   }
 
-  const DATA = rawCatalog
-    .filter(b => isFinite(+b.lat) && isFinite(+b.lon))
-    .map(b => {
-      const n = splitName(b.name);
-      const rating = +b.rating || 0, reviews = +(b.reviews ?? b.reviews_count) || 0;
-      const shortTitle = n.title.replace(/barbershop|барбершоп|мужская парикмахерская/ig, '').trim() || n.title;
-      return {
-        id: String(b.id), name: b.name, city: b.city || '', address: b.address || '',
-        lat: +b.lat, lon: +b.lon, rating, reviews,
-        hours: b.hours ?? b.working_hours, link: b.link ?? b.link_2gis ?? '',
-        title: n.title || b.name, short: shortTitle.slice(0, 16), kind: n.kind,
-        h: parseHours(b.hours ?? b.working_hours),
-        letter: ((n.title || '').match(/[A-Za-zА-Яа-яЁё0-9]/) || ['B'])[0].toUpperCase(),
-        search: `${b.name} ${b.address} ${b.city}`.toLowerCase(),
-        score: (rating * reviews + 4.4 * 8) / (reviews + 8),
-      };
-    });
-  const byId = new Map(DATA.map(b => [b.id, b]));
-  const CITIES = [...DATA.reduce((m, b) => m.set(b.city, (m.get(b.city) || 0) + 1), new Map())].sort((a, b) => b[1] - a[1]);
+  buildCatalogData();
 
   const state = { city: 'all', q: '', f: new Set(), sort: 'rec', sel: null, me: null, view: 'list' };
   let current = [];
@@ -555,7 +567,11 @@ body.dragging .map-ctrls{transition:opacity .2s}
     try {
       const tenants = JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
       if (Array.isArray(tenants)) {
-        const bound = tenants.find(t => t.catalogId && String(t.catalogId) === String(b.id));
+        const bound = tenants.find(t =>
+          (t.catalogId && String(t.catalogId) === String(b.id)) ||
+          (String(t.id) === String(b.id)) ||
+          (t.shopName && b.name && t.shopName.toLowerCase() === b.name.toLowerCase())
+        );
         if (bound && bound.id) return String(bound.id);
       }
     } catch (e) {}
@@ -648,14 +664,20 @@ body.dragging .map-ctrls{transition:opacity .2s}
             ${ICON.calendar}Записаться
           </a>
           <button class="btn navy" data-act="route">${ICON.route}Маршрут</button>
-          <a class="btn ghost" href="${link}" target="_blank" rel="noopener">${ICON.ext}2GIS</a>
+          ${b.link ? `<a class="btn ghost" href="${link}" target="_blank" rel="noopener">${ICON.ext}2GIS</a>` : ''}
         </div>
         <div class="info">
           <div class="row">${ICON.pin}<div><div class="k">Адрес</div><div class="v">${esc(b.address)}, ${esc(b.city)}</div></div>
             <button class="act" data-act="copy">Копировать</button></div>
           <div class="row">${ICON.clock}<div><div class="k">Часы работы</div><div class="v">${b.h ? (b.h.h24 ? 'Круглосуточно' : `Ежедневно ${b.h.os} – ${b.h.cs}`) : esc(b.hours || 'Не указаны')}</div></div></div>
-          <div class="row">${ICON.phone}<div><div class="k">Контакты и запись</div><div class="v">Актуальный телефон и отзывы в 2GIS</div></div>
-            <a class="act" href="${link}" target="_blank" rel="noopener">Перейти</a></div>
+          ${b.phone
+            ? `<div class="row">${ICON.phone}<div><div class="k">Телефон / WhatsApp</div><div class="v">${esc(b.phone)}</div></div>
+                <a class="act" href="tel:${esc(b.phone)}">Позвонить</a></div>`
+            : (b.link
+                ? `<div class="row">${ICON.phone}<div><div class="k">Контакты и запись</div><div class="v">Актуальный телефон и отзывы в 2GIS</div></div>
+                    <a class="act" href="${link}" target="_blank" rel="noopener">Перейти</a></div>`
+                : '')
+          }
         </div>
         ${near.length ? `<h3 class="sec-title">Ближайшие барбершопы</h3><div class="near">${near.map(n => card(n.x, n.d)).join('')}</div>` : ''}
         <p class="note">Данные проверены по справочнику 2GIS Кыргызстан.</p>
@@ -926,6 +948,24 @@ body.dragging .map-ctrls{transition:opacity .2s}
   } else {
     apply(true, false);
   }
+
+  // Sync remote custom map locations and tenant bindings from Firebase in background
+  (async () => {
+    try {
+      if (window.appDB) {
+        await window.appDB.initPromise;
+        await window.appDB.getGlobalTenants();
+      }
+      if (window.BarberMobileBridge && window.BarberMobileBridge.syncRemoteLocationsToMap) {
+        await window.BarberMobileBridge.syncRemoteLocationsToMap();
+        markers.clear();
+        buildCatalogData();
+        $('#totalLabel').textContent = `${DATA.length} ${plural(DATA.length, W_BS)}`;
+        renderCityChips();
+        apply(false, false);
+      }
+    } catch (e) {}
+  })();
 })();
 </script>
 </body>

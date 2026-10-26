@@ -120,12 +120,12 @@ const i18n = {
         let mapMarkers = [];
         let userLocationMarker = null;
         const TASHKENT_FALLBACK_COORDS = [
-            [41.3111, 69.2797],
-            [41.3455, 69.2882],
-            [41.2858, 69.2285],
-            [41.3268, 69.3180],
-            [41.2995, 69.2540],
-            [41.3580, 69.2420]
+            [42.8746, 74.5976],
+            [42.8765, 74.6020],
+            [42.8710, 74.5890],
+            [42.8425, 74.6110],
+            [42.8680, 74.5760],
+            [42.8810, 74.6150]
         ];
 
         function getCatalogBarbershopInfo() {
@@ -140,6 +140,33 @@ const i18n = {
                 const found = window.BARBERSHOPS_DATA.find(s => String(s.id) === tenantId);
                 if (found) return found;
             }
+            try {
+                const globalTenants = JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
+                if (Array.isArray(globalTenants)) {
+                    const bound = globalTenants.find(t => String(t.id) === tenantId);
+                    if (bound) {
+                        if (bound.catalogId) {
+                            if (customMap && customMap[bound.catalogId]) return customMap[bound.catalogId];
+                            if (Array.isArray(window.BARBERSHOPS_DATA)) {
+                                const foundByCat = window.BARBERSHOPS_DATA.find(s => String(s.id) === String(bound.catalogId));
+                                if (foundByCat) return foundByCat;
+                            }
+                        }
+                        if (bound.shopName) {
+                            return {
+                                id: tenantId,
+                                name: bound.shopName,
+                                city: 'Бишкек',
+                                address: '',
+                                phone: bound.email !== '—' ? (bound.email || '') : '',
+                                lat: bound.customLat || 42.8746,
+                                lon: bound.customLon || 74.5698,
+                                rating: 5.0
+                            };
+                        }
+                    }
+                }
+            } catch (e) {}
             return null;
         }
 
@@ -276,7 +303,7 @@ const i18n = {
                         ${ava}
                         <div style="flex:1;min-width:0;">
                             <div style="font-weight:800;font-size:0.98rem;color:#111827;">${m.name}</div>
-                            <div style="font-size:0.8rem;color:#6b7280;">${m.district || m.address || 'Ташкент'} • <span style="color:#f59e0b;font-weight:700;">★ ${rating.avg}</span></div>
+                            <div style="font-size:0.8rem;color:#6b7280;">${m.district || m.address || 'Бишкек'} • <span style="color:#f59e0b;font-weight:700;">★ ${rating.avg}</span></div>
                         </div>
                         <button type="button" onclick="document.getElementById('map-selected-card').style.display='none'" style="background:none;border:none;font-size:1.2rem;color:#9ca3af;cursor:pointer;">&times;</button>
                     </div>
