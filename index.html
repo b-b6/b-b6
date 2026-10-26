@@ -216,15 +216,14 @@
                 <main class="booking-container" id="booking-main-container">
                     <!-- MY BOOKING WIDGET -->
                     <div id="my-booking-widget" style="display:none; background:var(--burgundy-soft); border:1.5px solid var(--burgundy-line); border-radius:var(--radius-md); padding:16px; margin-bottom:20px;">
-                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-                            <i data-lucide="calendar-check" style="width:18px;height:18px;color:var(--burgundy);"></i>
-                            <h3 style="color:var(--burgundy); margin:0; font-size:0.95rem; font-weight:700;" data-i18n="widget_title">Напоминание о записи</h3>
+                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <i data-lucide="calendar-check" style="width:18px;height:18px;color:var(--burgundy);"></i>
+                                <h3 style="color:var(--burgundy); margin:0; font-size:0.95rem; font-weight:700;" data-i18n="widget_title">Ваши текущие записи</h3>
+                            </div>
+                            <button type="button" class="btn btn-outline" style="margin:0; padding:4px 10px; width:auto; font-size:0.75rem;" onclick="document.getElementById('my-booking-widget').style.display='none';" data-i18n="widget_close">Скрыть</button>
                         </div>
-                        <div id="my-booking-details" style="color:var(--navy); font-size:0.95rem; font-weight:600;"></div>
-                        <div style="margin-top:12px; display:flex; gap:8px;">
-                            <button class="btn-danger" style="margin-top:0;" onclick="cancelMyBooking()" data-i18n="widget_cancel">Отменить мою запись</button>
-                            <button class="btn btn-outline" style="margin-top:0; padding:8px 14px; width:auto; font-size:0.82rem;" onclick="document.getElementById('my-booking-widget').style.display='none';" data-i18n="widget_close">Скрыть</button>
-                        </div>
+                        <div id="my-booking-details"></div>
                     </div>
 
                     <!-- STEPPER -->
@@ -318,7 +317,12 @@
                             <button class="btn" style="margin-top:0;" onclick="submitReview()" data-i18n="review_send">Отправить отзыв</button>
                         </div>
 
-                        <button class="btn btn-outline" onclick="location.reload()" data-i18n="btn_home">На главную</button>
+                        <div style="display:flex; flex-direction:column; gap:10px; margin-top:12px;">
+                            <button type="button" class="btn" style="background:#111827; color:#fff;" onclick="startAnotherBooking()">
+                                ✂️ Записаться ещё раз (или записать друга)
+                            </button>
+                            <button type="button" class="btn btn-outline" onclick="location.reload()" data-i18n="btn_home">На главную</button>
+                        </div>
                     </div>
                 </main>
 

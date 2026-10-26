@@ -560,6 +560,17 @@ const i18n = {
                 if (cachedSettings) { const st = JSON.parse(cachedSettings); if(st && Object.keys(st).length) { store.settings = st; } }
             } catch(e) {}
 
+            // Восстановление имени и телефона клиента из памяти браузера для быстрых повторных записей
+            try {
+                const savedName = localStorage.getItem('barber_client_name');
+                const savedPhone = localStorage.getItem('barber_client_phone');
+                const nameEl = document.getElementById('client-name');
+                const phoneEl = document.getElementById('client-phone');
+                if (nameEl && !nameEl.value && savedName) nameEl.value = savedName;
+                if (phoneEl && !phoneEl.value && savedPhone) phoneEl.value = savedPhone;
+                if (typeof validateForm === 'function') validateForm();
+            } catch(e) {}
+
             // Рендерим сразу!
             changeLanguage(currentLang);
             applySettings(store.settings);
@@ -625,6 +636,7 @@ const i18n = {
                 if (bookingData.masterId === m.id) card.classList.add('selected');
                 card.onclick = () => {
                     bookingData.masterId = m.id; bookingData.masterName = m.isAny ? 'Любой мастер' : m.name;
+                    bookingData.time = null; // Сбрасываем выбранный слот времени при смене мастера
                     document.querySelectorAll('#step-2 .service-card').forEach(c => c.classList.remove('selected'));
                     card.classList.add('selected');
                     document.getElementById('btn-next-2').disabled = false;
@@ -677,6 +689,7 @@ const i18n = {
                 let durText = (s.duration || 45) + " мин";
                 card.onclick = () => {
                     bookingData.serviceKey = s.id; bookingData.price = s.price; bookingData.serviceRuName = t.ruTitle; bookingData.duration = s.duration || 45;
+                    bookingData.time = null; // Сбрасываем выбранный слот времени при смене услуги
                     document.querySelectorAll('#step-1 .service-card').forEach(c => c.classList.remove('selected')); card.classList.add('selected');
                     document.getElementById('btn-next-1').disabled = false;
                 };
@@ -732,14 +745,16 @@ const i18n = {
                 if (bookingData.date === isoDate && !isDateDisabled) { selectedStillValid = true; selectDate(isoDate, card); }
             }
 
-            // Если ранее выбранная дата стала недоступной (прошла / выходной) — сбрасываем её
+            // Если дата не была выбрана или стала недоступной — авто-выбираем первую доступную
             if (!selectedStillValid) {
-                bookingData.date = null; bookingData.time = null;
-                const tp = document.getElementById('time-picker');
-                if (tp) tp.style.display = 'none';
-                const btn3 = document.getElementById('btn-next-3');
-                if (btn3) btn3.disabled = true;
-                if (!firstAvailableCard) {
+                if (firstAvailableCard && firstAvailableIso) {
+                    selectDate(firstAvailableIso, firstAvailableCard);
+                } else {
+                    bookingData.date = null; bookingData.time = null;
+                    const tp = document.getElementById('time-picker');
+                    if (tp) tp.style.display = 'none';
+                    const btn3 = document.getElementById('btn-next-3');
+                    if (btn3) btn3.disabled = true;
                     container.insertAdjacentHTML('beforeend', `<div style="grid-column:1/-1; padding:14px; text-align:center; color:var(--text-muted); font-size:0.88rem;">Нет доступных дат в ближайшие 2 недели</div>`);
                 }
             }
@@ -858,7 +873,7 @@ const i18n = {
             
             document.getElementById('summary-master').innerHTML = `<i data-lucide="user" style="width:14px;height:14px;"></i> ${mName}`;
             document.getElementById('summary-service').innerHTML = `<i data-lucide="scissors" style="width:14px;height:14px;"></i> ${t.title} — ${bookingData.price} сом`;
-            let dObj = new Date(bookingData.date);
+            let dObj = new Date((bookingData.date || '').includes('T') ? bookingData.date : (bookingData.date + 'T12:00:00'));
             document.getElementById('summary-datetime').innerHTML = `<i data-lucide="calendar" style="width:14px;height:14px;"></i> ${dObj.toLocaleDateString('ru-RU')} в ${bookingData.time}`;
 
             if (window.lucide) lucide.createIcons();
@@ -1173,6 +1188,13 @@ const i18n = {
 
             myHistory.push(bookingData.id); saveDB(DB_MY_HISTORY, myHistory);
 
+            if (bookingData.name) {
+                try { localStorage.setItem('barber_client_name', bookingData.name); } catch(e) {}
+            }
+            if (bookingData.phone) {
+                try { localStorage.setItem('barber_client_phone', bookingData.phone); } catch(e) {}
+            }
+
             // Trigger success vibration
             triggerHaptic('success');
 
@@ -1199,44 +1221,163 @@ const i18n = {
             document.getElementById('stepper').style.display = 'none';
             document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
             document.getElementById('step-success').classList.add('active');
+            loadMyBookings();
+            renderLiveStats();
             bookingFinalizeInProgress = false;
         }
 
-        // MY HISTORY LOGIC
+        // MY HISTORY LOGIC (МУЛЬТИ-ЗАПИСЬ И ПОВТОРНЫЕ БРОНИ)
         function loadMyBookings() {
-            let myHist = getDB(DB_MY_HISTORY);
-            if(myHist.length === 0) return;
-            let allBookings = store.bookings;
-            
-            // Find latest future/today booking
-            let todayIso = window.BookingLogic ? window.BookingLogic.getLocalIsoDate() : new Date().toISOString().split('T')[0];
-            let activeBooking = null;
-            
-            for(let i=myHist.length-1; i>=0; i--) {
-                let b = allBookings.find(x => x.id === myHist[i]);
-                if(b && b.date >= todayIso) { activeBooking = b; break; }
+            const widget = document.getElementById('my-booking-widget');
+            const detailsBox = document.getElementById('my-booking-details');
+            if (!widget || !detailsBox) return;
+
+            const myHist = getDB(DB_MY_HISTORY);
+            if (!myHist || myHist.length === 0) {
+                widget.style.display = 'none';
+                return;
             }
 
-            if(activeBooking) {
-                document.getElementById('my-booking-widget').style.display = 'block';
-                let d = new Date(activeBooking.date).toLocaleDateString(locales[currentLang], {day:'numeric', month:'long'});
-                let msName = activeBooking.masterId === 'any' ? i18n[currentLang]['any_master'] : activeBooking.masterName;
-                document.getElementById('my-booking-details').innerHTML = `${d} в ${activeBooking.time}<br><span style="font-size:0.9rem; color:var(--text-muted);">${msName}</span>`;
-                // Save id to the cancel button just in case
-                document.querySelector('.btn-danger').setAttribute('data-id', activeBooking.id);
+            const allBookings = store.bookings || [];
+            const todayIso = window.BookingLogic ? window.BookingLogic.getLocalIsoDate() : new Date().toISOString().split('T')[0];
+
+            // Находим ВСЕ активные предстоящие/сегодняшние записи клиента
+            const activeBookings = [];
+            const seenIds = new Set();
+            for (let i = myHist.length - 1; i >= 0; i--) {
+                const bId = String(myHist[i]);
+                if (seenIds.has(bId)) continue;
+                seenIds.add(bId);
+                const b = allBookings.find(x => String(x.id) === bId);
+                if (b && b.status !== 'cancelled' && b.date >= todayIso) {
+                    activeBookings.push(b);
+                }
+            }
+
+            if (activeBookings.length === 0) {
+                widget.style.display = 'none';
+                return;
+            }
+
+            // Сортируем хронологически (ближайшие записи сверху)
+            activeBookings.sort((a, b) => (a.date + ' ' + (a.time || '')).localeCompare(b.date + ' ' + (b.time || '')));
+
+            const L = i18n[currentLang] || i18n.ru;
+            const cancelWord = L.widget_cancel || 'Отменить';
+
+            let itemsHtml = activeBookings.map(b => {
+                const dObj = new Date((b.date || '').includes('T') ? b.date : (b.date + 'T12:00:00'));
+                const dateStr = dObj.toLocaleDateString(locales[currentLang] || 'ru-RU', { day: 'numeric', month: 'long', weekday: 'short' });
+                const masterStr = (b.masterId === 'any' || !b.masterName) ? (L.any_master || 'Любой мастер') : b.masterName;
+                const serviceStr = b.service || (b.serviceRuName || 'Стрижка');
+                const priceStr = b.price ? `${b.price} сом` : '';
+
+                return `
+                    <div class="my-booking-item" style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 12px; margin-top:8px; background:rgba(255,255,255,0.78); border:1px solid rgba(139,26,43,0.18); border-radius:12px; flex-wrap:wrap;">
+                        <div style="flex:1; min-width:160px;">
+                            <div style="font-weight:700; color:var(--text-main); font-size:0.92rem; display:flex; align-items:center; gap:6px;">
+                                <span>📅 ${dateStr} в ${b.time}</span>
+                            </div>
+                            <div style="font-size:0.82rem; color:var(--text-secondary); margin-top:2px;">
+                                <span>✂️ ${serviceStr}</span>${priceStr ? ` • <strong>${priceStr}</strong>` : ''} • <span>👤 ${masterStr}</span>
+                            </div>
+                            ${b.name ? `<div style="font-size:0.75rem; color:var(--text-muted); margin-top:1px;">Клиент: ${b.name}</div>` : ''}
+                        </div>
+                        <button type="button" class="btn btn-outline" style="margin:0; padding:6px 12px; width:auto; font-size:0.78rem; color:#dc2626; border-color:rgba(220,38,38,0.35); background:#fff;" onclick="cancelMyBooking('${b.id}')">
+                            ✖ ${cancelWord}
+                        </button>
+                    </div>
+                `;
+            }).join('');
+
+            detailsBox.innerHTML = itemsHtml;
+            widget.style.display = 'block';
+            if (window.lucide) lucide.createIcons();
+        }
+
+        async function cancelMyBooking(bookingId) {
+            let id = bookingId;
+            if (!id && window.event && window.event.target) {
+                id = window.event.target.getAttribute('data-id');
+            }
+            if (!id) return;
+
+            const confirmMsg = currentLang === 'kg' ? 'Бул жазууну чын эле жокко чыгаргыңыз келеби?'
+                             : currentLang === 'uz' ? 'Haqiqatan ham bu yozuvni bekor qilmoqchimisiz?'
+                             : currentLang === 'en' ? 'Are you sure you want to cancel this booking?'
+                             : 'Вы уверены, что хотите отменить эту запись?';
+
+            if (!confirm(confirmMsg)) return;
+
+            // 1. Помечаем 'cancelled', освобождая временной слот в расписании
+            let found = false;
+            store.bookings = store.bookings.map(x => {
+                if (String(x.id) === String(id)) {
+                    found = true;
+                    return { ...x, status: 'cancelled' };
+                }
+                return x;
+            });
+
+            if (found) {
+                await window.appDB.saveBookings(store.bookings);
+            }
+
+            // 2. Удаляем из истории браузера данного клиента
+            let h = getDB(DB_MY_HISTORY).filter(x => String(x) !== String(id));
+            saveDB(DB_MY_HISTORY, h);
+
+            // 3. Мгновенно обновляем интерфейс
+            loadMyBookings();
+            renderLiveStats();
+            if (currentStep === 3 && bookingData.date) {
+                renderTimes();
             }
         }
 
-        async function cancelMyBooking() {
-            if(!confirm("Уверены?")) return;
-            let id = event.target.getAttribute('data-id');
-            // Cancel means setting status or just removing it. We just remove it.
-            store.bookings = store.bookings.filter(x => x.id !== id);
-            await window.appDB.saveBookings(store.bookings);
+        function startAnotherBooking() {
+            bookingData.id = null;
+            bookingData.serviceKey = null;
+            bookingData.serviceRuName = null;
+            bookingData.price = null;
+            bookingData.duration = 60;
+            bookingData.date = null;
+            bookingData.time = null;
 
-            let h = getDB(DB_MY_HISTORY).filter(x => x !== id); saveDB(DB_MY_HISTORY, h);
-            document.getElementById('my-booking-widget').style.display = 'none';
+            // Имя и телефон сохраняются для повторных записей (удобно для клиента и записи друзей)
+            const savedName = localStorage.getItem('barber_client_name') || '';
+            const savedPhone = localStorage.getItem('barber_client_phone') || '';
+            const nameEl = document.getElementById('client-name');
+            const phoneEl = document.getElementById('client-phone');
+            if (nameEl) nameEl.value = savedName;
+            if (phoneEl) phoneEl.value = savedPhone;
+            bookingData.name = savedName;
+            bookingData.phone = savedPhone;
+
+            // Снимаем выделение со старых карточек
+            document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
+            document.querySelectorAll('.date-card').forEach(c => c.classList.remove('selected'));
+            document.querySelectorAll('.time-slot').forEach(c => c.classList.remove('selected'));
+
+            const btn1 = document.getElementById('btn-next-1');
+            const btn2 = document.getElementById('btn-next-2');
+            const btn3 = document.getElementById('btn-next-3');
+            if (btn1) btn1.disabled = true;
+            if (btn2) btn2.disabled = true;
+            if (btn3) btn3.disabled = true;
+
+            const stepperEl = document.getElementById('stepper');
+            if (stepperEl) stepperEl.style.display = 'flex';
+
+            loadMyBookings();
+            nextStep(1);
+
+            const scrollBox = document.getElementById('sheet-scroll-container') || window;
+            if (scrollBox.scrollTo) scrollBox.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
+        window.startAnotherBooking = startAnotherBooking;
+        window.cancelMyBooking = cancelMyBooking;
 
         // REVIEWS LOGIC
         let currentRating = 5;
