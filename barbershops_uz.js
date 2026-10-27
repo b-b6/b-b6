@@ -6788,6 +6788,854 @@ window.BARBERSHOPS_UZ_DATA = [
         ]
     },
     {
+        "id": "uz-fergana-topor",
+        "name": "Барбершоп «ТОПОР»",
+        "brand": "ТОПОР",
+        "country": "Узбекистан",
+        "city": "Фергана",
+        "area": "Фергана",
+        "address": "ул. Алишера Навои, 30",
+        "lat": 40.3616675,
+        "lon": 71.7820478,
+        "rating": 5,
+        "reviews_count": 48,
+        "phone": "+998 91 101 08 00",
+        "instagram": "topor_fergana",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "80 000 - 220 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Фергана%20барбершоп%20Топор",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 800002,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 560001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 1200003,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 640002,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-fergana-doppi",
+        "name": "Doppi Men, барбершоп",
+        "brand": "Doppi Men",
+        "country": "Узбекистан",
+        "city": "Фергана",
+        "area": "Фергана",
+        "address": "ул. Маърифат, 6",
+        "lat": 40.383521,
+        "lon": 71.7885793,
+        "rating": 4.9,
+        "reviews_count": 36,
+        "phone": "+998 90 840 00 03",
+        "instagram": "doppimen_fergana",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "70 000 - 200 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Фергана%20Doppi%20Men",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 700002,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 490001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 1050003,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 560002,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-fergana-mc-barber",
+        "name": "MC Barber, барбершоп",
+        "brand": "MC Barber",
+        "country": "Узбекистан",
+        "city": "Фергана",
+        "area": "Фергана",
+        "address": "ул. Маърифат, 12",
+        "lat": 40.38411,
+        "lon": 71.78865,
+        "rating": 4.8,
+        "reviews_count": 25,
+        "phone": "+998 90 555 12 34",
+        "instagram": "mcbarber_fergana",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "70 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Фергана%20MC%20Barber",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 700001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 490001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 1050002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 560001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-fergana-lotos",
+        "name": "Lotos, мужской салон / барбершоп",
+        "brand": "Lotos",
+        "country": "Узбекистан",
+        "city": "Фергана",
+        "area": "Фергана",
+        "address": "ул. Маърифат, 43",
+        "lat": 40.386586,
+        "lon": 71.7869782,
+        "rating": 4.9,
+        "reviews_count": 42,
+        "phone": "+998 73 244 10 20",
+        "instagram": "lotos_fergana",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "75 000 - 210 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Фергана%20Лотос",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 750002,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 525001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 1125003,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 600002,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-fergana-brazor",
+        "name": "Brazor, барбершоп",
+        "brand": "Brazor",
+        "country": "Узбекистан",
+        "city": "Фергана",
+        "area": "Киргули",
+        "address": "ул. Хувайдо, 20/1",
+        "lat": 40.4356074,
+        "lon": 71.7575064,
+        "rating": 4.8,
+        "reviews_count": 31,
+        "phone": "+998 91 280 20 00",
+        "instagram": "brazor_barber",
+        "working_hours": "08:00 - 23:00",
+        "price_range": "80 000 - 230 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Фергана%20Brazor",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 800002,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 560001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 1200003,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 640002,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-fergana-chillbro",
+        "name": "Chillbro, барбершоп",
+        "brand": "Chillbro",
+        "country": "Узбекистан",
+        "city": "Фергана",
+        "area": "Киргули",
+        "address": "ул. Кокандская, 66",
+        "lat": 40.4325575,
+        "lon": 71.7691163,
+        "rating": 4.9,
+        "reviews_count": 29,
+        "phone": "+998 93 440 40 04",
+        "instagram": "chillbro_fergana",
+        "working_hours": "10:00 - 21:00",
+        "price_range": "75 000 - 200 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Фергана%20Chillbro",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 750002,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 525001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 1125003,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 600002,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-fergana-dubai",
+        "name": "Dubai, барбершоп",
+        "brand": "Dubai",
+        "country": "Узбекистан",
+        "city": "Фергана",
+        "area": "Фергана",
+        "address": "ул. Аль-Фергани, 21",
+        "lat": 40.4070862,
+        "lon": 71.7442175,
+        "rating": 4.7,
+        "reviews_count": 22,
+        "phone": "+998 99 999 90 66",
+        "instagram": "dubai_barber_fergana",
+        "working_hours": "09:00 - 22:00",
+        "price_range": "80 000 - 220 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Фергана%20Дубай%20барбершоп",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 800002,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 560001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 1200003,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 640002,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-fergana-rich-mens-club",
+        "name": "Rich Men's Club, барбершоп",
+        "brand": "Rich Men's Club",
+        "country": "Узбекистан",
+        "city": "Фергана",
+        "area": "Фергана",
+        "address": "ул. Маргилани, 32/1",
+        "lat": 40.4761884,
+        "lon": 71.7467287,
+        "rating": 5,
+        "reviews_count": 38,
+        "phone": "+998 90 777 32 01",
+        "instagram": "richmensclub_uz",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "90 000 - 250 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Фергана%20Rich%20Mens%20Club",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 900002,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 630001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 1350003,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 720002,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-fergana-barbershop-77",
+        "name": "Barbershop 77, мужской салон",
+        "brand": "Barbershop 77",
+        "country": "Узбекистан",
+        "city": "Фергана",
+        "area": "Фергана",
+        "address": "ул. Тадбиркорлар, 77",
+        "lat": 40.3936442,
+        "lon": 71.7877698,
+        "rating": 4.7,
+        "reviews_count": 19,
+        "phone": "+998 93 703 74 33",
+        "instagram": "barbershop77_fergana",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "70 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Фергана%20Тадбиркорлар%20барбершоп",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 700001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 490001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 1050002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 560001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-fergana-boss-barber",
+        "name": "Boss Barber, барбершоп",
+        "brand": "Boss Barber",
+        "country": "Узбекистан",
+        "city": "Фергана",
+        "area": "Киргули",
+        "address": "ул. Ватан Равнаки, 3",
+        "lat": 40.3990535,
+        "lon": 71.7791209,
+        "rating": 4.8,
+        "reviews_count": 27,
+        "phone": "+998 95 400 44 24",
+        "instagram": "bossbarber_fergana",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "75 000 - 200 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Фергана%20Boss%20Barber",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 750002,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 525001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 1125003,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 600002,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-fergana-lord",
+        "name": "Lord, барбершоп",
+        "brand": "Lord",
+        "country": "Узбекистан",
+        "city": "Фергана",
+        "area": "Фергана",
+        "address": "ул. Абдуллы Кадыри, 48",
+        "lat": 40.3573066,
+        "lon": 71.8504523,
+        "rating": 4.9,
+        "reviews_count": 33,
+        "phone": "+998 91 680 48 48",
+        "instagram": "lord_barber_fergana",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "80 000 - 220 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Фергана%20Lord%20barber",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 800002,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 560001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 1200003,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 640002,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-fergana-tooman",
+        "name": "Tooman, барбершоп",
+        "brand": "Tooman",
+        "country": "Узбекистан",
+        "city": "Фергана",
+        "area": "Фергана",
+        "address": "ул. Абдуллы Кадыри, 12",
+        "lat": 40.3562661,
+        "lon": 71.8474736,
+        "rating": 4.8,
+        "reviews_count": 24,
+        "phone": "+998 93 640 12 12",
+        "instagram": "tooman_barber",
+        "working_hours": "10:00 - 21:00",
+        "price_range": "80 000 - 210 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Фергана%20Tooman%20barber",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 800002,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 560001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 1200003,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 640002,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-fergana-mr-gaaf",
+        "name": "Mr. Gaaf, барбершоп",
+        "brand": "Mr. Gaaf",
+        "country": "Узбекистан",
+        "city": "Фергана",
+        "area": "Фергана",
+        "address": "ул. Юксалиш, 53",
+        "lat": 40.3841204,
+        "lon": 71.7927399,
+        "rating": 4.9,
+        "reviews_count": 40,
+        "phone": "+998 90 150 53 53",
+        "instagram": "mrgaaf_barber",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "85 000 - 230 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Фергана%20Mr%20Gaaf",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 850002,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 595001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 1275003,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 680002,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-fergana-joni-barber",
+        "name": "Joni-Barber, барбершоп",
+        "brand": "Joni-Barber",
+        "country": "Узбекистан",
+        "city": "Фергана",
+        "area": "Фергана",
+        "address": "ул. Сайилгох, 5",
+        "lat": 40.3855915,
+        "lon": 71.7848429,
+        "rating": 4.9,
+        "reviews_count": 35,
+        "phone": "+998 91 205 05 05",
+        "instagram": "jonibarber_fergana",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "80 000 - 220 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Фергана%20Joni%20barber",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 800002,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 560001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 1200003,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 640002,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-fergana-ses-barber",
+        "name": "Ses Barber, салон красоты и стрижки",
+        "brand": "Ses Barber",
+        "country": "Узбекистан",
+        "city": "Фергана",
+        "area": "Фергана",
+        "address": "ул. Сайилгох, 15",
+        "lat": 40.38721,
+        "lon": 71.7845,
+        "rating": 4.7,
+        "reviews_count": 18,
+        "phone": "+998 90 303 15 15",
+        "instagram": "sesbarber_fergana",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "70 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Фергана%20Ses%20Barber",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 700001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 490001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 1050002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 560001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-fergana-muhammadumar",
+        "name": "Muhammadumar, барбершоп",
+        "brand": "Muhammadumar",
+        "country": "Узбекистан",
+        "city": "Фергана",
+        "area": "Фергана",
+        "address": "ул. Мустакиллик, 28",
+        "lat": 40.385,
+        "lon": 71.784,
+        "rating": 4.8,
+        "reviews_count": 26,
+        "phone": "+998 91 670 28 28",
+        "instagram": "muhammadumar_barber",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "75 000 - 200 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Фергана%20Muhammadumar%20barber",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 750002,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 525001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 1125003,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 600002,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
         "id": "uz-2gis-osm-1262966131",
         "name": "Парикмахерская, тату салон, барбершоп",
         "brand": "Парикмахерская,",
