@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
-<title>BarberMap KG — все барбершопы Кыргызстана на карте</title>
-<meta name="description" content="Интерактивная карта 401 мужского барбершопа и парикмахерской Кыргызстана: Бишкек, Ош, Джалал-Абад, Каракол и другие города.">
+<title>BarberMap — Все барбершопы на карте (Кыргызстан и Узбекистан)</title>
+<meta name="description" content="Интерактивная карта барбершопов: Бишкек, Ташкент, Ош, Самарканд, Бухара. Цены, рейтинги, отзывы и онлайн-запись.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -234,7 +234,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
     <div class="brand-row">
       <a class="logo" href="#" id="logo">
         <span class="mk"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg></span>
-        Barber<span class="map-word">Map</span><span class="tag">KG</span>
+        Barber<span class="map-word">Map</span><span class="tag" id="logoTag">KG · UZ</span>
       </a>
       <div style="display:flex;align-items:center;gap:8px;">
         <span class="total" id="totalLabel"></span>
@@ -251,6 +251,13 @@ body.dragging .map-ctrls{transition:opacity .2s}
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
       </button>
     </label>
+    <div class="chips-wrap" style="margin-bottom: 2px;">
+      <div class="chips" id="countryChips" style="gap: 6px;">
+        <button class="chip on" data-country="all">🌍 Все страны <small id="cntAll">735</small></button>
+        <button class="chip" data-country="KG">🇰🇬 Кыргызстан <small id="cntKG">401</small></button>
+        <button class="chip" data-country="UZ">🇺🇿 Узбекистан <small id="cntUZ">334</small></button>
+      </div>
+    </div>
     <div class="chips-wrap">
       <div class="chips" id="cityChips"></div>
     </div>
@@ -310,6 +317,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script src="barbershops_kg.js"></script>
+<script src="barbershops_uz.js"></script>
 <script src="assets/db.js?v=9"></script>
 <script src="assets/mobile-bridge.js?v=9"></script>
 
@@ -437,15 +445,19 @@ body.dragging .map-ctrls{transition:opacity .2s}
         const n = splitName(b.name);
         const rating = +b.rating || 0, reviews = +(b.reviews ?? b.reviews_count) || 0;
         const shortTitle = n.title.replace(/barbershop|барбершоп|мужская парикмахерская/ig, '').trim() || n.title;
+        const isUz = b.country === 'Узбекистан' || ['Ташкент', 'Самарканд', 'Бухара', 'Фергана', 'Андижан', 'Наманган', 'Коканд', 'Чирчик', 'Алмалык', 'Навои', 'Карши', 'Нукус', 'Ургенч'].includes(b.city);
+        const country = isUz ? 'Узбекистан' : 'Кыргызстан';
+        const countryCode = isUz ? 'UZ' : 'KG';
         return {
           id: String(b.id), name: b.name, city: b.city || '', address: b.address || '',
+          country: country, countryCode: countryCode,
           phone: b.phone || '',
           lat: +b.lat, lon: +b.lon, rating, reviews,
           hours: b.hours ?? b.working_hours, link: b.link ?? b.link_2gis ?? '',
           title: n.title || b.name, short: shortTitle.slice(0, 16), kind: n.kind,
           h: parseHours(b.hours ?? b.working_hours),
           letter: ((n.title || '').match(/[A-Za-zА-Яа-яЁё0-9]/) || ['B'])[0].toUpperCase(),
-          search: `${b.name} ${b.address} ${b.city}`.toLowerCase(),
+          search: `${b.name} ${b.address} ${b.city} ${country}`.toLowerCase(),
           score: (rating * reviews + 4.4 * 8) / (reviews + 8),
         };
       });
@@ -455,11 +467,11 @@ body.dragging .map-ctrls{transition:opacity .2s}
 
   buildCatalogData();
 
-  const state = { city: 'all', q: '', f: new Set(), sort: 'rec', sel: null, me: null, view: 'list' };
+  const state = { country: 'all', city: 'all', q: '', f: new Set(), sort: 'rec', sel: null, me: null, view: 'list' };
   let current = [];
 
   /* ================= map ================= */
-  const map = L.map('map', { zoomControl: false, minZoom: 6, maxZoom: 19 }).setView([41.6, 74.6], 7);
+  const map = L.map('map', { zoomControl: false, minZoom: 5, maxZoom: 19 }).setView([41.8, 71.5], 6);
   L.control.zoom({ position: 'topright' }).addTo(map);
   const LAYERS = {
     light: L.tileLayer('https://tile{s}.maps.2gis.com/tiles?x={x}&y={y}&z={z}&v=1.5&key=fb2542a3-ea70-441d-9b49-bbc1b26168c5',
@@ -543,6 +555,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
     const q = state.q.trim().toLowerCase();
     const words = q ? q.split(/\s+/).filter(Boolean) : [];
     return DATA.filter(b => {
+      if (state.country !== 'all' && b.countryCode !== state.country) return false;
       if (state.city !== 'all' && b.city !== state.city) return false;
       if (words.length && !words.every(w => b.search.includes(w))) return false;
       if (state.f.has('open')) { const st = statusOf(b); if (!st.open) return false; }
@@ -584,7 +597,9 @@ body.dragging .map-ctrls{transition:opacity .2s}
   function card(b, d) {
     const st = statusOf(b);
     const dist = d != null ? d : (state.me ? distKm(state.me, b) : null);
-    const meta = [b.kind, state.city === 'all' || d != null ? b.city : null, dist != null ? fmtDist(dist) : null].filter(Boolean).join(' · ');
+    const metaParts = [b.kind, (state.city === 'all' || d != null) ? b.city : null, dist != null ? fmtDist(dist) : null];
+    if (state.country === 'all') metaParts.push(b.country === 'Узбекистан' ? '🇺🇿 UZ' : '🇰🇬 KG');
+    const meta = metaParts.filter(Boolean).join(' · ');
     const targetId = resolveBookingTargetId(b);
     return `<div class="card" data-id="${esc(b.id)}" role="button" tabindex="0">
       <div class="av">${esc(b.letter)}${st.known && st.open ? '<span class="dot-open"></span>' : ''}</div>
@@ -612,7 +627,10 @@ body.dragging .map-ctrls{transition:opacity .2s}
     }
     el.scrollTop = 0;
     const n = list.length;
-    $('#listTitle').textContent = state.city === 'all' ? 'Весь Кыргызстан' : state.city;
+    let defTitle = 'Все страны';
+    if (state.country === 'UZ') defTitle = 'Весь Узбекистан';
+    else if (state.country === 'KG') defTitle = 'Весь Кыргызстан';
+    $('#listTitle').textContent = state.city === 'all' ? defTitle : state.city;
     const extras = [];
     if (state.q.trim()) extras.push(`по запросу «${state.q.trim()}»`);
     $('#listSub').textContent = `${n} ${plural(n, W_BS)}${extras.length ? ' ' + extras.join(', ') : ''}`;
@@ -626,9 +644,26 @@ body.dragging .map-ctrls{transition:opacity .2s}
   }
 
   function renderCityChips() {
-    const items = [['all', DATA.length, 'Все'], ...CITIES.map(([c, n]) => [c, n, c])];
+    const scopedList = state.country === 'all' ? DATA : DATA.filter(b => b.countryCode === state.country);
+    const total = scopedList.length;
+    const scopedCities = [...scopedList.reduce((m, b) => m.set(b.city, (m.get(b.city) || 0) + 1), new Map())].sort((a, b) => b[1] - a[1]);
+    const items = [['all', total, 'Все города'], ...scopedCities.map(([c, n]) => [c, n, c])];
     $('#cityChips').innerHTML = items.map(([v, n, label]) =>
       `<button class="chip${state.city === v ? ' on' : ''}" data-city="${esc(v)}">${esc(label)} <small>${n}</small></button>`).join('');
+    updateCountryCounters();
+  }
+
+  function updateCountryCounters() {
+    const total = DATA.length;
+    const kgCount = DATA.filter(b => b.countryCode === 'KG').length;
+    const uzCount = DATA.filter(b => b.countryCode === 'UZ').length;
+    if ($('#cntAll')) $('#cntAll').textContent = total;
+    if ($('#cntKG')) $('#cntKG').textContent = kgCount;
+    if ($('#cntUZ')) $('#cntUZ').textContent = uzCount;
+    if ($('#totalLabel')) {
+      const activeTotal = state.country === 'all' ? total : (state.country === 'KG' ? kgCount : uzCount);
+      $('#totalLabel').textContent = `${activeTotal} ${plural(activeTotal, W_BS)}`;
+    }
   }
 
   /* horizontal wheel scroll for desktop chip bars */
@@ -723,7 +758,8 @@ body.dragging .map-ctrls{transition:opacity .2s}
   /* ================= route / share ================= */
   function openRoute(b) {
     $('#routeTo').textContent = `${b.title} — ${b.address}, ${b.city}`;
-    $('#r2gis').href = `https://2gis.kg/directions/points/%7C${b.lon}%2C${b.lat}`;
+    const gisHost = b.country === 'Узбекистан' ? '2gis.uz' : '2gis.kg';
+    $('#r2gis').href = `https://${gisHost}/directions/points/%7C${b.lon}%2C${b.lat}`;
     $('#rYa').href = `https://yandex.ru/maps/?rtext=~${b.lat},${b.lon}&rtt=auto`;
     $('#rGo').href = `https://www.google.com/maps/dir/?api=1&destination=${b.lat},${b.lon}`;
     $('#routeModal').classList.add('show');
@@ -794,6 +830,27 @@ body.dragging .map-ctrls{transition:opacity .2s}
   bindDrag($('#listHead'));
 
   /* ================= events ================= */
+  $('#countryChips').addEventListener('click', e => {
+    const b = e.target.closest('button[data-country]');
+    if (!b) return;
+    const country = b.dataset.country;
+    if (state.country === country) return;
+    state.country = country;
+    state.city = 'all';
+    document.querySelectorAll('#countryChips .chip').forEach(c => c.classList.remove('on'));
+    b.classList.add('on');
+    renderCityChips();
+    if (state.view === 'detail') closeDetail();
+    apply(true);
+    if (country === 'UZ') {
+      focusOn(41.311, 69.279, 11);
+    } else if (country === 'KG') {
+      focusOn(42.876, 74.588, 12);
+    } else {
+      map.fitBounds([[38.5, 59.0], [43.5, 78.5]]);
+    }
+  });
+
   $('#cityChips').addEventListener('click', e => {
     const b = e.target.closest('button[data-city]');
     if (!b) return;
@@ -870,11 +927,13 @@ body.dragging .map-ctrls{transition:opacity .2s}
   $('#logo').addEventListener('click', e => { e.preventDefault(); resetAll(); });
 
   function resetAll() {
-    state.city = 'all'; state.q = ''; state.f.clear();
+    state.country = 'all'; state.city = 'all'; state.q = ''; state.f.clear();
     $('#q').value = ''; $('#qClear').hidden = true;
+    document.querySelectorAll('#countryChips .chip').forEach(c => c.classList.toggle('on', c.dataset.country === 'all'));
     document.querySelectorAll('#filterChips .chip').forEach(c => c.classList.remove('on'));
     if (state.view === 'detail') closeDetail();
     renderCityChips(); apply(true);
+    map.fitBounds([[38.5, 59.0], [43.5, 78.5]]);
   }
 
   $('#btnLayer').addEventListener('click', () => {
@@ -946,6 +1005,12 @@ body.dragging .map-ctrls{transition:opacity .2s}
 
   const hashId = decodeURIComponent(location.hash.slice(1));
   if (hashId && byId.has(hashId)) {
+    const b = byId.get(hashId);
+    if (b && b.countryCode) {
+      state.country = b.countryCode;
+      document.querySelectorAll('#countryChips .chip').forEach(c => c.classList.toggle('on', c.dataset.country === state.country));
+      renderCityChips();
+    }
     apply(false);
     select(hashId, false);
   } else {
