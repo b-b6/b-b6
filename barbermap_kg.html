@@ -473,11 +473,62 @@ body.dragging .map-ctrls{transition:opacity .2s}
   /* ================= map ================= */
   const map = L.map('map', { zoomControl: false, minZoom: 5, maxZoom: 19 }).setView([41.8, 71.5], 6);
   L.control.zoom({ position: 'topright' }).addTo(map);
+
+  /* 2GIS coverage bounding boxes (major cities with official 2GIS detailed raster tiles) */
+  const DGIS_AREAS = [
+    { s: 42.75, n: 42.98, w: 74.40, e: 74.75 }, // Bishkek
+    { s: 40.45, n: 40.60, w: 72.70, e: 72.90 }, // Osh
+    { s: 40.88, n: 41.00, w: 72.93, e: 73.10 }, // Jalal-Abad
+    { s: 41.10, n: 41.45, w: 69.10, e: 69.45 }, // Tashkent
+    { s: 39.55, n: 39.75, w: 66.80, e: 67.10 }, // Samarkand
+    { s: 39.70, n: 39.85, w: 64.35, e: 64.55 }  // Bukhara
+  ];
+
+  function is2GisCovered(x, y, z) {
+    if (z < 8) return false;
+    const n = Math.PI;
+    const lon = (x + 0.5) / Math.pow(2, z) * 360 - 180;
+    const latRad = Math.atan(Math.sinh(n * (1 - 2 * (y + 0.5) / Math.pow(2, z))));
+    const lat = latRad * 180 / n;
+    return DGIS_AREAS.some(a => lat >= a.s && lat <= a.n && lon >= a.w && lon <= a.e);
+  }
+
+  const SmartLightLayer = L.TileLayer.extend({
+    getTileUrl: function(coords) {
+      if (is2GisCovered(coords.x, coords.y, coords.z)) {
+        const s = this._getSubdomain(coords);
+        return 'https://tile' + s + '.maps.2gis.com/tiles?x=' + coords.x + '&y=' + coords.y + '&z=' + coords.z + '&v=1.5&key=fb2542a3-ea70-441d-9b49-bbc1b26168c5';
+      }
+      const osmSubs = ['a', 'b', 'c'];
+      const osmSub = osmSubs[Math.abs(coords.x + coords.y) % 3];
+      return 'https://' + osmSub + '.tile.openstreetmap.org/' + coords.z + '/' + coords.x + '/' + coords.y + '.png';
+    }
+  });
+
+  const lightLayer = new SmartLightLayer('', {
+    subdomains: '0123',
+    maxZoom: 19,
+    maxNativeZoom: 18,
+    className: 'tiles-soft',
+    attribution: '&copy; 2GIS / &copy; OpenStreetMap'
+  });
+  lightLayer.on('tileerror', function(e) {
+    if (e.tile && e.coords && e.tile.src && e.tile.src.indexOf('2gis') !== -1) {
+      const osmSubs = ['a', 'b', 'c'];
+      const osmSub = osmSubs[Math.abs(e.coords.x + e.coords.y) % 3];
+      e.tile.src = 'https://' + osmSub + '.tile.openstreetmap.org/' + e.coords.z + '/' + e.coords.x + '/' + e.coords.y + '.png';
+    }
+  });
+
+  const satLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 19,
+    maxNativeZoom: 18,
+    attribution: '&copy; Esri'
+  });
+
   const LAYERS = {
-    light: L.tileLayer('https://tile{s}.maps.2gis.com/tiles?x={x}&y={y}&z={z}&v=1.5&key=fb2542a3-ea70-441d-9b49-bbc1b26168c5',
-      { subdomains: '0123', maxZoom: 19, maxNativeZoom: 18, className: 'tiles-soft', attribution: '&copy; 2GIS' }),
-    sat: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-      { maxZoom: 19, attribution: '&copy; Esri' }),
+    light: lightLayer,
+    sat: satLayer,
   };
   let layerKey = 'light';
   LAYERS.light.addTo(map);
