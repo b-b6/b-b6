@@ -1250,6 +1250,56 @@ const i18n = {
                 if (successDescEl) successDescEl.innerText = L.success_desc;
             }
 
+            // WhatsApp Bridge for Catalog Barbershops (мост для заведений из справочника)
+            const waBridgeBox = document.getElementById('catalog-wa-bridge-box');
+            if (waBridgeBox) {
+                const catShop = typeof getCatalogBarbershopInfo === 'function' ? getCatalogBarbershopInfo() : null;
+                const globalTenants = JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
+                const isBound = catShop && Array.isArray(globalTenants) && globalTenants.some(t =>
+                    (t.catalogId && String(t.catalogId) === String(catShop.id)) ||
+                    (String(t.id) === String(catShop.id))
+                );
+
+                if (catShop && !isBound) {
+                    waBridgeBox.style.display = 'block';
+                    if (successTitleEl) successTitleEl.innerText = '📋 Заявка сформирована!';
+                    if (successDescEl) successDescEl.innerText = 'Остался 1 шаг: перешлите заявку в барбершоп для подтверждения времени.';
+
+                    const digits = (catShop.phone || '').replace(/\D/g, '');
+                    const srv = bookingData.serviceRuName || bookingData.service || 'Мужская стрижка';
+                    const prc = bookingData.price ? ` (${bookingData.price})` : '';
+                    const mStr = (bookingData.masterName && bookingData.masterName !== 'Любой мастер') ? `\n💈 Мастер: ${bookingData.masterName}` : '';
+                    const waText = 
+                        `Здравствуйте! Хочу записаться к вам через сервис BarberMap:\n\n` +
+                        `✂️ Услуга: ${srv}${prc}${mStr}\n` +
+                        `📅 Дата: ${bookingData.date}\n` +
+                        `⏰ Время: ${bookingData.time}\n` +
+                        `👤 Клиент: ${bookingData.name}\n` +
+                        `📱 Телефон: ${bookingData.phone}\n\n` +
+                        `Подтвердите, пожалуйста, запись!`;
+
+                    let waLink = `https://wa.me/?text=${encodeURIComponent(waText)}`;
+                    if (catShop.whatsapp && catShop.whatsapp.includes('wa.me/')) {
+                        const base = catShop.whatsapp.split('?')[0];
+                        waLink = `${base}?text=${encodeURIComponent(waText)}`;
+                    } else if (digits.length >= 9) {
+                        waLink = `https://wa.me/${digits}?text=${encodeURIComponent(waText)}`;
+                    }
+                    const btnWa = document.getElementById('btn-wa-confirm-send');
+                    if (btnWa) btnWa.href = waLink;
+
+                    const btnCall = document.getElementById('btn-call-confirm-shop');
+                    const phoneSpan = document.getElementById('wa-bridge-phone');
+                    if (btnCall && catShop.phone) {
+                        btnCall.href = `tel:${catShop.phone}`;
+                        btnCall.style.display = 'flex';
+                        if (phoneSpan) phoneSpan.textContent = catShop.phone;
+                    }
+                } else {
+                    waBridgeBox.style.display = 'none';
+                }
+            }
+
             document.getElementById('stepper').style.display = 'none';
             document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
             document.getElementById('step-success').classList.add('active');

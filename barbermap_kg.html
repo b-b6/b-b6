@@ -172,6 +172,15 @@ a{color:inherit}
 .map-btn.yandex:hover{background:#fff0ee;border-color:#fc3f1d;color:#c42b10}
 .map-btn.google i{background:#4285f4}
 .map-btn.google:hover{background:#eef4fe;border-color:#4285f4;color:#1a73e8}
+.partner-pill{background:#dcfce7;color:#15803d;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;display:inline-flex;align-items:center;gap:4px}
+.catalog-pill{background:#f1f5f9;color:#475569;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px}
+.owner-claim-card{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#f8fafc,#f1f5f9);border:1.5px dashed #cbd5e1;border-radius:16px;padding:12px 14px;margin-top:16px}
+.owner-claim-icon{width:38px;height:38px;border-radius:12px;background:#fff;border:1px solid #e2e8f0;display:grid;place-items:center;font-size:18px;flex:none;box-shadow:0 2px 6px rgba(0,0,0,.04)}
+.owner-claim-info{flex:1;min-width:0}
+.owner-claim-t{font-size:12.5px;font-weight:700;color:var(--navy);line-height:1.25}
+.owner-claim-d{font-size:11.5px;color:var(--muted);line-height:1.35;margin-top:2px}
+.owner-claim-btn{flex:none;background:var(--navy);color:#fff;font-size:12px;font-weight:700;padding:7px 12px;border-radius:10px;text-decoration:none;transition:all .15s;box-shadow:0 2px 8px rgba(12,25,44,.18)}
+.owner-claim-btn:hover{background:var(--burgundy);color:#fff}
 .info{margin-top:20px;border-top:1px solid var(--line)}
 .row{display:flex;gap:13px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line)}
 .row>svg{flex:none;margin-top:2px;color:var(--burgundy)}
@@ -652,6 +661,20 @@ body.dragging .map-ctrls{transition:opacity .2s}
       b.score - a.score);
   }
 
+  function isPartnerTenant(b) {
+    try {
+      const tenants = JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
+      if (!Array.isArray(tenants)) return false;
+      const bName = String(b.name || b.title || '').trim().toLowerCase();
+      return tenants.some(t =>
+        (t.catalogId && String(t.catalogId) === String(b.id)) ||
+        (String(t.id) === String(b.id)) ||
+        (bName && String(t.id).toLowerCase() === bName) ||
+        (t.shopName && bName && String(t.shopName).trim().toLowerCase() === bName)
+      );
+    } catch (e) { return false; }
+  }
+
   function resolveBookingTargetId(b) {
     try {
       const tenants = JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
@@ -677,6 +700,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
     if (state.country === 'all') metaParts.push(b.country === 'Узбекистан' ? '🇺🇿 UZ' : '🇰🇬 KG');
     const meta = metaParts.filter(Boolean).join(' · ');
     const targetId = resolveBookingTargetId(b);
+    const partner = isPartnerTenant(b);
     return `<div class="card" data-id="${esc(b.id)}" role="button" tabindex="0">
       <div class="av">${esc(b.letter)}${st.known && st.open ? '<span class="dot-open"></span>' : ''}</div>
       <div class="card-main">
@@ -686,6 +710,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
         <div class="card-addr">${esc(b.address)}</div>
         <div class="card-foot">
           ${st.known ? `<span class="st-pill ${st.open ? 'open' : 'closed'}" data-st="${esc(b.id)}">${st.text}</span>` : '<span></span>'}
+          ${partner ? `<span style="font-size:11px;font-weight:700;color:#15803d;background:#dcfce7;padding:2px 7px;border-radius:999px;">⚡ Онлайн-запись</span>` : ''}
           <a href="index.html?id=${encodeURIComponent(targetId)}&shopName=${encodeURIComponent(b.title || b.name || '')}" class="quick-book-link" onclick="event.stopPropagation()">
             ✂️ Записаться
           </a>
@@ -758,15 +783,25 @@ body.dragging .map-ctrls{transition:opacity .2s}
   function renderDetail(b) {
     const st = statusOf(b);
     const near = DATA.filter(x => x.id !== b.id).map(x => ({ x, d: distKm(b, x) })).sort((p, q) => p.d - q.d).slice(0, 3);
+    const partner = isPartnerTenant(b);
     const stats = [];
     if (b.rating) stats.push(`<span class="rate">${ICON.star(14)}${b.rating.toFixed(1)}</span><span style="color:var(--muted)">${b.reviews} ${plural(b.reviews, W_RV)}</span>`);
     if (st.known) stats.push(`<span class="st-pill ${st.open ? 'open' : 'closed'}">${st.text}</span>`);
+    if (partner) {
+      stats.push(`<span class="partner-pill">⚡ Онлайн-запись</span>`);
+    } else {
+      stats.push(`<span class="catalog-pill">Городской каталог</span>`);
+    }
     if (state.me) stats.push(`<span>${fmtDist(distKm(state.me, b))}</span>`);
 
     const gisHost = b.countryCode === 'UZ' ? '2gis.uz' : (b.countryCode === 'KZ' ? '2gis.kz' : '2gis.kg');
     const link2gis = b.link || `https://${gisHost}/search/${encodeURIComponent(b.title + ' ' + (b.city || ''))}`;
     const linkYandex = `https://yandex.ru/maps/?text=${encodeURIComponent(b.title + ' ' + (b.address ? b.address + ' ' : '') + b.city)}&ll=${b.lon},${b.lat}&z=17`;
     const linkGoogle = `https://www.google.com/maps/search/?api=1&query=${b.lat},${b.lon}`;
+
+    const bookBtnLabel = partner
+      ? `${ICON.calendar}Записаться онлайн`
+      : (b.whatsapp ? `${ICON.calendar}Записаться (WhatsApp)` : (b.phone ? `${ICON.calendar}Записаться (Звонок)` : `${ICON.calendar}Записаться`));
 
     $('#detailView').innerHTML = `
       <div class="d-bar" id="dBar">
@@ -781,7 +816,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
         <div class="d-stats">${stats.join('<span class="dot"></span>')}</div>
         <div class="actions">
           <a class="btn primary" href="index.html?id=${encodeURIComponent(resolveBookingTargetId(b))}&shopName=${encodeURIComponent(b.title || b.name || '')}">
-            ${ICON.calendar}Записаться
+            ${bookBtnLabel}
           </a>
           <button class="btn navy" data-act="route">${ICON.route}Маршрут</button>
         </div>
@@ -800,6 +835,18 @@ body.dragging .map-ctrls{transition:opacity .2s}
             </a>
           </div>
         </div>
+
+        ${!partner ? `
+        <div class="owner-claim-card">
+          <div class="owner-claim-icon">💈</div>
+          <div class="owner-claim-info">
+            <div class="owner-claim-t">Вы владелец или мастер заведения?</div>
+            <div class="owner-claim-d">Подключите бесплатный приём онлайн-записей в календарь</div>
+          </div>
+          <a class="owner-claim-btn" href="app.html?role=owner&claimId=${encodeURIComponent(b.id)}&name=${encodeURIComponent(b.title || b.name)}&city=${encodeURIComponent(b.city)}&phone=${encodeURIComponent(b.phone || '')}">
+            Подключить
+          </a>
+        </div>` : ''}
 
         <div class="info">
           <div class="row">${ICON.pin}<div><div class="k">Адрес</div><div class="v">${esc(b.address)}, ${esc(b.city)}</div></div>

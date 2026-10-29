@@ -1052,6 +1052,24 @@
 
             window.location.href = `barber.html?id=${encodeURIComponent(rawId)}`;
         }
+
+        // Auto-open claim request modal if navigated from map with claimId
+        (function checkClaimParam() {
+            try {
+                const p = new URLSearchParams(window.location.search);
+                const claimId = p.get('claimId');
+                if (claimId) {
+                    const role = p.get('role') || 'owner';
+                    const name = p.get('name') || '';
+                    const city = p.get('city') || p.get('address') || '';
+                    const phone = p.get('phone') || '';
+                    setTimeout(() => {
+                        openRequestModal(role);
+                        selectCatalogForRequest(claimId, name, city, phone);
+                    }, 150);
+                }
+            } catch (e) {}
+        })();
     </script>
 </body>
 </html>
