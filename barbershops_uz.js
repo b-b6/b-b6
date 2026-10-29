@@ -26555,6 +26555,1437 @@ window.BARBERSHOPS_UZ_DATA = [
                 "role": "Barber"
             }
         ]
+    },
+{
+        "id": "uz-namangan-ya-1",
+        "name": "Tim Barber",
+        "brand": "Tim Barber",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "ул. Галаба, 20A, махалля Янги Тонг",
+        "lat": 40.994141,
+        "lon": 71.606955,
+        "rating": 4.8,
+        "reviews_count": 18,
+        "phone": "+998 77 042 48 63",
+        "instagram": "tim_barber_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=Tim%20Barber%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-2",
+        "name": "Matrix, барбершоп",
+        "brand": "Matrix",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "ул. Галаба, 14, махалля Янги Тонг",
+        "lat": 40.993982,
+        "lon": 71.611643,
+        "rating": 4.7,
+        "reviews_count": 24,
+        "phone": "+998 94 302 66 22",
+        "instagram": "matrix_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=Matrix%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-3",
+        "name": "BarberAbdulaziz",
+        "brand": "BarberAbdulaziz",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "ул. Ислама Каримова, 24",
+        "lat": 41.008037,
+        "lon": 71.640227,
+        "rating": 4.9,
+        "reviews_count": 32,
+        "phone": "+998 91 181 31 41",
+        "instagram": "barberabdulaziz_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=BarberAbdulaziz%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-4",
+        "name": "Mehmondo'st, барбершоп",
+        "brand": "Mehmondo'st",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "ул. Саноат, 4, махалля Озод",
+        "lat": 41.007826,
+        "lon": 71.678704,
+        "rating": 4.6,
+        "reviews_count": 15,
+        "phone": "+998 90 595 55 50",
+        "instagram": "mehmondo_st_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=Mehmondo'st%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-5",
+        "name": "Раис, барбершоп",
+        "brand": "Раис",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "Туракурганская ул., 2",
+        "lat": 40.989511,
+        "lon": 71.61869,
+        "rating": 4.8,
+        "reviews_count": 21,
+        "phone": "+998 91 355 88 66",
+        "instagram": "_____namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=%D0%A0%D0%B0%D0%B8%D1%81%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-6",
+        "name": "Бородач, барбершоп",
+        "brand": "Бородач",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "махалля Кичик Тошбулок, Наманганский район",
+        "lat": 40.929258,
+        "lon": 71.597076,
+        "rating": 4.7,
+        "reviews_count": 19,
+        "phone": "+998 91 292 28 98",
+        "instagram": "________namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=%D0%91%D0%BE%D1%80%D0%BE%D0%B4%D0%B0%D1%87%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-7",
+        "name": "Musayev Barber",
+        "brand": "Musayev Barber",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "ул. Дустлик, 74, махалля Тукувчи",
+        "lat": 40.99567,
+        "lon": 71.588793,
+        "rating": 4.9,
+        "reviews_count": 27,
+        "phone": "+998 90 223 00 07",
+        "instagram": "musayev_barber_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=Musayev%20Barber%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-8",
+        "name": "Almaz, барбершоп",
+        "brand": "Almaz",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "ул. Кукон, 61, махалля Марифат",
+        "lat": 40.984935,
+        "lon": 71.664588,
+        "rating": 4.6,
+        "reviews_count": 14,
+        "phone": "+998 90 599 58 59",
+        "instagram": "almaz_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=Almaz%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-9",
+        "name": "Barbershop 3x, Мингчинор",
+        "brand": "Barbershop 3x",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "улица Ислома Каримова, махалля Мингчинор",
+        "lat": 41.007187,
+        "lon": 71.627355,
+        "rating": 4.8,
+        "reviews_count": 38,
+        "phone": "+998 91 365 30 08",
+        "instagram": "barbershop_3x_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=Barbershop%203x%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-10",
+        "name": "Mansur Bar Ber, барбершоп",
+        "brand": "Mansur Bar Ber",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "улица Мерос, махалля Хайитобод",
+        "lat": 40.853732,
+        "lon": 71.521005,
+        "rating": 4.7,
+        "reviews_count": 16,
+        "phone": "+998 91 347 89 31",
+        "instagram": "mansur_bar_ber_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=Mansur%20Bar%20Ber%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-11",
+        "name": "Black hair, барбершоп",
+        "brand": "Black hair",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "просп. Бобура, 14, махалля Бобуршох",
+        "lat": 40.992606,
+        "lon": 71.67958,
+        "rating": 4.8,
+        "reviews_count": 22,
+        "phone": "+998 90 554 44 41",
+        "instagram": "black_hair_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=Black%20hair%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-12",
+        "name": "Style salon, Навои",
+        "brand": "Style salon",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "ул. Алишера Навоий, 32, махалля Сардоба",
+        "lat": 40.99259,
+        "lon": 71.655271,
+        "rating": 4.7,
+        "reviews_count": 20,
+        "phone": "+998 90 222 90 70",
+        "instagram": "style_salon_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=Style%20salon%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-13",
+        "name": "BarberXuseyn",
+        "brand": "BarberXuseyn",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "ул. 6-Оромгох, 38",
+        "lat": 41.008283,
+        "lon": 71.640733,
+        "rating": 4.9,
+        "reviews_count": 29,
+        "phone": "+998 90 552 09 95",
+        "instagram": "barberxuseyn_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=BarberXuseyn%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-14",
+        "name": "Prime, барбершоп",
+        "brand": "Prime",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "улица Анхор",
+        "lat": 41.001278,
+        "lon": 71.652843,
+        "rating": 4.8,
+        "reviews_count": 25,
+        "phone": "+998 91 777 20 20",
+        "instagram": "prime_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=Prime%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-15",
+        "name": "Matrix, 4-й микрорайон",
+        "brand": "Matrix",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "4-й микрорайон, 8",
+        "lat": 40.993725,
+        "lon": 71.607155,
+        "rating": 4.7,
+        "reviews_count": 19,
+        "phone": "+998 97 250 78 78",
+        "instagram": "matrix_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=Matrix%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-16",
+        "name": "Asia Style Barber",
+        "brand": "Asia Style Barber",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "махалля Гузал, 9",
+        "lat": 41.021429,
+        "lon": 71.656237,
+        "rating": 4.7,
+        "reviews_count": 17,
+        "phone": "+998 90 214 71 91",
+        "instagram": "asia_style_barber_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=Asia%20Style%20Barber%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-17",
+        "name": "Erkaklar salon, Ханабад",
+        "brand": "Erkaklar salon",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "ул. Гульчи, 1A, Ханабад",
+        "lat": 40.961815,
+        "lon": 71.62204,
+        "rating": 4.6,
+        "reviews_count": 12,
+        "phone": "+998 91 350 11 22",
+        "instagram": "erkaklar_salon_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=Erkaklar%20salon%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-18",
+        "name": "Creative, барбершоп",
+        "brand": "Creative",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "махалля Тукувчи",
+        "lat": 40.996095,
+        "lon": 71.585438,
+        "rating": 4.7,
+        "reviews_count": 18,
+        "phone": "+998 90 598 77 66",
+        "instagram": "creative_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=Creative%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-19",
+        "name": "Schwarzkopf, барбершоп",
+        "brand": "Schwarzkopf",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "4-й микрорайон, 8, корпус B",
+        "lat": 40.99366,
+        "lon": 71.607836,
+        "rating": 4.8,
+        "reviews_count": 23,
+        "phone": "+998 94 150 00 24",
+        "instagram": "schwarzkopf_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=Schwarzkopf%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-20",
+        "name": "Style salon, Туракурганская",
+        "brand": "Style salon",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "Туракурганская ул., 17",
+        "lat": 40.99185,
+        "lon": 71.647617,
+        "rating": 4.6,
+        "reviews_count": 15,
+        "phone": "+998 90 690 17 17",
+        "instagram": "style_salon_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=Style%20salon%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-21",
+        "name": "Саховат, мужской салон",
+        "brand": "Саховат",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "улица Куркам, 7A, махалля Саховат",
+        "lat": 40.953942,
+        "lon": 71.673483,
+        "rating": 4.5,
+        "reviews_count": 11,
+        "phone": "+998 91 340 77 00",
+        "instagram": "________namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=%D0%A1%D0%B0%D1%85%D0%BE%D0%B2%D0%B0%D1%82%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-22",
+        "name": "Jahon, барбершоп",
+        "brand": "Jahon",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "ул. А. Навои, 31А, махалля Маргилон",
+        "lat": 40.992002,
+        "lon": 71.654972,
+        "rating": 4.7,
+        "reviews_count": 16,
+        "phone": "+998 91 369 31 31",
+        "instagram": "jahon_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=Jahon%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-23",
+        "name": "Barbershop № 1, Чорсу",
+        "brand": "Barbershop № 1",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "махалля Чорсу, центр",
+        "lat": 41.001466,
+        "lon": 71.678213,
+        "rating": 4.8,
+        "reviews_count": 31,
+        "phone": "+998 90 590 01 01",
+        "instagram": "barbershop___1_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=Barbershop%20%E2%84%96%201%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-24",
+        "name": "Gold, барбершоп",
+        "brand": "Gold",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "улица Алишера Навоий, махалля Сардоба",
+        "lat": 40.992595,
+        "lon": 71.650055,
+        "rating": 4.7,
+        "reviews_count": 19,
+        "phone": "+998 90 220 50 50",
+        "instagram": "gold_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=Gold%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-25",
+        "name": "Pilot Barbershop",
+        "brand": "Pilot",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "2-й микрорайон, 40А",
+        "lat": 40.9985,
+        "lon": 71.6142,
+        "rating": 4.9,
+        "reviews_count": 42,
+        "phone": "+998 94 387 81 18",
+        "instagram": "pilot_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=Pilot%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-26",
+        "name": "Gentlemen Style",
+        "brand": "Gentlemen Style",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "ул. А. Навои, махалля Маргилон",
+        "lat": 40.9921,
+        "lon": 71.6558,
+        "rating": 4.8,
+        "reviews_count": 28,
+        "phone": "+998 90 550 44 22",
+        "instagram": "gentlemen_style_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=Gentlemen%20Style%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-namangan-ya-27",
+        "name": "Vertikal, барбершоп",
+        "brand": "Vertikal",
+        "country": "Узбекистан",
+        "city": "Наманган",
+        "area": "Наманган",
+        "address": "ул. Алишера Навоий, 31",
+        "lat": 40.9922,
+        "lon": 71.6545,
+        "rating": 4.7,
+        "reviews_count": 20,
+        "phone": "+998 91 360 31 31",
+        "instagram": "vertikal_namangan",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "60 000 - 180 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Namangan",
+        "link_2gis": "https://yandex.com/maps/?text=Vertikal%20%D0%9D%D0%B0%D0%BC%D0%B0%D0%BD%D0%B3%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 60000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 40000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 90000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 50000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
     }
 ];
 
