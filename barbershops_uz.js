@@ -27986,6 +27986,4829 @@ window.BARBERSHOPS_UZ_DATA = [
                 "role": "Barber"
             }
         ]
+    },
+{
+        "id": "uz-reg-ya-1",
+        "name": "Брадобрей, барбершоп",
+        "brand": "Брадобрей",
+        "country": "Узбекистан",
+        "city": "Навои",
+        "area": "Навои",
+        "address": "просп. Ислама Каримова, 64",
+        "lat": 40.097278,
+        "lon": 65.378174,
+        "rating": 4.9,
+        "reviews_count": 9,
+        "phone": "+998 99 749 76 66",
+        "instagram": "__________",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=%D0%91%D1%80%D0%B0%D0%B4%D0%BE%D0%B1%D1%80%D0%B5%D0%B9%20%D0%9D%D0%B0%D0%B2%D0%BE%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-2",
+        "name": "Black, барбершоп",
+        "brand": "Black",
+        "country": "Узбекистан",
+        "city": "Навои",
+        "area": "Навои",
+        "address": "махаллинский сход граждан Истиклол, просп. Галаба, 70",
+        "lat": 40.08956,
+        "lon": 65.38704,
+        "rating": 4.7,
+        "reviews_count": 24,
+        "phone": "+998 90 506 62 68",
+        "instagram": "black_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Black%20%D0%9D%D0%B0%D0%B2%D0%BE%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-3",
+        "name": "Top Blade, барбершоп",
+        "brand": "Top Blade",
+        "country": "Узбекистан",
+        "city": "Навои",
+        "area": "Навои",
+        "address": "Навои, махаллинский сход граждан Узбекистон, улица Ёшлик",
+        "lat": 40.099004,
+        "lon": 65.371047,
+        "rating": 4.8,
+        "reviews_count": 21,
+        "phone": "+998 99 031 54 50",
+        "instagram": "top_blade_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Top%20Blade%20%D0%9D%D0%B0%D0%B2%D0%BE%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-4",
+        "name": "Аббос, барбершоп",
+        "brand": "Аббос",
+        "country": "Узбекистан",
+        "city": "Навои",
+        "area": "Навои",
+        "address": "Кашкадарьинская область, Шахрисабзский район, махаллинский сход граждан Чорбог",
+        "lat": 40.101952,
+        "lon": 65.387372,
+        "rating": 4.6,
+        "reviews_count": 30,
+        "phone": "+998 99 750 47 41",
+        "instagram": "______",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=%D0%90%D0%B1%D0%B1%D0%BE%D1%81%20%D0%9D%D0%B0%D0%B2%D0%BE%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-5",
+        "name": "Sherzod's Barbershop",
+        "brand": "Sherzod's Barbershop",
+        "country": "Узбекистан",
+        "city": "Навои",
+        "area": "Навои",
+        "address": "махаллинский сход граждан Истиклол, просп. Галаба, 4/7",
+        "lat": 40.075899,
+        "lon": 65.395551,
+        "rating": 4.9,
+        "reviews_count": 15,
+        "phone": "+998 50 889 29 29",
+        "instagram": "sherzod_s_barbershop_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Sherzod's%20Barbershop%20%D0%9D%D0%B0%D0%B2%D0%BE%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-6",
+        "name": "Ruba, барбершоп",
+        "brand": "Ruba",
+        "country": "Узбекистан",
+        "city": "Навои",
+        "area": "Навои",
+        "address": "ул. Махмуд Тараби, 99",
+        "lat": 40.10448,
+        "lon": 65.38423,
+        "rating": 4.8,
+        "reviews_count": 21,
+        "phone": "+998 90 182 67 09",
+        "instagram": "ruba_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Ruba%20%D0%9D%D0%B0%D0%B2%D0%BE%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-7",
+        "name": "Сартарош Ислам, барбершоп",
+        "brand": "Сартарош Ислам",
+        "country": "Узбекистан",
+        "city": "Навои",
+        "area": "Навои",
+        "address": "махаллинский сход граждан Галаба, ул. Алишера Навои, 24",
+        "lat": 40.095926,
+        "lon": 65.36801,
+        "rating": 4.9,
+        "reviews_count": 21,
+        "phone": "+998 88 039 77 55",
+        "instagram": "_______________",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=%D0%A1%D0%B0%D1%80%D1%82%D0%B0%D1%80%D0%BE%D1%88%20%D0%98%D1%81%D0%BB%D0%B0%D0%BC%20%D0%9D%D0%B0%D0%B2%D0%BE%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-8",
+        "name": "Kids Barber",
+        "brand": "Kids Barber",
+        "country": "Узбекистан",
+        "city": "Навои",
+        "area": "Навои",
+        "address": "ул. Меморлар, 256",
+        "lat": 40.11409,
+        "lon": 65.361155,
+        "rating": 4.5,
+        "reviews_count": 12,
+        "phone": "+998 90 634 97 91",
+        "instagram": "kids_barber_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Kids%20Barber%20%D0%9D%D0%B0%D0%B2%D0%BE%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-9",
+        "name": "Ibrohim, барбершоп",
+        "brand": "Ibrohim",
+        "country": "Узбекистан",
+        "city": "Навои",
+        "area": "Навои",
+        "address": "Навоийская область, Карманинский район, махаллинский сход граждан Арабхона, улица Бободехкон",
+        "lat": 40.152537,
+        "lon": 65.466982,
+        "rating": 4.6,
+        "reviews_count": 11,
+        "phone": "+998 90 112 60 64",
+        "instagram": "ibrohim_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Ibrohim%20%D0%9D%D0%B0%D0%B2%D0%BE%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-10",
+        "name": "Hard, барбершоп",
+        "brand": "Hard",
+        "country": "Узбекистан",
+        "city": "Чирчик",
+        "area": "Чирчик",
+        "address": "просп. Амира Темура, 108",
+        "lat": 41.474014,
+        "lon": 69.574251,
+        "rating": 4.5,
+        "reviews_count": 20,
+        "phone": "+998 95 147 21 95",
+        "instagram": "hard_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Hard%20%D0%A7%D0%B8%D1%80%D1%87%D0%B8%D0%BA",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-11",
+        "name": "Prestige, барбершоп",
+        "brand": "Prestige",
+        "country": "Узбекистан",
+        "city": "Чирчик",
+        "area": "Чирчик",
+        "address": "просп. Амира Темура, 1",
+        "lat": 41.476308,
+        "lon": 69.577789,
+        "rating": 4.7,
+        "reviews_count": 32,
+        "phone": "+998 90 240 76 81",
+        "instagram": "prestige_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Prestige%20%D0%A7%D0%B8%D1%80%D1%87%D0%B8%D0%BA",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-12",
+        "name": "Trim Haus, барбершоп",
+        "brand": "Trim Haus",
+        "country": "Узбекистан",
+        "city": "Чирчик",
+        "area": "Чирчик",
+        "address": "ул. Шарафа Рашидова, 20",
+        "lat": 41.471458,
+        "lon": 69.589148,
+        "rating": 4.5,
+        "reviews_count": 15,
+        "phone": "+998 97 274 51 41",
+        "instagram": "trim_haus_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Trim%20Haus%20%D0%A7%D0%B8%D1%80%D1%87%D0%B8%D0%BA",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-13",
+        "name": "Bilol, барбершоп",
+        "brand": "Bilol",
+        "country": "Узбекистан",
+        "city": "Чирчик",
+        "area": "Чирчик",
+        "address": "ул. Халк Бирлиги, 1",
+        "lat": 41.447328,
+        "lon": 69.561392,
+        "rating": 4.8,
+        "reviews_count": 24,
+        "phone": "+998 91 770 30 20",
+        "instagram": "bilol_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Bilol%20%D0%A7%D0%B8%D1%80%D1%87%D0%B8%D0%BA",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-14",
+        "name": "Lion, барбершоп",
+        "brand": "Lion",
+        "country": "Узбекистан",
+        "city": "Карши",
+        "area": "Карши",
+        "address": "микрорайон Пахтазор, 20",
+        "lat": 38.836173,
+        "lon": 65.796994,
+        "rating": 4.7,
+        "reviews_count": 30,
+        "phone": "+998 99 745 78 68",
+        "instagram": "lion_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Lion%20%D0%9A%D0%B0%D1%80%D1%88%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-15",
+        "name": "Sardor, барбершоп",
+        "brand": "Sardor",
+        "country": "Узбекистан",
+        "city": "Карши",
+        "area": "Карши",
+        "address": "ул. Ислама Каримова, 219Б",
+        "lat": 38.842773,
+        "lon": 65.795562,
+        "rating": 4.5,
+        "reviews_count": 23,
+        "phone": "+998 93 909 81 23",
+        "instagram": "sardor_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Sardor%20%D0%9A%D0%B0%D1%80%D1%88%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-16",
+        "name": "Ganisher Pro, барбершоп",
+        "brand": "Ganisher Pro",
+        "country": "Узбекистан",
+        "city": "Карши",
+        "area": "Карши",
+        "address": "ул. Ислама Каримова, 220",
+        "lat": 38.843481,
+        "lon": 65.796763,
+        "rating": 4.7,
+        "reviews_count": 29,
+        "phone": "+998 90 617 27 00",
+        "instagram": "ganisher_pro_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Ganisher%20Pro%20%D0%9A%D0%B0%D1%80%D1%88%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-17",
+        "name": "Omar's Mens Club, барбершоп",
+        "brand": "Omar's Mens Club",
+        "country": "Узбекистан",
+        "city": "Карши",
+        "area": "Карши",
+        "address": "махаллинский сход граждан Табассум, ул. Ислома Каримова, 245A",
+        "lat": 38.852177,
+        "lon": 65.794974,
+        "rating": 4.9,
+        "reviews_count": 24,
+        "phone": "+998 91 320 97 82",
+        "instagram": "omar_s_mens_club_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Omar's%20Mens%20Club%20%D0%9A%D0%B0%D1%80%D1%88%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-18",
+        "name": "Lux, барбершоп",
+        "brand": "Lux",
+        "country": "Узбекистан",
+        "city": "Карши",
+        "area": "Карши",
+        "address": "махаллинский сход граждан Пахтазор, ул. Ислома Каримова, 60K",
+        "lat": 38.83624,
+        "lon": 65.795277,
+        "rating": 4.9,
+        "reviews_count": 29,
+        "phone": "+998 90 428 73 06",
+        "instagram": "lux_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Lux%20%D0%9A%D0%B0%D1%80%D1%88%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-19",
+        "name": "Бегматов’s, барбершоп",
+        "brand": "Бегматов’s",
+        "country": "Узбекистан",
+        "city": "Карши",
+        "area": "Карши",
+        "address": "махаллинский сход граждан Ойдин, просп. Алишера Навои, 5A",
+        "lat": 38.820577,
+        "lon": 65.804729,
+        "rating": 4.8,
+        "reviews_count": 8,
+        "phone": "+998 97 279 69 97",
+        "instagram": "_________s_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=%D0%91%D0%B5%D0%B3%D0%BC%D0%B0%D1%82%D0%BE%D0%B2%E2%80%99s%20%D0%9A%D0%B0%D1%80%D1%88%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-20",
+        "name": "Mpro, барбершоп",
+        "brand": "Mpro",
+        "country": "Узбекистан",
+        "city": "Карши",
+        "area": "Карши",
+        "address": "3-й микрорайон, 49",
+        "lat": 38.840239,
+        "lon": 65.808177,
+        "rating": 4.6,
+        "reviews_count": 13,
+        "phone": "+998 90 998 81 31",
+        "instagram": "mpro_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Mpro%20%D0%9A%D0%B0%D1%80%D1%88%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-21",
+        "name": "Barber Shop Mahallot",
+        "brand": "Barber Shop Mahallot",
+        "country": "Узбекистан",
+        "city": "Карши",
+        "area": "Карши",
+        "address": "ул. Махаллот, 34",
+        "lat": 38.851439,
+        "lon": 65.799912,
+        "rating": 4.8,
+        "reviews_count": 14,
+        "phone": "+998 90 852 84 81",
+        "instagram": "barber_shop_mahallot_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Barber%20Shop%20Mahallot%20%D0%9A%D0%B0%D1%80%D1%88%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-22",
+        "name": "M Barber",
+        "brand": "M Barber",
+        "country": "Узбекистан",
+        "city": "Карши",
+        "area": "Карши",
+        "address": "микрорайон Пахтазор, 7/67",
+        "lat": 38.83562,
+        "lon": 65.801733,
+        "rating": 4.6,
+        "reviews_count": 22,
+        "phone": "+998 90 314 25 55",
+        "instagram": "m_barber_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=M%20Barber%20%D0%9A%D0%B0%D1%80%D1%88%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-23",
+        "name": "Barber Shop",
+        "brand": "Barber Shop",
+        "country": "Узбекистан",
+        "city": "Карши",
+        "area": "Карши",
+        "address": "Кашкадарьинская область, Карши, махаллинский сход граждан Буюк турон",
+        "lat": 38.809363,
+        "lon": 65.778474,
+        "rating": 4.8,
+        "reviews_count": 28,
+        "phone": "+998 90 723 02 34",
+        "instagram": "barber_shop_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Barber%20Shop%20%D0%9A%D0%B0%D1%80%D1%88%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-24",
+        "name": "Сениор, барбершоп",
+        "brand": "Сениор",
+        "country": "Узбекистан",
+        "city": "Карши",
+        "area": "Карши",
+        "address": "Кашкадарьинская область, Каршинский район, махаллинский сход граждан Коракушчи, улица Ёшлик, 291",
+        "lat": 38.858582,
+        "lon": 65.796012,
+        "rating": 4.7,
+        "reviews_count": 32,
+        "phone": "+998 97 178 73 77",
+        "instagram": "_______",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=%D0%A1%D0%B5%D0%BD%D0%B8%D0%BE%D1%80%20%D0%9A%D0%B0%D1%80%D1%88%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-25",
+        "name": "Ibodov’s barber",
+        "brand": "Ibodov’s barber",
+        "country": "Узбекистан",
+        "city": "Карши",
+        "area": "Карши",
+        "address": "махаллинский сход граждан Отчопар, ул. Халклар Дустлиги, 65",
+        "lat": 38.848889,
+        "lon": 65.833441,
+        "rating": 4.6,
+        "reviews_count": 24,
+        "phone": "+998 88 101 66 67",
+        "instagram": "ibodov_s_barber_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Ibodov%E2%80%99s%20barber%20%D0%9A%D0%B0%D1%80%D1%88%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-26",
+        "name": "Iba_barber_house",
+        "brand": "Iba_barber_house",
+        "country": "Узбекистан",
+        "city": "Карши",
+        "area": "Карши",
+        "address": "ул. Эмира Тимура, 119",
+        "lat": 38.860002,
+        "lon": 65.807205,
+        "rating": 4.8,
+        "reviews_count": 20,
+        "phone": "+998 90 679 08 50",
+        "instagram": "iba_barber_house_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Iba_barber_house%20%D0%9A%D0%B0%D1%80%D1%88%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-27",
+        "name": "Братва Барбершоп",
+        "brand": "Братва Барбершоп",
+        "country": "Узбекистан",
+        "city": "Карши",
+        "area": "Карши",
+        "address": "ул. Ислама Каримова, 27",
+        "lat": 38.826141,
+        "lon": 65.784993,
+        "rating": 4.9,
+        "reviews_count": 25,
+        "phone": "+998 90 306 00 60",
+        "instagram": "_________________",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=%D0%91%D1%80%D0%B0%D1%82%D0%B2%D0%B0%20%D0%91%D0%B0%D1%80%D0%B1%D0%B5%D1%80%D1%88%D0%BE%D0%BF%20%D0%9A%D0%B0%D1%80%D1%88%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-28",
+        "name": "Suhrob. Barber",
+        "brand": "Suhrob. Barber",
+        "country": "Узбекистан",
+        "city": "Карши",
+        "area": "Карши",
+        "address": "махаллинский сход граждан Карликхона, ул. Насаф, 388/1",
+        "lat": 38.868684,
+        "lon": 65.801496,
+        "rating": 4.7,
+        "reviews_count": 24,
+        "phone": "+998 90 442 99 69",
+        "instagram": "suhrob__barber_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Suhrob.%20Barber%20%D0%9A%D0%B0%D1%80%D1%88%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-29",
+        "name": "Zafar, барбершоп",
+        "brand": "Zafar",
+        "country": "Узбекистан",
+        "city": "Карши",
+        "area": "Карши",
+        "address": "ул. Гузархужа, 17",
+        "lat": 38.873028,
+        "lon": 65.804683,
+        "rating": 4.9,
+        "reviews_count": 16,
+        "phone": "+998 90 757 25 40",
+        "instagram": "zafar_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Zafar%20%D0%9A%D0%B0%D1%80%D1%88%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-30",
+        "name": "Barbershop 23",
+        "brand": "Barbershop 23",
+        "country": "Узбекистан",
+        "city": "Термез",
+        "area": "Термез",
+        "address": "Сурхандарьинская область, Термез, махаллинский сход граждан Богишамол",
+        "lat": 37.239879,
+        "lon": 67.298759,
+        "rating": 4.6,
+        "reviews_count": 22,
+        "phone": "+998 77 043 00 23",
+        "instagram": "barbershop_23_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Barbershop%2023%20%D0%A2%D0%B5%D1%80%D0%BC%D0%B5%D0%B7",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-31",
+        "name": "Seven, барбершоп",
+        "brand": "Seven",
+        "country": "Узбекистан",
+        "city": "Термез",
+        "area": "Термез",
+        "address": "ул. Тараккиёт, 7",
+        "lat": 37.226982,
+        "lon": 67.271974,
+        "rating": 4.6,
+        "reviews_count": 14,
+        "phone": "+998 99 457 00 70",
+        "instagram": "seven_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Seven%20%D0%A2%D0%B5%D1%80%D0%BC%D0%B5%D0%B7",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-32",
+        "name": "Oldman Barberia",
+        "brand": "Oldman Barberia",
+        "country": "Узбекистан",
+        "city": "Термез",
+        "area": "Термез",
+        "address": "ул. Ибн Сины, 1A",
+        "lat": 37.23757,
+        "lon": 67.265775,
+        "rating": 4.7,
+        "reviews_count": 25,
+        "phone": "+998 77 097 08 08",
+        "instagram": "oldman_barberia_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Oldman%20Barberia%20%D0%A2%D0%B5%D1%80%D0%BC%D0%B5%D0%B7",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-33",
+        "name": "A3 Barbershop",
+        "brand": "A3 Barbershop",
+        "country": "Узбекистан",
+        "city": "Термез",
+        "area": "Термез",
+        "address": "ул. Ислама Каримова, 179",
+        "lat": 37.236349,
+        "lon": 67.302389,
+        "rating": 4.9,
+        "reviews_count": 28,
+        "phone": "+998 99 459 03 03",
+        "instagram": "a3_barbershop_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=A3%20Barbershop%20%D0%A2%D0%B5%D1%80%D0%BC%D0%B5%D0%B7",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-34",
+        "name": "The Barber",
+        "brand": "The Barber",
+        "country": "Узбекистан",
+        "city": "Термез",
+        "area": "Термез",
+        "address": "4-й микрорайон, 6/1",
+        "lat": 37.242911,
+        "lon": 67.279474,
+        "rating": 4.7,
+        "reviews_count": 29,
+        "phone": "+998 90 535 01 29",
+        "instagram": "the_barber_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=The%20Barber%20%D0%A2%D0%B5%D1%80%D0%BC%D0%B5%D0%B7",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-35",
+        "name": "Men’s room, барбершоп",
+        "brand": "Men’s room",
+        "country": "Узбекистан",
+        "city": "Термез",
+        "area": "Термез",
+        "address": "ул. Беруни, 1",
+        "lat": 37.236034,
+        "lon": 67.259474,
+        "rating": 4.9,
+        "reviews_count": 19,
+        "phone": "+998 90 128 25 99",
+        "instagram": "men_s_room_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Men%E2%80%99s%20room%20%D0%A2%D0%B5%D1%80%D0%BC%D0%B5%D0%B7",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-36",
+        "name": "Barber Clan",
+        "brand": "Barber Clan",
+        "country": "Узбекистан",
+        "city": "Термез",
+        "area": "Термез",
+        "address": "Сурхандарьинская область, Термез, махаллинский сход граждан Алпомиш",
+        "lat": 37.237973,
+        "lon": 67.283568,
+        "rating": 4.6,
+        "reviews_count": 8,
+        "phone": "+998 91 587 79 97",
+        "instagram": "barber_clan_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Barber%20Clan%20%D0%A2%D0%B5%D1%80%D0%BC%D0%B5%D0%B7",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-37",
+        "name": "Nfn, барбершоп",
+        "brand": "Nfn",
+        "country": "Узбекистан",
+        "city": "Термез",
+        "area": "Термез",
+        "address": "Сурхандарьинская область, Термез, проезд Истиклол-1",
+        "lat": 37.214006,
+        "lon": 67.272131,
+        "rating": 4.7,
+        "reviews_count": 16,
+        "phone": "+998 33 196 45 71",
+        "instagram": "nfn_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Nfn%20%D0%A2%D0%B5%D1%80%D0%BC%D0%B5%D0%B7",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-38",
+        "name": "MMT.91, барбершоп",
+        "brand": "MMT.91",
+        "country": "Узбекистан",
+        "city": "Термез",
+        "area": "Термез",
+        "address": "ул. Навбахор, 29-Г",
+        "lat": 37.238816,
+        "lon": 67.295273,
+        "rating": 4.6,
+        "reviews_count": 16,
+        "phone": "+998 50 990 91 01",
+        "instagram": "mmt_91_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=MMT.91%20%D0%A2%D0%B5%D1%80%D0%BC%D0%B5%D0%B7",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-39",
+        "name": "Black Diamond, барбершоп",
+        "brand": "Black Diamond",
+        "country": "Узбекистан",
+        "city": "Термез",
+        "area": "Термез",
+        "address": "ул. Алишера Навои, 34",
+        "lat": 37.234914,
+        "lon": 67.281057,
+        "rating": 4.8,
+        "reviews_count": 9,
+        "phone": "+998 50 717 27 47",
+        "instagram": "black_diamond_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Black%20Diamond%20%D0%A2%D0%B5%D1%80%D0%BC%D0%B5%D0%B7",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-40",
+        "name": "Barber shop",
+        "brand": "Barber shop",
+        "country": "Узбекистан",
+        "city": "Термез",
+        "area": "Термез",
+        "address": "махаллинский сход граждан Абдулла Авлоний, ул. Алишера Навоий, 22",
+        "lat": 37.239534,
+        "lon": 67.278329,
+        "rating": 4.7,
+        "reviews_count": 17,
+        "phone": "+998 90 609 81 96",
+        "instagram": "barber_shop_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Barber%20shop%20%D0%A2%D0%B5%D1%80%D0%BC%D0%B5%D0%B7",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-41",
+        "name": "Magnat Grooming Experience, барбершоп",
+        "brand": "Magnat Grooming Experience",
+        "country": "Узбекистан",
+        "city": "Термез",
+        "area": "Термез",
+        "address": "махаллинский сход граждан Жайхун, ул. Ал Хаким Ат-Термизий, 20M",
+        "lat": 37.241906,
+        "lon": 67.282019,
+        "rating": 4.8,
+        "reviews_count": 26,
+        "phone": "+998 94 462 08 02",
+        "instagram": "magnat_grooming_experience_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Magnat%20Grooming%20Experience%20%D0%A2%D0%B5%D1%80%D0%BC%D0%B5%D0%B7",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-42",
+        "name": "Роял Барбершоп",
+        "brand": "Роял Барбершоп",
+        "country": "Узбекистан",
+        "city": "Термез",
+        "area": "Термез",
+        "address": "Сурхандарьинская область, Термез, махаллинский сход граждан Узбекистон",
+        "lat": 37.230868,
+        "lon": 67.292534,
+        "rating": 4.8,
+        "reviews_count": 30,
+        "phone": "+998 90 703 73 07",
+        "instagram": "_______________",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=%D0%A0%D0%BE%D1%8F%D0%BB%20%D0%91%D0%B0%D1%80%D0%B1%D0%B5%D1%80%D1%88%D0%BE%D0%BF%20%D0%A2%D0%B5%D1%80%D0%BC%D0%B5%D0%B7",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-43",
+        "name": "Borcelle Barber",
+        "brand": "Borcelle Barber",
+        "country": "Узбекистан",
+        "city": "Термез",
+        "area": "Термез",
+        "address": "махаллинский сход граждан Абдурахмон Жомий, ул. Барчиной, 43",
+        "lat": 37.206044,
+        "lon": 67.269869,
+        "rating": 4.6,
+        "reviews_count": 9,
+        "phone": "+998 97 566 55 57",
+        "instagram": "borcelle_barber_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Borcelle%20Barber%20%D0%A2%D0%B5%D1%80%D0%BC%D0%B5%D0%B7",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-44",
+        "name": "888 Barbershop",
+        "brand": "888 Barbershop",
+        "country": "Узбекистан",
+        "city": "Термез",
+        "area": "Термез",
+        "address": "Сурхандарьинская область, Термез, махаллинский сход граждан Юлдуз",
+        "lat": 37.249649,
+        "lon": 67.289776,
+        "rating": 4.7,
+        "reviews_count": 13,
+        "phone": "+998 90 775 90 67",
+        "instagram": "888_barbershop_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=888%20Barbershop%20%D0%A2%D0%B5%D1%80%D0%BC%D0%B5%D0%B7",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-45",
+        "name": "Братья Barbershop Urgench",
+        "brand": "Братья Barbershop Urgench",
+        "country": "Узбекистан",
+        "city": "Ургенч",
+        "area": "Ургенч",
+        "address": "ул. Узбекистон Овози, 27/2",
+        "lat": 41.554066,
+        "lon": 60.639596,
+        "rating": 4.9,
+        "reviews_count": 28,
+        "phone": "+998 94 113 60 10",
+        "instagram": "_______barbershop_urgench_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=%D0%91%D1%80%D0%B0%D1%82%D1%8C%D1%8F%20Barbershop%20Urgench%20%D0%A3%D1%80%D0%B3%D0%B5%D0%BD%D1%87",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-46",
+        "name": "DeD, барбершоп",
+        "brand": "DeD",
+        "country": "Узбекистан",
+        "city": "Ургенч",
+        "area": "Ургенч",
+        "address": "махаллинский сход граждан Истиклол, ул. Пахлавона Махмуда, 24",
+        "lat": 41.556732,
+        "lon": 60.625233,
+        "rating": 4.8,
+        "reviews_count": 27,
+        "phone": "+998 97 335 52 52",
+        "instagram": "ded_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=DeD%20%D0%A3%D1%80%D0%B3%D0%B5%D0%BD%D1%87",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-47",
+        "name": "Borodach, барбершоп",
+        "brand": "Borodach",
+        "country": "Узбекистан",
+        "city": "Ургенч",
+        "area": "Ургенч",
+        "address": "ул. Узбекистанская, 51",
+        "lat": 41.553407,
+        "lon": 60.626233,
+        "rating": 4.9,
+        "reviews_count": 24,
+        "phone": "+998 93 748 47 78",
+        "instagram": "borodach_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Borodach%20%D0%A3%D1%80%D0%B3%D0%B5%D0%BD%D1%87",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-48",
+        "name": "NurikStyle Salon, барбершоп",
+        "brand": "NurikStyle Salon",
+        "country": "Узбекистан",
+        "city": "Ургенч",
+        "area": "Ургенч",
+        "address": "Гурленское ш., 1",
+        "lat": 41.565957,
+        "lon": 60.616738,
+        "rating": 4.9,
+        "reviews_count": 18,
+        "phone": "+998 90 898 29 39",
+        "instagram": "nurikstyle_salon_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=NurikStyle%20Salon%20%D0%A3%D1%80%D0%B3%D0%B5%D0%BD%D1%87",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-49",
+        "name": "Барбер шоп",
+        "brand": "Барбер шоп",
+        "country": "Узбекистан",
+        "city": "Ургенч",
+        "area": "Ургенч",
+        "address": "ул. Ханка, 62/11",
+        "lat": 41.541563,
+        "lon": 60.634028,
+        "rating": 4.8,
+        "reviews_count": 16,
+        "phone": "+998 33 310 73 30",
+        "instagram": "___________",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=%D0%91%D0%B0%D1%80%D0%B1%D0%B5%D1%80%20%D1%88%D0%BE%D0%BF%20%D0%A3%D1%80%D0%B3%D0%B5%D0%BD%D1%87",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-50",
+        "name": "Status, барбершоп",
+        "brand": "Status",
+        "country": "Узбекистан",
+        "city": "Ургенч",
+        "area": "Ургенч",
+        "address": "ул. Пахлавана Махмуда, 31",
+        "lat": 41.557132,
+        "lon": 60.637455,
+        "rating": 4.9,
+        "reviews_count": 19,
+        "phone": "+998 93 619 00 01",
+        "instagram": "status_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Status%20%D0%A3%D1%80%D0%B3%D0%B5%D0%BD%D1%87",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-51",
+        "name": "Pyramid, барбершоп",
+        "brand": "Pyramid",
+        "country": "Узбекистан",
+        "city": "Ургенч",
+        "area": "Ургенч",
+        "address": "ул. Тинчлик, 2Г",
+        "lat": 41.564941,
+        "lon": 60.624024,
+        "rating": 4.8,
+        "reviews_count": 8,
+        "phone": "+998 90 993 52 62",
+        "instagram": "pyramid_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Pyramid%20%D0%A3%D1%80%D0%B3%D0%B5%D0%BD%D1%87",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-52",
+        "name": "Senior Barber premium",
+        "brand": "Senior Barber premium",
+        "country": "Узбекистан",
+        "city": "Ургенч",
+        "area": "Ургенч",
+        "address": "ул. Зарбулок, 55/1, махаллинский сход граждан Байналминалчи, Ургенч",
+        "lat": 41.572285,
+        "lon": 60.609332,
+        "rating": 4.7,
+        "reviews_count": 27,
+        "phone": "+998 91 433 77 29",
+        "instagram": "senior_barber_premium_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Senior%20Barber%20premium%20%D0%A3%D1%80%D0%B3%D0%B5%D0%BD%D1%87",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-53",
+        "name": "Karimv salon, барбершоп",
+        "brand": "Karimv salon",
+        "country": "Узбекистан",
+        "city": "Ургенч",
+        "area": "Ургенч",
+        "address": "Хорезмская область, Ургенчский район, махаллинский сход граждан Арбоблар, улица Маънавият, 19",
+        "lat": 41.552788,
+        "lon": 60.604812,
+        "rating": 4.7,
+        "reviews_count": 22,
+        "phone": "+998 97 363 42 42",
+        "instagram": "karimv_salon_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Karimv%20salon%20%D0%A3%D1%80%D0%B3%D0%B5%D0%BD%D1%87",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-54",
+        "name": "BarBer Shop",
+        "brand": "BarBer Shop",
+        "country": "Узбекистан",
+        "city": "Ургенч",
+        "area": "Ургенч",
+        "address": "ул. Абульгази Бахадырхана, 80",
+        "lat": 41.561265,
+        "lon": 60.629917,
+        "rating": 4.5,
+        "reviews_count": 26,
+        "phone": "+998 90 423 84 81",
+        "instagram": "barber_shop_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=BarBer%20Shop%20%D0%A3%D1%80%D0%B3%D0%B5%D0%BD%D1%87",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-55",
+        "name": "Бомонд, барбершоп",
+        "brand": "Бомонд",
+        "country": "Узбекистан",
+        "city": "Ургенч",
+        "area": "Ургенч",
+        "address": "ул. Ширази, 4",
+        "lat": 41.554025,
+        "lon": 60.627267,
+        "rating": 4.7,
+        "reviews_count": 20,
+        "phone": "+998 33 749 78 78",
+        "instagram": "_______",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=%D0%91%D0%BE%D0%BC%D0%BE%D0%BD%D0%B4%20%D0%A3%D1%80%D0%B3%D0%B5%D0%BD%D1%87",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-56",
+        "name": "Art Style, барбершоп",
+        "brand": "Art Style",
+        "country": "Узбекистан",
+        "city": "Ургенч",
+        "area": "Ургенч",
+        "address": "ул. Ислама Каримова, 100",
+        "lat": 41.550267,
+        "lon": 60.619458,
+        "rating": 4.5,
+        "reviews_count": 15,
+        "phone": "+998 33 749 78 78",
+        "instagram": "art_style_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Art%20Style%20%D0%A3%D1%80%D0%B3%D0%B5%D0%BD%D1%87",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-57",
+        "name": "Bad Boys, барбершоп",
+        "brand": "Bad Boys",
+        "country": "Узбекистан",
+        "city": "Ургенч",
+        "area": "Ургенч",
+        "address": "Ургенч, махаллинский сход граждан Навруз, 1-й пр. Шифокорлар, 25",
+        "lat": 41.585945,
+        "lon": 60.591246,
+        "rating": 4.6,
+        "reviews_count": 25,
+        "phone": "+998 99 061 90 70",
+        "instagram": "bad_boys_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Bad%20Boys%20%D0%A3%D1%80%D0%B3%D0%B5%D0%BD%D1%87",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-58",
+        "name": "Viking, барбершоп",
+        "brand": "Viking",
+        "country": "Узбекистан",
+        "city": "Ургенч",
+        "area": "Ургенч",
+        "address": "ул. Байналминал, 31",
+        "lat": 41.56734,
+        "lon": 60.611308,
+        "rating": 4.6,
+        "reviews_count": 14,
+        "phone": "+998 90 235 72 44",
+        "instagram": "viking_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Viking%20%D0%A3%D1%80%D0%B3%D0%B5%D0%BD%D1%87",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-59",
+        "name": "Салон Темур",
+        "brand": "Салон Темур",
+        "country": "Узбекистан",
+        "city": "Ургенч",
+        "area": "Ургенч",
+        "address": "ул. Пахлавана Махмуда, 23",
+        "lat": 41.556261,
+        "lon": 60.635721,
+        "rating": 4.7,
+        "reviews_count": 8,
+        "phone": "+998 90 519 98 27",
+        "instagram": "____________",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=%D0%A1%D0%B0%D0%BB%D0%BE%D0%BD%20%D0%A2%D0%B5%D0%BC%D1%83%D1%80%20%D0%A3%D1%80%D0%B3%D0%B5%D0%BD%D1%87",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-60",
+        "name": "Alyo'sh, барбершоп",
+        "brand": "Alyo'sh",
+        "country": "Узбекистан",
+        "city": "Ургенч",
+        "area": "Ургенч",
+        "address": "махаллинский сход граждан Саховат, ул. Жамбул, 61",
+        "lat": 41.557572,
+        "lon": 60.654854,
+        "rating": 4.5,
+        "reviews_count": 9,
+        "phone": "+998 95 219 25 65",
+        "instagram": "alyo_sh_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Alyo'sh%20%D0%A3%D1%80%D0%B3%D0%B5%D0%BD%D1%87",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-61",
+        "name": "Tillo, барбершоп",
+        "brand": "Tillo",
+        "country": "Узбекистан",
+        "city": "Ургенч",
+        "area": "Ургенч",
+        "address": "Хорезмская область, Ургенчский район, махалля Ок-Ариклар, улица Гурлан, 22",
+        "lat": 41.582189,
+        "lon": 60.609273,
+        "rating": 4.7,
+        "reviews_count": 10,
+        "phone": "+998 90 152 14 87",
+        "instagram": "tillo_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Tillo%20%D0%A3%D1%80%D0%B3%D0%B5%D0%BD%D1%87",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-62",
+        "name": "Hokand Barber Shop",
+        "brand": "Hokand Barber Shop",
+        "country": "Узбекистан",
+        "city": "Коканд",
+        "area": "Коканд",
+        "address": "ул. Шарафа Рашидова, 11",
+        "lat": 40.521261,
+        "lon": 70.93471,
+        "rating": 4.8,
+        "reviews_count": 23,
+        "phone": "+998 91 148 41 48",
+        "instagram": "hokand_barber_shop_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Hokand%20Barber%20Shop%20%D0%9A%D0%BE%D0%BA%D0%B0%D0%BD%D0%B4",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-63",
+        "name": "Kamtar, барбершоп",
+        "brand": "Kamtar",
+        "country": "Узбекистан",
+        "city": "Коканд",
+        "area": "Коканд",
+        "address": "махаллинский сход граждан Калвак, ул. Туркистон, 160",
+        "lat": 40.523148,
+        "lon": 70.945401,
+        "rating": 4.6,
+        "reviews_count": 24,
+        "phone": "+998 90 070 34 34",
+        "instagram": "kamtar_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Kamtar%20%D0%9A%D0%BE%D0%BA%D0%B0%D0%BD%D0%B4",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-64",
+        "name": "Barber House",
+        "brand": "Barber House",
+        "country": "Узбекистан",
+        "city": "Коканд",
+        "area": "Коканд",
+        "address": "махаллинский сход граждан Кипчокарик, ул. Гузар, 194",
+        "lat": 40.528893,
+        "lon": 70.928672,
+        "rating": 4.6,
+        "reviews_count": 32,
+        "phone": "+998 90 343 52 42",
+        "instagram": "barber_house_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Barber%20House%20%D0%9A%D0%BE%D0%BA%D0%B0%D0%BD%D0%B4",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-65",
+        "name": "Мурод Барбер",
+        "brand": "Мурод Барбер",
+        "country": "Узбекистан",
+        "city": "Коканд",
+        "area": "Коканд",
+        "address": "махаллинский сход граждан Дегрезлик, ул. Алишера Навоий, 135A",
+        "lat": 40.537072,
+        "lon": 70.965754,
+        "rating": 4.6,
+        "reviews_count": 25,
+        "phone": "+998 91 055 06 07",
+        "instagram": "_____________",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=%D0%9C%D1%83%D1%80%D0%BE%D0%B4%20%D0%91%D0%B0%D1%80%D0%B1%D0%B5%D1%80%20%D0%9A%D0%BE%D0%BA%D0%B0%D0%BD%D0%B4",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-66",
+        "name": "Hokand, барбершоп",
+        "brand": "Hokand",
+        "country": "Узбекистан",
+        "city": "Коканд",
+        "area": "Коканд",
+        "address": "Ферганская область, Коканд, махаллинский сход граждан Истиклол, улица Шохрухобод",
+        "lat": 40.519251,
+        "lon": 70.938838,
+        "rating": 4.7,
+        "reviews_count": 27,
+        "phone": "+998 91 148 41 48",
+        "instagram": "hokand_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Hokand%20%D0%9A%D0%BE%D0%BA%D0%B0%D0%BD%D0%B4",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-67",
+        "name": "Boy_friend, барбершоп",
+        "brand": "Boy_friend",
+        "country": "Узбекистан",
+        "city": "Коканд",
+        "area": "Коканд",
+        "address": "ул. Беруний, 3",
+        "lat": 40.546128,
+        "lon": 70.927632,
+        "rating": 4.6,
+        "reviews_count": 29,
+        "phone": "+998 90 060 97 97",
+        "instagram": "boy_friend_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Boy_friend%20%D0%9A%D0%BE%D0%BA%D0%B0%D0%BD%D0%B4",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-68",
+        "name": "Yaxyayev Continental, барбершоп",
+        "brand": "Yaxyayev Continental",
+        "country": "Узбекистан",
+        "city": "Коканд",
+        "area": "Коканд",
+        "address": "махаллинский сход граждан Азизтепа, ул. Мовароуннахр, 84",
+        "lat": 40.529923,
+        "lon": 70.918153,
+        "rating": 4.8,
+        "reviews_count": 21,
+        "phone": "+998 91 146 29 29",
+        "instagram": "yaxyayev_continental_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Yaxyayev%20Continental%20%D0%9A%D0%BE%D0%BA%D0%B0%D0%BD%D0%B4",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-69",
+        "name": "Xax Barber",
+        "brand": "Xax Barber",
+        "country": "Узбекистан",
+        "city": "Коканд",
+        "area": "Коканд",
+        "address": "махаллинский сход граждан Навбахор, ул. Усмон Носир, 58/2",
+        "lat": 40.550248,
+        "lon": 70.963622,
+        "rating": 4.5,
+        "reviews_count": 22,
+        "phone": "+998 97 101 00 23",
+        "instagram": "xax_barber_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Xax%20Barber%20%D0%9A%D0%BE%D0%BA%D0%B0%D0%BD%D0%B4",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-70",
+        "name": "Barbershop",
+        "brand": "Barbershop",
+        "country": "Узбекистан",
+        "city": "Коканд",
+        "area": "Коканд",
+        "address": "махаллинский сход граждан Кипчокарик, ул. Гузар, 173",
+        "lat": 40.529194,
+        "lon": 70.931076,
+        "rating": 4.9,
+        "reviews_count": 27,
+        "phone": "+998 90 676 26 22",
+        "instagram": "barbershop_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Barbershop%20%D0%9A%D0%BE%D0%BA%D0%B0%D0%BD%D0%B4",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-71",
+        "name": "Barber shop",
+        "brand": "Barber shop",
+        "country": "Узбекистан",
+        "city": "Коканд",
+        "area": "Коканд",
+        "address": "ул. Аскарали Чархий, 23A",
+        "lat": 40.544284,
+        "lon": 70.933968,
+        "rating": 4.7,
+        "reviews_count": 32,
+        "phone": "+998 91 684 60 40",
+        "instagram": "barber_shop_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Barber%20shop%20%D0%9A%D0%BE%D0%BA%D0%B0%D0%BD%D0%B4",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-72",
+        "name": "Elegant Barbershop",
+        "brand": "Elegant Barbershop",
+        "country": "Узбекистан",
+        "city": "Коканд",
+        "area": "Коканд",
+        "address": "ул. Бирлик, 1",
+        "lat": 40.52672,
+        "lon": 70.928905,
+        "rating": 4.7,
+        "reviews_count": 8,
+        "phone": "+998 90 881 48 30",
+        "instagram": "elegant_barbershop_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Elegant%20Barbershop%20%D0%9A%D0%BE%D0%BA%D0%B0%D0%BD%D0%B4",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-73",
+        "name": "Мужской салон",
+        "brand": "Мужской салон",
+        "country": "Узбекистан",
+        "city": "Коканд",
+        "area": "Коканд",
+        "address": "ул. Амира Темура, 18",
+        "lat": 40.524418,
+        "lon": 70.935639,
+        "rating": 4.8,
+        "reviews_count": 24,
+        "phone": "+998 90 173 80 87",
+        "instagram": "______________",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=%D0%9C%D1%83%D0%B6%D1%81%D0%BA%D0%BE%D0%B9%20%D1%81%D0%B0%D0%BB%D0%BE%D0%BD%20%D0%9A%D0%BE%D0%BA%D0%B0%D0%BD%D0%B4",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-74",
+        "name": "Big barber",
+        "brand": "Big barber",
+        "country": "Узбекистан",
+        "city": "Коканд",
+        "area": "Коканд",
+        "address": "махаллинский сход граждан Шалдирамок, ул. Туркистон, 148",
+        "lat": 40.52619,
+        "lon": 70.94321,
+        "rating": 4.5,
+        "reviews_count": 24,
+        "phone": "+998 90 283 36 77",
+        "instagram": "big_barber_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Big%20barber%20%D0%9A%D0%BE%D0%BA%D0%B0%D0%BD%D0%B4",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-75",
+        "name": "Barber Room",
+        "brand": "Barber Room",
+        "country": "Узбекистан",
+        "city": "Коканд",
+        "area": "Коканд",
+        "address": "ул. Шайх Саъдий, 2",
+        "lat": 40.537095,
+        "lon": 70.951695,
+        "rating": 4.5,
+        "reviews_count": 30,
+        "phone": "+998 90 286 74 22",
+        "instagram": "barber_room_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Barber%20Room%20%D0%9A%D0%BE%D0%BA%D0%B0%D0%BD%D0%B4",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-76",
+        "name": "Barber shop",
+        "brand": "Barber shop",
+        "country": "Узбекистан",
+        "city": "Коканд",
+        "area": "Коканд",
+        "address": "ул. Амира Темура, 26",
+        "lat": 40.52258,
+        "lon": 70.93281,
+        "rating": 4.9,
+        "reviews_count": 29,
+        "phone": "+998 90 673 19 86",
+        "instagram": "barber_shop_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Barber%20shop%20%D0%9A%D0%BE%D0%BA%D0%B0%D0%BD%D0%B4",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-77",
+        "name": "Erkaklar saloni, барбершоп",
+        "brand": "Erkaklar saloni",
+        "country": "Узбекистан",
+        "city": "Коканд",
+        "area": "Коканд",
+        "address": "махаллинский сход граждан Гишткуприк, ул. Туркистон, 66A",
+        "lat": 40.532414,
+        "lon": 70.942668,
+        "rating": 4.9,
+        "reviews_count": 9,
+        "phone": "+998 90 969 38 36",
+        "instagram": "erkaklar_saloni_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Erkaklar%20saloni%20%D0%9A%D0%BE%D0%BA%D0%B0%D0%BD%D0%B4",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-78",
+        "name": "Dom barber",
+        "brand": "Dom barber",
+        "country": "Узбекистан",
+        "city": "Коканд",
+        "area": "Коканд",
+        "address": "махаллинский сход граждан Галабаккол, ул. Сарбоз, 8",
+        "lat": 40.534412,
+        "lon": 70.93728,
+        "rating": 4.5,
+        "reviews_count": 24,
+        "phone": "+998 90 703 88 20",
+        "instagram": "dom_barber_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Dom%20barber%20%D0%9A%D0%BE%D0%BA%D0%B0%D0%BD%D0%B4",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-79",
+        "name": "Erkaklar saloni, барбершоп",
+        "brand": "Erkaklar saloni",
+        "country": "Узбекистан",
+        "city": "Коканд",
+        "area": "Коканд",
+        "address": "ул. Найманча, 11",
+        "lat": 40.523998,
+        "lon": 70.942285,
+        "rating": 4.6,
+        "reviews_count": 14,
+        "phone": "+998 90 374 63 63",
+        "instagram": "erkaklar_saloni_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Erkaklar%20saloni%20%D0%9A%D0%BE%D0%BA%D0%B0%D0%BD%D0%B4",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-80",
+        "name": "Borodist, барбершоп",
+        "brand": "Borodist",
+        "country": "Узбекистан",
+        "city": "Коканд",
+        "area": "Коканд",
+        "address": "ул. Хамдам Оталик, 37",
+        "lat": 40.539536,
+        "lon": 70.92411,
+        "rating": 4.8,
+        "reviews_count": 12,
+        "phone": "+998 90 614 13 59",
+        "instagram": "borodist_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Borodist%20%D0%9A%D0%BE%D0%BA%D0%B0%D0%BD%D0%B4",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-81",
+        "name": "Barbershop97",
+        "brand": "Barbershop97",
+        "country": "Узбекистан",
+        "city": "Коканд",
+        "area": "Коканд",
+        "address": "Ферганская область, Коканд, населённый пункт имени К. Ходжаевой",
+        "lat": 40.491849,
+        "lon": 70.983083,
+        "rating": 4.5,
+        "reviews_count": 24,
+        "phone": "+998 90 911 36 36",
+        "instagram": "barbershop97_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Barbershop97%20%D0%9A%D0%BE%D0%BA%D0%B0%D0%BD%D0%B4",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-82",
+        "name": "Aurum, барбершоп",
+        "brand": "Aurum",
+        "country": "Узбекистан",
+        "city": "Алмалык",
+        "area": "Алмалык",
+        "address": "ул. Амира Темура, 65",
+        "lat": 40.839652,
+        "lon": 69.613064,
+        "rating": 4.7,
+        "reviews_count": 20,
+        "phone": "+998 94 403 99 00",
+        "instagram": "aurum_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Aurum%20%D0%90%D0%BB%D0%BC%D0%B0%D0%BB%D1%8B%D0%BA",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-83",
+        "name": "E. S. Premium, барбершоп",
+        "brand": "E. S. Premium",
+        "country": "Узбекистан",
+        "city": "Алмалык",
+        "area": "Алмалык",
+        "address": "ул. Амира Темура, 20",
+        "lat": 40.85201,
+        "lon": 69.596579,
+        "rating": 4.8,
+        "reviews_count": 17,
+        "phone": "+998 93 600 95 37",
+        "instagram": "e__s__premium_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=E.%20S.%20Premium%20%D0%90%D0%BB%D0%BC%D0%B0%D0%BB%D1%8B%D0%BA",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-84",
+        "name": "Барбершоп",
+        "brand": "Барбершоп",
+        "country": "Узбекистан",
+        "city": "Алмалык",
+        "area": "Алмалык",
+        "address": "просп. Амира Темура, 34",
+        "lat": 40.849276,
+        "lon": 69.600763,
+        "rating": 4.7,
+        "reviews_count": 30,
+        "phone": "+998 90 219 98 46",
+        "instagram": "__________",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=%D0%91%D0%B0%D1%80%D0%B1%D0%B5%D1%80%D1%88%D0%BE%D0%BF%20%D0%90%D0%BB%D0%BC%D0%B0%D0%BB%D1%8B%D0%BA",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-85",
+        "name": "Mukhammadstyle, барбершоп",
+        "brand": "Mukhammadstyle",
+        "country": "Узбекистан",
+        "city": "Алмалык",
+        "area": "Алмалык",
+        "address": "махаллинский сход граждан Мукимий, ул. Навруз, 20",
+        "lat": 40.852281,
+        "lon": 69.59066,
+        "rating": 4.8,
+        "reviews_count": 16,
+        "phone": "+998 93 812 24 12",
+        "instagram": "mukhammadstyle_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Mukhammadstyle%20%D0%90%D0%BB%D0%BC%D0%B0%D0%BB%D1%8B%D0%BA",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-86",
+        "name": "Culture Barbershop",
+        "brand": "Culture Barbershop",
+        "country": "Узбекистан",
+        "city": "Алмалык",
+        "area": "Алмалык",
+        "address": "Ташкентская область, Алмалык, махаллинский сход граждан Ойдин",
+        "lat": 40.861886,
+        "lon": 69.591237,
+        "rating": 4.5,
+        "reviews_count": 19,
+        "phone": "+998 87 001 11 19",
+        "instagram": "culture_barbershop_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Culture%20Barbershop%20%D0%90%D0%BB%D0%BC%D0%B0%D0%BB%D1%8B%D0%BA",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-87",
+        "name": "Жасмин, барбершоп",
+        "brand": "Жасмин",
+        "country": "Узбекистан",
+        "city": "Алмалык",
+        "area": "Алмалык",
+        "address": "просп. Амира Темура, 57",
+        "lat": 40.841591,
+        "lon": 69.611299,
+        "rating": 4.8,
+        "reviews_count": 30,
+        "phone": "+998 93 627 10 07",
+        "instagram": "_______",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=%D0%96%D0%B0%D1%81%D0%BC%D0%B8%D0%BD%20%D0%90%D0%BB%D0%BC%D0%B0%D0%BB%D1%8B%D0%BA",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-88",
+        "name": "Мардон, барбершоп",
+        "brand": "Мардон",
+        "country": "Узбекистан",
+        "city": "Алмалык",
+        "area": "Алмалык",
+        "address": "ул. Ипак Йули, 49А",
+        "lat": 40.854606,
+        "lon": 69.612402,
+        "rating": 4.8,
+        "reviews_count": 16,
+        "phone": "+998 90 532 32 75",
+        "instagram": "_______",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=%D0%9C%D0%B0%D1%80%D0%B4%D0%BE%D0%BD%20%D0%90%D0%BB%D0%BC%D0%B0%D0%BB%D1%8B%D0%BA",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-89",
+        "name": "Байрам, барбершоп",
+        "brand": "Байрам",
+        "country": "Узбекистан",
+        "city": "Нукус",
+        "area": "Нукус",
+        "address": "ул. Аллаяра Досназарова, 5",
+        "lat": 42.440144,
+        "lon": 59.638563,
+        "rating": 4.9,
+        "reviews_count": 20,
+        "phone": "+998 90 312 13 92",
+        "instagram": "_______",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=%D0%91%D0%B0%D0%B9%D1%80%D0%B0%D0%BC%20%D0%9D%D1%83%D0%BA%D1%83%D1%81",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-90",
+        "name": "Карэ, барбершоп",
+        "brand": "Карэ",
+        "country": "Узбекистан",
+        "city": "Нукус",
+        "area": "Нукус",
+        "address": "22-й микрорайон, 7/3",
+        "lat": 42.437489,
+        "lon": 59.636659,
+        "rating": 4.7,
+        "reviews_count": 29,
+        "phone": "+998 90 966 45 65",
+        "instagram": "_____",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=%D0%9A%D0%B0%D1%80%D1%8D%20%D0%9D%D1%83%D0%BA%D1%83%D1%81",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-reg-ya-91",
+        "name": "Nurbek Barber",
+        "brand": "Nurbek Barber",
+        "country": "Узбекистан",
+        "city": "Карши",
+        "area": "Карши",
+        "address": "Карши, ул. Махсумобод, 23",
+        "lat": 38.866088,
+        "lon": 65.791788,
+        "rating": 4.6,
+        "reviews_count": 9,
+        "phone": "+998 97 317 37 20",
+        "instagram": "nurbek_barber_",
+        "working_hours": "09:00 - 21:00",
+        "price_range": "50 000 - 160 000 сум",
+        "booking_type": "online",
+        "source": "Yandex Maps Regional UZ",
+        "link_2gis": "https://yandex.com/maps/?text=Nurbek%20Barber%20%D0%9A%D0%B0%D1%80%D1%88%D0%B8",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
     }
 ];
 
