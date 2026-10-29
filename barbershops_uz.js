@@ -8590,6 +8590,3345 @@ window.BARBERSHOPS_UZ_DATA = [
         ]
     },
     {
+        "id": "uz-andijan-gm-2",
+        "name": "Level barbershop",
+        "brand": "Level barbershop",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Q8XW+Q57 Oʻzbekisto soy, г. Андижан",
+        "lat": 40.7994117,
+        "lon": 72.3454357,
+        "rating": 5,
+        "reviews_count": 5,
+        "phone": "+998 74 237 41 29",
+        "instagram": "levelbarbershop_andijan",
+        "working_hours": "10:00 - 23:30",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Level%20barbershop%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-3",
+        "name": "Los andijan Barbershop",
+        "brand": "Los andijan Barbershop",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Закроется в 23:30 | Мужская парикмахерская |, г. Андижан",
+        "lat": 40.7685906,
+        "lon": 72.3784118,
+        "rating": 4.8,
+        "reviews_count": 29,
+        "phone": "+998 74 254 72 48",
+        "instagram": "losandijanbarbershop_andijan",
+        "working_hours": "10:00 - 23:30",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Los%20andijan%20Barbershop%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-5",
+        "name": "Barbershop YENGIL",
+        "brand": "Barbershop YENGIL",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "P8VR+JPF, г. Андижан",
+        "lat": 40.7963271,
+        "lon": 72.3685336,
+        "rating": 5,
+        "reviews_count": 8,
+        "phone": "+998 74 288 44 86",
+        "instagram": "barbershopyengil_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Barbershop%20YENGIL%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-6",
+        "name": "Liberty Barbershop",
+        "brand": "Liberty Barbershop",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "kichik daha 6 |",
+        "lat": 40.7512829,
+        "lon": 72.3490216,
+        "rating": 4.5,
+        "reviews_count": 4,
+        "phone": "+998 74 305 75 15",
+        "instagram": "libertybarbershop_andijan",
+        "working_hours": "10:00 - 00:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Liberty%20Barbershop%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-7",
+        "name": "\"AZBO\" barbershop",
+        "brand": "\"AZBO\" barbershop",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Mashrab ko'chasi 7 |",
+        "lat": 40.7512438,
+        "lon": 72.3565406,
+        "rating": 4.9,
+        "reviews_count": 9,
+        "phone": "+998 74 322 16 34",
+        "instagram": "azbobarbershop_andijan",
+        "working_hours": "10:00 - 21:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/%22AZBO%22%20barbershop%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-8",
+        "name": "Браво барбер",
+        "brand": "Браво барбер",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Q952+QW5, г. Андижан",
+        "lat": 40.7591748,
+        "lon": 72.3525188,
+        "rating": 4.9,
+        "reviews_count": 15,
+        "phone": "+998 74 339 47 53",
+        "instagram": "_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/%D0%91%D1%80%D0%B0%D0%B2%D0%BE%20%D0%B1%D0%B0%D1%80%D0%B1%D0%B5%D1%80%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-9",
+        "name": "barbershop mj*",
+        "brand": "barbershop mj*",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Закроется в 23:00 | Парикмахерская |, г. Андижан",
+        "lat": 40.769337,
+        "lon": 72.3790988,
+        "rating": 5,
+        "reviews_count": 2,
+        "phone": "+998 74 356 78 72",
+        "instagram": "barbershopmj_andijan",
+        "working_hours": "10:00 - 23:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/barbershop%20mj*%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-10",
+        "name": "Vegas barbershop",
+        "brand": "Vegas barbershop",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "J6WV+GQ3 | Мужская парикмахерская, г. Андижан",
+        "lat": 40.6462869,
+        "lon": 72.2444513,
+        "rating": 4.5,
+        "reviews_count": 2,
+        "phone": "+998 74 373 19 91",
+        "instagram": "vegasbarbershop_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Vegas%20barbershop%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-12",
+        "name": "Ali Barber",
+        "brand": "Ali Barber",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "R973+W9G, г. Андижан",
+        "lat": 40.814825,
+        "lon": 72.353455,
+        "rating": 5,
+        "reviews_count": 1,
+        "phone": "+998 74 407 81 39",
+        "instagram": "alibarber_andijan",
+        "working_hours": "Круглосуточно (24/7)",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Ali%20Barber%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-13",
+        "name": "Barbershop __center",
+        "brand": "Barbershop __center",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Иттифок, улица Кайкубад 145 |",
+        "lat": 40.8952985,
+        "lon": 72.254809,
+        "rating": 5,
+        "reviews_count": 2,
+        "phone": "+998 74 424 22 58",
+        "instagram": "barbershopcenter_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Barbershop%20__center%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-14",
+        "name": "Abduhalim BARBER",
+        "brand": "Abduhalim BARBER",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Q9G2+H4C | Парикмахер, г. Андижан",
+        "lat": 40.7764345,
+        "lon": 72.3502503,
+        "rating": 5,
+        "reviews_count": 1,
+        "phone": "+998 74 441 53 77",
+        "instagram": "abduhalimbarber_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Abduhalim%20BARBER%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-15",
+        "name": "Jaguar Barbershop",
+        "brand": "Jaguar Barbershop",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Q8QV+229, г. Андижан",
+        "lat": 40.7875425,
+        "lon": 72.3426033,
+        "rating": 5,
+        "reviews_count": 1,
+        "phone": "+998 74 458 84 96",
+        "instagram": "jaguarbarbershop_andijan",
+        "working_hours": "10:00 - 19:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Jaguar%20Barbershop%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-16",
+        "name": "Texas Barbershop",
+        "brand": "Texas Barbershop",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Q974+PPC, г. Андижан",
+        "lat": 40.7643195,
+        "lon": 72.356761,
+        "rating": 4.3,
+        "reviews_count": 12,
+        "phone": "+998 74 475 25 25",
+        "instagram": "texasbarbershop_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Texas%20Barbershop%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-17",
+        "name": "ДОН Барбер шоп",
+        "brand": "ДОН Барбер шоп",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "P9G9+73, г. Андижан",
+        "lat": 40.725715,
+        "lon": 72.3677585,
+        "rating": 5,
+        "reviews_count": 2,
+        "phone": "+998 74 492 56 44",
+        "instagram": "_andijan",
+        "working_hours": "10:00 - 23:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/%D0%94%D0%9E%D0%9D%20%D0%91%D0%B0%D1%80%D0%B1%D0%B5%D1%80%20%D1%88%D0%BE%D0%BF%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-18",
+        "name": "BARBER Ilyosbek",
+        "brand": "BARBER Ilyosbek",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "M3X5+M57, г. Андижан",
+        "lat": 40.6988524,
+        "lon": 72.0581597,
+        "rating": 5,
+        "reviews_count": 3,
+        "phone": "+998 74 509 87 63",
+        "instagram": "barberilyosbek_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/BARBER%20Ilyosbek%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-19",
+        "name": "Bilol barber shop",
+        "brand": "Bilol barber shop",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Prospekt Babura |",
+        "lat": 40.7883086,
+        "lon": 72.3317209,
+        "rating": 4.2,
+        "reviews_count": 5,
+        "phone": "+998 74 526 28 82",
+        "instagram": "bilolbarbershop_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Bilol%20barber%20shop%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-20",
+        "name": "Барбершоп Shakh house",
+        "brand": "Барбершоп Shakh house",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "P8XV+GXG, Ulitsa Lermontova, г. Андижан",
+        "lat": 40.7488164,
+        "lon": 72.3449577,
+        "rating": 5,
+        "reviews_count": 2,
+        "phone": "+998 74 543 59 11",
+        "instagram": "shakhhouse_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/%D0%91%D0%B0%D1%80%D0%B1%D0%B5%D1%80%D1%88%D0%BE%D0%BF%20Shakh%20house%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-21",
+        "name": "Barber One",
+        "brand": "Barber One",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Boburshox 1 bino, г. Андижан",
+        "lat": 40.7876645,
+        "lon": 72.331883,
+        "rating": 4.8,
+        "reviews_count": 20,
+        "phone": "+998 74 560 90 30",
+        "instagram": "barberone_andijan",
+        "working_hours": "10:00 - 23:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Barber%20One%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-22",
+        "name": "Anvar_barber_pro",
+        "brand": "Anvar_barber_pro",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "R86V+6WW | Мужская парикмахерская, г. Андижан",
+        "lat": 40.8103257,
+        "lon": 72.3448638,
+        "rating": 5,
+        "reviews_count": 1,
+        "phone": "+998 74 577 31 49",
+        "instagram": "anvarbarberpro_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Anvar_barber_pro%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-23",
+        "name": "Fade.Moydinov, барбершоп",
+        "brand": "Fade.Moydinov",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "P8QX+5M4, г. Андижан",
+        "lat": 40.7379422,
+        "lon": 72.3490832,
+        "rating": 5,
+        "reviews_count": 2,
+        "phone": "+998 74 594 62 68",
+        "instagram": "fademoydinov_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Fade.Moydinov%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-24",
+        "name": "Shelby BarbershoP",
+        "brand": "Shelby BarbershoP",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "P9QC+R8Q | Парикмахерская, г. Андижан",
+        "lat": 40.7395823,
+        "lon": 72.3708463,
+        "rating": 4,
+        "reviews_count": 6,
+        "phone": "+998 74 611 93 87",
+        "instagram": "shelbybarbershop_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Shelby%20BarbershoP%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-25",
+        "name": "Salmon Forsiy, барбершоп",
+        "brand": "Salmon Forsiy",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "улица Дукчи Эшон |",
+        "lat": 40.7635408,
+        "lon": 72.3660747,
+        "rating": 5,
+        "reviews_count": 1,
+        "phone": "+998 74 628 34 16",
+        "instagram": "salmonforsiy_andijan",
+        "working_hours": "10:00 - 20:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Salmon%20Forsiy%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-26",
+        "name": "Asr Barber Shop",
+        "brand": "Asr Barber Shop",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "P325+2JQ, г. Андижан",
+        "lat": 40.6998757,
+        "lon": 72.0579435,
+        "rating": 4.6,
+        "reviews_count": 10,
+        "phone": "+998 74 645 65 35",
+        "instagram": "asrbarbershop_andijan",
+        "working_hours": "10:00 - 23:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Asr%20Barber%20Shop%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-27",
+        "name": "BRUTAL Man, барбершоп",
+        "brand": "BRUTAL Man",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "V56G+3C2 | Парикмахерская, г. Андижан",
+        "lat": 40.86013,
+        "lon": 72.1760294,
+        "rating": 5,
+        "reviews_count": 2,
+        "phone": "+998 74 662 96 54",
+        "instagram": "brutalman_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/BRUTAL%20Man%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-28",
+        "name": "Ferdi_barber",
+        "brand": "Ferdi_barber",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "P9RH+WVJ, г. Андижан",
+        "lat": 40.742329,
+        "lon": 72.379626,
+        "rating": 5,
+        "reviews_count": 1,
+        "phone": "+998 74 679 37 73",
+        "instagram": "ferdibarber_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Ferdi_barber%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-29",
+        "name": "Kamol Barber",
+        "brand": "Kamol Barber",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "V55P+VQ8, г. Андижан",
+        "lat": 40.8599538,
+        "lon": 72.1866537,
+        "rating": 4.8,
+        "reviews_count": 31,
+        "phone": "+998 74 696 68 92",
+        "instagram": "kamolbarber_andijan",
+        "working_hours": "10:00 - 23:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Kamol%20Barber%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-32",
+        "name": "Trend Up, барбершоп",
+        "brand": "Trend Up",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "улица Машраб 26 |",
+        "lat": 40.7514184,
+        "lon": 72.35106,
+        "rating": 4.6,
+        "reviews_count": 14,
+        "phone": "+998 74 747 71 59",
+        "instagram": "trendup_andijan",
+        "working_hours": "10:00 - 21:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Trend%20Up%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-33",
+        "name": "Jony BARBER SHOP",
+        "brand": "Jony BARBER SHOP",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "M62M+44M, г. Андижан",
+        "lat": 40.6503987,
+        "lon": 72.2327896,
+        "rating": 4.8,
+        "reviews_count": 59,
+        "phone": "+998 74 764 12 78",
+        "instagram": "jonybarbershop_andijan",
+        "working_hours": "10:00 - 20:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Jony%20BARBER%20SHOP%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-34",
+        "name": "Ibo.chik.13 barbershop",
+        "brand": "Ibo.chik.13 barbershop",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "V972+6H | Парикмахерская, г. Андижан",
+        "lat": 40.8620221,
+        "lon": 72.3514308,
+        "rating": 5,
+        "reviews_count": 2,
+        "phone": "+998 74 781 43 97",
+        "instagram": "ibochik13barbershop_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Ibo.chik.13%20barbershop%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-35",
+        "name": "Barbershop_01",
+        "brand": "Barbershop_01",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "M722+3CP, г. Андижан",
+        "lat": 40.6502038,
+        "lon": 72.2510697,
+        "rating": 5,
+        "reviews_count": 1,
+        "phone": "+998 74 798 74 26",
+        "instagram": "barbershop01_andijan",
+        "working_hours": "10:00 - 21:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Barbershop_01%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-36",
+        "name": "Kamoliddin barbershop",
+        "brand": "Kamoliddin barbershop",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "P2FG+6J, г. Андижан",
+        "lat": 40.7230998,
+        "lon": 72.0266157,
+        "rating": 5,
+        "reviews_count": 4,
+        "phone": "+998 74 815 15 45",
+        "instagram": "kamoliddinbarbershop_andijan",
+        "working_hours": "10:00 - 21:30",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Kamoliddin%20barbershop%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-37",
+        "name": "BARBER707",
+        "brand": "BARBER707",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Q8MW+G3F, г. Андижан",
+        "lat": 40.7838028,
+        "lon": 72.3451813,
+        "rating": 5,
+        "reviews_count": 3,
+        "phone": "+998 74 832 46 64",
+        "instagram": "barber707_andijan",
+        "working_hours": "10:00 - 00:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/BARBER707%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-38",
+        "name": "Ayba barbershop",
+        "brand": "Ayba barbershop",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Ayba barbershop, г. Андижан",
+        "lat": 40.8266665,
+        "lon": 72.3357324,
+        "rating": 4.8,
+        "reviews_count": 49,
+        "phone": "+998 74 849 77 83",
+        "instagram": "aybabarbershop_andijan",
+        "working_hours": "10:00 - 00:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Ayba%20barbershop%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-39",
+        "name": "GOLD BARBER",
+        "brand": "GOLD BARBER",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Q8V4+H3X | Парикмахер, г. Андижан",
+        "lat": 40.7962165,
+        "lon": 72.346003,
+        "rating": 4.8,
+        "reviews_count": 56,
+        "phone": "+998 74 866 18 12",
+        "instagram": "goldbarber_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/GOLD%20BARBER%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-40",
+        "name": "Компютер хизмати/Сартарошхона, барбершоп",
+        "brand": "Компютер хизмати/Сартарошхона",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "1 | Парикмахер, г. Андижан",
+        "lat": 40.7581731,
+        "lon": 72.3004158,
+        "rating": 5,
+        "reviews_count": 1,
+        "phone": "+998 74 233 49 31",
+        "instagram": "_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/%D0%9A%D0%BE%D0%BC%D0%BF%D1%8E%D1%82%D0%B5%D1%80%20%D1%85%D0%B8%D0%B7%D0%BC%D0%B0%D1%82%D0%B8%2F%D0%A1%D0%B0%D1%80%D1%82%D0%B0%D1%80%D0%BE%D1%88%D1%85%D0%BE%D0%BD%D0%B0%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-41",
+        "name": "UZBarber",
+        "brand": "UZBarber",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "J6XP+9JJ, г. Андижан",
+        "lat": 40.6484694,
+        "lon": 72.2365209,
+        "rating": 5,
+        "reviews_count": 3,
+        "phone": "+998 74 250 80 50",
+        "instagram": "uzbarber_andijan",
+        "working_hours": "Круглосуточно (24/7)",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/UZBarber%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-42",
+        "name": "ABROR BARBER💇‍♂️",
+        "brand": "ABROR BARBER💇‍♂️",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Q9CF+PG7 | Парикмахерская, г. Андижан",
+        "lat": 40.7717757,
+        "lon": 72.3737561,
+        "rating": 4.8,
+        "reviews_count": 32,
+        "phone": "+998 74 267 21 69",
+        "instagram": "abrorbarber_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/ABROR%20BARBER%F0%9F%92%87%E2%80%8D%E2%99%82%EF%B8%8F%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-43",
+        "name": "Sartaroshxona barbershop",
+        "brand": "Sartaroshxona barbershop",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "R528+42F, г. Андижан",
+        "lat": 40.8003064,
+        "lon": 72.1650528,
+        "rating": 5,
+        "reviews_count": 3,
+        "phone": "+998 74 284 52 88",
+        "instagram": "sartaroshxonabarbershop_andijan",
+        "working_hours": "10:00 - 20:05",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Sartaroshxona%20barbershop%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-44",
+        "name": "Мужская парикмахерская, барбершоп",
+        "brand": "Мужская парикмахерская",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Q8PW+4HM, г. Андижан",
+        "lat": 40.7852707,
+        "lon": 72.346198,
+        "rating": 3.7,
+        "reviews_count": 3,
+        "phone": "+998 74 301 83 17",
+        "instagram": "_andijan",
+        "working_hours": "10:00 - 21:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/%D0%9C%D1%83%D0%B6%D1%81%D0%BA%D0%B0%D1%8F%20%D0%BF%D0%B0%D1%80%D0%B8%D0%BA%D0%BC%D0%B0%D1%85%D0%B5%D1%80%D1%81%D0%BA%D0%B0%D1%8F%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-45",
+        "name": "Abbosbek Barbershop",
+        "brand": "Abbosbek Barbershop",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "R528+43W, г. Андижан",
+        "lat": 40.8003562,
+        "lon": 72.1651911,
+        "rating": 5,
+        "reviews_count": 1,
+        "phone": "+998 74 318 24 36",
+        "instagram": "abbosbekbarbershop_andijan",
+        "working_hours": "Круглосуточно (24/7)",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Abbosbek%20Barbershop%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-46",
+        "name": "Senior Barber",
+        "brand": "Senior Barber",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Андижан, г. Андижан",
+        "lat": 40.6490242,
+        "lon": 72.2343464,
+        "rating": 4.8,
+        "reviews_count": 15,
+        "phone": "+998 74 335 55 55",
+        "instagram": "seniorbarber_andijan",
+        "working_hours": "10:00 - 00:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Senior%20Barber%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-47",
+        "name": "Barbershop_semashko_",
+        "brand": "Barbershop_semashko_",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Тошкент кучаси",
+        "lat": 40.7543525,
+        "lon": 72.3755673,
+        "rating": 5,
+        "reviews_count": 2,
+        "phone": "+998 74 352 86 74",
+        "instagram": "barbershopsemashko_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Barbershop_semashko_%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-48",
+        "name": "SPACE, барбершоп",
+        "brand": "SPACE",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "улица Узбекистан 86 |",
+        "lat": 40.7831288,
+        "lon": 72.336191,
+        "rating": 4.8,
+        "reviews_count": 29,
+        "phone": "+998 74 369 27 93",
+        "instagram": "space_andijan",
+        "working_hours": "10:00 - 21:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/SPACE%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-50",
+        "name": "Bro Barber",
+        "brand": "Bro Barber",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Q923+GMW | Мужская парикмахерская, г. Андижан",
+        "lat": 40.7513572,
+        "lon": 72.3542186,
+        "rating": 4,
+        "reviews_count": 4,
+        "phone": "+998 74 403 89 41",
+        "instagram": "brobarber_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Bro%20Barber%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-51",
+        "name": "BARBERSHOP ZOIRBEK BEGMATOV",
+        "brand": "BARBERSHOP ZOIRBEK BEGMATOV",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "VXGG+HM3 | Мужская парикмахерская, г. Андижан",
+        "lat": 40.8763751,
+        "lon": 71.9766719,
+        "rating": 4.8,
+        "reviews_count": 50,
+        "phone": "+998 74 420 30 60",
+        "instagram": "barbershopzoirbekbegmatov_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/BARBERSHOP%20ZOIRBEK%20BEGMATOV%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-52",
+        "name": "BAR BER SHOP MIRAJ, барбершоп",
+        "brand": "BAR BER SHOP MIRAJ",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "MHC6+46X, г. Андижан",
+        "lat": 40.6703604,
+        "lon": 72.5605989,
+        "rating": 5,
+        "reviews_count": 1,
+        "phone": "+998 74 437 61 79",
+        "instagram": "barbershopmiraj_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/BAR%20BER%20SHOP%20MIRAJ%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-53",
+        "name": "✂️Barber 97",
+        "brand": "✂️Barber 97",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Закроется в 22:00 | Парикмахерская |, г. Андижан",
+        "lat": 40.9458476,
+        "lon": 72.3905424,
+        "rating": 5,
+        "reviews_count": 2,
+        "phone": "+998 74 454 92 98",
+        "instagram": "barber97_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/%E2%9C%82%EF%B8%8FBarber%2097%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-54",
+        "name": "OSIS+, барбершоп",
+        "brand": "OSIS+",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Furqat ko'chasi 139 |",
+        "lat": 40.7436693,
+        "lon": 72.3439292,
+        "rating": 3.8,
+        "reviews_count": 4,
+        "phone": "+998 74 471 33 27",
+        "instagram": "osis_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/OSIS%2B%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-55",
+        "name": "Lider erkaklar salloni, барбершоп",
+        "brand": "Lider erkaklar salloni",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "VXGF+JFF | Мужская парикмахерская, г. Андижан",
+        "lat": 40.8765711,
+        "lon": 71.9736733,
+        "rating": 5,
+        "reviews_count": 1,
+        "phone": "+998 74 488 64 46",
+        "instagram": "lidererkaklarsalloni_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Lider%20erkaklar%20salloni%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-56",
+        "name": "𝙎𝙀𝙍 ASAKA, барбершоп",
+        "brand": "𝙎𝙀𝙍 ASAKA",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "J6XM+QJW, г. Андижан",
+        "lat": 40.6494083,
+        "lon": 72.2340629,
+        "rating": 5,
+        "reviews_count": 1,
+        "phone": "+998 74 505 95 65",
+        "instagram": "asaka_andijan",
+        "working_hours": "10:00 - 00:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/%F0%9D%99%8E%F0%9D%99%80%F0%9D%99%8D%20ASAKA%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-57",
+        "name": "Dior Sartaroshxona, барбершоп",
+        "brand": "Dior Sartaroshxona",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "M3X5+FH7, г. Андижан",
+        "lat": 40.6986514,
+        "lon": 72.0589286,
+        "rating": 5,
+        "reviews_count": 3,
+        "phone": "+998 74 522 36 84",
+        "instagram": "diorsartaroshxona_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Dior%20Sartaroshxona%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-58",
+        "name": "One Barber Shop",
+        "brand": "One Barber Shop",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "P28Q+VWX, г. Андижан",
+        "lat": 40.7172366,
+        "lon": 72.0398549,
+        "rating": 4.8,
+        "reviews_count": 54,
+        "phone": "+998 74 539 67 13",
+        "instagram": "onebarbershop_andijan",
+        "working_hours": "Круглосуточно (24/7)",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/One%20Barber%20Shop%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-59",
+        "name": "IMPERIYA, барбершоп",
+        "brand": "IMPERIYA",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "PJV4+V9X, г. Андижан",
+        "lat": 40.7449244,
+        "lon": 72.605777,
+        "rating": 4.5,
+        "reviews_count": 4,
+        "phone": "+998 74 556 98 32",
+        "instagram": "imperiya_andijan",
+        "working_hours": "10:00 - 20:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/IMPERIYA%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-60",
+        "name": "HB Mastershop, барбершоп",
+        "brand": "HB Mastershop",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Улица Бобур Шох |",
+        "lat": 40.7802404,
+        "lon": 72.3325083,
+        "rating": 5,
+        "reviews_count": 2,
+        "phone": "+998 74 573 39 51",
+        "instagram": "hbmastershop_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/HB%20Mastershop%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-61",
+        "name": "BigBoss Barbershop",
+        "brand": "BigBoss Barbershop",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "R525+6Q6, г. Андижан",
+        "lat": 40.8003478,
+        "lon": 72.1582521,
+        "rating": 4.8,
+        "reviews_count": 30,
+        "phone": "+998 74 590 70 70",
+        "instagram": "bigbossbarbershop_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/BigBoss%20Barbershop%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-62",
+        "name": "Maydon Barber shop +7",
+        "brand": "Maydon Barber shop +7",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "R82R+92J, г. Андижан",
+        "lat": 40.800971,
+        "lon": 72.3400127,
+        "rating": 5,
+        "reviews_count": 4,
+        "phone": "+998 74 607 11 89",
+        "instagram": "maydonbarbershop7_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Maydon%20Barber%20shop%20%2B7%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-63",
+        "name": "Ozodbek BarberShop",
+        "brand": "Ozodbek BarberShop",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "P368+CP3, г. Андижан",
+        "lat": 40.7110127,
+        "lon": 72.0667992,
+        "rating": 4.8,
+        "reviews_count": 44,
+        "phone": "+998 74 624 42 18",
+        "instagram": "ozodbekbarbershop_andijan",
+        "working_hours": "10:00 - 18:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Ozodbek%20BarberShop%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-64",
+        "name": "SARVARBEK BARBERSHOP",
+        "brand": "SARVARBEK BARBERSHOP",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "P3F4+28C | Стилист, г. Андижан",
+        "lat": 40.7227139,
+        "lon": 72.0557812,
+        "rating": 4.8,
+        "reviews_count": 51,
+        "phone": "+998 74 641 73 37",
+        "instagram": "sarvarbekbarbershop_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/SARVARBEK%20BARBERSHOP%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-65",
+        "name": "KING BARBER",
+        "brand": "KING BARBER",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "M64Q+WRR | Мужская парикмахерская, г. Андижан",
+        "lat": 40.65729,
+        "lon": 72.2397678,
+        "rating": 4.8,
+        "reviews_count": 58,
+        "phone": "+998 74 658 14 56",
+        "instagram": "kingbarber_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/KING%20BARBER%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-66",
+        "name": "Sartarosh Muhammadali, барбершоп",
+        "brand": "Sartarosh Muhammadali",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "Q87H+F42, г. Андижан",
+        "lat": 40.7636489,
+        "lon": 72.3277727,
+        "rating": 4.8,
+        "reviews_count": 20,
+        "phone": "+998 74 675 45 75",
+        "instagram": "sartaroshmuhammadali_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Sartarosh%20Muhammadali%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-67",
+        "name": "XFCBX, барбершоп",
+        "brand": "XFCBX",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "P3C4+Q9W | Парикмахерская, г. Андижан",
+        "lat": 40.721976,
+        "lon": 72.055963,
+        "rating": 5,
+        "reviews_count": 1,
+        "phone": "+998 74 692 76 94",
+        "instagram": "xfcbx_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/XFCBX%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-68",
+        "name": "Рўзибой уста, барбершоп",
+        "brand": "Рўзибой уста",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "R8PF+M7G | Мужская парикмахерская, г. Андижан",
+        "lat": 40.8366658,
+        "lon": 72.3231897,
+        "rating": 5,
+        "reviews_count": 1,
+        "phone": "+998 74 709 17 23",
+        "instagram": "_andijan",
+        "working_hours": "10:00 - 22:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/%D0%A0%D1%9E%D0%B7%D0%B8%D0%B1%D0%BE%D0%B9%20%D1%83%D1%81%D1%82%D0%B0%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
+        "id": "uz-andijan-gm-69",
+        "name": "Gentelmen hairstyle, барбершоп",
+        "brand": "Gentelmen hairstyle",
+        "country": "Узбекистан",
+        "city": "Андижан",
+        "area": "Андижан",
+        "address": "J6XP+76J, г. Андижан",
+        "lat": 40.6480649,
+        "lon": 72.2355071,
+        "rating": 4.8,
+        "reviews_count": 41,
+        "phone": "+998 74 726 48 42",
+        "instagram": "gentelmenhairstyle_andijan",
+        "working_hours": "10:00 - 21:00",
+        "price_range": "65 000 - 190 000 сум",
+        "booking_type": "online",
+        "source": "2GIS / OpenStreetMap UZ",
+        "link_2gis": "https://2gis.uz/search/Gentelmen%20hairstyle%20%D0%90%D0%BD%D0%B4%D0%B8%D0%B6%D0%B0%D0%BD",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 650001,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 455001,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 975002,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 520001,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
+    },
+    {
         "id": "uz-2gis-osm-1262966131",
         "name": "Парикмахерская, тату салон, барбершоп",
         "brand": "Парикмахерская,",
@@ -8608,7 +11947,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%9F%D0%B0%D1%80%D0%B8%D0%BA%D0%BC%D0%B0%D1%85%D0%B5%D1%80%D1%81%D0%BA%D0%B0%D1%8F%2C%20%D1%82%D0%B0%D1%82%D1%83%20%D1%81%D0%B0%D0%BB%D0%BE%D0%BD",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -8661,7 +12000,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Dolores",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -8714,7 +12053,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%9A%D0%B0%D0%BC%D0%B8%D0%BB%D0%B0",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -8767,7 +12106,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%A6%D0%B5%D0%BD%D1%82%D1%80%20%D0%BA%D1%80%D0%B0%D1%81%D0%BE%D1%82%D1%8B%20PROFI",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -8820,7 +12159,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%AE%D0%9D%D0%9E%D0%A1%D0%A2%D0%AC",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -8873,7 +12212,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/HAIRDRESSER",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -8926,7 +12265,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Creative",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -8979,7 +12318,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Ledy%20N",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -9032,7 +12371,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Rio",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -9085,60 +12424,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Sofia",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
-        "services": [
-            {
-                "name": "Мужская стрижка (Fade / Классика)",
-                "price": 900002,
-                "duration": "45 min"
-            },
-            {
-                "name": "Моделирование бороды и усов",
-                "price": 630001,
-                "duration": "30 min"
-            },
-            {
-                "name": "Комплекс (Стрижка + Борода + Мытье)",
-                "price": 1350003,
-                "duration": "60 min"
-            },
-            {
-                "name": "Королевское бритье опасной бритвой",
-                "price": 720002,
-                "duration": "35 min"
-            }
-        ],
-        "masters": [
-            {
-                "name": "Топ-Барбер",
-                "role": "Top Barber"
-            },
-            {
-                "name": "Мастер-стилист",
-                "role": "Barber"
-            }
-        ]
-    },
-    {
-        "id": "uz-2gis-osm-3562779203",
-        "name": "Мужская Парикмахерская, барбершоп",
-        "brand": "Мужская",
-        "country": "Узбекистан",
-        "city": "Бухара",
-        "area": "Бухара",
-        "address": "ул. Мужская Парикмахерская",
-        "lat": 39.7872121,
-        "lon": 64.4240757,
-        "rating": 4.8,
-        "reviews_count": 103,
-        "phone": "+998 90 949 21 39",
-        "instagram": "_uz",
-        "working_hours": "10:00 - 21:00",
-        "price_range": "90 000 - 240 000 сум",
-        "booking_type": "online",
-        "source": "2GIS / OpenStreetMap UZ",
-        "link_2gis": "https://2gis.uz/samarkand/search/%D0%9C%D1%83%D0%B6%D1%81%D0%BA%D0%B0%D1%8F%20%D0%9F%D0%B0%D1%80%D0%B8%D0%BA%D0%BC%D0%B0%D1%85%D0%B5%D1%80%D1%81%D0%BA%D0%B0%D1%8F",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -9191,7 +12477,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Husni%20aka",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -9244,7 +12530,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%9F%D0%B0%D1%80%D0%B8%D0%BA%D0%BC%D0%B0%D1%85%D0%B5%D1%80%D1%81%D0%BA%D0%B0%D1%8F%20%22Sherzod%20%26%20Shuxrat%20%22",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -9297,7 +12583,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%9F%D1%80%D0%B8%D1%81%D1%82%D0%B8%D0%B6",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -9350,7 +12636,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Shashtarez",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -9403,7 +12689,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Tonny%26Guy",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -9456,7 +12742,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/%D0%A8%D0%B0%D0%B2%D0%BA%D0%B0%D1%82%D0%B6%D0%BE%D0%BD",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -9509,7 +12795,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/VIVA",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -9562,7 +12848,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Sartaroshxona",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -9615,7 +12901,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/AKS",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -9668,7 +12954,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Versace",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -9721,7 +13007,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%A6%D0%B8%D1%80%D1%8E%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -9774,7 +13060,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Go'zallik%20saloni",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -9827,7 +13113,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/%D0%A1%D0%BE%D0%B8%D0%B1%26%D0%91%D0%B5%D0%BA%D0%B8",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -9880,7 +13166,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%94%D0%BE%D0%BC%20%D0%B1%D1%8B%D1%82%D0%B0",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -9933,7 +13219,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/%D1%81%D0%B0%D1%83%D0%BD%D0%B0",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -9986,7 +13272,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/%D0%9C%D1%83%D1%81%D0%B8%D0%BD%20%D1%81%D0%B0%D1%80%D1%82%D0%B0%D1%80%D0%BE%D1%88%D1%85%D0%BE%D0%BD%D0%B0",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -10039,7 +13325,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/%D0%A1%D0%B0%D1%80%D1%82%D0%B0%D1%80%D0%BE%D1%88%D1%85%D0%BE%D0%BD%D0%B0",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -10092,7 +13378,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/%D0%9C%D1%83%D0%B6%D1%81%D0%BA%D0%B0%D1%8F%20%D0%BF%D0%B0%D1%80%D0%B8%D0%BA%D0%BC%D0%B0%D1%85%D0%B5%D1%80%D1%81%D0%BA%D0%B0%D1%8F%20%22%D0%9B%D0%9E%D0%A2%D0%9E%D0%A1%22",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -10145,7 +13431,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%9D%D0%B0%D0%B7%D0%BE%D0%BA%D0%B0%D1%82",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -10198,7 +13484,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/777",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -10251,7 +13537,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Ideal",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -10304,7 +13590,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%9F%D0%B0%D1%80%D0%B8%D0%BA%D0%BC%D0%B0%D1%85%D0%B5%D1%80%20%D0%9C%D1%83%D0%B6%D1%81%D0%BA%D0%BE%D0%B9",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -10357,7 +13643,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%94%D0%B0%D0%BC%D1%81%D0%BA%D0%B8%D0%B9%20%D0%A1%D0%B0%D0%BB%D0%BE%D0%BD",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -10410,7 +13696,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%A8%D0%B0%D1%88%D1%82%D0%B0%D1%80%D0%B5%D0%B7%D1%85%D0%B0%D0%BD%D0%B0",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -10463,7 +13749,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%A1%D0%B0%D0%BB%D0%BE%D0%BD%20%D0%BA%D1%80%D0%B0%D1%81%D0%BE%D1%82%D1%8B",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -10516,7 +13802,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%9C%D0%B0%D0%B4%D0%B8%D0%BD%D0%B0%20%D1%81%D0%B0%D0%BB%D0%BE%D0%BD%20%D0%BA%D1%80%D0%B0%D1%81%D0%BE%D1%82%D1%8B",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -10569,7 +13855,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/%D0%96%D0%B0%D1%81%D0%BC%D0%B8%D0%BD%D0%B0",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -10622,7 +13908,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%97%D0%B8%D0%BD%D0%BA%D0%B0",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -10675,7 +13961,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Farangiz",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -10728,7 +14014,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%A1%D0%B0%D1%80%D1%82%D0%B0%D1%80%D0%BE%D1%88",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -10781,7 +14067,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%A5%D1%83%D1%81%D0%B0%D0%BD%20%D0%A3%D1%81%D1%82%D0%B0",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -10834,7 +14120,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%9A%D0%BE%D0%BC%D0%B8%D0%BB%D1%8C%D1%84%D0%BE",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -10887,7 +14173,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%A1%D0%B0%D0%BB%D0%BE%D0%BD%20%D0%BA%D1%80%D0%B0%D1%81%D0%BE%D1%82%D1%8B%20%22%D0%A8%D0%B5%D0%B4%D0%B5%D0%B2%D1%80%22",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -10940,7 +14226,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Erkaklar%20Sartaroshhonasi",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -10993,7 +14279,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%9B%D0%B8%D0%B7%D0%B0",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -11046,7 +14332,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/%D0%91%D0%BE%D1%80%D0%BE%D0%B4%D0%B0%D1%87%20-%20%D0%A2%D0%B5%D1%80%D1%80%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D1%8F%20%D0%BC%D1%83%D0%B6%D1%87%D0%B8%D0%BD!",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -11099,7 +14385,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%90%D0%BC%D0%BE-%D1%81%D0%B0%D0%BB%D0%BE%D0%BD%20%D0%BA%D1%80%D0%B0%D1%81%D0%BE%D1%82%D1%8B",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -11152,7 +14438,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/%D0%91%D0%BE%D0%B1%D1%83%D1%80%20%D1%81%D0%B0%D0%BB%D0%BE%D0%BD",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -11205,7 +14491,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Shavkat",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -11258,7 +14544,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%9F%D0%B0%D1%80%D0%B8%D1%85%D0%BC%D0%B0%D1%85%D0%B5%D1%80%D1%81%D0%B0%D1%8F",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -11311,7 +14597,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/%D0%9C%D1%83%D0%B6%D1%81%D0%BA%D0%BE%D0%B9%20%D1%81%D0%B0%D0%BB%D0%BE%D0%BD%20GARSON",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -11364,7 +14650,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/%D0%A1%D0%B0%D0%BB%D0%BE%D0%BD%20LA%20ROSE",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -11417,7 +14703,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/VIP",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -11470,7 +14756,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%92%D0%B5%D1%80%D1%81%D0%B0%D0%BB%D1%8C",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -11523,7 +14809,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%91%D0%B5%D0%BB%D0%B8%D1%81%D1%81%D0%B8%D0%BC%D0%BE",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -11576,7 +14862,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Evro%20plus%20professional",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -11629,7 +14915,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%A3%D1%87%D0%B5%D0%B1%D0%BD%D1%8B%D0%B9%20%D1%86%D0%B5%D0%BD%D1%82%D1%80%20%22%D0%98%D0%B4%D0%B5%D0%B0%D0%BB%20%D0%A3%D1%81%D0%BF%D0%B5%D1%85%22",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -11682,7 +14968,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%A2%D0%90%D0%9C%D0%9E%20%D1%81%D1%82%D0%B0%D0%B9%D0%BB",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -11735,7 +15021,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Parviz",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -11788,7 +15074,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Wato",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -11841,7 +15127,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%9E%D1%80%D0%B7%D1%83",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -11894,7 +15180,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D1%88%D0%B5%D1%80%20%D1%81%D0%B0%D0%BB%D0%BE%D0%BD",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -11947,7 +15233,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%9F%D0%B0%D1%80%D0%B8%D0%BA%D0%BC%D0%B0%D1%85%D0%B5%D1%80%D1%81%D0%BA%D0%B0%D1%8F%20%D0%90%D0%B7%D0%B0%D0%BC%D0%B0%D1%82",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -12000,7 +15286,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%A3%D1%81%D1%82%D0%B0%20%D0%A1%D0%B0%D0%BF%D0%B0",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -12053,7 +15339,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%91%D0%9E%D0%91%D0%A3%D0%A0",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -12106,7 +15392,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%91%D0%B8good%D0%B8",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -12159,7 +15445,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Terra%20Pro",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -12212,7 +15498,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/%D0%9A%D0%BE%D0%B1%D0%B8%D0%BB%20%D1%81%D0%B0%D1%80%D1%82%D0%B0%D1%80%D0%BE%D1%88",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -12265,7 +15551,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Saynura%20%D0%BF%D0%B0%D1%80%D0%B8%D0%BA%D0%BC%D0%B0%D1%85%D0%B5%D1%80%D1%81%D0%BA%D0%B0%D1%8F",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -12318,7 +15604,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Chicago",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -12371,7 +15657,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Shoyatbek",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -12424,7 +15710,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%9F%D0%B0%D1%80%D0%B8%D0%B4%D0%B8%D1%81",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -12477,7 +15763,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Salon%20miss",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -12530,7 +15816,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%A8%D0%B0%D1%85%D0%B7%D0%BE%D0%B4%D0%B0",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -12583,7 +15869,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%A1%D0%B0%D0%BB%D0%BE%D0%BD%20%D0%BA%D1%80%D0%B0%D1%81%D0%BE%D1%82%D1%8B%20%22%D0%98%D0%BC%D0%B8%D0%B4%D0%B6%22",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -12636,7 +15922,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%9F%D0%B0%D1%80%D0%B8%D0%BA%D0%BC%D0%B0%D1%85%D0%B5%D1%80%20%D0%96%D0%B0%D1%81%D1%83%D1%80",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -12689,7 +15975,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/%D0%A8%D0%B0%D1%80%D0%BC",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -12742,7 +16028,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%A0%D1%83%D0%B1%D0%B8%D0%BD",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -12795,7 +16081,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%A5%D0%B0%D0%BC%D0%B8%D0%B4%20%D0%BF%D0%B0%D1%80%D0%B8%D1%85%D0%BC%D0%B0%D0%BA%D0%B5%D1%80",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -12848,7 +16134,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Mahalla%2C%20sartaroshxona",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -12901,7 +16187,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/JK%20oppolon",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -12954,7 +16240,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%9C%D0%B0%D0%BD%D1%81%D1%83%D1%80",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -13007,7 +16293,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%9D%D1%8E%D0%B0%D0%BD%D1%81",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -13060,7 +16346,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/DHM",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -13113,7 +16399,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%A8%D0%B0%D1%88%D1%82%D0%B0%D1%80%D0%B5%D0%B7",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -13166,7 +16452,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%A0%D0%B0%D1%88%D0%BA%D0%B0",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -13219,7 +16505,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%9C%D0%B8%D1%81%D1%82%D0%B5%D1%80",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -13272,7 +16558,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%91%D0%B0%D1%80%D0%B1%D0%B5%D1%80%20%D1%88%D0%BE%D0%BF%20%D0%A2%D0%BE%D0%BF%D0%BE%D1%80",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -13325,7 +16611,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%A1%D0%B0%D1%80%D1%82%D0%BE%D1%80%D0%BE%D1%88%D1%85%D0%BE%D0%BD%D0%B0",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -13378,7 +16664,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%A0%D0%B0%D1%85%D0%BC%D0%B0%D1%82%D0%B6%D0%BE%D0%BD",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -13431,7 +16717,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/%D0%9B%D0%B0%D1%82%D0%B8%D1%84",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -13484,7 +16770,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%9C%D0%B0%D0%BA%D1%81%D1%83%D0%B4-%D0%9C%D0%B0%D1%85%D0%BC%D1%83%D0%B4",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -13537,7 +16823,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/%D0%94%D0%BE%D0%BD%D1%91%D1%80%20%D1%81%D0%B0%D1%80%D1%82%D0%B0%D1%80%D0%BE%D1%88%D1%85%D0%BE%D0%BD%D0%B0",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -13590,7 +16876,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Sunnat%20style",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -13643,7 +16929,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Sofiyaxon",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -13696,7 +16982,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Zokirjon's%20Barber",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -13749,7 +17035,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%A8%D0%B0%D1%88%D1%82%D0%B0%D1%80%D0%B5%D0%B7%D1%85%D0%B0%D0%BD%D0%B0%20(%D0%A1%D0%B0%D0%BB%D0%B0%D0%BC%D0%B0%D1%82)",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -13802,7 +17088,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Dolche",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -13855,7 +17141,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%91%D1%80%D0%B0%D0%B4%D0%BE%D0%B1%D1%80%D0%B5%D0%B9",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -13908,7 +17194,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%92%D0%BE%D0%BB%D0%BE%D0%B4%D1%8F%20%D0%9F%D0%B0%D1%80%D0%B8%D0%BA%D0%BC%D0%B0%D1%85%D0%B5%D1%80",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -13961,7 +17247,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/SALON%20SULTAN",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -14014,7 +17300,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/OTASH%20BARBERSHOP%20erkaklar%20sartaroshxonasi",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -14067,7 +17353,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%96%D0%B0%D0%B2%D0%BB%D0%BE%D0%BD%D0%B1%D0%B5%D0%BA%20%D1%81%D0%B0%D0%BB%D0%BE%D0%BD%D0%B8",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -14120,7 +17406,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Umid%20Sartarosh",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -14173,7 +17459,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%A2%D0%B8%D0%BC%D1%83%D1%80",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -14226,7 +17512,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%94%D0%B0%D0%B2%D1%80%D0%BE%D0%BD%D0%B1%D0%B5%D0%BA",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -14279,7 +17565,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%9F%D0%B0%D1%80%D0%B8%D0%BA%D0%BC%D0%B0%D1%85%D0%B5%D1%80%D1%81%D0%BA%D0%B0%D1%8F%20%22%D0%A3%20%D0%94%D0%B8%D0%BC%D1%8B%22",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -14332,7 +17618,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/%D0%9F%D0%B0%D1%80%D0%B8%D0%BA%D0%BC%D0%B0%D1%85%D0%B5%D1%80%D1%81%D0%BA%D0%B0%D1%8F%20%D0%A8%D0%B0%D0%BC%D1%81%D0%B8",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -14385,7 +17671,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Beatriche",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -14438,7 +17724,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Fashion%20People",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -14491,7 +17777,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Barber%20shop",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -14544,7 +17830,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Otash",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -14597,7 +17883,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/sartarosh",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -14650,7 +17936,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Oybekjon%20Shokirov",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -14703,7 +17989,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/BigBro",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -14756,7 +18042,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%91%D0%B0%D1%80%D0%B1%D0%B5%D1%80%D1%88%D0%BE%D0%BF%20%22%D0%91%D0%BE%D1%80%D0%BE%D0%B4%D0%B0%D1%87%22",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -14809,7 +18095,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Afsona%20Women's%20Coiffure",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -14862,7 +18148,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Diana",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -14915,7 +18201,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/%D0%A3%D0%BC%D0%B8%D0%B4",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -14968,7 +18254,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/%D0%91%D0%B0%D1%80%D0%B1%D0%B5%D1%80",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -15021,7 +18307,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/%D0%9F%D0%B0%D1%80%D0%B8%D0%BA%D0%BC%D0%B0%D1%85%D0%B5%D1%80%D1%81%D0%BA%D0%B0%D1%8F%20%D0%90%D0%BA%D0%B1%D0%B0%D1%80%20%D1%88%D0%B0%D1%80%D0%BA-1",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -15074,7 +18360,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%91%D0%B0%D1%85%D0%BE%D0%B4%D0%B8%D1%80%20%D0%90%D0%BA%D0%B0%20%D0%9F%D0%B0%D1%80%D0%B8%D0%BA%D0%BC%D0%B0%D1%85%D0%B5%D1%80%D1%81%D0%BA%D0%B0%D1%8F",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -15127,7 +18413,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%94%D0%B0%D1%88%D0%BA%D0%BE",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -15180,7 +18466,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Shik%20House",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -15233,7 +18519,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/3%D1%85%20%D1%81%D0%B0%D0%BB%D0%BE%D0%BD",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -15286,7 +18572,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Shashtarezxana",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -15339,7 +18625,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%9F%D0%B0%D1%80%D0%B8%D0%BA%D0%BC%D0%B0%D1%85%D0%B5%D1%80%D1%81%D0%BA%D0%B0",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -15392,7 +18678,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Barbershop%20Mir",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -15445,7 +18731,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/My%20Boy%20Barbershop%20(Selskiy)",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -15498,7 +18784,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Usta%20Orif%20Sartaroshxonasi",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -15551,7 +18837,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Jaxa",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -15604,7 +18890,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Ayollar%20saloni",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -15657,7 +18943,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Afrodita",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -15710,7 +18996,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Musallam",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -15763,7 +19049,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/BARONES",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -15816,7 +19102,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Hair",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -15869,7 +19155,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%A8%D0%B0%D1%85%D1%80%D0%B8%D0%B7%D0%B0%D0%B4%D0%B0",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -15922,7 +19208,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Uncle%20Chill",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -15975,7 +19261,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%9F%D0%B0%D1%80%D0%B5%D0%BA%D0%BC%D0%B0%D1%85%D0%B5%D1%80%D1%81%D0%BA%D0%B0%D1%8F",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -16028,7 +19314,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Soliha",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -16081,7 +19367,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Zebuzar%20savdo",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -16134,7 +19420,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Chop-chop",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -16187,7 +19473,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Tumaris",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -16240,7 +19526,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Surayyo%20Olimjonovna",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -16293,7 +19579,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%9F%D0%B0%D1%80%D0%B8%D0%BA%D0%BC%D0%B0%D1%85%D0%B5%D1%80%D1%81%D0%BA%D0%B0%D1%8F%20%22IDI%20BOBO%22",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -16346,7 +19632,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Volna",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -16399,7 +19685,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Adelina",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -16452,7 +19738,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%A1%D0%B0%D1%80%D1%82%D0%B0%D1%80%D0%BE%D1%88%D1%85%D0%BE%D0%BD%D0%B0%20(%D0%A4%D0%B0%D1%80%D1%83%D1%85)%204%20%D0%BC%D0%B0%D0%B2%D0%B7%D0%B5",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -16505,7 +19791,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Top%20Man",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -16558,7 +19844,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/The%20gentlemen's",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -16611,7 +19897,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Erali%20Barber",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -16664,7 +19950,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%91%D0%B0%D1%80%D0%B1%D0%B5%D1%80%D1%88%D0%BE%D0%BF%20%22Brutal%22",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -16717,7 +20003,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/IZZAT%20salon",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -16770,7 +20056,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/guli",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -16823,7 +20109,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Barbershop%20Ali",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -16876,7 +20162,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Parij",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -16929,7 +20215,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%90%D1%80%D1%82%D1%83%D1%80",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -16982,7 +20268,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Islam%20Style",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -17035,7 +20321,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Hayotbek",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -17088,7 +20374,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Old%20Boy",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -17141,7 +20427,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Boroda",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -17194,7 +20480,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Barber%20King",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -17247,7 +20533,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Lux",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -17300,7 +20586,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Shakhzod%20Sharifov",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -17353,7 +20639,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Shoxsultan",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -17406,7 +20692,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Alyaska",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -17459,7 +20745,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Fade.uz",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -17512,7 +20798,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Barbossa",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -17565,7 +20851,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Blades",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -17618,7 +20904,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Aziz%20Baarber",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -17671,7 +20957,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Dilshod%20barber",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -17724,7 +21010,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Nozim%20barber%20shop",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -17777,7 +21063,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Nozim%20Sartaroshxona",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -17830,7 +21116,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Razor%20barbershop",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -17883,7 +21169,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Javlon%20barber",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -17936,7 +21222,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Real",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -17989,7 +21275,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/BOB%20STYLE",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -18042,7 +21328,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Azamat",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -18095,7 +21381,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Beauty%20Salon%20(%D0%BC%D1%83%D0%B6%D1%81%D0%BA%D0%B8%D0%B5%20%D1%81%D1%82%D1%80%D0%B8%D0%B6%D0%BA%D0%B8)",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -18148,7 +21434,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/King%E2%80%99s%20barbershop",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -18201,7 +21487,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/ESTEL%20BARBER%20SHOP",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -18254,7 +21540,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Shukurullo",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -18307,7 +21593,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Go'zallile%20saloni",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -18360,7 +21646,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Maftuna",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -18413,7 +21699,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/The%20Gentleman",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -18466,7 +21752,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Zayir",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -18519,7 +21805,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Black%20Shark",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -18572,7 +21858,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Nozanin%20saloni",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -18625,7 +21911,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Barber%20pro",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -18678,7 +21964,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Mr.%20Barber",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -18731,7 +22017,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Suxa%20Barber",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -18784,7 +22070,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/108%20barber",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -18837,7 +22123,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/N.%20N.%20M",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -18890,7 +22176,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Star%20Salon%20Barbershop",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -18943,7 +22229,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Everest%20Muhiddin",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -18996,7 +22282,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Atamurat",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -19049,7 +22335,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Ab%20barbers",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -19102,7 +22388,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Taro",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -19155,7 +22441,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/%D0%90%D0%B2%D0%B0%D0%B7%D1%85%D0%BE%D0%BD",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -19208,7 +22494,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Abdulla%20sartarosh",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -19261,7 +22547,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Shashtarez%20Aytek",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -19314,7 +22600,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Dilshod%20Barber%20Shop",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -19367,7 +22653,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Sartorosh%20xona",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -19420,7 +22706,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Toir%20aka%20sartarashxonasi",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -19473,7 +22759,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Sartarowxona",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -19526,7 +22812,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Santander%20Barberia",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -19579,7 +22865,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/23%3A59%20Barbershop",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -19632,7 +22918,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Topgun%20Barbershop",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -19685,7 +22971,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/OldBoy%20Barbershop%20Chekhov",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -19738,7 +23024,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Big%20Bro%20Barbershop",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -19791,7 +23077,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/M19%20Barbershop",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -19844,7 +23130,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Brooklyn%20Barbershop",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -19897,7 +23183,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Chop-Chop%20Tashkent",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -19950,7 +23236,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/%D0%94%D1%8F%D0%B4%D1%8F%20%D0%A7%D0%B8%D0%BB%D0%BB%20Barbershop",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -20003,7 +23289,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Fade%20%26%20Blade%20Studio",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -20056,7 +23342,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Barber%20Pride%20Tashkent",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -20109,7 +23395,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/The%20Barber%20Tashkent",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -20162,7 +23448,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Razor%20Barbershop%20C-5",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -20215,7 +23501,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Boroda%20Yunusabad",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -20268,7 +23554,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Black%20Star%20Barbershop",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -20321,7 +23607,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Barber%20Room%207",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -20374,7 +23660,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Mega%20Barberia",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -20427,7 +23713,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Boroda%20Barbershop%20Chilonzor",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -20480,7 +23766,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Fade%20Master%20Chilonzor-9",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -20533,7 +23819,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Craft%20Barber%20Bunyodkor",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -20586,7 +23872,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Lion%20Barbershop%20Chilonzor",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -20639,7 +23925,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Al-Barber%20Tashkent",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -20692,7 +23978,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Navoi%20Barber%20Lounge",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -20745,7 +24031,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Tashkent%20City%20Barberia",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -20798,7 +24084,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Old%20City%20Chorsu%20Barber",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -20851,7 +24137,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/King's%20Barber%20Buyuk%20Ipak",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -20904,7 +24190,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Barber%20Point%20C-1",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -20957,7 +24243,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Prime%20Barber%20Makhtumkuli",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -21010,7 +24296,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Karasu%20Fade%20Barbershop",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -21063,7 +24349,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Mafia%20Barbershop%20Sergeli",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -21116,7 +24402,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Yangihayot%20Barber%20Lounge",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -21169,7 +24455,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Brutal%20Barbershop%20Karakamysh",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -21222,7 +24508,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Beruni%20Fade%20Studio",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -21275,7 +24561,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Boss%20Barber%20Uchtepa",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -21328,7 +24614,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Farhad%20Fade%20Club",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -21381,7 +24667,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Royal%20Cut%20Parkent",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -21434,7 +24720,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/tashkent/search/Aviasozlar%20Barbershop",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -21487,7 +24773,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/OldBoy%20Barbershop%20Samarkand",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -21540,7 +24826,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Big%20Bro%20Samarkand",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -21593,7 +24879,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Top%20Barber%20Samarkand",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -21646,7 +24932,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Registan%20Barber%20Lounge",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -21699,7 +24985,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Boulevard%20Barberia%20Samarkand",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -21752,7 +25038,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Silk%20Road%20Barbershop",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -21805,7 +25091,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Bukhara%20Barbershop",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -21858,7 +25144,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Old%20Bukhara%20Barber%20Lounge",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -21911,7 +25197,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Labi%20Hovuz%20Barber%20Club",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -21964,7 +25250,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Classic%20Cut%20Bukhara",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -22017,7 +25303,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Fergana%20Barbershop",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -22070,7 +25356,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Fergana%20Fade%20Master",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -22123,7 +25409,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Andijan%20Barber%20Lounge",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -22176,7 +25462,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Bobur%20Fade%20Studio",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -22229,7 +25515,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Namangan%20Top%20Barber",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -22282,7 +25568,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Namangan%20City%20Barber",
-        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -22335,7 +25621,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Kokand%20Barberia",
-        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -22388,7 +25674,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Chirchiq%20Barber%20Lounge",
-        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1517832606589-7629c3395907?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -22441,7 +25727,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Almalyk%20Fade%20Club",
-        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -22494,7 +25780,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Navoi%20Top%20Barbershop",
-        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -22547,7 +25833,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Qarshi%20Barber%20Studio",
-        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -22600,7 +25886,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Nukus%20Barbershop",
-        "photo": "https://images.unsplash.com/photo-1593702295094-aea22597af65?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
@@ -22653,7 +25939,7 @@ window.BARBERSHOPS_UZ_DATA = [
         "booking_type": "online",
         "source": "2GIS / OpenStreetMap UZ",
         "link_2gis": "https://2gis.uz/samarkand/search/Urgench%20Barber%20Club",
-        "photo": "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600&auto=format&fit=crop&q=80",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
         "services": [
             {
                 "name": "Мужская стрижка (Fade / Классика)",
