@@ -253,9 +253,10 @@ body.dragging .map-ctrls{transition:opacity .2s}
     </label>
     <div class="chips-wrap" style="margin-bottom: 2px;">
       <div class="chips" id="countryChips" style="gap: 6px;">
-        <button class="chip on" data-country="all">🌍 Все страны <small id="cntAll">735</small></button>
+        <button class="chip on" data-country="all">🌍 Все страны <small id="cntAll">1020</small></button>
         <button class="chip" data-country="KG">🇰🇬 Кыргызстан <small id="cntKG">401</small></button>
-        <button class="chip" data-country="UZ">🇺🇿 Узбекистан <small id="cntUZ">334</small></button>
+        <button class="chip" data-country="UZ">🇺🇿 Узбекистан <small id="cntUZ">619</small></button>
+        <button class="chip" data-country="KZ">🇰🇿 Казахстан <small id="cntKZ">138</small></button>
       </div>
     </div>
     <div class="chips-wrap">
@@ -318,6 +319,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script src="barbershops_kg.js"></script>
 <script src="barbershops_uz.js"></script>
+<script src="barbershops_kz.js"></script>
 <script src="assets/db.js?v=9"></script>
 <script src="assets/mobile-bridge.js?v=9"></script>
 
@@ -445,9 +447,10 @@ body.dragging .map-ctrls{transition:opacity .2s}
         const n = splitName(b.name);
         const rating = +b.rating || 0, reviews = +(b.reviews ?? b.reviews_count) || 0;
         const shortTitle = n.title.replace(/barbershop|барбершоп|мужская парикмахерская/ig, '').trim() || n.title;
-        const isUz = b.country === 'Узбекистан' || ['Ташкент', 'Самарканд', 'Бухара', 'Фергана', 'Андижан', 'Наманган', 'Коканд', 'Чирчик', 'Алмалык', 'Навои', 'Карши', 'Нукус', 'Ургенч'].includes(b.city);
-        const country = isUz ? 'Узбекистан' : 'Кыргызстан';
-        const countryCode = isUz ? 'UZ' : 'KG';
+        const isKz = b.country === 'Казахстан' || ['Алматы', 'Астана', 'Шымкент', 'Караганда', 'Актобе', 'Тараз', 'Павлодар', 'Атырау', 'Актау', 'Костанай', 'Семей'].includes(b.city);
+        const isUz = b.country === 'Узбекистан' || ['Ташкент', 'Самарканд', 'Бухара', 'Фергана', 'Андижан', 'Наманган', 'Коканд', 'Чирчик', 'Алмалык', 'Навои', 'Карши', 'Нукус', 'Ургенч', 'Термез'].includes(b.city);
+        const country = isKz ? 'Казахстан' : (isUz ? 'Узбекистан' : 'Кыргызстан');
+        const countryCode = isKz ? 'KZ' : (isUz ? 'UZ' : 'KG');
         return {
           id: String(b.id), name: b.name, city: b.city || '', address: b.address || '',
           country: country, countryCode: countryCode,
@@ -481,7 +484,12 @@ body.dragging .map-ctrls{transition:opacity .2s}
     { s: 40.88, n: 41.00, w: 72.93, e: 73.10 }, // Jalal-Abad
     { s: 41.10, n: 41.45, w: 69.10, e: 69.45 }, // Tashkent
     { s: 39.55, n: 39.75, w: 66.80, e: 67.10 }, // Samarkand
-    { s: 39.70, n: 39.85, w: 64.35, e: 64.55 }  // Bukhara
+    { s: 39.70, n: 39.85, w: 64.35, e: 64.55 }, // Bukhara
+    { s: 43.15, n: 43.40, w: 76.75, e: 77.10 }, // Almaty
+    { s: 51.05, n: 51.25, w: 71.30, e: 71.60 }, // Astana
+    { s: 42.25, n: 42.45, w: 69.50, e: 69.75 }, // Shymkent
+    { s: 49.75, n: 49.95, w: 73.00, e: 73.25 }, // Karaganda
+    { s: 50.20, n: 50.35, w: 57.10, e: 57.30 }  // Aktobe
   ];
 
   function is2GisCovered(x, y, z) {
@@ -712,11 +720,13 @@ body.dragging .map-ctrls{transition:opacity .2s}
     const total = DATA.length;
     const kgCount = DATA.filter(b => b.countryCode === 'KG').length;
     const uzCount = DATA.filter(b => b.countryCode === 'UZ').length;
+    const kzCount = DATA.filter(b => b.countryCode === 'KZ').length;
     if ($('#cntAll')) $('#cntAll').textContent = total;
     if ($('#cntKG')) $('#cntKG').textContent = kgCount;
     if ($('#cntUZ')) $('#cntUZ').textContent = uzCount;
+    if ($('#cntKZ')) $('#cntKZ').textContent = kzCount;
     if ($('#totalLabel')) {
-      const activeTotal = state.country === 'all' ? total : (state.country === 'KG' ? kgCount : uzCount);
+      const activeTotal = state.country === 'all' ? total : (state.country === 'KG' ? kgCount : (state.country === 'UZ' ? uzCount : kzCount));
       $('#totalLabel').textContent = `${activeTotal} ${plural(activeTotal, W_BS)}`;
     }
   }
@@ -901,8 +911,10 @@ body.dragging .map-ctrls{transition:opacity .2s}
       focusOn(41.311, 69.279, 11);
     } else if (country === 'KG') {
       focusOn(42.876, 74.588, 12);
+    } else if (country === 'KZ') {
+      focusOn(43.238, 76.889, 11);
     } else {
-      map.fitBounds([[38.5, 59.0], [43.5, 78.5]]);
+      map.fitBounds([[38.0, 50.0], [53.0, 85.0]]);
     }
   });
 
@@ -988,7 +1000,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
     document.querySelectorAll('#filterChips .chip').forEach(c => c.classList.remove('on'));
     if (state.view === 'detail') closeDetail();
     renderCityChips(); apply(true);
-    map.fitBounds([[38.5, 59.0], [43.5, 78.5]]);
+    map.fitBounds([[38.0, 50.0], [53.0, 85.0]]);
   }
 
   $('#btnLayer').addEventListener('click', () => {
