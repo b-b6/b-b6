@@ -624,15 +624,15 @@
                 <button type="button" class="close-btn" onclick="closeRoleModals()"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
             </div>
 
-            <div style="background:var(--navy-soft); border:1px solid var(--navy-line); border-radius:14px; padding:10px 12px; margin-bottom:14px; font-size:12px; color:var(--navy); font-weight:600; line-height:1.45;">
-                📩 Оставьте заявку главному администратору <b>BarberMap KG</b>. Как только админ одобрит её в Супер-Админке, вы получите личный <b>цифровой ID</b> и <b>4-значный пароль</b>.
+            <div style="background:var(--navy-soft); border:1px solid var(--navy-line); border-radius:14px; padding:11px 13px; margin-bottom:14px; font-size:12px; color:var(--navy); font-weight:600; line-height:1.45;">
+                🛡 <b>Проверка владельца</b>: Заявка поступает главному администратору сервиса. Для защиты от посторонних лиц администратор сверяет владение через официальный контактный телефон филиала в 2GIS/Яндекс или официальный Instagram перед выдачей цифрового ID и пароля.
             </div>
 
             <input type="hidden" id="req-role-input" value="owner">
             <input type="hidden" id="req-catalog-id-input" value="">
 
             <div class="form-group" id="req-shop-search-wrap">
-                <label>Ваш салон на карте (если он уже есть среди 401 точки)</label>
+                <label>Ваш салон на карте (если он уже есть в каталоге)</label>
                 <input type="text" id="req-catalog-search" class="inp" placeholder="Начните вводить название салона на карте..." oninput="searchCatalogForRequest(this.value)">
                 <div class="shop-search-results" id="req-catalog-results"></div>
             </div>
