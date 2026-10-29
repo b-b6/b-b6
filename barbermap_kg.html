@@ -499,9 +499,8 @@ body.dragging .map-ctrls{transition:opacity .2s}
         const s = this._getSubdomain(coords);
         return 'https://tile' + s + '.maps.2gis.com/tiles?x=' + coords.x + '&y=' + coords.y + '&z=' + coords.z + '&v=1.5&key=fb2542a3-ea70-441d-9b49-bbc1b26168c5';
       }
-      const osmSubs = ['a', 'b', 'c'];
-      const osmSub = osmSubs[Math.abs(coords.x + coords.y) % 3];
-      return 'https://' + osmSub + '.tile.openstreetmap.org/' + coords.z + '/' + coords.x + '/' + coords.y + '.png';
+      const s = Math.abs(coords.x + coords.y) % 4;
+      return 'https://mt' + s + '.google.com/vt/lyrs=m&x=' + coords.x + '&y=' + coords.y + '&z=' + coords.z;
     }
   });
 
@@ -510,20 +509,25 @@ body.dragging .map-ctrls{transition:opacity .2s}
     maxZoom: 19,
     maxNativeZoom: 18,
     className: 'tiles-soft',
-    attribution: '&copy; 2GIS / &copy; OpenStreetMap'
+    attribution: '&copy; 2GIS / &copy; Google'
   });
   lightLayer.on('tileerror', function(e) {
-    if (e.tile && e.coords && e.tile.src && e.tile.src.indexOf('2gis') !== -1) {
-      const osmSubs = ['a', 'b', 'c'];
-      const osmSub = osmSubs[Math.abs(e.coords.x + e.coords.y) % 3];
-      e.tile.src = 'https://' + osmSub + '.tile.openstreetmap.org/' + e.coords.z + '/' + e.coords.x + '/' + e.coords.y + '.png';
+    if (e.tile && e.coords) {
+      const s = ['a', 'b', 'c', 'd'][Math.abs(e.coords.x + e.coords.y) % 4];
+      e.tile.src = 'https://' + s + '.basemaps.cartocdn.com/rastertiles/voyager/' + e.coords.z + '/' + e.coords.x + '/' + e.coords.y + '.png';
     }
   });
 
-  const satLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    maxZoom: 19,
-    maxNativeZoom: 18,
-    attribution: '&copy; Esri'
+  const satLayer = L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+    subdomains: '0123',
+    maxZoom: 20,
+    maxNativeZoom: 19,
+    attribution: '&copy; Google'
+  });
+  satLayer.on('tileerror', function(e) {
+    if (e.tile && e.coords) {
+      e.tile.src = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/' + Math.min(e.coords.z, 18) + '/' + e.coords.y + '/' + e.coords.x;
+    }
   });
 
   const LAYERS = {
