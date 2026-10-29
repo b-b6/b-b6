@@ -624,8 +624,9 @@
                 <button type="button" class="close-btn" onclick="closeRoleModals()"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
             </div>
 
-            <div style="background:var(--navy-soft); border:1px solid var(--navy-line); border-radius:14px; padding:11px 13px; margin-bottom:14px; font-size:12px; color:var(--navy); font-weight:600; line-height:1.45;">
-                🛡 <b>Проверка владельца</b>: Заявка поступает главному администратору сервиса. Для защиты от посторонних лиц администратор сверяет владение через официальный контактный телефон филиала в 2GIS/Яндекс или официальный Instagram перед выдачей цифрового ID и пароля.
+            <div style="background:linear-gradient(135deg, rgba(240,148,51,0.08) 0%, rgba(220,39,67,0.08) 100%); border:1.5px solid rgba(220,39,67,0.25); border-radius:14px; padding:12px 14px; margin-bottom:14px; font-size:12px; color:var(--navy); font-weight:600; line-height:1.45;">
+                🛡 <b>Верификация владельца через Instagram @tu1anow</b><br>
+                Чтобы никто посторонний не мог привязать чужой барбершоп, верификация проходит через Instagram администратора <b>@tu1anow</b>. Нажмите кнопку внизу: готовый текст запроса скопируется, и откроется Direct Instagram. Отправьте сообщение с официального аккаунта вашего салона, и администратор моментально выдаст вам цифровой ID и PIN.
             </div>
 
             <input type="hidden" id="req-role-input" value="owner">
@@ -652,6 +653,14 @@
                 <input type="text" id="req-address-input" class="inp" placeholder="Бишкек, ул. Киевская...">
             </div>
 
+            <div class="form-group">
+                <label>4. Instagram вашего салона / мастера (для быстрой сверки)</label>
+                <div style="position:relative;">
+                    <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); font-weight:700; color:var(--muted); font-size:13px;">@</span>
+                    <input type="text" id="req-insta-input" class="inp" placeholder="shine_barbershop" style="padding-left:28px;">
+                </div>
+            </div>
+
             <!-- Статус, если заявка уже одобрена админом -->
             <div id="req-approved-box" style="display:none; background:var(--green-bg); border:1.5px solid rgba(0,135,61,0.35); border-radius:16px; padding:14px; margin-bottom:12px; text-align:center;">
                 <div style="font-size:13px; font-weight:800; color:var(--green); margin-bottom:6px;">🎉 Администратор одобрил ваш доступ!</div>
@@ -662,19 +671,39 @@
             </div>
 
             <!-- Подтверждение после отправки заявки -->
-            <div id="req-success-box" style="display:none; background:var(--navy-soft); border:1.5px solid var(--navy-line); border-radius:16px; padding:14px; margin-bottom:12px;">
-                <div style="font-size:13.5px; font-weight:800; color:var(--navy); margin-bottom:4px;">✅ Заявка отправлена в Супер-Админку!</div>
-                <div style="font-size:12px; color:var(--muted); line-height:1.4; margin-bottom:10px;">
-                    Главный администратор увидит ваш запрос и выдаст вам персональный цифровой ID и 4-значный пароль. Вы также можете сразу написать админу в WhatsApp:
+            <div id="req-success-box" style="display:none; background:linear-gradient(135deg, rgba(240,148,51,0.06) 0%, rgba(220,39,67,0.06) 100%); border:1.5px solid rgba(220,39,67,0.3); border-radius:16px; padding:16px; margin-bottom:14px;">
+                <div style="display:flex; align-items:center; gap:8px; font-size:14px; font-weight:800; color:var(--navy); margin-bottom:6px;">
+                    <span style="font-size:18px;">📋</span> Текст заявки скопирован в буфер!
                 </div>
-                <a id="req-wa-btn" href="#" target="_blank" rel="noopener" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:10px 14px; border-radius:12px; background:#00873d; color:#ffffff; font-size:13px; font-weight:800; text-decoration:none;">
-                    💬 Написать Админу в WhatsApp
-                </a>
+                <div style="font-size:12px; color:var(--muted); line-height:1.45; margin-bottom:10px;">
+                    Вставьте скопированный текст в Direct <b>@tu1anow</b> (желательно с профиля вашего барбершопа). Администратор сразу сверит точку и пришлёт цифровой ID и 4-значный PIN.
+                </div>
+
+                <div style="position:relative; margin-bottom:12px;">
+                    <textarea id="req-preview-text" readonly style="width:100%; height:95px; background:#fff; border:1px solid #d5e2f0; border-radius:10px; padding:8px 10px; font-size:11.5px; font-family:monospace; line-height:1.4; color:#0c192c; resize:none;"></textarea>
+                    <button type="button" onclick="copyRequestTextAgain()" style="position:absolute; right:8px; bottom:8px; background:#0c192c; color:#fff; border:none; border-radius:6px; padding:4px 8px; font-size:11px; font-weight:700; cursor:pointer;">
+                        📋 Скопировать ещё раз
+                    </button>
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                    <a id="req-ig-direct-btn" href="https://www.instagram.com/tu1anow/" target="_blank" rel="noopener" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:12px 14px; border-radius:12px; background:linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color:#ffffff; font-size:13.5px; font-weight:800; text-decoration:none; box-shadow:0 4px 14px rgba(220,39,67,0.3);">
+                        <i data-lucide="instagram" style="width:18px;height:18px;"></i> Открыть Direct Instagram @tu1anow
+                    </a>
+                    <a id="req-wa-btn" href="#" target="_blank" rel="noopener" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:10px 14px; border-radius:12px; background:#00873d; color:#ffffff; font-size:12.5px; font-weight:800; text-decoration:none;">
+                        💬 Или отправить в WhatsApp
+                    </a>
+                </div>
             </div>
 
-            <button type="button" class="btn-gold" id="req-submit-btn" onclick="submitAccessRequestFromApp()">
-                📨 Отправить запрос Админу <i data-lucide="send" style="width:17px;height:17px;"></i>
-            </button>
+            <div id="req-submit-actions">
+                <button type="button" id="req-submit-btn" onclick="submitAccessRequestFromApp('ig')" style="background:linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color:#ffffff; width:100%; border:none; padding:13px 16px; border-radius:14px; font-weight:800; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 6px 18px rgba(220,39,67,0.3); transition:transform 0.15s ease;">
+                    <i data-lucide="instagram" style="width:19px;height:19px;"></i> Написать в Instagram @tu1anow
+                </button>
+                <button type="button" onclick="submitAccessRequestFromApp('wa')" style="background:transparent; border:1px solid #d5e2f0; color:#0c192c; width:100%; padding:10px 14px; border-radius:12px; font-weight:700; font-size:12.5px; cursor:pointer; margin-top:8px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                    💬 Или отправить запрос в WhatsApp
+                </button>
+            </div>
 
             <div class="err-msg" id="req-err">Укажите название и ваш номер телефона</div>
         </div>
@@ -847,7 +876,8 @@
                 const sName = String(b.name || '').replace(/'/g, '');
                 const sAddr = `${b.city || 'Бишкек'}, ${b.address || ''}`.replace(/'/g, '');
                 const sPhone = String(b.phone || '').replace(/'/g, '');
-                return `<div class="shop-search-item" onclick="selectCatalogForRequest('${sId}', '${sName}', '${sAddr}', '${sPhone}')">
+                const sInsta = String(b.instaHandle || b.instagram || '').replace(/'/g, '');
+                return `<div class="shop-search-item" onclick="selectCatalogForRequest('${sId}', '${sName}', '${sAddr}', '${sPhone}', '${sInsta}')">
                     <div>
                         <div style="font-weight:700; font-size:0.86rem; color:var(--navy);">${b.name}</div>
                         <div style="font-size:0.74rem; color:var(--muted);">📍 ${b.city || ''} • ${b.address || ''}</div>
@@ -858,13 +888,18 @@
             box.style.display = 'block';
         }
 
-        function selectCatalogForRequest(id, name, addr, phone) {
+        function selectCatalogForRequest(id, name, addr, phone, insta) {
             document.getElementById('req-catalog-id-input').value = id;
             document.getElementById('req-catalog-search').value = name;
             document.getElementById('req-name-input').value = name;
             if (addr) document.getElementById('req-address-input').value = addr;
             if (phone && !document.getElementById('req-phone-input').value) {
                 document.getElementById('req-phone-input').value = phone;
+            }
+            if (insta) {
+                const cleanInsta = String(insta).replace(/^@/, '');
+                const instaEl = document.getElementById('req-insta-input');
+                if (instaEl) instaEl.value = cleanInsta;
             }
             document.getElementById('req-catalog-results').style.display = 'none';
         }
@@ -909,12 +944,43 @@
             } catch (e) {}
         }
 
-        async function submitAccessRequestFromApp() {
+        function copyTextToClipboard(text) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+            } else {
+                fallbackCopy(text);
+            }
+        }
+
+        function fallbackCopy(text) {
+            try {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.left = '-9999px';
+                document.body.appendChild(ta);
+                ta.focus();
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+            } catch (e) {}
+        }
+
+        function copyRequestTextAgain() {
+            const txt = document.getElementById('req-preview-text').value;
+            if (txt) {
+                copyTextToClipboard(txt);
+                alert('📋 Текст заявки скопирован! Теперь перейдите в Instagram @tu1anow и вставьте в Direct.');
+            }
+        }
+
+        async function submitAccessRequestFromApp(channel = 'ig') {
             const role = document.getElementById('req-role-input').value || 'owner';
             const catalogId = document.getElementById('req-catalog-id-input').value.trim();
             const name = document.getElementById('req-name-input').value.trim();
             const phone = document.getElementById('req-phone-input').value.trim();
             const address = document.getElementById('req-address-input').value.trim();
+            const shopInsta = (document.getElementById('req-insta-input')?.value || '').trim();
             const errEl = document.getElementById('req-err');
 
             if (!name || phone.replace(/\D/g, '').length < 6) {
@@ -925,6 +991,18 @@
             errEl.style.display = 'none';
             localStorage.setItem('last_req_phone', phone);
 
+            const newReq = {
+                reqId: 'req_' + Date.now(),
+                role: role,
+                name: name,
+                phone: phone,
+                address: address || 'Бишкек',
+                catalogId: catalogId || '',
+                shopInsta: shopInsta || '',
+                status: 'pending',
+                createdAt: new Date().toLocaleString('ru-RU')
+            };
+
             let reqs = [];
             try {
                 reqs = window.appDB && window.appDB.getAccessRequests
@@ -933,17 +1011,7 @@
             } catch (e) {}
             if (!Array.isArray(reqs)) reqs = [];
 
-            const newReq = {
-                reqId: 'req_' + Date.now(),
-                role: role,
-                name: name,
-                phone: phone,
-                address: address || 'Бишкек',
-                catalogId: catalogId || '',
-                status: 'pending',
-                createdAt: new Date().toLocaleString('ru-RU')
-            };
-
+            reqs = reqs.filter(r => !(r.name === name && r.phone === phone));
             reqs.unshift(newReq);
             if (window.appDB && window.appDB.saveAccessRequests) {
                 await window.appDB.saveAccessRequests(reqs);
@@ -951,7 +1019,30 @@
                 localStorage.setItem('global_access_requests', JSON.stringify(reqs));
             }
 
-            // Build WhatsApp deep link to Super Admin if configured
+            const roleLabel = role === 'master' ? '✂️ Мастер (Соло-кабинет)' : '🏢 Владелец барбершопа (Салон)';
+            const cleanInsta = shopInsta ? (shopInsta.startsWith('@') ? shopInsta : '@' + shopInsta) : 'не указан';
+
+            const rawMessage = 
+`Здравствуйте! Прошу выдать цифровой ID и PIN для входа в кабинет BarberMap KG.
+
+👤 Роль: ${roleLabel}
+🏢 Название: ${name}
+📍 Город / Адрес: ${address || 'Кыргызстан'}
+📞 Контактный номер: ${phone}
+📸 Instagram нашего салона: ${cleanInsta}${catalogId ? `\n🆔 ID точки на карте: ${catalogId}` : ''}
+
+Пишу с официального профиля для подтверждения владения. Жду цифровой ID и 4-значный пароль!`;
+
+            copyTextToClipboard(rawMessage);
+
+            const previewEl = document.getElementById('req-preview-text');
+            if (previewEl) previewEl.value = rawMessage;
+
+            const igBtn = document.getElementById('req-ig-direct-btn');
+            if (igBtn) {
+                igBtn.href = 'https://www.instagram.com/tu1anow/';
+            }
+
             let adminPhone = '';
             try {
                 const gSet = window.appDB && window.appDB.getGlobalSettings
@@ -960,19 +1051,23 @@
                 adminPhone = (gSet && gSet.superAdminPhone ? gSet.superAdminPhone : '').replace(/\D/g, '');
             } catch (e) {}
 
-            const roleLabel = role === 'master' ? 'Мастер (Соло-кабинет)' : 'Владелец барбершопа (Салон)';
-            const waText = encodeURIComponent(
-                `Здравствуйте! Прошу выдать цифровой ID и 4-значный пароль в BarberMap KG.\n` +
-                `👤 Роль: ${roleLabel}\n` +
-                `🏢 Название/Имя: ${name}\n` +
-                `📍 Адрес: ${address || 'КР'}\n` +
-                `📞 Телефон: ${phone}`
-            );
             const waBtn = document.getElementById('req-wa-btn');
-            waBtn.href = adminPhone ? `https://wa.me/${adminPhone}?text=${waText}` : `https://wa.me/?text=${waText}`;
+            if (waBtn) {
+                const waText = encodeURIComponent(rawMessage);
+                waBtn.href = adminPhone ? `https://wa.me/${adminPhone}?text=${waText}` : `https://wa.me/?text=${waText}`;
+            }
 
-            document.getElementById('req-submit-btn').style.display = 'none';
+            const submitActions = document.getElementById('req-submit-actions');
+            if (submitActions) submitActions.style.display = 'none';
             document.getElementById('req-success-box').style.display = 'block';
+
+            if (channel === 'ig') {
+                window.open('https://www.instagram.com/tu1anow/', '_blank');
+            } else {
+                const waText = encodeURIComponent(rawMessage);
+                const url = adminPhone ? `https://wa.me/${adminPhone}?text=${waText}` : `https://wa.me/?text=${waText}`;
+                window.open(url, '_blank');
+            }
         }
 
         async function submitOwnerLogin() {
@@ -1063,9 +1158,10 @@
                     const name = p.get('name') || '';
                     const city = p.get('city') || p.get('address') || '';
                     const phone = p.get('phone') || '';
+                    const insta = p.get('insta') || '';
                     setTimeout(() => {
                         openRequestModal(role);
-                        selectCatalogForRequest(claimId, name, city, phone);
+                        selectCatalogForRequest(claimId, name, city, phone, insta);
                     }, 150);
                 }
             } catch (e) {}

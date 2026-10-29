@@ -637,7 +637,7 @@
             const baseUrl = window.location.origin + window.location.pathname.replace('super_admin.html', '') + 'app.html';
             const text = `✂️ BarberMap KG — Доступ открыт!\n🏢 ${name} (${roleTitle})\n\n🔢 Ваш цифровой ID: ${id}\n🔑 Ваш 4-значный PIN: ${pin}\n🌐 Вход в систему: ${baseUrl}`;
             navigator.clipboard.writeText(text).then(() => {
-                alert(`✅ Данные доступа для «${name}» (ID: ${id}, PIN: ${pin}) скопированы! Отправьте их клиенту в WhatsApp или Telegram.`);
+                alert(`✅ Данные доступа для «${name}» (ID: ${id}, PIN: ${pin}) скопированы!\n\nОтправьте их клиенту в Instagram Direct @tu1anow или в WhatsApp.`);
             });
         }
 
@@ -744,8 +744,16 @@
                     `✂️ BarberMap KG — Ваш доступ открыт!\n🏢 ${r.name}\n\n🔢 Ваш цифровой ID: ${r.issuedId || ''}\n🔑 Ваш 4-значный пароль: ${r.issuedPin || ''}\n🌐 Вход в кабинет: ${baseUrl}`
                 );
 
+                const instaHandleClean = (r.shopInsta || '').replace(/^@/, '');
+                const instaHtml = instaHandleClean
+                    ? `<div style="margin-top:3px;"><a href="https://instagram.com/${instaHandleClean}" target="_blank" rel="noopener" style="font-size:0.78rem; color:#bc1888; font-weight:700; text-decoration:none;">📸 @${instaHandleClean}</a></div>`
+                    : '';
+
                 return `<tr>
-                    <td style="font-weight:800; color:#0c192c;">${r.name || '—'}</td>
+                    <td>
+                        <div style="font-weight:800; color:#0c192c;">${r.name || '—'}</div>
+                        ${instaHtml}
+                    </td>
                     <td>${roleBadge}</td>
                     <td style="font-weight:700;">${r.phone || '—'}</td>
                     <td style="color:var(--text-muted); font-size:0.84rem;">${r.address || 'Бишкек'}${r.catalogId ? ' <span style="color:#00873d;font-weight:700;">(📍 С карты)</span>' : ''}</td>
@@ -754,9 +762,13 @@
                     <td style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
                         ${r.status === 'pending'
                             ? `<button class="btn-link" style="background:#00873d; color:#fff;" onclick="approveAccessRequest('${r.reqId}')">✅ Одобрить (Выдать ID+PIN)</button>`
-                            : (cleanPhone ? `<a class="btn-link" href="https://wa.me/${cleanPhone}?text=${waMsg}" target="_blank" rel="noopener" style="text-decoration:none;">💬 Отправить в WhatsApp</a>` : '')
+                            : `
+                                <button class="btn-link" onclick="copyCredentialsForClient('${r.issuedId}', '${r.issuedPin}', '${(r.name || '').replace(/'/g, '')}', '${isMaster ? 'master' : 'owner'}')" style="background:#f0f4f9; color:#0c192c; border:1px solid #d5e2f0;">📋 Скопировать</button>
+                                <a class="btn-link" href="https://www.instagram.com/tu1anow/" target="_blank" rel="noopener" style="background:linear-gradient(45deg, #f09433, #dc2743, #bc1888); color:#fff; text-decoration:none;">📸 Direct @tu1anow</a>
+                                ${cleanPhone ? `<a class="btn-link" href="https://wa.me/${cleanPhone}?text=${waMsg}" target="_blank" rel="noopener" style="background:#00873d; color:#fff; text-decoration:none;">💬 WhatsApp</a>` : ''}
+                              `
                         }
-                        <button class="btn-block" onclick="deleteAccessRequest('${r.reqId}')">🗑</button>
+                        <button class="btn-block" onclick="deleteAccessRequest('${r.reqId}')" title="Удалить заявку">🗑</button>
                     </td>
                 </tr>`;
             }).join('');
