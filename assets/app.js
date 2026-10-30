@@ -1278,22 +1278,44 @@ const i18n = {
                         `📱 Телефон: ${bookingData.phone}\n\n` +
                         `Подтвердите, пожалуйста, запись!`;
 
+                    let waDigits = digits;
+                    if (waDigits.startsWith('0') && waDigits.length === 10) {
+                        waDigits = '996' + waDigits.slice(1);
+                    } else if (waDigits.startsWith('87') && waDigits.length === 11) {
+                        waDigits = '7' + waDigits.slice(1);
+                    } else if (waDigits.length === 9) {
+                        const isUz = (catShop.country === 'Узбекистан') || ['Ташкент', 'Самарканд', 'Бухара'].includes(catShop.city);
+                        const isKz = (catShop.country === 'Казахстан') || ['Алматы', 'Астана', 'Шымкент'].includes(catShop.city);
+                        waDigits = (isUz ? '998' : (isKz ? '7' : '996')) + waDigits;
+                    }
+
                     let waLink = `https://wa.me/?text=${encodeURIComponent(waText)}`;
                     if (catShop.whatsapp && catShop.whatsapp.includes('wa.me/')) {
                         const base = catShop.whatsapp.split('?')[0];
                         waLink = `${base}?text=${encodeURIComponent(waText)}`;
-                    } else if (digits.length >= 9) {
-                        waLink = `https://wa.me/${digits}?text=${encodeURIComponent(waText)}`;
+                    } else if (waDigits.length >= 10) {
+                        waLink = `https://wa.me/${waDigits}?text=${encodeURIComponent(waText)}`;
                     }
                     const btnWa = document.getElementById('btn-wa-confirm-send');
                     if (btnWa) btnWa.href = waLink;
 
                     const btnCall = document.getElementById('btn-call-confirm-shop');
                     const phoneSpan = document.getElementById('wa-bridge-phone');
-                    if (btnCall && catShop.phone) {
-                        btnCall.href = `tel:${catShop.phone}`;
-                        btnCall.style.display = 'flex';
-                        if (phoneSpan) phoneSpan.textContent = catShop.phone;
+                    if (btnCall) {
+                        if (catShop.phone) {
+                            btnCall.href = `tel:${catShop.phone}`;
+                            btnCall.style.display = 'flex';
+                            if (phoneSpan) phoneSpan.textContent = catShop.phone;
+                        } else {
+                            btnCall.style.display = 'none';
+                        }
+                    }
+
+                    const btnMap = document.getElementById('btn-map-confirm-shop');
+                    if (btnMap) {
+                        const mapUrl = catShop.link || (catShop.lat && catShop.lon ? `https://yandex.ru/maps/?text=${encodeURIComponent(catShop.name + ' ' + (catShop.city || ''))}&ll=${catShop.lon},${catShop.lat}&z=17` : `https://2gis.kg/search/${encodeURIComponent(catShop.name)}`);
+                        btnMap.href = mapUrl;
+                        btnMap.style.display = !catShop.phone ? 'flex' : 'none';
                     }
                 } else {
                     waBridgeBox.style.display = 'none';

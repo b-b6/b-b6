@@ -12,6 +12,7 @@
     <title>BarberMap KG — Super Admin</title>
     <script src="barbershops_kg.js"></script>
     <script src="barbershops_uz.js"></script>
+    <script src="barbershops_kz.js"></script>
     <script src="assets/db.js?v=9"></script>
     <script src="assets/mobile-bridge.js?v=9"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -94,7 +95,7 @@
                     <span id="sa-req-badge" style="display:none; background:#7a1c2d; color:#fff; padding:2px 8px; border-radius:999px; font-size:0.75rem; font-weight:800; margin-left:6px;">0</span>
                 </button>
                 <button class="stab" id="stab-barbers" onclick="switchSASection('barbers')">
-                    <i data-lucide="map-pin" style="width:17px;height:17px;"></i> Каталог на карте (401)
+                    <i data-lucide="map-pin" style="width:17px;height:17px;"></i> Каталог точек КР (<span id="sa-tab-kg-count">461</span>)
                 </button>
             </div>
 
@@ -183,11 +184,11 @@
                 </div>
             </div><!-- /panel-requests -->
 
-            <!-- PANEL 2: BARBER MAP MANAGEMENT (401 САЛОН КР — ВЫБОР С КАРТЫ) -->
+            <!-- PANEL 2: BARBER MAP MANAGEMENT (САЛОНЫ КР — ВЫБОР С КАРТЫ) -->
             <div class="section-panel" id="panel-barbers">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
                     <div>
-                        <h2 style="margin:0; font-size:1.25rem; color:#0c192c; display:flex; align-items:center; gap:8px;"><i data-lucide="map" style="width:21px;height:21px;color:#7a1c2d;"></i> Карта 401 барбершопа КР — Привязка и выдача доступа</h2>
+                        <h2 style="margin:0; font-size:1.25rem; color:#0c192c; display:flex; align-items:center; gap:8px;"><i data-lucide="map" style="width:21px;height:21px;color:#7a1c2d;"></i> Карта барбершопов КР — Привязка и выдача доступа</h2>
                         <p style="color:var(--text-muted); font-size:0.88rem; margin-top:4px;">Нажмите на любой салон прямо на карте (или в списке справа), чтобы привязать его и выдать владельцу цифровой ID и 4-значный PIN.</p>
                     </div>
                     <div style="display:flex; gap:8px; flex-wrap:wrap;">
@@ -202,7 +203,7 @@
 
                 <!-- Быстрый фильтр по городам КР -->
                 <div id="sa-map-city-chips" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
-                    <button type="button" class="ftab active" onclick="filterSAMapByCity('all', this)">Все (401)</button>
+                    <button type="button" class="ftab active" onclick="filterSAMapByCity('all', this)">Все (<span id="sa-city-all-count">461</span>)</button>
                     <button type="button" class="ftab" onclick="filterSAMapByCity('Бишкек', this)">Бишкек</button>
                     <button type="button" class="ftab" onclick="filterSAMapByCity('Ош', this)">Ош</button>
                     <button type="button" class="ftab" onclick="filterSAMapByCity('Джалал-Абад', this)">Джалал-Абад</button>
@@ -421,7 +422,7 @@
 
             <div class="form-group" id="sa-catalog-bind-wrap" style="margin-bottom:14px;">
                 <label style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
-                    <span>2. Выберите салон прямо на карте (из 401 точки КР) или в поиске</span>
+                    <span>2. Выберите салон прямо на карте или в поиске</span>
                     <button type="button" id="sa-toggle-bind-map-btn" onclick="toggleBindMapInModal()" style="background:#f0f4f9; border:1px solid #d5e2f0; color:#0c192c; padding:4px 11px; border-radius:999px; font-size:11.5px; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:5px;">
                         <i data-lucide="map" style="width:13px;height:13px;"></i> Скрыть/показать карту
                     </button>
@@ -748,8 +749,14 @@
         // ── RENDER BARBER LIST IN SIDE PANEL ──
         function renderSABarberList() {
             const container = document.getElementById('sa-barber-list');
+            const fullList = getFullKGCatalogForSA();
+            const tabEl = document.getElementById('sa-tab-kg-count');
+            if (tabEl) tabEl.textContent = fullList.length;
+            const allChip = document.getElementById('sa-city-all-count');
+            if (allChip) allChip.textContent = fullList.length;
+
             const q = (document.getElementById('sa-map-search-inp')?.value || '').trim().toLowerCase();
-            const allShops = getFullKGCatalogForSA().filter(b => {
+            const allShops = fullList.filter(b => {
                 if (activeSACityFilter !== 'all' && b.city !== activeSACityFilter) return false;
                 if (!q) return true;
                 return (b.name && b.name.toLowerCase().includes(q)) ||

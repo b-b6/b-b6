@@ -254,7 +254,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
     <div class="brand-row">
       <a class="logo" href="#" id="logo">
         <span class="mk"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg></span>
-        Barber<span class="map-word">Map</span><span class="tag" id="logoTag">KG · UZ</span>
+        Barber<span class="map-word">Map</span><span class="tag" id="logoTag">KG · UZ · KZ</span>
       </a>
       <div style="display:flex;align-items:center;gap:8px;">
         <span class="total" id="totalLabel"></span>
@@ -471,12 +471,26 @@ body.dragging .map-ctrls{transition:opacity .2s}
         const isUz = b.country === 'Узбекистан' || ['Ташкент', 'Самарканд', 'Бухара', 'Фергана', 'Андижан', 'Наманган', 'Коканд', 'Чирчик', 'Алмалык', 'Навои', 'Карши', 'Нукус', 'Ургенч', 'Термез'].includes(b.city);
         const country = isKz ? 'Казахстан' : (isUz ? 'Узбекистан' : 'Кыргызстан');
         const countryCode = isKz ? 'KZ' : (isUz ? 'UZ' : 'KG');
+        let waUrl = b.whatsapp || '';
+        if (!waUrl && b.phone) {
+          let d = String(b.phone).replace(/\D/g, '');
+          if (d.startsWith('0') && d.length === 10) d = '996' + d.slice(1);
+          else if (d.startsWith('87') && d.length === 11) d = '7' + d.slice(1);
+          else if (d.length === 9) d = (countryCode === 'UZ' ? '998' : (countryCode === 'KZ' ? '7' : '996')) + d;
+          if (d.length >= 10) waUrl = `https://wa.me/${d}`;
+        }
+        const cleanInsta = String(b.instagram || b.instaHandle || '')
+          .replace(/^https?:\/\/(?:www\.)?instagram\.com\//i, '')
+          .replace(/^@/, '')
+          .replace(/[/?#].*$/, '')
+          .trim();
+
         return {
           id: String(b.id), name: b.name, city: b.city || '', address: b.address || '',
           country: country, countryCode: countryCode,
           phone: b.phone || '',
-          whatsapp: b.whatsapp || '',
-          instagram: b.instagram || '',
+          whatsapp: waUrl,
+          instagram: cleanInsta,
           lat: +b.lat, lon: +b.lon, rating, reviews,
           hours: b.hours ?? b.working_hours, link: b.link ?? b.link_2gis ?? '',
           title: n.title || b.name, short: shortTitle.slice(0, 16), kind: n.kind,
@@ -911,9 +925,18 @@ body.dragging .map-ctrls{transition:opacity .2s}
   function openRoute(b) {
     $('#routeTo').textContent = `${b.title} — ${b.address}, ${b.city}`;
     const gisHost = b.countryCode === 'UZ' ? '2gis.uz' : (b.countryCode === 'KZ' ? '2gis.kz' : '2gis.kg');
-    $('#r2gis').href = `https://${gisHost}/directions/points/%7C${b.lon}%2C${b.lat}`;
-    $('#rYa').href = `https://yandex.ru/maps/?rtext=~${b.lat},${b.lon}&rtt=auto`;
-    $('#rGo').href = `https://www.google.com/maps/dir/?api=1&destination=${b.lat},${b.lon}`;
+    const fromStr = state.me ? `${state.me.lat},${state.me.lon}` : '';
+    const fromGis = state.me ? `${state.me.lon}%2C${state.me.lat}` : '';
+
+    $('#r2gis').href = state.me
+      ? `https://${gisHost}/directions/points/${fromGis}%7C${b.lon}%2C${b.lat}`
+      : `https://${gisHost}/directions/points/%7C${b.lon}%2C${b.lat}`;
+    $('#rYa').href = state.me
+      ? `https://yandex.ru/maps/?rtext=${fromStr}~${b.lat},${b.lon}&rtt=auto`
+      : `https://yandex.ru/maps/?rtext=~${b.lat},${b.lon}&rtt=auto`;
+    $('#rGo').href = state.me
+      ? `https://www.google.com/maps/dir/?api=1&origin=${fromStr}&destination=${b.lat},${b.lon}`
+      : `https://www.google.com/maps/dir/?api=1&destination=${b.lat},${b.lon}`;
     $('#routeModal').classList.add('show');
   }
   const closeRoute = () => $('#routeModal').classList.remove('show');
@@ -991,6 +1014,8 @@ body.dragging .map-ctrls{transition:opacity .2s}
     state.city = 'all';
     document.querySelectorAll('#countryChips .chip').forEach(c => c.classList.remove('on'));
     b.classList.add('on');
+    const logoTag = $('#logoTag');
+    if (logoTag) logoTag.textContent = country === 'all' ? 'KG · UZ · KZ' : country;
     renderCityChips();
     if (state.view === 'detail') closeDetail();
     apply(true);

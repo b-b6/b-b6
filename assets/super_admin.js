@@ -738,7 +738,10 @@
                     ? `<div style="font-weight:800; color:#00873d; font-size:0.85rem;">✅ Одобрено<br><span style="font-family:monospace; color:#0c192c;">ID: ${r.issuedId} • PIN: ${r.issuedPin}</span></div>`
                     : `<span style="background:#fff4e6; color:#b86b14; padding:4px 10px; border-radius:999px; font-size:0.78rem; font-weight:800;">⏳ Ждёт вашего решения</span>`;
 
-                const cleanPhone = (r.phone || '').replace(/\D/g, '');
+                let cleanPhone = (r.phone || '').replace(/\D/g, '');
+                if (cleanPhone.startsWith('0') && cleanPhone.length === 10) cleanPhone = '996' + cleanPhone.slice(1);
+                else if (cleanPhone.startsWith('87') && cleanPhone.length === 11) cleanPhone = '7' + cleanPhone.slice(1);
+                else if (cleanPhone.length === 9) cleanPhone = '996' + cleanPhone;
                 const baseUrl = window.location.origin + window.location.pathname.replace('super_admin.html', '') + 'app.html';
                 const waMsg = encodeURIComponent(
                     `✂️ BarberMap KG — Ваш доступ открыт!\n🏢 ${r.name}\n\n🔢 Ваш цифровой ID: ${r.issuedId || ''}\n🔑 Ваш 4-значный пароль: ${r.issuedPin || ''}\n🌐 Вход в кабинет: ${baseUrl}`
