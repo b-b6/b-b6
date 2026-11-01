@@ -689,37 +689,21 @@ body.dragging .map-ctrls{transition:opacity .2s}
     if (b.chairRent && b.chairRent.enabled) return b.chairRent;
     try {
       const customLocs = window.BarberMobileBridge ? window.BarberMobileBridge.getCustomLocationsLocal() : {};
-      const c = customLocs[b.id];
-      if (c && c.chairRent && c.chairRent.enabled) return c.chairRent;
+      const cById = customLocs[b.id];
+      if (cById && cById.chairRent && cById.chairRent.enabled) return cById.chairRent;
 
       const tenantId = resolveBookingTargetId(b);
-      const sKey = tenantId + '_barber_settings';
-      const st = JSON.parse(localStorage.getItem(sKey) || '{}');
-      if (st && st.chairRent && st.chairRent.enabled) return st.chairRent;
-
-      const bTitle = String(b.title || b.name || '').toLowerCase();
-      if (
-        b.id === 'shine_barbershop' ||
-        b.id === '1001' ||
-        bTitle.includes('shine') ||
-        bTitle.includes('312 prime') ||
-        bTitle.includes('1905') ||
-        bTitle === '21' ||
-        bTitle.includes('legend') ||
-        bTitle.includes('borodach') ||
-        bTitle.includes('topgun') ||
-        bTitle.includes('oldboy')
-      ) {
-        return {
-          enabled: true,
-          count: 2,
-          priceHour: 150,
-          priceDay: 900,
-          currency: b.countryCode === 'UZ' ? 'сум' : (b.countryCode === 'KZ' ? '₸' : 'сом'),
-          perks: ['Мойка головы', 'Стерилизатор и чистота', 'Кольцевой свет', 'Чистые полотенца', 'Чай / Кофе / Wi-Fi', 'Парковка для клиентов'],
-          contactPhone: b.phone || '+996 555 12-34-56'
-        };
+      if (tenantId && customLocs[tenantId] && customLocs[tenantId].chairRent && customLocs[tenantId].chairRent.enabled) {
+        return customLocs[tenantId].chairRent;
       }
+
+      // Only check settings if this barbershop is actually bound to a registered partner tenant
+      if (isPartnerTenant(b)) {
+        const st = JSON.parse(localStorage.getItem(tenantId + '_barber_settings') || '{}');
+        if (st && st.chairRent && st.chairRent.enabled) return st.chairRent;
+      }
+      const stDirect = JSON.parse(localStorage.getItem(String(b.id) + '_barber_settings') || '{}');
+      if (stDirect && stDirect.chairRent && stDirect.chairRent.enabled) return stDirect.chairRent;
     } catch (e) {}
     return null;
   }
@@ -792,7 +776,11 @@ body.dragging .map-ctrls{transition:opacity .2s}
   function renderList(list) {
     const el = $('#list');
     if (!list.length) {
-      el.innerHTML = `<div class="empty"><b>Ничего не найдено</b>Попробуйте изменить запрос или сбросить фильтры<br><button class="btn ghost sm" data-act="reset">Сбросить всё</button></div>`;
+      if (state.f.has('coworking')) {
+        el.innerHTML = `<div class="empty"><img src="assets/icons/3d/chair_3d.png" style="width:44px;height:44px;object-fit:contain;margin:0 auto 8px;display:block;" alt=""><b>Пока нет свободных кресел в аренду</b>Точки коворкинга появляются здесь только после того, как владелец салона включит «Аренду кресел» в своём кабинете.<br><button class="btn ghost sm" data-act="reset" style="margin-top:8px;">Показать все барбершопы</button></div>`;
+      } else {
+        el.innerHTML = `<div class="empty"><b>Ничего не найдено</b>Попробуйте изменить запрос или сбросить фильтры<br><button class="btn ghost sm" data-act="reset">Сбросить всё</button></div>`;
+      }
     } else {
       el.innerHTML = list.map(b => card(b)).join('');
     }

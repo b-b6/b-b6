@@ -483,16 +483,26 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
 
             store.settings.chairRent = chairRentObj;
             await window.appDB.saveSettings(store.settings);
+            try {
+                localStorage.setItem(window.appDB.tenantId + '_barber_settings', JSON.stringify(store.settings));
+            } catch (e) {}
 
             // Also sync to BarberMobileBridge custom location if this tenant is pinned on map
             if (window.BarberMobileBridge && window.BarberMobileBridge.saveBarbershopLocation) {
                 try {
                     const tid = String(window.appDB.tenantId);
-                    const curLoc = (window.BarberMobileBridge.getCustomLocationsLocal() || {})[tid] || {};
+                    let targetLocId = tid;
+                    try {
+                        const tenants = JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
+                        const myT = Array.isArray(tenants) ? tenants.find(t => String(t.id) === tid) : null;
+                        if (myT && myT.catalogId) targetLocId = String(myT.catalogId);
+                    } catch (e) {}
+                    const allLocs = window.BarberMobileBridge.getCustomLocationsLocal() || {};
+                    const curLoc = allLocs[targetLocId] || allLocs[tid] || {};
                     curLoc.chairRent = chairRentObj;
                     curLoc.name = store.settings.shopName || curLoc.name;
                     curLoc.phone = contactPhone || curLoc.phone;
-                    await window.BarberMobileBridge.saveBarbershopLocation(tid, curLoc);
+                    await window.BarberMobileBridge.saveBarbershopLocation(targetLocId, curLoc);
                 } catch(e) {}
             }
 
