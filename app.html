@@ -855,7 +855,20 @@
                 box.style.display = 'none';
                 return;
             }
-            const baseCatalog = window.BARBERSHOPS_DATA || [];
+            const rawCombined = [
+                ...(window.BARBERSHOPS_DATA || []),
+                ...(window.BARBERSHOPS_UZ_DATA || []),
+                ...(window.BARBERSHOPS_KZ_DATA || [])
+            ];
+            const seenIds = new Set();
+            const baseCatalog = [];
+            for (const item of rawCombined) {
+                if (!item) continue;
+                const key = String(item.id || item.name || '');
+                if (key && seenIds.has(key)) continue;
+                if (key) seenIds.add(key);
+                baseCatalog.push(item);
+            }
             const customLocsRaw = (window.BarberMobileBridge && typeof window.BarberMobileBridge.getCustomLocationsLocal === 'function')
                 ? window.BarberMobileBridge.getCustomLocationsLocal()
                 : {};
@@ -863,7 +876,9 @@
             const catalog = [...customLocs, ...baseCatalog];
             const matches = catalog.filter(b =>
                 (b.name && b.name.toLowerCase().includes(q)) ||
+                (b.brand && b.brand.toLowerCase().includes(q)) ||
                 (b.city && b.city.toLowerCase().includes(q)) ||
+                (b.country && b.country.toLowerCase().includes(q)) ||
                 (b.address && b.address.toLowerCase().includes(q))
             ).slice(0, 10);
 
@@ -875,13 +890,16 @@
             box.innerHTML = matches.map(b => {
                 const sId = String(b.id || '').replace(/'/g, '');
                 const sName = String(b.name || '').replace(/'/g, '');
-                const sAddr = `${b.city || 'Бишкек'}, ${b.address || ''}`.replace(/'/g, '');
+                const sAddr = `${b.city || ''}${b.address ? ', ' + b.address : ''}`.replace(/'/g, '');
                 const sPhone = String(b.phone || '').replace(/'/g, '');
                 const sInsta = String(b.instaHandle || b.instagram || '').replace(/'/g, '');
+                const isUz = b.country === 'Узбекистан' || ['Ташкент', 'Самарканд', 'Бухара', 'Фергана', 'Андижан', 'Наманган'].includes(b.city);
+                const isKz = b.country === 'Казахстан' || ['Алматы', 'Астана', 'Шымкент', 'Караганда', 'Актобе'].includes(b.city);
+                const flag = isUz ? '🇺🇿' : (isKz ? '🇰🇿' : '🇰🇬');
                 return `<div class="shop-search-item" onclick="selectCatalogForRequest('${sId}', '${sName}', '${sAddr}', '${sPhone}', '${sInsta}')">
                     <div>
                         <div style="font-weight:700; font-size:0.86rem; color:var(--navy);">${b.name}</div>
-                        <div style="font-size:0.74rem; color:var(--muted);">📍 ${b.city || ''} • ${b.address || ''}</div>
+                        <div style="font-size:0.74rem; color:var(--muted);">${flag} ${b.city || ''} • ${b.address || ''}</div>
                     </div>
                     <span style="font-size:0.75rem; font-weight:800; color:var(--burgundy);">Мой салон →</span>
                 </div>`;
@@ -1161,7 +1179,7 @@
                     const phone = p.get('phone') || '';
                     const insta = p.get('insta') || '';
                     setTimeout(() => {
-                        openRequestModal(role);
+                        openRequestAccessModal(role);
                         selectCatalogForRequest(claimId, name, city, phone, insta);
                     }, 150);
                 }
