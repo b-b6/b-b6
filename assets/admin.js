@@ -372,8 +372,129 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             document.querySelectorAll('.admin-header .tab').forEach(t => t.classList.remove('active'));
             element.classList.add('active');
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.getElementById(`admin-tab-${tabName}`).classList.add('active');
+            const target = document.getElementById(`admin-tab-${tabName}`);
+            if (target) target.classList.add('active');
             if (tabName === 'settings') renderSettingsTab();
+            if (tabName === 'coworking') renderCoworkingTab();
+        }
+
+        function toggleCoworkingForm(enabled) {
+            const form = document.getElementById('coworking-form-fields');
+            if (form) form.style.display = enabled ? 'block' : 'none';
+            updateCoworkingPreview();
+        }
+
+        function updateCoworkingPreview() {
+            const name = store.settings.shopName || document.getElementById('set_shop_name')?.value || 'Ваш барбершоп';
+            const addr = store.settings.address || 'Бишкек, адрес салона';
+            const count = document.getElementById('coworking_count')?.value || 2;
+            const hour = document.getElementById('coworking_price_hour')?.value || 150;
+            const day = document.getElementById('coworking_price_day')?.value || 900;
+
+            const nameEl = document.getElementById('cw-prev-name');
+            if (nameEl) nameEl.textContent = name;
+            const addrEl = document.getElementById('cw-prev-address');
+            if (addrEl) addrEl.textContent = addr;
+            const prcEl = document.getElementById('cw-prev-price');
+            if (prcEl) prcEl.textContent = `${hour} сом / час`;
+            const dayEl = document.getElementById('cw-prev-day');
+            if (dayEl) dayEl.textContent = `${day} сом / день`;
+
+            const perks = [];
+            if (document.getElementById('cw_perk_sink')?.checked) perks.push('Мойка головы');
+            if (document.getElementById('cw_perk_sterilizer')?.checked) perks.push('Стерилизатор');
+            if (document.getElementById('cw_perk_light')?.checked) perks.push('Свет/Фото');
+            if (document.getElementById('cw_perk_towels')?.checked) perks.push('Полотенца');
+            if (document.getElementById('cw_perk_coffee')?.checked) perks.push('Чай/Кофе');
+            if (document.getElementById('cw_perk_parking')?.checked) perks.push('Парковка');
+
+            const perksBox = document.getElementById('cw-prev-perks');
+            if (perksBox) {
+                perksBox.innerHTML = perks.map(p => `<span style="font-size:11px; background:#f1f5f9; padding:2px 7px; border-radius:6px; color:#334155;">✓ ${p}</span>`).join('');
+            }
+        }
+
+        async function renderCoworkingTab() {
+            let set = await window.appDB.getSettings();
+            Object.assign(store.settings, set);
+            const cw = set.chairRent || {};
+
+            const enabledCb = document.getElementById('coworking_enabled');
+            if (enabledCb) {
+                enabledCb.checked = Boolean(cw.enabled);
+                toggleCoworkingForm(enabledCb.checked);
+            }
+
+            if (document.getElementById('coworking_count')) document.getElementById('coworking_count').value = cw.count || 2;
+            if (document.getElementById('coworking_price_hour')) document.getElementById('coworking_price_hour').value = cw.priceHour || 150;
+            if (document.getElementById('coworking_price_day')) document.getElementById('coworking_price_day').value = cw.priceDay || 900;
+            if (document.getElementById('coworking_phone')) {
+                document.getElementById('coworking_phone').value = cw.contactPhone || set.phone || '';
+            }
+            if (document.getElementById('coworking_rules')) document.getElementById('coworking_rules').value = cw.rules || '';
+
+            const pList = cw.perks || ['Мойка головы', 'Стерилизатор', 'Кольцевой свет', 'Полотенца', 'Чай / Кофе / Wi-Fi'];
+            if (document.getElementById('cw_perk_sink')) document.getElementById('cw_perk_sink').checked = pList.some(p => p.includes('Мойка'));
+            if (document.getElementById('cw_perk_sterilizer')) document.getElementById('cw_perk_sterilizer').checked = pList.some(p => p.includes('Стерилизатор'));
+            if (document.getElementById('cw_perk_light')) document.getElementById('cw_perk_light').checked = pList.some(p => p.includes('свет') || p.includes('Свет') || p.includes('Фото'));
+            if (document.getElementById('cw_perk_towels')) document.getElementById('cw_perk_towels').checked = pList.some(p => p.includes('Полотенца') || p.includes('воротнички'));
+            if (document.getElementById('cw_perk_coffee')) document.getElementById('cw_perk_coffee').checked = pList.some(p => p.includes('Чай') || p.includes('Кофе') || p.includes('кофе'));
+            if (document.getElementById('cw_perk_parking')) document.getElementById('cw_perk_parking').checked = pList.some(p => p.includes('Парковка'));
+
+            updateCoworkingPreview();
+        }
+
+        async function saveCoworkingSettings(btn) {
+            const enabled = Boolean(document.getElementById('coworking_enabled')?.checked);
+            const count = parseInt(document.getElementById('coworking_count')?.value) || 1;
+            const priceHour = parseInt(document.getElementById('coworking_price_hour')?.value) || 150;
+            const priceDay = parseInt(document.getElementById('coworking_price_day')?.value) || 900;
+            const contactPhone = (document.getElementById('coworking_phone')?.value || store.settings.phone || '').trim();
+            const rules = (document.getElementById('coworking_rules')?.value || '').trim();
+
+            const perks = [];
+            if (document.getElementById('cw_perk_sink')?.checked) perks.push('Мойка головы');
+            if (document.getElementById('cw_perk_sterilizer')?.checked) perks.push('Стерилизатор');
+            if (document.getElementById('cw_perk_light')?.checked) perks.push('Кольцевой свет');
+            if (document.getElementById('cw_perk_towels')?.checked) perks.push('Полотенца');
+            if (document.getElementById('cw_perk_coffee')?.checked) perks.push('Чай / Кофе / Wi-Fi');
+            if (document.getElementById('cw_perk_parking')?.checked) perks.push('Парковка');
+
+            const chairRentObj = {
+                enabled: enabled,
+                count: count,
+                priceHour: priceHour,
+                priceDay: priceDay,
+                currency: 'сом',
+                contactPhone: contactPhone,
+                rules: rules,
+                perks: perks,
+                updatedAt: new Date().toISOString()
+            };
+
+            store.settings.chairRent = chairRentObj;
+            await window.appDB.saveSettings(store.settings);
+
+            // Also sync to BarberMobileBridge custom location if this tenant is pinned on map
+            if (window.BarberMobileBridge && window.BarberMobileBridge.saveBarbershopLocation) {
+                try {
+                    const tid = String(window.appDB.tenantId);
+                    const curLoc = (window.BarberMobileBridge.getCustomLocationsLocal() || {})[tid] || {};
+                    curLoc.chairRent = chairRentObj;
+                    curLoc.name = store.settings.shopName || curLoc.name;
+                    curLoc.phone = contactPhone || curLoc.phone;
+                    await window.BarberMobileBridge.saveBarbershopLocation(tid, curLoc);
+                } catch(e) {}
+            }
+
+            const statusEl = document.getElementById('cw-save-status');
+            if (statusEl) {
+                statusEl.textContent = enabled 
+                    ? '✓ Свободные кресла опубликованы на карте коворкинга!' 
+                    : '✓ Аренда кресел отключена';
+                statusEl.style.display = 'inline';
+                setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
+            }
         }
 
         async function changeProductCount(id, delta) {

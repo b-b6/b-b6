@@ -38,6 +38,14 @@
         }
         function updateThemeIcon() {}
     </script>
+    <style>
+        #coworking-toggle-slider:before {
+            position: absolute; content: ""; height: 22px; width: 22px; left: 3px; bottom: 3px;
+            background-color: white; transition: .25s ease; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        input:checked + #coworking-toggle-slider { background-color: #00873d; }
+        input:checked + #coworking-toggle-slider:before { transform: translateX(24px); }
+    </style>
 </head>
 <body>
     <div id="auth-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#e9ecef; z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px;">
@@ -72,6 +80,7 @@
             <div class="tab" onclick="switchAdminTab('products', this)" data-i18n="tab_products">Склад (Товары)</div>
             <div class="tab" onclick="switchAdminTab('clients', this)" data-i18n="tab_clients">Клиенты (CRM)</div>
             <div class="tab" onclick="switchAdminTab('reviews', this)" data-i18n="tab_reviews">Отзывы</div>
+            <div class="tab" onclick="switchAdminTab('coworking', this)">💺 Аренда кресел</div>
             <div class="tab" onclick="switchAdminTab('settings', this)" data-i18n="tab_settings">Настройки и Время</div>
         </div>
         <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
@@ -692,6 +701,124 @@
                 <button type="button" class="btn" style="background:#7a1c2d; color:#fff; width:auto; padding:13px 26px;" onclick="logoutOwnerAccount()">
                     ← Выйти в главное меню
                 </button>
+            </div>
+        </div>
+
+        <!-- COWORKING / CHAIR RENTAL TAB -->
+        <div id="admin-tab-coworking" class="tab-content">
+            <div class="admin-card" style="background:linear-gradient(135deg, rgba(12,25,44,0.02) 0%, rgba(2,132,199,0.05) 100%); border:1.5px solid #bae6fd;">
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div style="width:46px; height:46px; border-radius:14px; background:#0c192c; color:#fff; display:grid; place-items:center; font-size:1.4rem;">💺</div>
+                        <div>
+                            <h3 style="margin:0; font-size:1.2rem; color:#0c192c;">Барбер-Коворкинг — Аренда свободных кресел</h3>
+                            <p style="margin:2px 0 0; color:var(--text-muted); font-size:0.86rem;">Сдавайте пустующие кресла независимым мастерам города и окупайте аренду помещения</p>
+                        </div>
+                    </div>
+                    <a href="barbermap_kg.html?filter=coworking" target="_blank" rel="noopener" class="btn btn-outline" style="width:auto; padding:8px 16px; font-size:0.82rem; font-weight:800; text-decoration:none; display:inline-flex; align-items:center; gap:6px; background:#fff;">
+                        🗺 Открыть карту коворкинга →
+                    </a>
+                </div>
+
+                <div style="background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:18px; margin-top:14px;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; padding-bottom:14px; border-bottom:1px solid #f1f5f9;">
+                        <div>
+                            <div style="font-weight:800; font-size:0.95rem; color:#0c192c;">Статус сдачи кресел на карте BarberMap</div>
+                            <div style="font-size:0.82rem; color:var(--text-muted);">Мастера в приложении увидят ваш салон со специальным значком «💺 Свободное кресло»</div>
+                        </div>
+                        <label style="position:relative; display:inline-block; width:52px; height:28px; cursor:pointer;">
+                            <input type="checkbox" id="coworking_enabled" onchange="toggleCoworkingForm(this.checked)" style="opacity:0; width:0; height:0;">
+                            <span style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background-color:#cbd5e1; transition:.3s; border-radius:34px;" id="coworking-toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div id="coworking-form-fields" style="display:none;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label style="font-weight:700;">Свободно кресел в зале *</label>
+                                <input type="number" id="coworking_count" min="1" max="20" class="form-control" value="2" placeholder="Например: 2" oninput="updateCoworkingPreview()">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-weight:700;">Цена за 1 час (сом) *</label>
+                                <input type="number" id="coworking_price_hour" min="0" step="50" class="form-control" value="150" placeholder="150" oninput="updateCoworkingPreview()">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-weight:700;">Цена за смену / день (сом)</label>
+                                <input type="number" id="coworking_price_day" min="0" step="100" class="form-control" value="900" placeholder="900" oninput="updateCoworkingPreview()">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label style="font-weight:700;">WhatsApp или номер для связи с мастерами *</label>
+                            <input type="tel" id="coworking_phone" class="form-control" placeholder="+996 555 12-34-56" oninput="updateCoworkingPreview()">
+                            <small style="color:var(--text-muted); font-size:0.78rem;">На этот номер приходящие мастера будут писать в WhatsApp для бронирования кресла</small>
+                        </div>
+
+                        <div class="form-group" style="margin-top:14px;">
+                            <label style="font-weight:700; margin-bottom:8px; display:block;">Что входит в стоимость аренды кресла?</label>
+                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px;">
+                                <label style="display:flex; align-items:center; gap:8px; font-size:0.86rem; cursor:pointer;">
+                                    <input type="checkbox" id="cw_perk_sink" checked onchange="updateCoworkingPreview()"> Профессиональная мойка головы
+                                </label>
+                                <label style="display:flex; align-items:center; gap:8px; font-size:0.86rem; cursor:pointer;">
+                                    <input type="checkbox" id="cw_perk_sterilizer" checked onchange="updateCoworkingPreview()"> Стерилизатор инструментов
+                                </label>
+                                <label style="display:flex; align-items:center; gap:8px; font-size:0.86rem; cursor:pointer;">
+                                    <input type="checkbox" id="cw_perk_light" checked onchange="updateCoworkingPreview()"> Кольцевой свет / фотозона
+                                </label>
+                                <label style="display:flex; align-items:center; gap:8px; font-size:0.86rem; cursor:pointer;">
+                                    <input type="checkbox" id="cw_perk_towels" checked onchange="updateCoworkingPreview()"> Чистые полотенца и воротнички
+                                </label>
+                                <label style="display:flex; align-items:center; gap:8px; font-size:0.86rem; cursor:pointer;">
+                                    <input type="checkbox" id="cw_perk_coffee" checked onchange="updateCoworkingPreview()"> Чай, зерновой кофе и Wi-Fi
+                                </label>
+                                <label style="display:flex; align-items:center; gap:8px; font-size:0.86rem; cursor:pointer;">
+                                    <input type="checkbox" id="cw_perk_parking" onchange="updateCoworkingPreview()"> Парковка для клиентов
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top:14px;">
+                            <label style="font-weight:700;">Дополнительные условия или график (необязательно)</label>
+                            <textarea id="coworking_rules" class="form-control" style="height:65px;" placeholder="Например: Свои ножницы и машинки. Чистота после клиента. Работаем с 10:00 до 21:00."></textarea>
+                        </div>
+
+                        <div style="display:flex; gap:12px; align-items:center; margin-top:16px;">
+                            <button type="button" class="btn" style="width:auto; padding:12px 28px; display:inline-flex; align-items:center; gap:8px;" onclick="saveCoworkingSettings(this)">
+                                💾 Сохранить и опубликовать на карте
+                            </button>
+                            <span id="cw-save-status" style="font-size:0.88rem; font-weight:700; color:var(--success); display:none;"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Preview Card for Owners -->
+                <div style="margin-top:20px; border-top:1px dashed #cbd5e1; padding-top:16px;">
+                    <div style="font-weight:800; font-size:0.88rem; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;">
+                        👁 Превью карточки (так её увидят мастера на карте города):
+                    </div>
+                    <div style="background:#fff; border:1.5px solid #0284c7; border-radius:16px; padding:16px; box-shadow:0 4px 14px rgba(2,132,199,0.12); max-width:550px;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+                            <div>
+                                <span style="background:#e0f2fe; color:#0369a1; font-size:0.75rem; font-weight:800; padding:3px 8px; border-radius:999px; display:inline-flex; align-items:center; gap:4px; margin-bottom:6px;">
+                                    💺 Барбер-коворкинг
+                                </span>
+                                <div style="font-weight:800; font-size:1.05rem; color:#0c192c;" id="cw-prev-name">Ваш салон</div>
+                                <div style="font-size:0.82rem; color:var(--text-muted); margin-top:2px;" id="cw-prev-address">Бишкек, адрес салона</div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-weight:900; font-size:1.15rem; color:#00873d;" id="cw-prev-price">150 сом / час</div>
+                                <div style="font-size:0.75rem; color:#64748b;" id="cw-prev-day">900 сом / день</div>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;" id="cw-prev-perks">
+                            <span style="font-size:11px; background:#f1f5f9; padding:2px 7px; border-radius:6px; color:#334155;">✓ Мойка головы</span>
+                            <span style="font-size:11px; background:#f1f5f9; padding:2px 7px; border-radius:6px; color:#334155;">✓ Стерилизатор</span>
+                            <span style="font-size:11px; background:#f1f5f9; padding:2px 7px; border-radius:6px; color:#334155;">✓ Свет/Фото</span>
+                            <span style="font-size:11px; background:#f1f5f9; padding:2px 7px; border-radius:6px; color:#334155;">✓ Чай/Кофе</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </main>

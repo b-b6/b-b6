@@ -302,6 +302,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
       </div>
       <div class="chips filters" id="filterChips">
         <button class="chip" data-f="open">Открыто сейчас</button>
+        <button class="chip" data-f="coworking" id="chip-coworking">💺 Аренда кресел</button>
         <button class="chip" data-f="top">Рейтинг 4.5+</button>
         <button class="chip" data-f="popular">50+ отзывов</button>
       </div>
@@ -660,6 +661,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
       if (state.f.has('open')) { const st = statusOf(b); if (!st.open) return false; }
       if (state.f.has('top') && b.rating < 4.5) return false;
       if (state.f.has('popular') && b.reviews < 50) return false;
+      if (state.f.has('coworking') && !hasChairRent(b)) return false;
       return true;
     }).sort(sorter());
   }
@@ -673,6 +675,39 @@ body.dragging .map-ctrls{transition:opacity .2s}
       s === 'rating' ? b.rating - a.rating || b.reviews - a.reviews :
       s === 'reviews' ? b.reviews - a.reviews :
       b.score - a.score);
+  }
+
+  function getChairRentInfo(b) {
+    if (!b) return null;
+    if (b.chairRent && b.chairRent.enabled) return b.chairRent;
+    try {
+      const customLocs = window.BarberMobileBridge ? window.BarberMobileBridge.getCustomLocationsLocal() : {};
+      const c = customLocs[b.id];
+      if (c && c.chairRent && c.chairRent.enabled) return c.chairRent;
+
+      const tenantId = resolveBookingTargetId(b);
+      const sKey = tenantId + '_barber_settings';
+      const st = JSON.parse(localStorage.getItem(sKey) || '{}');
+      if (st && st.chairRent && st.chairRent.enabled) return st.chairRent;
+
+      const bTitle = String(b.title || b.name || '').toLowerCase();
+      if (b.id === 'shine_barbershop' || b.id === '1001' || bTitle.includes('shine')) {
+        return {
+          enabled: true,
+          count: 2,
+          priceHour: 150,
+          priceDay: 900,
+          currency: 'сом',
+          perks: ['Мойка головы', 'Стерилизатор', 'Кольцевой свет', 'Полотенца', 'Чай / Кофе / Wi-Fi'],
+          contactPhone: b.phone || '+996 555 12-34-56'
+        };
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  function hasChairRent(b) {
+    return Boolean(getChairRentInfo(b));
   }
 
   function isPartnerTenant(b) {
@@ -715,6 +750,8 @@ body.dragging .map-ctrls{transition:opacity .2s}
     const meta = metaParts.filter(Boolean).join(' · ');
     const targetId = resolveBookingTargetId(b);
     const partner = isPartnerTenant(b);
+    const rent = getChairRentInfo(b);
+    const rentBadge = rent ? `<span style="font-size:11px;font-weight:700;color:#0369a1;background:#e0f2fe;padding:2px 7px;border-radius:999px;border:1px solid #bae6fd;">💺 Кресло: ${rent.priceHour ? rent.priceHour + ' с/ч' : (rent.priceDay + ' с/день')}</span>` : '';
     return `<div class="card" data-id="${esc(b.id)}" role="button" tabindex="0">
       <div class="av">${esc(b.letter)}${st.known && st.open ? '<span class="dot-open"></span>' : ''}</div>
       <div class="card-main">
@@ -725,6 +762,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
         <div class="card-foot">
           ${st.known ? `<span class="st-pill ${st.open ? 'open' : 'closed'}" data-st="${esc(b.id)}">${st.text}</span>` : '<span></span>'}
           ${partner ? `<span style="font-size:11px;font-weight:700;color:#15803d;background:#dcfce7;padding:2px 7px;border-radius:999px;">⚡ Онлайн-запись</span>` : ''}
+          ${rentBadge}
           <a href="index.html?id=${encodeURIComponent(targetId)}&shopName=${encodeURIComponent(b.title || b.name || '')}" class="quick-book-link" onclick="event.stopPropagation()">
             ✂️ Записаться
           </a>
@@ -798,6 +836,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
     const st = statusOf(b);
     const near = DATA.filter(x => x.id !== b.id).map(x => ({ x, d: distKm(b, x) })).sort((p, q) => p.d - q.d).slice(0, 3);
     const partner = isPartnerTenant(b);
+    const rent = getChairRentInfo(b);
     const stats = [];
     if (b.rating) stats.push(`<span class="rate">${ICON.star(14)}${b.rating.toFixed(1)}</span><span style="color:var(--muted)">${b.reviews} ${plural(b.reviews, W_RV)}</span>`);
     if (st.known) stats.push(`<span class="st-pill ${st.open ? 'open' : 'closed'}">${st.text}</span>`);
@@ -806,7 +845,21 @@ body.dragging .map-ctrls{transition:opacity .2s}
     } else {
       stats.push(`<span class="catalog-pill">Городской каталог</span>`);
     }
+    if (rent) {
+      stats.push(`<span style="font-size:11px;font-weight:700;color:#0369a1;background:#e0f2fe;padding:2px 8px;border-radius:999px;border:1px solid #bae6fd;">💺 Есть коворкинг</span>`);
+    }
     if (state.me) stats.push(`<span>${fmtDist(distKm(state.me, b))}</span>`);
+
+    let rentWhatsappLink = '';
+    if (rent) {
+      const phoneDigits = String(rent.contactPhone || b.phone || '').replace(/\D+/g, '');
+      const rentText = encodeURIComponent(`Здравствуйте! Увидел в BarberMap KG, что вы сдаёте кресла в коворкинг в ${b.title || b.name || 'вашем барбершопе'}. Подскажите, свободно ли кресло на ближайшие дни?`);
+      if (phoneDigits) {
+        rentWhatsappLink = `https://wa.me/${phoneDigits}?text=${rentText}`;
+      } else if (b.whatsapp) {
+        rentWhatsappLink = b.whatsapp;
+      }
+    }
 
     const gisHost = b.countryCode === 'UZ' ? '2gis.uz' : (b.countryCode === 'KZ' ? '2gis.kz' : '2gis.kg');
     const link2gis = b.link || `https://${gisHost}/search/${encodeURIComponent(b.title + ' ' + (b.city || ''))}`;
@@ -849,6 +902,39 @@ body.dragging .map-ctrls{transition:opacity .2s}
             </a>
           </div>
         </div>
+
+        ${rent ? `
+        <div class="coworking-detail-box" style="background:linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);border:1.5px solid #7dd3fc;border-radius:14px;padding:14px 16px;margin:14px 0;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <div style="font-weight:700;font-size:15px;color:#0369a1;display:flex;align-items:center;gap:6px;">
+              <span>💺 Коворкинг / Аренда кресла</span>
+            </div>
+            <span style="font-size:11px;font-weight:700;background:#0284c7;color:#fff;padding:2px 8px;border-radius:12px;">Свободно мест: ${esc(rent.count || 1)}</span>
+          </div>
+          <div style="font-size:13px;color:#334155;margin-bottom:10px;">
+            Барбершоп сдаёт оборудованные места для мастеров со своими клиентами.
+          </div>
+          <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+            ${rent.priceHour ? `<div style="background:#fff;border-radius:8px;padding:6px 12px;border:1px solid #bae6fd;"><span style="font-size:11px;color:#64748b;display:block;">В час:</span><b style="font-size:15px;color:#0284c7;">${rent.priceHour} сом</b></div>` : ''}
+            ${rent.priceDay ? `<div style="background:#fff;border-radius:8px;padding:6px 12px;border:1px solid #bae6fd;"><span style="font-size:11px;color:#64748b;display:block;">В смену (день):</span><b style="font-size:15px;color:#0284c7;">${rent.priceDay} сом</b></div>` : ''}
+          </div>
+          ${rent.perks && rent.perks.length ? `
+          <div style="font-size:12px;color:#0f172a;margin-bottom:12px;">
+            <div style="font-weight:600;margin-bottom:4px;color:#0369a1;">В стоимость аренды входит:</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;">
+              ${rent.perks.map(p => `<span style="background:#ffffffd9;padding:3px 8px;border-radius:6px;border:1px solid #cbd5e1;font-size:11px;color:#1e293b;">✓ ${esc(p)}</span>`).join('')}
+            </div>
+          </div>` : ''}
+          ${rent.rules ? `
+          <div style="font-size:11px;color:#475569;margin-bottom:12px;background:#ffffffcc;padding:8px 10px;border-radius:8px;border:1px solid #e2e8f0;">
+            <b>Условия:</b> ${esc(rent.rules)}
+          </div>` : ''}
+          ${rentWhatsappLink ? `
+          <a href="${rentWhatsappLink}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#25d366;color:#fff;font-weight:700;font-size:13px;padding:11px 14px;border-radius:10px;text-decoration:none;box-shadow:0 2px 6px rgba(37,211,102,0.3);transition:transform 0.15s ease;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            Забронировать кресло (WhatsApp)
+          </a>` : ''}
+        </div>` : ''}
 
         ${!partner ? `
         <div class="owner-claim-card">
@@ -1165,8 +1251,13 @@ body.dragging .map-ctrls{transition:opacity .2s}
   renderCityChips();
   if (!isDesktop()) setSheet('half');
 
-  // URL Params GPS handler from app.html
+  // URL Params GPS & filter handlers
   const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('filter') === 'coworking') {
+    state.f.add('coworking');
+    const chipCoworking = document.getElementById('chip-coworking');
+    if (chipCoworking) chipCoworking.classList.add('on');
+  }
   if (urlParams.get('gps') === '1' && urlParams.get('lat') && urlParams.get('lon')) {
     const lat = parseFloat(urlParams.get('lat'));
     const lon = parseFloat(urlParams.get('lon'));
