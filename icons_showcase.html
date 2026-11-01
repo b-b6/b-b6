@@ -36,7 +36,7 @@
         }
 
         .container {
-            max-width: 1080px;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
@@ -68,7 +68,7 @@
         .header p {
             color: #64748b;
             font-size: 15px;
-            max-width: 660px;
+            max-width: 680px;
             margin: 0 auto;
         }
 
@@ -102,7 +102,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin: 32px 0 16px;
+            margin: 36px 0 16px;
             padding-bottom: 8px;
             border-bottom: 2px solid #e2e8f0;
         }
@@ -156,9 +156,9 @@
         /* 3D Showcase Grid */
         .showcase-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 18px;
-            margin-bottom: 30px;
+            margin-bottom: 24px;
         }
 
         .icon-card {
@@ -360,9 +360,9 @@
 
 <div class="container">
     <div class="header">
-        <span class="badge">✨ Complete 3D Icon System (10/10)</span>
-        <h1>Коллекция 3D Значков и Живая Анимация</h1>
-        <p>Все ваши референсы переведены в фотореалистичные 3D-модели с прозрачным фоном, реалистичным светом и интерактивной физикой наклона</p>
+        <span class="badge">✨ Complete 3D Icon System (12/12)</span>
+        <h1>Полная Коллекция 3D Значков</h1>
+        <p>12 фотореалистичных 3D-моделей на прозрачном фоне с физикой наклона за курсором и плавной анимацией парения</p>
         <div class="back-nav">
             <a href="barbermap_kg.html">🗺️ Открыть Карту (BarberMap)</a>
             <a href="barber.html">✂️ Кабинет Мастера</a>
@@ -386,7 +386,7 @@
             </div>
             <div class="icon-title">Кресло Барбера</div>
             <div class="icon-role">💺 Коворкинг и Аренда</div>
-            <div class="icon-desc">Винтажная коричневая кожа, хромированный каркас и подножка с гидравликой.</div>
+            <div class="icon-desc">Винтажная коричневая кожа, хромированный каркас и гидравлическая педаль.</div>
             <div class="icon-actions">
                 <button class="btn-test active" onclick="setAnim(this, 'anim-float')">Парение</button>
                 <button class="btn-test" onclick="setAnim(this, 'anim-pulse')">Пульс</button>
@@ -450,12 +450,12 @@
         </div>
     </div>
 
-    <!-- BATCH 2: SERVICES & AMENITIES (5 NEW ICONS) -->
+    <!-- BATCH 2: SERVICES -->
     <div class="section-title-wrap">
         <div class="section-title">
-            <span>✂️ Услуги и Удобства (Вторая коллекция)</span>
+            <span>✂️ Услуги мужского груминга</span>
         </div>
-        <span class="section-subtitle">Для каталога услуг, прайс-листа и карточек салонов</span>
+        <span class="section-subtitle">Каталог услуг и карточки прайс-листа</span>
     </div>
 
     <div class="showcase-grid">
@@ -466,7 +466,7 @@
             </div>
             <div class="icon-title">Борода и Усы</div>
             <div class="icon-role">🧔 Моделирование бороды</div>
-            <div class="icon-desc">Перевод черного силуэта в объемный 3D стиль с текстурой темного эспрессо.</div>
+            <div class="icon-desc">Скульптурная борода с закрученными усами в глубоком оттенке темного эспрессо.</div>
             <div class="icon-actions">
                 <button class="btn-test active" onclick="setAnim(this, 'anim-float')">Парение</button>
                 <button class="btn-test" onclick="setAnim(this, 'anim-pulse')">Пульс</button>
@@ -480,7 +480,7 @@
             </div>
             <div class="icon-title">Опасная Бритва</div>
             <div class="icon-role">🪒 Королевское бритьё</div>
-            <div class="icon-desc">Перевод гравюры в 3D стальное лезвие с рукоятью из полированного темного дерева.</div>
+            <div class="icon-desc">Зеркальное стальное лезвие с рукоятью из полированного темного дерева.</div>
             <div class="icon-actions">
                 <button class="btn-test active" onclick="setAnim(this, 'anim-float')">Парение</button>
                 <button class="btn-test" onclick="setAnim(this, 'anim-pulse')">Пульс</button>
@@ -494,35 +494,73 @@
             </div>
             <div class="icon-title">Детская Стрижка</div>
             <div class="icon-role">👦 Маленькие джентльмены</div>
-            <div class="icon-desc">Перевод фото мальчика в стильный 3D-аватар с модной текстурной стрижкой фейд.</div>
+            <div class="icon-desc">Стильный 3D-аватар с модной текстурной стрижкой кроп-фейд.</div>
+            <div class="icon-actions">
+                <button class="btn-test active" onclick="setAnim(this, 'anim-float')">Парение</button>
+                <button class="btn-test" onclick="setAnim(this, 'anim-pulse')">Пульс</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BATCH 3: AMENITIES & COWORKING -->
+    <div class="section-title-wrap">
+        <div class="section-title">
+            <span>🏢 Удобства заведений и Коворкинга</span>
+        </div>
+        <span class="section-subtitle">Парковка, чистота, напитки и оборудование</span>
+    </div>
+
+    <div class="showcase-grid">
+        <!-- 9. PARKING -->
+        <div class="icon-card">
+            <div class="icon-stage anim-float" data-tilt="true">
+                <img src="assets/icons/3d/parking_3d.png" alt="Парковка" class="icon-img">
+            </div>
+            <div class="icon-title">Парковка Клиентов</div>
+            <div class="icon-role">🚗 Удобный паркинг</div>
+            <div class="icon-desc">Перевод 2D знака авто в современный 3D седан со стильным синим знаком «P».</div>
             <div class="icon-actions">
                 <button class="btn-test active" onclick="setAnim(this, 'anim-float')">Парение</button>
                 <button class="btn-test" onclick="setAnim(this, 'anim-pulse')">Пульс</button>
             </div>
         </div>
 
-        <!-- 9. COFFEE -->
+        <!-- 10. CLEANING / STERILITY -->
+        <div class="icon-card">
+            <div class="icon-stage anim-float" data-tilt="true">
+                <img src="assets/icons/3d/cleaning_3d.png" alt="Чистота" class="icon-img">
+            </div>
+            <div class="icon-title">Чистота и Стерильность</div>
+            <div class="icon-role">🧹 Дезинфекция и уборка</div>
+            <div class="icon-desc">Перевод эмблемы в 3D персонажа сервиса в кепке и фартуке с сияющей звездой чистоты.</div>
+            <div class="icon-actions">
+                <button class="btn-test active" onclick="setAnim(this, 'anim-float')">Парение</button>
+                <button class="btn-test" onclick="setAnim(this, 'anim-pulse')">Пульс</button>
+            </div>
+        </div>
+
+        <!-- 11. COFFEE -->
         <div class="icon-card">
             <div class="icon-stage anim-float" data-tilt="true">
                 <img src="assets/icons/3d/coffee_3d.png" alt="Кофе и чай" class="icon-img">
             </div>
             <div class="icon-title">Зерновой Кофе</div>
-            <div class="icon-role">☕ Комфорт и зона ожидания</div>
-            <div class="icon-desc">Перевод пиксельной чашки в глянцевую 3D керамику с паром и пенкой крема.</div>
+            <div class="icon-role">☕ Зона отдыха и Wi-Fi</div>
+            <div class="icon-desc">Глянцевая 3D керамика с горячим эспрессо, пенкой крема и мягким паром.</div>
             <div class="icon-actions">
                 <button class="btn-test active" onclick="setAnim(this, 'anim-float')">Парение</button>
                 <button class="btn-test" onclick="setAnim(this, 'anim-pulse')">Пульс</button>
             </div>
         </div>
 
-        <!-- 10. LIGHT -->
+        <!-- 12. LIGHT -->
         <div class="icon-card">
             <div class="icon-stage anim-pulse" data-tilt="true">
                 <img src="assets/icons/3d/light_3d.png" alt="Свет" class="icon-img">
             </div>
             <div class="icon-title">Лампа / Фотозона</div>
             <div class="icon-role">💡 Профессиональный свет</div>
-            <div class="icon-desc">Перевод мультяшной лампочки в реалистичное светящееся 3D стекло с латунным цоколем.</div>
+            <div class="icon-desc">Реалистичное светящееся 3D стекло с латунным цоколем и теплой нитью накала.</div>
             <div class="icon-actions">
                 <button class="btn-test" onclick="setAnim(this, 'anim-float')">Парение</button>
                 <button class="btn-test active" onclick="setAnim(this, 'anim-pulse')">Пульс</button>
@@ -554,7 +592,7 @@
 
             <!-- Service List with 3D Icons -->
             <div class="service-sample-box">
-                <div style="font-size: 13px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Экран записи на стрижку:</div>
+                <div style="font-size: 13px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Экран онлайн-записи:</div>
                 
                 <div class="service-chip">
                     <div class="left">

@@ -935,6 +935,8 @@ body.dragging .map-ctrls{transition:opacity .2s}
                 const pl = String(p).toLowerCase();
                 if (pl.includes('чай') || pl.includes('кофе')) pIcon = '<img src="assets/icons/3d/coffee_3d.png" style="width:14px;height:14px;object-fit:contain;vertical-align:-2px;margin-right:4px;" alt="">';
                 else if (pl.includes('свет') || pl.includes('фото')) pIcon = '<img src="assets/icons/3d/light_3d.png" style="width:14px;height:14px;object-fit:contain;vertical-align:-2px;margin-right:4px;" alt="">';
+                else if (pl.includes('парковк')) pIcon = '<img src="assets/icons/3d/parking_3d.png" style="width:14px;height:14px;object-fit:contain;vertical-align:-2px;margin-right:4px;" alt="">';
+                else if (pl.includes('стерилизатор') || pl.includes('чистот') || pl.includes('уборк') || pl.includes('полотенц')) pIcon = '<img src="assets/icons/3d/cleaning_3d.png" style="width:14px;height:14px;object-fit:contain;vertical-align:-2px;margin-right:4px;" alt="">';
                 return `<span style="background:#ffffffd9;padding:3px 8px;border-radius:6px;border:1px solid #cbd5e1;font-size:11px;color:#1e293b;display:inline-flex;align-items:center;">${pIcon}${esc(p)}</span>`;
               }).join('')}
             </div>
