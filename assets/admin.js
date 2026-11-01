@@ -410,7 +410,16 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
 
             const perksBox = document.getElementById('cw-prev-perks');
             if (perksBox) {
-                perksBox.innerHTML = perks.map(p => `<span style="font-size:11px; background:#f1f5f9; padding:2px 7px; border-radius:6px; color:#334155;">✓ ${p}</span>`).join('');
+                perksBox.innerHTML = perks.map(p => {
+                    let pIcon = '✓ ';
+                    const pl = String(p).toLowerCase();
+                    if (pl.includes('чай') || pl.includes('кофе')) pIcon = '<img src="assets/icons/3d/coffee_3d.png" style="width:14px;height:14px;object-fit:contain;vertical-align:-2px;margin-right:4px;" alt="">';
+                    else if (pl.includes('свет') || pl.includes('фото')) pIcon = '<img src="assets/icons/3d/light_3d.png" style="width:14px;height:14px;object-fit:contain;vertical-align:-2px;margin-right:4px;" alt="">';
+                    else if (pl.includes('парковк')) pIcon = '<img src="assets/icons/3d/parking_3d.png" style="width:14px;height:14px;object-fit:contain;vertical-align:-2px;margin-right:4px;" alt="">';
+                    else if (pl.includes('стерилизатор') || pl.includes('полотенц')) pIcon = '<img src="assets/icons/3d/cleaning_3d.png" style="width:14px;height:14px;object-fit:contain;vertical-align:-2px;margin-right:4px;" alt="">';
+                    else if (pl.includes('мойка')) pIcon = '<img src="assets/icons/3d/chair_3d.png" style="width:14px;height:14px;object-fit:contain;vertical-align:-2px;margin-right:4px;" alt="">';
+                    return `<span style="font-size:11px; background:#f1f5f9; padding:3px 8px; border-radius:6px; color:#334155; display:inline-flex; align-items:center;">${pIcon}${p}</span>`;
+                }).join('');
             }
         }
 

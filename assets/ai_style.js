@@ -1,4 +1,4 @@
-﻿const i18n = {
+const i18n = {
             ru: {
                 nav_back: "← На сайт записи", hero_title: "Подбор стрижки по лицу", hero_desc: "Загрузите своё фото — нейросеть определит форму вашего лица и подберёт идеальные стрижки специально для вас.", btn_catalog: "Посмотреть наш каталог идей",
                 how_1_title: "Сфотографируйтесь", how_1_desc: "Фас, хорошее освещение", how_2_title: "ИИ анализирует", how_2_desc: "Определяет форму лица за секунды", how_3_title: "Ваши стрижки", how_3_desc: "4 идеальных варианта с объяснением",
@@ -38,6 +38,8 @@
         };
 
         let currentLang = localStorage.getItem('barber_lang') || 'ru';
+        let currentFaceData = null;
+        let selectedImageBase64 = null;
 
         function changeLanguage(lang) {
             currentLang = lang; localStorage.setItem('barber_lang', lang); document.getElementById('lang-select').value = lang;

@@ -310,7 +310,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
       <div class="chips filters" id="filterChips">
         <button class="chip" data-f="open">Открыто сейчас</button>
         <button class="chip" data-f="coworking" id="chip-coworking" style="display:inline-flex;align-items:center;gap:6px;"><img src="assets/icons/3d/chair_3d.png" style="width:15px;height:15px;object-fit:contain;" alt="">Аренда кресел</button>
-        <button class="chip" data-f="top">Рейтинг 4.5+</button>
+        <button class="chip" data-f="top" style="display:inline-flex;align-items:center;gap:5px;"><img src="assets/icons/3d/star_3d.png" style="width:15px;height:15px;object-fit:contain;" alt="">Рейтинг 4.5+</button>
         <button class="chip" data-f="popular">50+ отзывов</button>
       </div>
       <div id="list" class="list"></div>
@@ -698,14 +698,25 @@ body.dragging .map-ctrls{transition:opacity .2s}
       if (st && st.chairRent && st.chairRent.enabled) return st.chairRent;
 
       const bTitle = String(b.title || b.name || '').toLowerCase();
-      if (b.id === 'shine_barbershop' || b.id === '1001' || bTitle.includes('shine')) {
+      if (
+        b.id === 'shine_barbershop' ||
+        b.id === '1001' ||
+        bTitle.includes('shine') ||
+        bTitle.includes('312 prime') ||
+        bTitle.includes('1905') ||
+        bTitle === '21' ||
+        bTitle.includes('legend') ||
+        bTitle.includes('borodach') ||
+        bTitle.includes('topgun') ||
+        bTitle.includes('oldboy')
+      ) {
         return {
           enabled: true,
           count: 2,
           priceHour: 150,
           priceDay: 900,
-          currency: 'сом',
-          perks: ['Мойка головы', 'Стерилизатор', 'Кольцевой свет', 'Полотенца', 'Чай / Кофе / Wi-Fi'],
+          currency: b.countryCode === 'UZ' ? 'сум' : (b.countryCode === 'KZ' ? '₸' : 'сом'),
+          perks: ['Мойка головы', 'Стерилизатор и чистота', 'Кольцевой свет', 'Чистые полотенца', 'Чай / Кофе / Wi-Fi', 'Парковка для клиентов'],
           contactPhone: b.phone || '+996 555 12-34-56'
         };
       }
@@ -845,15 +856,15 @@ body.dragging .map-ctrls{transition:opacity .2s}
     const partner = isPartnerTenant(b);
     const rent = getChairRentInfo(b);
     const stats = [];
-    if (b.rating) stats.push(`<span class="rate">${ICON.star(14)}${b.rating.toFixed(1)}</span><span style="color:var(--muted)">${b.reviews} ${plural(b.reviews, W_RV)}</span>`);
+    if (b.rating) stats.push(`<span class="rate" style="display:inline-flex;align-items:center;gap:3px;"><img src="assets/icons/3d/star_3d.png" style="width:15px;height:15px;object-fit:contain;" alt="★">${b.rating.toFixed(1)}</span><span style="color:var(--muted)">${b.reviews} ${plural(b.reviews, W_RV)}</span>`);
     if (st.known) stats.push(`<span class="st-pill ${st.open ? 'open' : 'closed'}">${st.text}</span>`);
     if (partner) {
-      stats.push(`<span class="partner-pill">⚡ Онлайн-запись</span>`);
+      stats.push(`<span class="partner-pill" style="display:inline-flex;align-items:center;gap:4px;"><img src="assets/icons/3d/lightning_3d.png" style="width:13px;height:13px;object-fit:contain;" alt=""> Онлайн-запись</span>`);
     } else {
       stats.push(`<span class="catalog-pill">Городской каталог</span>`);
     }
     if (rent) {
-      stats.push(`<span style="font-size:11px;font-weight:700;color:#0369a1;background:#e0f2fe;padding:2px 8px;border-radius:999px;border:1px solid #bae6fd;">💺 Есть коворкинг</span>`);
+      stats.push(`<span style="font-size:11px;font-weight:700;color:#0369a1;background:#e0f2fe;padding:2px 8px;border-radius:999px;border:1px solid #bae6fd;display:inline-flex;align-items:center;gap:4px;"><img src="assets/icons/3d/chair_3d.png" style="width:13px;height:13px;object-fit:contain;" alt=""> Есть коворкинг</span>`);
     }
     if (state.me) stats.push(`<span>${fmtDist(distKm(state.me, b))}</span>`);
 

@@ -1146,7 +1146,7 @@
                 if (el.value.trim()) services.push({ name: el.value.trim(), price: srvPrices[idx]?.value.trim() || '' });
             });
 
-            const avatarUrl = photos[0] || 'assets/master_1.jpg';
+            const avatarUrl = photos[0] || 'assets/pwa-icon-192.png';
             const pointId = editingBarberId || (issueAccess ? String(issuedTenantId) : ('kg_' + Date.now()));
 
             const barberData = {
