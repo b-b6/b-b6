@@ -930,7 +930,13 @@ body.dragging .map-ctrls{transition:opacity .2s}
           <div style="font-size:12px;color:#0f172a;margin-bottom:12px;">
             <div style="font-weight:600;margin-bottom:4px;color:#0369a1;">В стоимость аренды входит:</div>
             <div style="display:flex;flex-wrap:wrap;gap:6px;">
-              ${rent.perks.map(p => `<span style="background:#ffffffd9;padding:3px 8px;border-radius:6px;border:1px solid #cbd5e1;font-size:11px;color:#1e293b;">✓ ${esc(p)}</span>`).join('')}
+              ${rent.perks.map(p => {
+                let pIcon = '✓ ';
+                const pl = String(p).toLowerCase();
+                if (pl.includes('чай') || pl.includes('кофе')) pIcon = '<img src="assets/icons/3d/coffee_3d.png" style="width:14px;height:14px;object-fit:contain;vertical-align:-2px;margin-right:4px;" alt="">';
+                else if (pl.includes('свет') || pl.includes('фото')) pIcon = '<img src="assets/icons/3d/light_3d.png" style="width:14px;height:14px;object-fit:contain;vertical-align:-2px;margin-right:4px;" alt="">';
+                return `<span style="background:#ffffffd9;padding:3px 8px;border-radius:6px;border:1px solid #cbd5e1;font-size:11px;color:#1e293b;display:inline-flex;align-items:center;">${pIcon}${esc(p)}</span>`;
+              }).join('')}
             </div>
           </div>` : ''}
           ${rent.rules ? `

@@ -36,7 +36,7 @@
         }
 
         .container {
-            max-width: 960px;
+            max-width: 1080px;
             margin: 0 auto;
         }
 
@@ -68,7 +68,7 @@
         .header p {
             color: #64748b;
             font-size: 15px;
-            max-width: 600px;
+            max-width: 660px;
             margin: 0 auto;
         }
 
@@ -98,35 +98,50 @@
             background: var(--navy-soft);
         }
 
+        .section-title-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 32px 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--navy);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-subtitle {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
         /* 3D Animation Effects */
         @keyframes float3D {
             0%, 100% {
                 transform: translateY(0px) rotate(0deg);
-                filter: drop-shadow(0 12px 18px rgba(12, 25, 44, 0.18));
+                filter: drop-shadow(0 10px 16px rgba(12, 25, 44, 0.16));
             }
             50% {
                 transform: translateY(-8px) rotate(-1.5deg);
-                filter: drop-shadow(0 20px 24px rgba(12, 25, 44, 0.24));
+                filter: drop-shadow(0 18px 22px rgba(12, 25, 44, 0.24));
             }
         }
 
         @keyframes pulseGlow {
             0%, 100% {
                 transform: scale(1);
-                filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.6)) drop-shadow(0 8px 14px rgba(12, 25, 44, 0.15));
+                filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.55)) drop-shadow(0 8px 14px rgba(12, 25, 44, 0.15));
             }
             50% {
                 transform: scale(1.06);
                 filter: drop-shadow(0 0 22px rgba(251, 191, 36, 0.95)) drop-shadow(0 14px 20px rgba(12, 25, 44, 0.22));
-            }
-        }
-
-        @keyframes shineSweep {
-            0% {
-                transform: translateX(-120%) skewX(-20deg);
-            }
-            20%, 100% {
-                transform: translateX(220%) skewX(-20deg);
             }
         }
 
@@ -141,21 +156,21 @@
         /* 3D Showcase Grid */
         .showcase-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+            margin-bottom: 30px;
         }
 
         .icon-card {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 24px;
+            border-radius: 22px;
+            padding: 22px;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            box-shadow: 0 4px 20px rgba(12, 25, 44, 0.05);
+            box-shadow: 0 4px 18px rgba(12, 25, 44, 0.04);
             transition: transform 0.25s, box-shadow 0.25s;
             position: relative;
             overflow: hidden;
@@ -164,16 +179,16 @@
 
         .icon-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 32px rgba(12, 25, 44, 0.1);
+            box-shadow: 0 12px 30px rgba(12, 25, 44, 0.09);
         }
 
         .icon-stage {
-            width: 130px;
-            height: 130px;
+            width: 120px;
+            height: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             cursor: pointer;
             position: relative;
             transform-style: preserve-3d;
@@ -194,24 +209,25 @@
         }
 
         .icon-title {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 800;
             color: var(--navy);
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         .icon-role {
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 12.5px;
+            font-weight: 700;
             color: #0284c7;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .icon-desc {
-            font-size: 12.5px;
+            font-size: 12px;
             color: #64748b;
             line-height: 1.4;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
+            min-height: 34px;
         }
 
         .icon-actions {
@@ -222,9 +238,9 @@
 
         .btn-test {
             flex: 1;
-            padding: 8px 12px;
-            border-radius: 10px;
-            font-size: 12px;
+            padding: 7px 10px;
+            border-radius: 9px;
+            font-size: 11.5px;
             font-weight: 700;
             border: 1px solid var(--border);
             background: #ffffff;
@@ -246,6 +262,7 @@
             border-radius: 24px;
             padding: 28px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            margin-top: 36px;
         }
 
         .demo-section h2 {
@@ -281,8 +298,8 @@
         }
 
         .live-banner .icon-holder {
-            width: 60px;
-            height: 60px;
+            width: 54px;
+            height: 54px;
             flex-shrink: 0;
         }
 
@@ -292,42 +309,50 @@
             object-fit: contain;
         }
 
-        .pill-sample {
-            display: inline-flex;
+        .service-sample-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .service-chip {
+            display: flex;
             align-items: center;
-            gap: 8px;
-            background: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            padding: 8px 14px;
-            border-radius: 999px;
+            justify-content: space-between;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            padding: 8px 12px;
+            border-radius: 12px;
+            transition: all 0.15s;
+        }
+
+        .service-chip:hover {
+            border-color: var(--navy);
+            transform: translateY(-1px);
+        }
+
+        .service-chip .left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             font-weight: 700;
-            font-size: 13px;
-            color: #166534;
-        }
-
-        .pill-sample img {
-            width: 20px;
-            height: 20px;
-            object-fit: contain;
-        }
-
-        .rate-sample {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #fffbeb;
-            border: 1px solid #fef3c7;
-            padding: 8px 14px;
-            border-radius: 999px;
-            font-weight: 800;
             font-size: 13.5px;
-            color: #92400e;
         }
 
-        .rate-sample img {
-            width: 22px;
-            height: 22px;
+        .service-chip .left img {
+            width: 24px;
+            height: 24px;
             object-fit: contain;
+        }
+
+        .service-chip .price {
+            font-weight: 800;
+            font-size: 13px;
+            color: #00873d;
         }
     </style>
 </head>
@@ -335,14 +360,22 @@
 
 <div class="container">
     <div class="header">
-        <span class="badge">✨ 3D Icon System</span>
-        <h1>3D Значки и Живая Анимация</h1>
-        <p>Ваши референсы переведены в фотореалистичные 3D-модели с прозрачным фоном и интерактивными эффектами физики</p>
+        <span class="badge">✨ Complete 3D Icon System (10/10)</span>
+        <h1>Коллекция 3D Значков и Живая Анимация</h1>
+        <p>Все ваши референсы переведены в фотореалистичные 3D-модели с прозрачным фоном, реалистичным светом и интерактивной физикой наклона</p>
         <div class="back-nav">
             <a href="barbermap_kg.html">🗺️ Открыть Карту (BarberMap)</a>
             <a href="barber.html">✂️ Кабинет Мастера</a>
             <a href="admin.html">💺 Панель Владельца</a>
         </div>
+    </div>
+
+    <!-- BATCH 1: CORE 5 ICONS -->
+    <div class="section-title-wrap">
+        <div class="section-title">
+            <span>🔥 ТОП-5 Главных значков платформы</span>
+        </div>
+        <span class="section-subtitle">Основа бренда, карты и навигации</span>
     </div>
 
     <div class="showcase-grid">
@@ -355,8 +388,8 @@
             <div class="icon-role">💺 Коворкинг и Аренда</div>
             <div class="icon-desc">Винтажная коричневая кожа, хромированный каркас и подножка с гидравликой.</div>
             <div class="icon-actions">
-                <button class="btn-test active" onclick="setAnim(this, 'chair', 'anim-float')">Парение</button>
-                <button class="btn-test" onclick="setAnim(this, 'chair', 'anim-pulse')">Пульс</button>
+                <button class="btn-test active" onclick="setAnim(this, 'anim-float')">Парение</button>
+                <button class="btn-test" onclick="setAnim(this, 'anim-pulse')">Пульс</button>
             </div>
         </div>
 
@@ -366,11 +399,11 @@
                 <img src="assets/icons/3d/barberpole_3d.png" alt="Барберпол" class="icon-img">
             </div>
             <div class="icon-title">Барберпол</div>
-            <div class="icon-role">💈 Главный символ барбершопа</div>
-            <div class="icon-desc">Глянцевый стеклянный цилиндр, красно-бело-синяя спираль и хромированные купола.</div>
+            <div class="icon-role">💈 Символ заведения</div>
+            <div class="icon-desc">Стеклянный цилиндр, красно-бело-синяя спираль и хромированные купола.</div>
             <div class="icon-actions">
-                <button class="btn-test active" onclick="setAnim(this, 'barberpole', 'anim-float')">Парение</button>
-                <button class="btn-test" onclick="setAnim(this, 'barberpole', 'anim-pulse')">Пульс</button>
+                <button class="btn-test active" onclick="setAnim(this, 'anim-float')">Парение</button>
+                <button class="btn-test" onclick="setAnim(this, 'anim-pulse')">Пульс</button>
             </div>
         </div>
 
@@ -381,10 +414,10 @@
             </div>
             <div class="icon-title">Ножницы Мастера</div>
             <div class="icon-role">✂️ Стрижка и Запись</div>
-            <div class="icon-desc">Перевод вашего ч/б эскиза в 3D хром с золотым винтом и срезаемой прядью.</div>
+            <div class="icon-desc">Перевод ч/б эскиза в 3D хром с золотым винтом и срезаемой прядью.</div>
             <div class="icon-actions">
-                <button class="btn-test active" onclick="setAnim(this, 'scissors', 'anim-float')">Парение</button>
-                <button class="btn-test" onclick="setAnim(this, 'scissors', 'anim-pulse')">Пульс</button>
+                <button class="btn-test active" onclick="setAnim(this, 'anim-float')">Парение</button>
+                <button class="btn-test" onclick="setAnim(this, 'anim-pulse')">Пульс</button>
             </div>
         </div>
 
@@ -395,10 +428,10 @@
             </div>
             <div class="icon-title">Молния Записи</div>
             <div class="icon-role">⚡ Мгновенная онлайн-запись</div>
-            <div class="icon-desc">Перевод пиксельного арта в сияющий золотой 3D-объём с металлическими фасками.</div>
+            <div class="icon-desc">Перевод пиксель-арта в сияющий золотой 3D-объём с металлическими фасками.</div>
             <div class="icon-actions">
-                <button class="btn-test" onclick="setAnim(this, 'lightning', 'anim-float')">Парение</button>
-                <button class="btn-test active" onclick="setAnim(this, 'lightning', 'anim-pulse')">Пульс</button>
+                <button class="btn-test" onclick="setAnim(this, 'anim-float')">Парение</button>
+                <button class="btn-test active" onclick="setAnim(this, 'anim-pulse')">Пульс</button>
             </div>
         </div>
 
@@ -411,8 +444,88 @@
             <div class="icon-role">⭐ Рейтинг и отзывы</div>
             <div class="icon-desc">Полированное золото с острыми гранями, теплыми отблесками и мягкой тенью.</div>
             <div class="icon-actions">
-                <button class="btn-test active" onclick="setAnim(this, 'star', 'anim-float')">Парение</button>
-                <button class="btn-test" onclick="setAnim(this, 'star', 'anim-pulse')">Пульс</button>
+                <button class="btn-test active" onclick="setAnim(this, 'anim-float')">Парение</button>
+                <button class="btn-test" onclick="setAnim(this, 'anim-pulse')">Пульс</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BATCH 2: SERVICES & AMENITIES (5 NEW ICONS) -->
+    <div class="section-title-wrap">
+        <div class="section-title">
+            <span>✂️ Услуги и Удобства (Вторая коллекция)</span>
+        </div>
+        <span class="section-subtitle">Для каталога услуг, прайс-листа и карточек салонов</span>
+    </div>
+
+    <div class="showcase-grid">
+        <!-- 6. BEARD -->
+        <div class="icon-card">
+            <div class="icon-stage anim-float" data-tilt="true">
+                <img src="assets/icons/3d/beard_3d.png" alt="Борода" class="icon-img">
+            </div>
+            <div class="icon-title">Борода и Усы</div>
+            <div class="icon-role">🧔 Моделирование бороды</div>
+            <div class="icon-desc">Перевод черного силуэта в объемный 3D стиль с текстурой темного эспрессо.</div>
+            <div class="icon-actions">
+                <button class="btn-test active" onclick="setAnim(this, 'anim-float')">Парение</button>
+                <button class="btn-test" onclick="setAnim(this, 'anim-pulse')">Пульс</button>
+            </div>
+        </div>
+
+        <!-- 7. RAZOR -->
+        <div class="icon-card">
+            <div class="icon-stage anim-float" data-tilt="true">
+                <img src="assets/icons/3d/razor_3d.png" alt="Опасная бритва" class="icon-img">
+            </div>
+            <div class="icon-title">Опасная Бритва</div>
+            <div class="icon-role">🪒 Королевское бритьё</div>
+            <div class="icon-desc">Перевод гравюры в 3D стальное лезвие с рукоятью из полированного темного дерева.</div>
+            <div class="icon-actions">
+                <button class="btn-test active" onclick="setAnim(this, 'anim-float')">Парение</button>
+                <button class="btn-test" onclick="setAnim(this, 'anim-pulse')">Пульс</button>
+            </div>
+        </div>
+
+        <!-- 8. KID -->
+        <div class="icon-card">
+            <div class="icon-stage anim-float" data-tilt="true">
+                <img src="assets/icons/3d/kid_3d.png" alt="Детская стрижка" class="icon-img">
+            </div>
+            <div class="icon-title">Детская Стрижка</div>
+            <div class="icon-role">👦 Маленькие джентльмены</div>
+            <div class="icon-desc">Перевод фото мальчика в стильный 3D-аватар с модной текстурной стрижкой фейд.</div>
+            <div class="icon-actions">
+                <button class="btn-test active" onclick="setAnim(this, 'anim-float')">Парение</button>
+                <button class="btn-test" onclick="setAnim(this, 'anim-pulse')">Пульс</button>
+            </div>
+        </div>
+
+        <!-- 9. COFFEE -->
+        <div class="icon-card">
+            <div class="icon-stage anim-float" data-tilt="true">
+                <img src="assets/icons/3d/coffee_3d.png" alt="Кофе и чай" class="icon-img">
+            </div>
+            <div class="icon-title">Зерновой Кофе</div>
+            <div class="icon-role">☕ Комфорт и зона ожидания</div>
+            <div class="icon-desc">Перевод пиксельной чашки в глянцевую 3D керамику с паром и пенкой крема.</div>
+            <div class="icon-actions">
+                <button class="btn-test active" onclick="setAnim(this, 'anim-float')">Парение</button>
+                <button class="btn-test" onclick="setAnim(this, 'anim-pulse')">Пульс</button>
+            </div>
+        </div>
+
+        <!-- 10. LIGHT -->
+        <div class="icon-card">
+            <div class="icon-stage anim-pulse" data-tilt="true">
+                <img src="assets/icons/3d/light_3d.png" alt="Свет" class="icon-img">
+            </div>
+            <div class="icon-title">Лампа / Фотозона</div>
+            <div class="icon-role">💡 Профессиональный свет</div>
+            <div class="icon-desc">Перевод мультяшной лампочки в реалистичное светящееся 3D стекло с латунным цоколем.</div>
+            <div class="icon-actions">
+                <button class="btn-test" onclick="setAnim(this, 'anim-float')">Парение</button>
+                <button class="btn-test active" onclick="setAnim(this, 'anim-pulse')">Пульс</button>
             </div>
         </div>
     </div>
@@ -439,22 +552,40 @@
                 </a>
             </div>
 
-            <!-- Badges sample -->
-            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px; justify-content: center;">
-                <div style="font-size: 13px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Фирменные плашки карточек:</div>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-                    <div class="pill-sample">
-                        <img src="assets/icons/3d/lightning_3d.png" class="anim-pulse" alt="Онлайн">
-                        <span>Онлайн-запись</span>
+            <!-- Service List with 3D Icons -->
+            <div class="service-sample-box">
+                <div style="font-size: 13px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Экран записи на стрижку:</div>
+                
+                <div class="service-chip">
+                    <div class="left">
+                        <img src="assets/icons/3d/scissors_3d.png" alt="Стрижка">
+                        <span>Мужская стрижка</span>
                     </div>
-                    <div class="rate-sample">
-                        <img src="assets/icons/3d/star_3d.png" class="anim-float" alt="Звезда">
-                        <span>4.9 (120+ отзывов)</span>
+                    <span class="price">700 сом</span>
+                </div>
+
+                <div class="service-chip">
+                    <div class="left">
+                        <img src="assets/icons/3d/beard_3d.png" alt="Борода">
+                        <span>Стрижка и моделирование бороды</span>
                     </div>
-                    <div style="display: inline-flex; align-items: center; gap: 8px; background: #e0f2fe; border: 1px solid #bae6fd; padding: 8px 14px; border-radius: 999px; font-weight: 700; font-size: 13px; color: #0369a1;">
-                        <img src="assets/icons/3d/chair_3d.png" style="width: 20px; height: 20px; object-fit: contain;" alt="Кресло">
-                        <span>150 сом / час</span>
+                    <span class="price">450 сом</span>
+                </div>
+
+                <div class="service-chip">
+                    <div class="left">
+                        <img src="assets/icons/3d/razor_3d.png" alt="Бритва">
+                        <span>Королевское бритьё опасной бритвой</span>
                     </div>
+                    <span class="price">600 сом</span>
+                </div>
+
+                <div class="service-chip">
+                    <div class="left">
+                        <img src="assets/icons/3d/kid_3d.png" alt="Детская">
+                        <span>Детская стрижка (до 12 лет)</span>
+                    </div>
+                    <span class="price">500 сом</span>
                 </div>
             </div>
         </div>
@@ -463,7 +594,7 @@
 
 <script>
     // Switch animations on button click
-    function setAnim(btn, iconType, animClass) {
+    function setAnim(btn, animClass) {
         const card = btn.closest('.icon-card');
         const stage = card.querySelector('.icon-stage');
         stage.classList.remove('anim-float', 'anim-pulse');
