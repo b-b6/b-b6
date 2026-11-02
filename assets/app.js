@@ -684,20 +684,6 @@ const i18n = {
         }
 
         // SERVICES (STEP 1)
-        function getService3DIcon(title) {
-            const s = String(title || '').toLowerCase();
-            if (s.includes('бород') || s.includes('усы') || s.includes('усов') || s.includes('soqol')) {
-                return 'assets/icons/3d/beard_3d.png';
-            }
-            if (s.includes('брит') || s.includes('королевск') || s.includes('лезви') || s.includes('shave') || s.includes('ustara')) {
-                return 'assets/icons/3d/razor_3d.png';
-            }
-            if (s.includes('детск') || s.includes('ребенок') || s.includes('малыш') || s.includes('подрост') || s.includes('kid') || s.includes('bola')) {
-                return 'assets/icons/3d/kid_3d.png';
-            }
-            return 'assets/icons/3d/scissors_3d.png';
-        }
-
         function renderServicesUI() {
             const list = document.getElementById('services-container');
             if (!list) return;
@@ -713,8 +699,7 @@ const i18n = {
                     document.querySelectorAll('#step-1 .service-card').forEach(c => c.classList.remove('selected')); card.classList.add('selected');
                     document.getElementById('btn-next-1').disabled = false;
                 };
-                let iconSrc = getService3DIcon(t.title || t.ruTitle);
-                card.innerHTML = `<div style="display:flex; align-items:center; gap:12px; flex:1;"><div style="width:38px; height:38px; border-radius:10px; background:var(--navy-soft); display:flex; align-items:center; justify-content:center; flex-shrink:0; padding:2px;"><img src="${iconSrc}" style="width:100%; height:100%; object-fit:contain;" alt=""></div><div class="service-info"><h3>${t.title}</h3><p>${t.desc}</p></div></div><div style="text-align:right; flex-shrink:0;"><div class="service-price">${s.price} сом</div><div style="font-size:0.82rem; color:var(--text-muted); margin-top:6px;">⏱ ${durText}</div></div>`;
+                card.innerHTML = `<div class="service-info"><h3>${t.title}</h3><p>${t.desc}</p></div><div style="text-align:right; flex-shrink:0;"><div class="service-price">${s.price} сом</div><div style="font-size:0.82rem; color:var(--text-muted); margin-top:6px;">⏱ ${durText}</div></div>`;
                 list.appendChild(card);
             });
             // если услуга уже выбрана (возврат назад) — разблокируем кнопку

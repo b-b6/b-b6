@@ -243,13 +243,6 @@ body.dragging .map-ctrls{transition:opacity .2s}
   .modal-card{border-radius:22px;padding-bottom:14px}
   .toast{left:calc(50% + 205px)}
 }
-@keyframes float3D {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-3px) rotate(-1deg); }
-}
-.anim-3d-float {
-  animation: float3D 3.2s ease-in-out infinite;
-}
 </style>
 </head>
 <body>
@@ -309,8 +302,8 @@ body.dragging .map-ctrls{transition:opacity .2s}
       </div>
       <div class="chips filters" id="filterChips">
         <button class="chip" data-f="open">Открыто сейчас</button>
-        <button class="chip" data-f="coworking" id="chip-coworking" style="display:inline-flex;align-items:center;gap:6px;"><img src="assets/icons/3d/chair_3d.png" style="width:15px;height:15px;object-fit:contain;" alt="">Аренда кресел</button>
-        <button class="chip" data-f="top" style="display:inline-flex;align-items:center;gap:5px;"><img src="assets/icons/3d/star_3d.png" style="width:15px;height:15px;object-fit:contain;" alt="">Рейтинг 4.5+</button>
+        <button class="chip" data-f="coworking" id="chip-coworking">💺 Аренда кресел</button>
+        <button class="chip" data-f="top">Рейтинг 4.5+</button>
         <button class="chip" data-f="popular">50+ отзывов</button>
       </div>
       <div id="list" class="list"></div>
@@ -753,7 +746,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
     const targetId = resolveBookingTargetId(b);
     const partner = isPartnerTenant(b);
     const rent = getChairRentInfo(b);
-    const rentBadge = rent ? `<span style="font-size:11px;font-weight:700;color:#0369a1;background:#e0f2fe;padding:2px 7px;border-radius:999px;border:1px solid #bae6fd;display:inline-flex;align-items:center;gap:4px;"><img src="assets/icons/3d/chair_3d.png" style="width:13px;height:13px;object-fit:contain;" alt="">${rent.priceHour ? rent.priceHour + ' с/ч' : (rent.priceDay + ' с/день')}</span>` : '';
+    const rentBadge = rent ? `<span style="font-size:11px;font-weight:700;color:#0369a1;background:#e0f2fe;padding:2px 7px;border-radius:999px;border:1px solid #bae6fd;">💺 Кресло: ${rent.priceHour ? rent.priceHour + ' с/ч' : (rent.priceDay + ' с/день')}</span>` : '';
     return `<div class="card" data-id="${esc(b.id)}" role="button" tabindex="0">
       <div class="av">${esc(b.letter)}${st.known && st.open ? '<span class="dot-open"></span>' : ''}</div>
       <div class="card-main">
@@ -763,10 +756,10 @@ body.dragging .map-ctrls{transition:opacity .2s}
         <div class="card-addr">${esc(b.address)}</div>
         <div class="card-foot">
           ${st.known ? `<span class="st-pill ${st.open ? 'open' : 'closed'}" data-st="${esc(b.id)}">${st.text}</span>` : '<span></span>'}
-          ${partner ? `<span style="font-size:11px;font-weight:700;color:#15803d;background:#dcfce7;padding:2px 7px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;"><img src="assets/icons/3d/lightning_3d.png" style="width:13px;height:13px;object-fit:contain;" alt="">Онлайн-запись</span>` : ''}
+          ${partner ? `<span style="font-size:11px;font-weight:700;color:#15803d;background:#dcfce7;padding:2px 7px;border-radius:999px;">⚡ Онлайн-запись</span>` : ''}
           ${rentBadge}
-          <a href="index.html?id=${encodeURIComponent(targetId)}&shopName=${encodeURIComponent(b.title || b.name || '')}" class="quick-book-link" onclick="event.stopPropagation()" style="display:inline-flex;align-items:center;gap:4px;">
-            <img src="assets/icons/3d/scissors_3d.png" style="width:14px;height:14px;object-fit:contain;" alt="">Записаться
+          <a href="index.html?id=${encodeURIComponent(targetId)}&shopName=${encodeURIComponent(b.title || b.name || '')}" class="quick-book-link" onclick="event.stopPropagation()">
+            ✂️ Записаться
           </a>
         </div>
       </div>
@@ -777,7 +770,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
     const el = $('#list');
     if (!list.length) {
       if (state.f.has('coworking')) {
-        el.innerHTML = `<div class="empty"><img src="assets/icons/3d/chair_3d.png" style="width:44px;height:44px;object-fit:contain;margin:0 auto 8px;display:block;" alt=""><b>Пока нет свободных кресел в аренду</b>Точки коворкинга появляются здесь только после того, как владелец салона включит «Аренду кресел» в своём кабинете.<br><button class="btn ghost sm" data-act="reset" style="margin-top:8px;">Показать все барбершопы</button></div>`;
+        el.innerHTML = `<div class="empty"><b>Пока нет свободных кресел в аренду</b>Точки коворкинга появляются здесь только после того, как владелец салона включит «Аренду кресел» в своём кабинете.<br><button class="btn ghost sm" data-act="reset" style="margin-top:8px;">Показать все барбершопы</button></div>`;
       } else {
         el.innerHTML = `<div class="empty"><b>Ничего не найдено</b>Попробуйте изменить запрос или сбросить фильтры<br><button class="btn ghost sm" data-act="reset">Сбросить всё</button></div>`;
       }
@@ -844,15 +837,15 @@ body.dragging .map-ctrls{transition:opacity .2s}
     const partner = isPartnerTenant(b);
     const rent = getChairRentInfo(b);
     const stats = [];
-    if (b.rating) stats.push(`<span class="rate" style="display:inline-flex;align-items:center;gap:3px;"><img src="assets/icons/3d/star_3d.png" style="width:15px;height:15px;object-fit:contain;" alt="★">${b.rating.toFixed(1)}</span><span style="color:var(--muted)">${b.reviews} ${plural(b.reviews, W_RV)}</span>`);
+    if (b.rating) stats.push(`<span class="rate">${ICON.star(14)}${b.rating.toFixed(1)}</span><span style="color:var(--muted)">${b.reviews} ${plural(b.reviews, W_RV)}</span>`);
     if (st.known) stats.push(`<span class="st-pill ${st.open ? 'open' : 'closed'}">${st.text}</span>`);
     if (partner) {
-      stats.push(`<span class="partner-pill" style="display:inline-flex;align-items:center;gap:4px;"><img src="assets/icons/3d/lightning_3d.png" style="width:13px;height:13px;object-fit:contain;" alt=""> Онлайн-запись</span>`);
+      stats.push(`<span class="partner-pill">⚡ Онлайн-запись</span>`);
     } else {
       stats.push(`<span class="catalog-pill">Городской каталог</span>`);
     }
     if (rent) {
-      stats.push(`<span style="font-size:11px;font-weight:700;color:#0369a1;background:#e0f2fe;padding:2px 8px;border-radius:999px;border:1px solid #bae6fd;display:inline-flex;align-items:center;gap:4px;"><img src="assets/icons/3d/chair_3d.png" style="width:13px;height:13px;object-fit:contain;" alt=""> Есть коворкинг</span>`);
+      stats.push(`<span style="font-size:11px;font-weight:700;color:#0369a1;background:#e0f2fe;padding:2px 8px;border-radius:999px;border:1px solid #bae6fd;">💺 Есть коворкинг</span>`);
     }
     if (state.me) stats.push(`<span>${fmtDist(distKm(state.me, b))}</span>`);
 
@@ -912,9 +905,8 @@ body.dragging .map-ctrls{transition:opacity .2s}
         ${rent ? `
         <div class="coworking-detail-box" style="background:linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);border:1.5px solid #7dd3fc;border-radius:14px;padding:14px 16px;margin:14px 0;">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-            <div style="font-weight:700;font-size:15px;color:#0369a1;display:flex;align-items:center;gap:8px;">
-              <img src="assets/icons/3d/chair_3d.png" style="width:24px;height:24px;object-fit:contain;" class="anim-3d-float" alt="">
-              <span>Коворкинг / Аренда кресла</span>
+            <div style="font-weight:700;font-size:15px;color:#0369a1;display:flex;align-items:center;gap:6px;">
+              <span>💺 Коворкинг / Аренда кресла</span>
             </div>
             <span style="font-size:11px;font-weight:700;background:#0284c7;color:#fff;padding:2px 8px;border-radius:12px;">Свободно мест: ${esc(rent.count || 1)}</span>
           </div>
@@ -929,15 +921,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
           <div style="font-size:12px;color:#0f172a;margin-bottom:12px;">
             <div style="font-weight:600;margin-bottom:4px;color:#0369a1;">В стоимость аренды входит:</div>
             <div style="display:flex;flex-wrap:wrap;gap:6px;">
-              ${rent.perks.map(p => {
-                let pIcon = '✓ ';
-                const pl = String(p).toLowerCase();
-                if (pl.includes('чай') || pl.includes('кофе')) pIcon = '<img src="assets/icons/3d/coffee_3d.png" style="width:14px;height:14px;object-fit:contain;vertical-align:-2px;margin-right:4px;" alt="">';
-                else if (pl.includes('свет') || pl.includes('фото')) pIcon = '<img src="assets/icons/3d/light_3d.png" style="width:14px;height:14px;object-fit:contain;vertical-align:-2px;margin-right:4px;" alt="">';
-                else if (pl.includes('парковк')) pIcon = '<img src="assets/icons/3d/parking_3d.png" style="width:14px;height:14px;object-fit:contain;vertical-align:-2px;margin-right:4px;" alt="">';
-                else if (pl.includes('стерилизатор') || pl.includes('чистот') || pl.includes('уборк') || pl.includes('полотенц')) pIcon = '<img src="assets/icons/3d/cleaning_3d.png" style="width:14px;height:14px;object-fit:contain;vertical-align:-2px;margin-right:4px;" alt="">';
-                return `<span style="background:#ffffffd9;padding:3px 8px;border-radius:6px;border:1px solid #cbd5e1;font-size:11px;color:#1e293b;display:inline-flex;align-items:center;">${pIcon}${esc(p)}</span>`;
-              }).join('')}
+              ${rent.perks.map(p => `<span style="background:#ffffffd9;padding:3px 8px;border-radius:6px;border:1px solid #cbd5e1;font-size:11px;color:#1e293b;">✓ ${esc(p)}</span>`).join('')}
             </div>
           </div>` : ''}
           ${rent.rules ? `
@@ -953,9 +937,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
 
         ${!partner ? `
         <div class="owner-claim-card">
-          <div class="owner-claim-icon" style="background:transparent;display:flex;align-items:center;justify-content:center;">
-            <img src="assets/icons/3d/barberpole_3d.png" style="width:36px;height:36px;object-fit:contain;" class="anim-3d-float" alt="Барберпол">
-          </div>
+          <div class="owner-claim-icon">💈</div>
           <div class="owner-claim-info">
             <div class="owner-claim-t">Вы владелец или мастер заведения?</div>
             <div class="owner-claim-d">Подключите бесплатный приём онлайн-записей через Instagram <b>@tu1anow</b></div>
