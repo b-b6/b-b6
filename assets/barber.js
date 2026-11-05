@@ -349,11 +349,13 @@ window.renderSoloSchedule = function () {
     const statPctEl = document.getElementById('stat-commission-pct');
     const statNetEl = document.getElementById('stat-net-earnings');
 
+    const fmtSolo = (val, base, short) => window.BarberCurrency ? window.BarberCurrency.format(val, base || 'KGS', short) : (val.toLocaleString('ru-RU') + (short ? ' с' : ' сом'));
+
     if (statCountEl) statCountEl.textContent = String(completedOrActive.length);
     if (statCompEl) statCompEl.textContent = `${completedCount} завершено`;
-    if (statGrossEl) statGrossEl.textContent = `${grossSum.toLocaleString('ru-RU')} с`;
+    if (statGrossEl) statGrossEl.textContent = fmtSolo(grossSum, 'KGS', true);
     if (statPctEl) statPctEl.textContent = String(pct);
-    if (statNetEl) statNetEl.textContent = `${netEarnings.toLocaleString('ru-RU')} с`;
+    if (statNetEl) statNetEl.textContent = fmtSolo(netEarnings, 'KGS', true);
 
     // Build 1-column slots from workStart to workEnd using BookingLogic (with 30-min granularity and night shift support)
     const rawSlots = (window.BookingLogic && window.BookingLogic.buildRawAvailableTimes)
@@ -414,7 +416,7 @@ window.renderSoloSchedule = function () {
                         <div class="slot-client">
                             ${clientName}
                             <span style="font-size: 11.5px; color: var(--gold); font-weight: 800; margin-left: 6px;">
-                                +${masterCut} с (${booking.price || 0} с)
+                                +${fmtSolo(masterCut, booking.currency, true)} (${fmtSolo(booking.price || 0, booking.currency, true)})
                             </span>
                         </div>
                         <div class="slot-service">
@@ -482,7 +484,8 @@ window.openAddBookingModal = async function (prefillTime) {
         }
         srvSelect.innerHTML = soloServicesCache.map(s => {
             const title = s.name || (s.strings && s.strings.ru ? s.strings.ru.title : 'Услуга');
-            return `<option value="${s.id}">${title} — ${s.price} сом</option>`;
+            const prc = window.BarberCurrency ? window.BarberCurrency.format(s.price, s.currency || 'KGS') : `${s.price} сом`;
+            return `<option value="${s.id}">${title} — ${prc}</option>`;
         }).join('');
     }
     if (modal) modal.classList.add('show');
@@ -549,8 +552,13 @@ window.renderSoloServices = async function () {
     }
     const services = soloServicesCache;
 
+    const sym = window.BarberCurrency ? window.BarberCurrency.symbol() : 'сом';
+    const newPriceInput = document.getElementById('new-srv-price');
+    if (newPriceInput) newPriceInput.placeholder = `Цена (${sym})`;
+
     listEl.innerHTML = services.map(s => {
         const title = s.name || (s.strings && s.strings.ru ? s.strings.ru.title : 'Услуга');
+        const convPrice = window.BarberCurrency ? window.BarberCurrency.convert(s.price || 500, s.currency || 'KGS') : (s.price || 500);
         return `
         <div class="service-item">
             <div>
@@ -558,8 +566,8 @@ window.renderSoloServices = async function () {
                 <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;">⏱ ${s.duration || 45} мин</div>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
-                <input type="number" class="form-input" style="width: 95px; padding: 7px 10px; text-align: right; color: var(--gold); font-weight: 800;" value="${s.price || 500}" onchange="updateSoloServicePrice('${s.id}', this.value)">
-                <span style="font-size: 12px; color: var(--text-muted); font-weight: 700;">сом</span>
+                <input type="number" class="form-input" style="width: 95px; padding: 7px 10px; text-align: right; color: var(--gold); font-weight: 800;" value="${convPrice}" onchange="updateSoloServicePrice('${s.id}', this.value)">
+                <span style="font-size: 12px; color: var(--text-muted); font-weight: 700;">${sym}</span>
                 <button class="btn-outline" style="padding: 7px 10px; color: #f87171;" onclick="deleteSoloService('${s.id}')">🗑</button>
             </div>
         </div>
@@ -603,6 +611,7 @@ window.updateSoloServicePrice = async function (id, newPrice) {
     const item = services.find(s => String(s.id) === String(id));
     if (item) {
         item.price = Number(newPrice) || 0;
+        item.currency = window.BarberCurrency ? window.BarberCurrency.getActive() : 'KGS';
         await window.appDB.saveServices(services);
         soloServicesCache = services;
         renderSoloSchedule();

@@ -99,6 +99,18 @@ const i18n = {
             if (authOv && authOv.style.display === 'flex') applyAuthModalConfig(authModalMode);
         }
 
+        function fmtPrice(amount, baseCurr) {
+            const base = baseCurr || (store.settings && store.settings.currency) || 'KGS';
+            return window.BarberCurrency ? window.BarberCurrency.format(amount, base) : (amount + ' сом');
+        }
+
+        function changeCurrency(code) {
+            if (window.BarberCurrency) window.BarberCurrency.setActive(code, true);
+            if (currentStep === 1) renderServicesUI();
+            if (currentStep === 4) updateSummary();
+            loadMyBookings();
+        }
+
         // DB Fetchers & Store (Firebase Architecture)
         const DB_BOOKINGS = 'barber_bookings';
         const DB_MY_HISTORY = 'barber_my_history'; // client-specific, remains in localStorage
@@ -504,6 +516,16 @@ const i18n = {
             const catShop = getCatalogBarbershopInfo();
             const solo = isSoloBookingMode();
 
+            if (window.BarberCurrency) {
+                const tid = window.appDB ? String(window.appDB.tenantId) : '';
+                if (!window._currencyInitializedForTenant || window._currencyInitializedForTenant !== tid) {
+                    window._currencyInitializedForTenant = tid;
+                    window.BarberCurrency.autoSelectByCountry(catShop || tid, st.city || (catShop && catShop.city));
+                } else {
+                    window.BarberCurrency.syncSelects(window.BarberCurrency.getActive());
+                }
+            }
+
             const badgeTextEl = document.getElementById('booking-mode-badge-text');
             const avatarLetterEl = document.getElementById('shop-avatar-letter');
             const step2Pill = document.getElementById('step-ind-2');
@@ -725,7 +747,7 @@ const i18n = {
                     document.querySelectorAll('#step-1 .service-card').forEach(c => c.classList.remove('selected')); card.classList.add('selected');
                     document.getElementById('btn-next-1').disabled = false;
                 };
-                card.innerHTML = `<div class="service-info"><h3>${t.title}</h3><p>${t.desc}</p></div><div style="text-align:right; flex-shrink:0;"><div class="service-price">${s.price} сом</div><div style="font-size:0.82rem; color:var(--text-muted); margin-top:6px;">⏱ ${durText}</div></div>`;
+                card.innerHTML = `<div class="service-info"><h3>${t.title}</h3><p>${t.desc}</p></div><div style="text-align:right; flex-shrink:0;"><div class="service-price">${fmtPrice(s.price, s.currency)}</div><div style="font-size:0.82rem; color:var(--text-muted); margin-top:6px;">⏱ ${durText}</div></div>`;
                 list.appendChild(card);
             });
             // если услуга уже выбрана (возврат назад) — разблокируем кнопку
@@ -904,7 +926,7 @@ const i18n = {
             let mName = bookingData.masterId === 'any' ? i18n[currentLang]['any_master'] : bookingData.masterName;
             
             document.getElementById('summary-master').innerHTML = `<i data-lucide="user" style="width:14px;height:14px;"></i> ${mName}`;
-            document.getElementById('summary-service').innerHTML = `<i data-lucide="scissors" style="width:14px;height:14px;"></i> ${t.title} — ${bookingData.price} сом`;
+            document.getElementById('summary-service').innerHTML = `<i data-lucide="scissors" style="width:14px;height:14px;"></i> ${t.title} — ${fmtPrice(bookingData.price, srv && srv.currency)}`;
             let dObj = new Date((bookingData.date || '').includes('T') ? bookingData.date : (bookingData.date + 'T12:00:00'));
             document.getElementById('summary-datetime').innerHTML = `<i data-lucide="calendar" style="width:14px;height:14px;"></i> ${dObj.toLocaleDateString('ru-RU')} в ${bookingData.time}`;
 
@@ -1293,7 +1315,7 @@ const i18n = {
 
                     const digits = (catShop.phone || '').replace(/\D/g, '');
                     const srv = bookingData.serviceRuName || bookingData.service || 'Мужская стрижка';
-                    const prc = bookingData.price ? ` (${bookingData.price})` : '';
+                    const prc = bookingData.price ? ` (${fmtPrice(bookingData.price)})` : '';
                     const mStr = (bookingData.masterName && bookingData.masterName !== 'Любой мастер') ? `\n💈 Мастер: ${bookingData.masterName}` : '';
                     const waText = 
                         `Здравствуйте! Хочу записаться к вам через сервис BarberMap:\n\n` +
@@ -1400,7 +1422,7 @@ const i18n = {
                 const dateStr = dObj.toLocaleDateString(locales[currentLang] || 'ru-RU', { day: 'numeric', month: 'long', weekday: 'short' });
                 const masterStr = (b.masterId === 'any' || !b.masterName) ? (L.any_master || 'Любой мастер') : b.masterName;
                 const serviceStr = b.service || (b.serviceRuName || 'Стрижка');
-                const priceStr = b.price ? `${b.price} сом` : '';
+                const priceStr = b.price ? fmtPrice(b.price, b.currency) : '';
 
                 let statusBadge = '';
                 if (b.status === 'pending_confirmation') {
@@ -1578,7 +1600,7 @@ const i18n = {
                         '💈 Услуга: ' + (entry.service || 'Стрижка') + '\n' +
                         '✂️ Мастер: ' + (entry.masterName || 'Любой') + '\n' +
                         '📅 Дата: ' + (entry.date || '') + ' в ' + (entry.time || '') + '\n' +
-                        '💰 Стоимость: ' + (entry.price || '0') +
+                        '💰 Стоимость: ' + fmtPrice(entry.price || 0, entry.currency) +
                         (entry.isGroupBooking ? '\n📌 Статус: Ожидает подтверждения (звонка)' : '');
             
             try {
@@ -1668,7 +1690,7 @@ const i18n = {
             const contextPrompt = `Ты — экспертный и дружелюбный администратор барбершопа. Твоя задача — помогать клиентам.
 Данные салона в реальном времени:
 - Мастера: ${masters.map(m => m.name).join(', ')}
-- Услуги: ${services.map(s => `${getServiceStrings(s, 'ru').ruTitle} (${s.price} сом)`).join(', ')}
+- Услуги: ${services.map(s => `${getServiceStrings(s, 'ru').ruTitle} (${fmtPrice(s.price, s.currency)})`).join(', ')}
 - Время работы: с ${settings.openTime} до ${settings.closeTime}.
 
 Правила:

@@ -159,6 +159,21 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             }
         };
 
+        function fmtAdminPrice(amount, baseCurr) {
+            const base = baseCurr || (store.settings && store.settings.currency) || 'KGS';
+            return window.BarberCurrency ? window.BarberCurrency.format(amount, base) : (amount + ' сом');
+        }
+
+        function adminCurrSym(short) {
+            return window.BarberCurrency ? window.BarberCurrency.symbol(short) : (short ? 'с' : 'сом');
+        }
+
+        window.changeAdminCurrency = function(code) {
+            if (window.BarberCurrency) window.BarberCurrency.setActive(code, true);
+            loadAdminData();
+            updateCoworkingPreview();
+        };
+
         const store = {
             bookings: [], reviews: [], disabledDates: [],
             services: defaultServices, masters: defaultMasters, settings: defaultSettings, products: defaultProducts
@@ -224,6 +239,10 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                 document.getElementById('auth-overlay').style.display = 'none';
                 let set = await window.appDB.getSettings();
                 Object.assign(store.settings, set);
+                if (window.BarberCurrency) {
+                    const catId = (tenantRecord && tenantRecord.catalogId) || activeTenantId;
+                    window.BarberCurrency.autoSelectByCountry(catId, store.settings.city);
+                }
 
                 const resolvedShopName = (store.settings.shopName && store.settings.shopName !== 'Брутальный Барбершоп')
                     ? store.settings.shopName
@@ -370,12 +389,12 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                         ? `<span style="background:rgba(245,158,11,0.2); border:1px solid #f59e0b; color:#d97706; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:700; margin-left:6px;">👥 Групповая (${b.groupIndex || '3-4'} чел) — Позвонить!</span>`
                         : '';
 
-                    list.innerHTML += `<div class="booking-item" style="${isCancelled ? 'opacity: 0.5;' : ''} align-items: stretch; flex-direction: column;"><div style="display: flex; justify-content: space-between; align-items: flex-start;"><div class="booking-details" style="flex: 1;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 5px; flex-wrap:wrap; gap:6px;"><div style="display:flex; align-items:center;"><h4 style="margin:0;">${b.date} в ${b.time}</h4>${groupBadge}</div><select onchange="updateBookingStatus('${b.id}', this.value)" style="background:var(--bg-dark); color:${stColor}; border:1px solid var(--border); padding:4px 8px; border-radius:6px; outline:none; font-size:0.85rem; font-weight:600; cursor:pointer;"><option value="pending_confirmation" style="color:#f59e0b;" ${st === 'pending_confirmation' ? 'selected' : ''}>⏳ Требует звонка</option><option value="pending" style="color:#f1c40f;" ${st === 'pending' || st === 'confirmed' ? 'selected' : ''}>🟡 Ожидается</option><option value="in_progress" style="color:#1e90ff;" ${st === 'in_progress' ? 'selected' : ''}>🔵 В кресле</option><option value="completed" style="color:#2ed573;" ${st === 'completed' ? 'selected' : ''}>🟢 Завершено</option><option value="cancelled" style="color:#ff4757;" ${st === 'cancelled' ? 'selected' : ''}>🔴 Отменено</option></select></div><p><strong style="color: var(--text-main);">КЛИЕНТ:</strong> ${b.name} (${b.phone})</p><p><strong style="color: var(--text-main);">УСЛУГА:</strong> ${b.service} - ${b.price} сом</p><p><strong style="color: var(--text-main);">МАСТЕР:</strong> ${b.masterName || 'Любой'}</p></div><div style="display: flex; flex-direction: column; justify-content: flex-end; margin-left: 15px; gap: 5px;"><button class="btn-danger" onclick="deleteBooking('${b.id}')">Удалить</button></div></div></div>`;
+                    list.innerHTML += `<div class="booking-item" style="${isCancelled ? 'opacity: 0.5;' : ''} align-items: stretch; flex-direction: column;"><div style="display: flex; justify-content: space-between; align-items: flex-start;"><div class="booking-details" style="flex: 1;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 5px; flex-wrap:wrap; gap:6px;"><div style="display:flex; align-items:center;"><h4 style="margin:0;">${b.date} в ${b.time}</h4>${groupBadge}</div><select onchange="updateBookingStatus('${b.id}', this.value)" style="background:var(--bg-dark); color:${stColor}; border:1px solid var(--border); padding:4px 8px; border-radius:6px; outline:none; font-size:0.85rem; font-weight:600; cursor:pointer;"><option value="pending_confirmation" style="color:#f59e0b;" ${st === 'pending_confirmation' ? 'selected' : ''}>⏳ Требует звонка</option><option value="pending" style="color:#f1c40f;" ${st === 'pending' || st === 'confirmed' ? 'selected' : ''}>🟡 Ожидается</option><option value="in_progress" style="color:#1e90ff;" ${st === 'in_progress' ? 'selected' : ''}>🔵 В кресле</option><option value="completed" style="color:#2ed573;" ${st === 'completed' ? 'selected' : ''}>🟢 Завершено</option><option value="cancelled" style="color:#ff4757;" ${st === 'cancelled' ? 'selected' : ''}>🔴 Отменено</option></select></div><p><strong style="color: var(--text-main);">КЛИЕНТ:</strong> ${b.name} (${b.phone})</p><p><strong style="color: var(--text-main);">УСЛУГА:</strong> ${b.service} - ${fmtAdminPrice(b.price, b.currency)}</p><p><strong style="color: var(--text-main);">МАСТЕР:</strong> ${b.masterName || 'Любой'}</p></div><div style="display: flex; flex-direction: column; justify-content: flex-end; margin-left: 15px; gap: 5px;"><button class="btn-danger" onclick="deleteBooking('${b.id}')">Удалить</button></div></div></div>`;
                 });
             }
 
-            let eRev = document.getElementById('stat-total-rev'); if(eRev) eRev.innerText = tRev + ' сом';
-            let eTodRev = document.getElementById('stat-today-rev'); if(eTodRev) eTodRev.innerText = todayRev + ' сом';
+            let eRev = document.getElementById('stat-total-rev'); if(eRev) eRev.innerText = fmtAdminPrice(tRev);
+            let eTodRev = document.getElementById('stat-today-rev'); if(eTodRev) eTodRev.innerText = fmtAdminPrice(todayRev);
             let eCnt = document.getElementById('stat-today-count'); if(eCnt) eCnt.innerText = todayCnt;
             let eTotClass = document.getElementById('stat-total-count'); if(eTotClass) eTotClass.innerText = bookings.length;
 
@@ -423,9 +442,9 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             const addrEl = document.getElementById('cw-prev-address');
             if (addrEl) addrEl.textContent = addr;
             const prcEl = document.getElementById('cw-prev-price');
-            if (prcEl) prcEl.textContent = `${hour} сом / час`;
+            if (prcEl) prcEl.textContent = `${fmtAdminPrice(hour)} / час`;
             const dayEl = document.getElementById('cw-prev-day');
-            if (dayEl) dayEl.textContent = `${day} сом / день`;
+            if (dayEl) dayEl.textContent = `${fmtAdminPrice(day)} / день`;
 
             const perks = [];
             if (document.getElementById('cw_perk_sink')?.checked) perks.push('Мойка головы');
@@ -1389,7 +1408,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                     </div>
                     <div style="display: flex; gap: 15px; margin-bottom: 15px; align-items: flex-end; flex-wrap: wrap;">
                         <div class="form-group" style="margin:0; flex: 2; min-width: 250px;"><label>Название на сайт (RU)</label><input type="text" id="title_ru_${s.id}" class="form-control" value="${s.strings.ru.title}"></div>
-                        <div class="form-group" style="margin:0; flex: 1; min-width: 150px;"><label>Цена (сом)</label><input type="number" id="price_${s.id}" class="form-control" value="${s.price}"></div>
+                        <div class="form-group" style="margin:0; flex: 1; min-width: 150px;"><label>Цена (${adminCurrSym()})</label><input type="number" id="price_${s.id}" class="form-control" value="${window.BarberCurrency ? window.BarberCurrency.convert(s.price, s.currency || 'KGS') : s.price}"></div>
                         <div class="form-group" style="margin:0; flex: 1; min-width: 150px;">
                             <label>Длительность (мин)</label>
                             <select id="duration_${s.id}" class="form-control" style="appearance:auto;">
@@ -1475,7 +1494,8 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
         async function saveService(id) {
             let s = store.services.find(x => x.id === id);
             if(s) {
-                s.price = parseInt(document.getElementById(`price_${id}`).value) || 0;
+                s.price = parseFloat(document.getElementById(`price_${id}`).value) || 0;
+                s.currency = window.BarberCurrency ? window.BarberCurrency.getActive() : 'KGS';
                 s.duration = parseInt(document.getElementById(`duration_${id}`).value);
 
                 let curTitle = document.getElementById(`title_ru_${id}`).value;
@@ -1691,7 +1711,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                     <td style="padding: 15px; color: var(--text-muted);">${c.phone}</td>
                     <td style="padding: 15px;">${c.visits}</td>
                     <td style="padding: 15px; color: var(--text-muted);">${c.lastVisit}</td>
-                    <td style="padding: 15px; color: var(--accent); font-weight: 600;">${c.revenue} сом</td>
+                    <td style="padding: 15px; color: var(--accent); font-weight: 600;">${fmtAdminPrice(c.revenue)}</td>
                 </tr>
             `).join('');
         }
@@ -1740,7 +1760,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             let ctxRev = document.getElementById('revenueChart').getContext('2d');
             revenueChartInstance = new Chart(ctxRev, {
                 type: 'bar',
-                data: { labels: labels7Days, datasets: [{ label: 'Доход Завершено (сом)', data: data7Days, backgroundColor: '#111827', borderRadius: 6 }] },
+                data: { labels: labels7Days, datasets: [{ label: 'Доход Завершено (' + adminCurrSym() + ')', data: data7Days.map(v => window.BarberCurrency ? window.BarberCurrency.convert(v, 'KGS') : v), backgroundColor: '#111827', borderRadius: 6 }] },
                 options: { responsive: true, scales: { y: { beginAtZero: true, grid: { color: '#e5e7eb' } }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
             });
 
@@ -1888,8 +1908,8 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             products.forEach(p => {
                 list.innerHTML += `<tr style="border-bottom:1px solid var(--border);">
                     <td style="padding:15px; font-weight:500;">${p.name}</td>
-                    <td style="padding:15px; color:var(--text-muted);">${p.buyPrice} сом</td>
-                    <td style="padding:15px; color:#2ed573;">${p.sellPrice} сом</td>
+                    <td style="padding:15px; color:var(--text-muted);">${fmtAdminPrice(p.buyPrice, p.currency)}</td>
+                    <td style="padding:15px; color:#2ed573;">${fmtAdminPrice(p.sellPrice, p.currency)}</td>
                     <td style="padding:15px;">
                         <div style="display:flex;align-items:center;gap:8px;">
                             <button class="btn-danger" style="padding:4px 10px;" onclick="changeProductCount('${p.id}',-1)">−</button>
@@ -1956,17 +1976,17 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                 list.innerHTML += `<tr>
                     <td style="padding:15px; border-bottom:1px solid var(--border);">${m.name}</td>
                     <td style="padding:15px; border-bottom:1px solid var(--border); color:var(--text-muted);">${share}%</td>
-                    <td style="padding:15px; border-bottom:1px solid var(--border);">${total} сом</td>
-                    <td style="padding:15px; border-bottom:1px solid var(--border); color:#2ed573; font-weight:600;">${salary} сом</td>
-                    <td style="padding:15px; border-bottom:1px solid var(--border); color:var(--accent); font-weight:600;">${salon} сом</td>
+                    <td style="padding:15px; border-bottom:1px solid var(--border);">${fmtAdminPrice(total)}</td>
+                    <td style="padding:15px; border-bottom:1px solid var(--border); color:#2ed573; font-weight:600;">${fmtAdminPrice(salary)}</td>
+                    <td style="padding:15px; border-bottom:1px solid var(--border); color:var(--accent); font-weight:600;">${fmtAdminPrice(salon)}</td>
                 </tr>`;
             });
             const tfoot = document.getElementById('admin-salaries-total');
             if (tfoot) tfoot.innerHTML = `<tr>
                 <td style="padding:15px;" colspan="2">Итого</td>
-                <td style="padding:15px;">${grandTotal} сом</td>
-                <td style="padding:15px; color:#2ed573;">${grandSalary} сом</td>
-                <td style="padding:15px; color:var(--accent);">${grandTotal - grandSalary} сом</td>
+                <td style="padding:15px;">${fmtAdminPrice(grandTotal)}</td>
+                <td style="padding:15px; color:#2ed573;">${fmtAdminPrice(grandSalary)}</td>
+                <td style="padding:15px; color:var(--accent);">${fmtAdminPrice(grandTotal - grandSalary)}</td>
             </tr>`;
         }
 
@@ -2003,7 +2023,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             const mMaster = document.getElementById('manual_master');
             if(mService && services) {
                 mService.innerHTML = '';
-                services.forEach(s => mService.innerHTML += `<option value="${s.id}">${s.strings[currentAdminLang]?.title || s.strings.ru.title} - ${s.price} сом</option>`);
+                services.forEach(s => mService.innerHTML += `<option value="${s.id}">${s.strings[currentAdminLang]?.title || s.strings.ru.title} - ${fmtAdminPrice(s.price, s.currency)}</option>`);
             }
             if(mMaster && masters) {
                 const anyStr = currentAdminLang === 'ru' ? 'Любой мастер' : (currentAdminLang === 'en' ? 'Any master' : (currentAdminLang === 'uz' ? 'Istalgan usta' : 'Каалаган чебер'));

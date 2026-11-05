@@ -526,3 +526,111 @@ class BarberDB {
 const db = new BarberDB();
 window.appDB = db;
 
+// ═══════════════════════════════════════════════════════════
+// UNIVERSAL 5-CURRENCY ENGINE (KGS, UZS, KZT, RUB, USD)
+// Auto-selection by salon country (KG/UZ/KZ) + live conversion
+// ═══════════════════════════════════════════════════════════
+window.BarberCurrency = (function() {
+    const CURRENCIES = {
+        KGS: { code: 'KGS', symbol: 'сом', short: 'с', flag: '🇰🇬', label: '🇰🇬 KGS', fullLabel: '🇰🇬 KGS (сом)', rateFromKGS: 1, step: 10 },
+        UZS: { code: 'UZS', symbol: 'сум', short: 'сум', flag: '🇺🇿', label: '🇺🇿 UZS', fullLabel: '🇺🇿 UZS (сум)', rateFromKGS: 145, step: 1000 },
+        KZT: { code: 'KZT', symbol: '₸', short: '₸', flag: '🇰🇿', label: '🇰🇿 KZT', fullLabel: '🇰🇿 KZT (₸)', rateFromKGS: 5.8, step: 50 },
+        RUB: { code: 'RUB', symbol: '₽', short: '₽', flag: '🇷🇺', label: '🇷🇺 RUB', fullLabel: '🇷🇺 RUB (₽)', rateFromKGS: 1.1, step: 10 },
+        USD: { code: 'USD', symbol: '$', short: '$', flag: '🇺🇸', label: '🇺🇸 USD', fullLabel: '🇺🇸 USD ($)', rateFromKGS: 1 / 87.5, step: 0.5 }
+    };
+
+    const UZ_CITIES = ['Ташкент', 'Самарканд', 'Бухара', 'Фергана', 'Андижан', 'Наманган', 'Коканд', 'Чирчик', 'Алмалык', 'Навои', 'Карши', 'Нукус', 'Ургенч', 'Термез'];
+    const KZ_CITIES = ['Алматы', 'Астана', 'Шымкент', 'Караганда', 'Актобе', 'Тараз', 'Павлодар', 'Атырау', 'Актау', 'Костанай', 'Семей'];
+
+    function detectCountryCurrency(shopOrId, city, country) {
+        const idStr = String((shopOrId && shopOrId.id) || shopOrId || '').toLowerCase();
+        const ctry = String((shopOrId && (shopOrId.country || shopOrId.countryCode)) || country || '').toLowerCase();
+        const cty = String((shopOrId && shopOrId.city) || city || '');
+        if (idStr.startsWith('uz-') || ctry.includes('узбек') || ctry === 'uz' || UZ_CITIES.includes(cty)) return 'UZS';
+        if (idStr.startsWith('kz-') || ctry.includes('казах') || ctry === 'kz' || KZ_CITIES.includes(cty)) return 'KZT';
+        if (idStr.startsWith('kg-') || ctry.includes('кыргыз') || ctry === 'kg') return 'KGS';
+        return null;
+    }
+
+    function getActive() {
+        const saved = localStorage.getItem('barber_currency');
+        return (saved && CURRENCIES[saved]) ? saved : 'KGS';
+    }
+
+    function syncSelects(code) {
+        document.querySelectorAll('.currency-select, #currency-select, #currencySelect').forEach(sel => {
+            if (sel && sel.value !== code) sel.value = code;
+        });
+    }
+
+    function setActive(code, isManual) {
+        if (!CURRENCIES[code]) code = 'KGS';
+        localStorage.setItem('barber_currency', code);
+        if (isManual !== undefined) {
+            localStorage.setItem('barber_currency_manual', isManual ? '1' : '0');
+        }
+        syncSelects(code);
+        window.dispatchEvent(new CustomEvent('barber:currency', { detail: { currency: code } }));
+        return code;
+    }
+
+    function autoSelectByCountry(shopOrCountry, city) {
+        const detected = detectCountryCurrency(shopOrCountry, city, typeof shopOrCountry === 'string' ? shopOrCountry : '');
+        if (detected && CURRENCIES[detected]) {
+            localStorage.setItem('barber_currency', detected);
+            syncSelects(detected);
+            return detected;
+        }
+        const cur = getActive();
+        syncSelects(cur);
+        return cur;
+    }
+
+    function convert(amount, fromCode, toCode) {
+        const num = Number(amount) || 0;
+        if (num === 0) return 0;
+        const from = CURRENCIES[fromCode] || CURRENCIES.KGS;
+        const to = CURRENCIES[toCode || getActive()] || CURRENCIES.KGS;
+        if (from.code === to.code) return num;
+        const inKgs = num / from.rateFromKGS;
+        const raw = inKgs * to.rateFromKGS;
+        if (to.code === 'USD') {
+            return raw >= 10 ? Math.round(raw) : Math.round(raw * 2) / 2;
+        }
+        if (to.step > 1 && raw >= to.step * 2) {
+            return Math.round(raw / to.step) * to.step;
+        }
+        return Math.round(raw);
+    }
+
+    function format(amount, fromCode, useShort, toCode) {
+        const targetCode = toCode || getActive();
+        const c = CURRENCIES[targetCode] || CURRENCIES.KGS;
+        const val = convert(amount, fromCode || 'KGS', targetCode);
+        const sym = useShort ? c.short : c.symbol;
+        if (c.code === 'USD') {
+            const strVal = Number.isInteger(val) ? String(val) : val.toFixed(2).replace(/\.00$/, '');
+            return '$' + strVal;
+        }
+        return val.toLocaleString('ru-RU') + ' ' + sym;
+    }
+
+    function symbol(useShort, code) {
+        const c = CURRENCIES[code || getActive()] || CURRENCIES.KGS;
+        return useShort ? c.short : c.symbol;
+    }
+
+    return {
+        CURRENCIES,
+        getActive,
+        setActive,
+        autoSelectByCountry,
+        detectCountryCurrency,
+        convert,
+        format,
+        symbol,
+        syncSelects
+    };
+})();
+
+

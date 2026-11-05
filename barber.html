@@ -553,6 +553,13 @@
             </div>
         </div>
         <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+            <select id="currency-select" class="currency-select" onchange="changeBarberCurrency(this.value)" style="padding: 6px 8px; border-radius: 999px; border: 1px solid var(--navy-line); background: #fff; color: var(--navy); font-size: 11.5px; font-weight: 800; cursor: pointer; outline: none;" aria-label="Валюта">
+                <option value="KGS">🇰🇬 KGS</option>
+                <option value="UZS">🇺🇿 UZS</option>
+                <option value="KZT">🇰🇿 KZT</option>
+                <option value="RUB">🇷🇺 RUB</option>
+                <option value="USD">🇺🇸 USD</option>
+            </select>
             <select id="lang-select" onchange="changeBarberLang(this.value)" style="padding: 6px 8px; border-radius: 999px; border: 1px solid var(--navy-line); background: #fff; color: var(--navy); font-size: 11.5px; font-weight: 800; cursor: pointer; outline: none;" aria-label="Язык">
                 <option value="ru">🇷🇺 RU</option>
                 <option value="kg">🇰🇬 KG</option>
@@ -937,6 +944,16 @@
             });
         }
         changeBarberLang(currentBarberLang);
+        function changeBarberCurrency(code) {
+            if (window.BarberCurrency) window.BarberCurrency.setActive(code, true);
+            if (typeof renderSoloSchedule === 'function') renderSoloSchedule();
+            if (typeof renderSoloServices === 'function') renderSoloServices();
+        }
+        (function initBarberCurrency() {
+            const cur = window.BarberCurrency ? window.BarberCurrency.getActive() : (localStorage.getItem('barber_currency') || 'KGS');
+            const cSel = document.getElementById('currency-select');
+            if (cSel) cSel.value = cur;
+        })();
     </script>
 </body>
 
