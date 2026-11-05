@@ -85,6 +85,7 @@ const i18n = {
         function changeLanguage(lang) {
             if (!i18n[lang]) lang = 'ru';
             currentLang = lang; localStorage.setItem('barber_lang', lang); localStorage.setItem('adminLang', lang);
+            if (window.BarberCurrency) window.BarberCurrency.syncByLang(lang);
             const langSel = document.getElementById('lang-select');
             if (langSel) langSel.value = lang;
             document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.getAttribute('data-i18n'); if (i18n[lang] && i18n[lang][key]) el.innerText = i18n[lang][key]; });

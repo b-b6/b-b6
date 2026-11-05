@@ -146,6 +146,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             window.currentLang = lang; // For compatibility
             localStorage.setItem('adminLang', lang);
             localStorage.setItem('barber_lang', lang);
+            if (window.BarberCurrency) window.BarberCurrency.syncByLang(lang);
             let sel = document.getElementById('lang-select');
             if(sel) sel.value = lang;
             
@@ -155,7 +156,8 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             });
 
             if(document.getElementById('admin-services-list') && document.getElementById('admin-services-list').innerHTML !== '') {
-                renderServicesEditor();
+                loadAdminData();
+                updateCoworkingPreview();
             }
         };
 

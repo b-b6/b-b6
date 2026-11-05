@@ -258,19 +258,12 @@ body.dragging .map-ctrls{transition:opacity .2s}
       </a>
       <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
         <span class="total" id="totalLabel"></span>
-        <select id="currencySelect" class="chip currency-select" style="height:28px;font-size:11.5px;padding:0 6px;font-weight:700;cursor:pointer;outline:none;" aria-label="Currency">
-          <option value="KGS">🇰🇬 KGS</option>
-          <option value="UZS">🇺🇿 UZS</option>
-          <option value="KZT">🇰🇿 KZT</option>
-          <option value="RUB">🇷🇺 RUB</option>
-          <option value="USD">🇺🇸 USD</option>
-        </select>
-        <select id="langSelect" class="chip" style="height:28px;font-size:11.5px;padding:0 7px;font-weight:700;cursor:pointer;outline:none;" aria-label="Language">
-          <option value="ru">🇷🇺 RU</option>
-          <option value="kg">🇰🇬 KG</option>
-          <option value="uz">🇺🇿 UZ</option>
-          <option value="kz">🇰🇿 KZ</option>
-          <option value="en">🇬🇧 EN</option>
+        <select id="langSelect" class="chip" style="height:28px;font-size:11.5px;padding:0 7px;font-weight:700;cursor:pointer;outline:none;" aria-label="Language & Currency">
+          <option value="ru">🇷🇺 RU · сом</option>
+          <option value="kg">🇰🇬 KG · сом</option>
+          <option value="uz">🇺🇿 UZ · сум</option>
+          <option value="kz">🇰🇿 KZ · ₸</option>
+          <option value="en">🇬🇧 EN · $</option>
         </select>
         <a href="app.html?switch_role=1" id="btnBackMenu" class="chip" style="font-weight:700;color:var(--burgundy);text-decoration:none;border-color:var(--burgundy-line);height:28px;font-size:11.5px;padding:0 9px;" title="Вернуться к выбору роли">← Меню</a>
       </div>
@@ -1383,6 +1376,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
     W_RV = MAP_I18N[lang].w_rv;
     localStorage.setItem('barber_lang', lang);
     localStorage.setItem('adminLang', lang);
+    if (window.BarberCurrency) window.BarberCurrency.syncByLang(lang);
     const sel = $('#langSelect');
     if (sel) sel.value = lang;
     if ($('#btnBackMenu')) $('#btnBackMenu').textContent = tr('menu');
@@ -1408,14 +1402,6 @@ body.dragging .map-ctrls{transition:opacity .2s}
   if ($('#langSelect')) {
     $('#langSelect').value = mapLang;
     $('#langSelect').addEventListener('change', e => applyMapLang(e.target.value));
-  }
-  if ($('#currencySelect')) {
-    if (window.BarberCurrency) $('#currencySelect').value = window.BarberCurrency.getActive();
-    $('#currencySelect').addEventListener('change', e => {
-      if (window.BarberCurrency) window.BarberCurrency.setActive(e.target.value, true);
-      renderList(current);
-      if (state.sel && byId.has(state.sel)) renderDetail(byId.get(state.sel));
-    });
   }
   applyMapLang(mapLang);
   if (!isDesktop()) setSheet('half');

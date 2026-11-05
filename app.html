@@ -476,19 +476,12 @@
             </a>
             <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
                 <span class="status-open-pill" data-i18n="shops_count">● 1 218 барбершопов</span>
-                <select id="currency-select" class="currency-select" onchange="changeAppCurrency(this.value)" style="padding:5px 8px; border-radius:999px; border:1px solid var(--navy-line); background:#fff; color:var(--navy); font-size:11.5px; font-weight:800; cursor:pointer; outline:none;" aria-label="Валюта">
-                    <option value="KGS">🇰🇬 KGS (сом)</option>
-                    <option value="UZS">🇺🇿 UZS (сум)</option>
-                    <option value="KZT">🇰🇿 KZT (₸)</option>
-                    <option value="RUB">🇷🇺 RUB (₽)</option>
-                    <option value="USD">🇺🇸 USD ($)</option>
-                </select>
-                <select id="lang-select" onchange="changeAppLang(this.value)" style="padding:5px 8px; border-radius:999px; border:1px solid var(--navy-line); background:#fff; color:var(--navy); font-size:11.5px; font-weight:800; cursor:pointer; outline:none;" aria-label="Язык">
-                    <option value="ru">🇷🇺 RU</option>
-                    <option value="kg">🇰🇬 KG</option>
-                    <option value="uz">🇺🇿 UZ</option>
-                    <option value="kz">🇰🇿 KZ</option>
-                    <option value="en">🇬🇧 EN</option>
+                <select id="lang-select" onchange="changeAppLang(this.value)" style="padding:5px 8px; border-radius:999px; border:1px solid var(--navy-line); background:#fff; color:var(--navy); font-size:11.5px; font-weight:800; cursor:pointer; outline:none;" aria-label="Язык и валюта">
+                    <option value="ru">🇷🇺 RU · сом</option>
+                    <option value="kg">🇰🇬 KG · сом</option>
+                    <option value="uz">🇺🇿 UZ · сум</option>
+                    <option value="kz">🇰🇿 KZ · ₸</option>
+                    <option value="en">🇬🇧 EN · $</option>
                 </select>
             </div>
         </div>
@@ -933,6 +926,7 @@
             currentAppLang = lang;
             localStorage.setItem('barber_lang', lang);
             localStorage.setItem('adminLang', lang);
+            if (window.BarberCurrency) window.BarberCurrency.syncByLang(lang);
             const sel = document.getElementById('lang-select');
             if (sel) sel.value = lang;
             document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -945,16 +939,6 @@
             });
         }
         changeAppLang(currentAppLang);
-
-        function changeAppCurrency(code) {
-            if (window.BarberCurrency) window.BarberCurrency.setActive(code, true);
-            else localStorage.setItem('barber_currency', code);
-        }
-        (function initAppCurrency() {
-            const cur = window.BarberCurrency ? window.BarberCurrency.getActive() : (localStorage.getItem('barber_currency') || 'KGS');
-            const cSel = document.getElementById('currency-select');
-            if (cSel) cSel.value = cur;
-        })();
 
         async function getVerifiedTenantsList() {
             let list = [];
