@@ -1,8 +1,8 @@
 const DB_DISABLED_DATES = 'barber_disabled_dates';
 
         const defaultServices = [
-            { id: 'haircut', price: 1500, duration: 60, strings: { ru: { title: "Мужская стрижка", desc: "Мытье головы, стрижка, укладка" }, en: { title: "Men's Haircut", desc: "Hair wash, haircut, styling" }, uz: { title: "Erkaklar soch turmagi", desc: "Soch yuvish, soch kesish, turmaklash" }, kg: { title: "Эркектердин чач кыркуусу", desc: "Чач жуу, чач кыркуу, жасалгалоо" } } },
-            { id: 'beard', price: 1000, duration: 30, strings: { ru: { title: "Оформление бороды", desc: "Распаривание, коррекция формы, масло" }, en: { title: "Beard Styling", desc: "Steaming, shaping, oil" }, uz: { title: "Soqol olish", desc: "Bug'lash, shakl berish, yog'" }, kg: { title: "Сакал коюу", desc: "Буулоо, форма берүү, май" } } }
+            { id: 'haircut', price: 1500, duration: 60, strings: { ru: { title: "Мужская стрижка", desc: "Мытье головы, стрижка, укладка" }, en: { title: "Men's Haircut", desc: "Hair wash, haircut, styling" }, uz: { title: "Erkaklar soch turmagi", desc: "Soch yuvish, soch kesish, turmaklash" }, kg: { title: "Эркектердин чач кыркуусу", desc: "Чач жуу, чач кыркуу, жасалгалоо" }, kz: { title: "Ерлер шаш қиюы", desc: "Бас жуу, шаш қию, сәндеу" } } },
+            { id: 'beard', price: 1000, duration: 30, strings: { ru: { title: "Оформление бороды", desc: "Распаривание, коррекция формы, масло" }, en: { title: "Beard Styling", desc: "Steaming, shaping, oil" }, uz: { title: "Soqol olish", desc: "Bug'lash, shakl berish, yog'" }, kg: { title: "Сакал коюу", desc: "Буулоо, форма берүү, май" }, kz: { title: "Сақал сәндеу", desc: "Булау, пішінін түзету, май" } } }
         ];
 
         const defaultMasters = [
@@ -19,11 +19,11 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
 
         // Removed local getAdminPin to force Firebase validation
 
-        let currentAdminLang = localStorage.getItem('adminLang') || 'ru';
+        let currentAdminLang = localStorage.getItem('barber_lang') || localStorage.getItem('adminLang') || 'ru';
         const adminI18n = {
             ru: {
                 admin_title: '<span class="accent-text">Админ</span> Панель',
-                tab_stats: 'Статистика', tab_bookings: 'Записи', tab_masters: 'Мастера', tab_services: 'Услуги и Цены', tab_products: 'Склад (Товары)', tab_clients: 'Клиенты (CRM)', tab_reviews: 'Отзывы', tab_settings: 'Настройки и Время', nav_back: 'На сайт записи',
+                tab_stats: 'Статистика', tab_bookings: 'Записи', tab_masters: 'Мастера', tab_services: 'Услуги и Цены', tab_products: 'Склад (Товары)', tab_clients: 'Клиенты (CRM)', tab_reviews: 'Отзывы', tab_coworking: '💺 Аренда кресел', tab_settings: 'Настройки и Время', nav_back: 'На сайт записи', menu_btn: '← Меню',
                 auth_desc: 'Введите email и PIN от владельца системы.', auth_btn: 'Войти', auth_error: 'Неверный Email или PIN',
                 stat_review: 'Обзор бизнеса', stat_t_count: 'Записей на сегодня', stat_t_rev: 'Примерная выручка за сегодня', stat_total_rev: 'Общая выручка всех времен', stat_total_count: 'Всего записей в базе',
                 stat_chart_1: 'Динамика выручки (Последние дни)', stat_chart_2: 'Доля мастеров в выручке (Все время)',
@@ -46,7 +46,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             },
             en: {
                 admin_title: '<span class="accent-text">Admin</span> Panel',
-                tab_stats: 'Stats', tab_bookings: 'Bookings', tab_masters: 'Staff', tab_services: 'Services & Prices', tab_products: 'Inventory', tab_clients: 'Clients (CRM)', tab_reviews: 'Reviews', tab_settings: 'Settings & Time', nav_back: 'To Website',
+                tab_stats: 'Stats', tab_bookings: 'Bookings', tab_masters: 'Staff', tab_services: 'Services & Prices', tab_products: 'Inventory', tab_clients: 'Clients (CRM)', tab_reviews: 'Reviews', tab_coworking: '💺 Chair Rental', tab_settings: 'Settings & Time', nav_back: 'To Website', menu_btn: '← Menu',
                 auth_desc: 'Enter the system owner\'s email and PIN.', auth_btn: 'Login', auth_error: 'Invalid Email or PIN',
                 stat_review: 'Business Overview', stat_t_count: 'Appointments today', stat_t_rev: 'Estimated revenue today', stat_total_rev: 'Total revenue all time', stat_total_count: 'Total records in database',
                 stat_chart_1: 'Revenue dynamics (Recent days)', stat_chart_2: 'Master revenue share (All time)',
@@ -69,7 +69,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             },
             uz: {
                 admin_title: '<span class="accent-text">Admin</span> Panel',
-                tab_stats: 'Statistika', tab_bookings: 'Yozuvlar', tab_masters: 'Ustalar', tab_services: 'Xizmatlar va Narxlar', tab_products: 'Omborxona', tab_clients: 'Mijozlar (CRM)', tab_reviews: 'Sharhlar', tab_settings: 'Sozlamalar va Vaqt', nav_back: 'Saytga',
+                tab_stats: 'Statistika', tab_bookings: 'Yozuvlar', tab_masters: 'Ustalar', tab_services: 'Xizmatlar va Narxlar', tab_products: 'Omborxona', tab_clients: 'Mijozlar (CRM)', tab_reviews: 'Sharhlar', tab_coworking: '💺 Kreslo ijarasi', tab_settings: 'Sozlamalar va Vaqt', nav_back: 'Saytga', menu_btn: '← Menyu',
                 auth_desc: 'Tizim egasining email va PIN kodini kiriting.', auth_btn: 'Kirish', auth_error: 'Noto\'g\'ri Email yoki PIN',
                 stat_review: 'Biznes ko\'rinishi', stat_t_count: 'Bugungi yozuvlar', stat_t_rev: 'Bugungi taxminiy daromad', stat_total_rev: 'Barcha vaqtdagi umumiy daromad', stat_total_count: 'Bazadagi jami yozuvlar',
                 stat_chart_1: 'Daromad dinamikasi (So\'nggi kunlar)', stat_chart_2: 'Ustalar daromad ulushi (Barcha vaqt)',
@@ -92,7 +92,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             },
             kg: {
                 admin_title: '<span class="accent-text">Админ</span> Панель',
-                tab_stats: 'Статистика', tab_bookings: 'Жазуулар', tab_masters: 'Усталар', tab_services: 'Кызматтар жана Баалар', tab_products: 'Склад', tab_clients: 'Кардарлар (CRM)', tab_reviews: 'Сын-пикирлер', tab_settings: 'Жөндөөлөр', nav_back: 'Сайтка',
+                tab_stats: 'Статистика', tab_bookings: 'Жазуулар', tab_masters: 'Усталар', tab_services: 'Кызматтар жана Баалар', tab_products: 'Склад', tab_clients: 'Кардарлар (CRM)', tab_reviews: 'Сын-пикирлер', tab_coworking: '💺 Кресло ижарасы', tab_settings: 'Жөндөөлөр', nav_back: 'Сайтка', menu_btn: '← Меню',
                 auth_desc: 'Система ээсинин email жана PIN кодун киргизиңиз.', auth_btn: 'Кирүү', auth_error: 'Туура эмес Email же PIN',
                 stat_review: 'Бизнестин жалпы көрүнүшү', stat_t_count: 'Бүгүнкү жазуулар', stat_t_rev: 'Бүгүнкү болжолдуу киреше', stat_total_rev: 'Бардык убакыттагы жалпы киреше', stat_total_count: 'Базадагы жалпы жазуулар',
                 stat_chart_1: 'Киреше динамикасы (Акыркы күндөр)', stat_chart_2: 'Усталардын киреше үлүшү (Бардык убакыт)',
@@ -112,13 +112,40 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                 mod_reviews_title: 'Кардарлардын пикирлери', mod_reviews_desc: 'Беттин төмөн жагындагы кардарлардын баалоолору', btn_save_design: 'Стиль жөндөөлөрүн сактоо',
                 set_sec_title: 'Коопсуздук (Логин жана Сырсөз)', set_sec_desc: 'Логин (Email) жана PIN кодуңузду өзгөртүңүз.', btn_change_pin: 'PIN кодду өзгөртүү',
                 msg_empty_bk: 'Азырынча жазуулар жок.', msg_empty_rev: 'Азырынча пикирлер жок', msg_no_data: 'Маалымат жок'
+            },
+            kz: {
+                admin_title: '<span class="accent-text">Админ</span> Панелі',
+                tab_stats: 'Статистика', tab_bookings: 'Жазылулар', tab_masters: 'Шеберлер', tab_services: 'Қызметтер мен Бағалар', tab_products: 'Қойма', tab_clients: 'Клиенттер (CRM)', tab_reviews: 'Пікірлер', tab_coworking: '💺 Кресло жалдау', tab_settings: 'Баптаулар', nav_back: 'Сайтқа', menu_btn: '← Мәзір',
+                auth_desc: 'Жүйе иесінің email және PIN кодын енгізіңіз.', auth_btn: 'Кіру', auth_error: 'Қате Email немесе PIN',
+                stat_review: 'Бизнесті шолу', stat_t_count: 'Бүгінгі жазылулар', stat_t_rev: 'Бүгінгі болжамды табыс', stat_total_rev: 'Барлық уақыттағы жалпы табыс', stat_total_count: 'Базадағы жалпы жазылулар',
+                stat_chart_1: 'Табыс динамикасы (Соңғы күндер)', stat_chart_2: 'Шеберлердің табыстағы үлесі',
+                stat_salaries_title: 'Жалақылар мен салон табысы (аяқталған жазылулардан)',
+                table_master: 'Шебер', table_share: 'Үлесі (%)', table_rev: 'Жалпы табыс', table_salary: 'Шебер жалақысы', table_net: 'Салон кассасына',
+                book_grid_title: 'Бүгінгі кесте', book_grid_sub: 'Жылдам жазу үшін бос ұяшықты басыңыз',
+                mast_sub: 'Клиенттер нақты шеберге жазыла алуы үшін барберлеріңізді қосыңыз.',
+                option_serv_custom: '-- Өз қызметіңіз (нөлден баптау) --',
+                prod_add_title: 'Жаңа тауар қосу', label_prod_name: 'Атауы', label_prod_buy: 'Сатып алу (сом)', label_prod_sell: 'Сату (сом)', label_prod_count: 'Саны (дана)',
+                table_prod_name: 'Атауы', table_prod_buy: 'Сатып алу бағасы (сом)',
+                table_client_name: 'Клиент аты', table_client_phone: 'Телефон', table_client_last: 'Соңғы келуі',
+                set_bkp_title: 'Сақтық көшірме және Бухгалтерия', set_bkp_desc: 'Барлық жазылулар тарихын CSV форматында жүктеп алыңыз.', btn_export: 'Жазылулар базасын жүктеп алу (.csv)',
+                set_shop_title: 'Салонның жалпы баптаулары (Менің сайтым)', set_shop_link: 'Онлайн жазылу сілтемесі (клиенттерге жіберіңіз):', label_shop_name: 'Сайтыңыздың атауы (Клиенттерге көрінеді)', btn_save_shop: 'Сайт атауын сақтау',
+                set_design_title: 'Фирмалық стиль және сайт модульдері', set_design_desc: 'Батырмалардың түсін баптаңыз және қажетті бөлімдерді қосыңыз немесе өшіріңіз.', label_accent: 'Фирмалық акцент түсі',
+                mod_ai_title: 'ЖИ шаш үлгісін таңдау (AI Vision)', mod_ai_desc: 'Бет пішінін талдау және сәйкес шаш үлгісін ұсыну',
+                mod_stats_title: 'Тірі статистика блогы', mod_stats_desc: 'Шеберлер, бүгінгі жазылулар, рейтинг және клиенттер',
+                mod_reviews_title: 'Клиенттер пікірлері', mod_reviews_desc: 'Беттің төменгі жағындағы шынайы бағалар мен пікірлер', btn_save_design: 'Стиль баптауларын сақтау',
+                set_sec_title: 'Қауіпсіздік (Логин және Құпиясөз)', set_sec_desc: 'Логин (Email) мен PIN кодыңызды өзгертіңіз.', btn_change_pin: 'PIN кодты өзгерту',
+                msg_empty_bk: 'Әзірге жазылулар жоқ.', msg_empty_rev: 'Әзірге пікірлер жоқ', msg_no_data: 'Деректер жоқ'
             }
         };
 
+        if (!adminI18n[currentAdminLang]) currentAdminLang = 'ru';
+
         window.changeLanguage = function(lang) {
+            if (!adminI18n[lang]) lang = 'ru';
             currentAdminLang = lang;
             window.currentLang = lang; // For compatibility
             localStorage.setItem('adminLang', lang);
+            localStorage.setItem('barber_lang', lang);
             let sel = document.getElementById('lang-select');
             if(sel) sel.value = lang;
             

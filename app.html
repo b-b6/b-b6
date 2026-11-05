@@ -474,12 +474,21 @@
                 </span>
                 Barber<span class="map-word">Map</span><span class="tag">KG · UZ · KZ</span>
             </a>
-            <span class="status-open-pill">● 1 218 барбершопов</span>
+            <div style="display:flex; align-items:center; gap:6px;">
+                <span class="status-open-pill" data-i18n="shops_count">● 1 218 барбершопов</span>
+                <select id="lang-select" onchange="changeAppLang(this.value)" style="padding:5px 8px; border-radius:999px; border:1px solid var(--navy-line); background:#fff; color:var(--navy); font-size:11.5px; font-weight:800; cursor:pointer; outline:none;" aria-label="Язык">
+                    <option value="ru">🇷🇺 RU</option>
+                    <option value="kg">🇰🇬 KG</option>
+                    <option value="uz">🇺🇿 UZ</option>
+                    <option value="kz">🇰🇿 KZ</option>
+                    <option value="en">🇬🇧 EN</option>
+                </select>
+            </div>
         </div>
 
         <div class="brand-header">
-            <h1>Выберите вашу роль</h1>
-            <p>Единая платформа поиска барбершопов, онлайн-записи и управления салонами в СНГ (Кыргызстан, Узбекистан, Казахстан)</p>
+            <h1 data-i18n="hero_title">Выберите вашу роль</h1>
+            <p data-i18n="hero_sub">Единая платформа поиска барбершопов, онлайн-записи и управления салонами в СНГ (Кыргызстан, Узбекистан, Казахстан)</p>
         </div>
 
         <!-- 3 ROLE SELECTION BUTTONS -->
@@ -492,10 +501,10 @@
                 </div>
                 <div class="role-info">
                     <div class="role-title">
-                        Я Клиент
-                        <span class="role-tag">Записаться</span>
+                        <span data-i18n="role_client_title">Я Клиент</span>
+                        <span class="role-tag" data-i18n="role_client_tag">Записаться</span>
                     </div>
-                    <div class="role-desc">Интерактивная карта 1 218 барбершопов, умный поиск по GPS рядом с вами и онлайн-запись</div>
+                    <div class="role-desc" data-i18n="role_client_desc">Интерактивная карта 1 218 барбершопов, умный поиск по GPS рядом с вами и онлайн-запись</div>
                 </div>
                 <i data-lucide="chevron-right" class="role-arrow"></i>
             </button>
@@ -507,10 +516,10 @@
                 </div>
                 <div class="role-info">
                     <div class="role-title">
-                        Владелец барбершопа
-                        <span class="role-tag navy-tag">Салон / CRM</span>
+                        <span data-i18n="role_owner_title">Владелец барбершопа</span>
+                        <span class="role-tag navy-tag" data-i18n="role_owner_tag">Салон / CRM</span>
                     </div>
-                    <div class="role-desc">Панель управления салоном: мастера, расписание, выручка, коворкинг, QR и точка на карте</div>
+                    <div class="role-desc" data-i18n="role_owner_desc">Панель управления салоном: мастера, расписание, выручка, коворкинг, QR и точка на карте</div>
                 </div>
                 <i data-lucide="chevron-right" class="role-arrow"></i>
             </button>
@@ -522,10 +531,10 @@
                 </div>
                 <div class="role-info">
                     <div class="role-title">
-                        Я Мастер
-                        <span class="role-tag navy-tag">Соло-кабинет</span>
+                        <span data-i18n="role_master_title">Я Мастер</span>
+                        <span class="role-tag navy-tag" data-i18n="role_master_tag">Соло-кабинет</span>
                     </div>
-                    <div class="role-desc">Личное расписание в 1 колонку, автоподсчет заработка по %, аренда кресел и личный QR</div>
+                    <div class="role-desc" data-i18n="role_master_desc">Личное расписание в 1 колонку, автоподсчет заработка по %, аренда кресел и личный QR</div>
                 </div>
                 <i data-lucide="chevron-right" class="role-arrow"></i>
             </button>
@@ -538,41 +547,41 @@
     <div class="modal-overlay" id="owner-modal">
         <div class="modal-box">
             <div class="modal-top">
-                <h2><i data-lucide="building-2" style="width:22px;height:22px;"></i> Вход для Владельца</h2>
+                <h2><i data-lucide="building-2" style="width:22px;height:22px;"></i> <span data-i18n="owner_modal_title">Вход для Владельца</span></h2>
                 <button type="button" class="close-btn" onclick="closeRoleModals()"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
             </div>
 
             <!-- Блок входа по выданным ID и PIN -->
             <div id="owner-login-view">
-                <div style="background:var(--navy-soft); border:1px solid var(--navy-line); border-radius:14px; padding:10px 12px; margin-bottom:14px; font-size:12px; color:var(--navy); font-weight:600; line-height:1.45;">
+                <div style="background:var(--navy-soft); border:1px solid var(--navy-line); border-radius:14px; padding:10px 12px; margin-bottom:14px; font-size:12px; color:var(--navy); font-weight:600; line-height:1.45;" data-i18n="owner_lock_note">
                     🔒 <b>Закрытый доступ:</b> у каждого салона строго своя админка. Введите ваш <b>цифровой ID</b> и <b>4-значный пароль</b>, выданные главным администратором.
                 </div>
 
                 <div class="form-group">
                     <label style="display:flex; justify-content:space-between; align-items:center;">
-                        <span>1. Цифровой ID салона (только цифры)</span>
-                        <button type="button" onclick="openRequestAccessModal('owner')" style="background:none; border:none; color:var(--burgundy); font-size:11.5px; font-weight:800; cursor:pointer; text-decoration:underline;">Попросить у админа →</button>
+                        <span data-i18n="owner_id_lbl">1. Цифровой ID салона (только цифры)</span>
+                        <button type="button" onclick="openRequestAccessModal('owner')" style="background:none; border:none; color:var(--burgundy); font-size:11.5px; font-weight:800; cursor:pointer; text-decoration:underline;" data-i18n="ask_admin_btn">Попросить у админа →</button>
                     </label>
                     <input type="text" id="owner-id-input" class="inp" inputmode="numeric" pattern="[0-9]*" placeholder="Например: 1001" oninput="this.value=this.value.replace(/\D/g,'')">
                 </div>
 
                 <div class="form-group">
                     <label style="display:flex; justify-content:space-between; align-items:center;">
-                        <span>2. Четырёхзначный пароль (4 цифры)</span>
-                        <button type="button" onclick="openRequestAccessModal('owner')" style="background:none; border:none; color:var(--burgundy); font-size:11.5px; font-weight:800; cursor:pointer; text-decoration:underline;">Нет пароля?</button>
+                        <span data-i18n="owner_pin_lbl">2. Четырёхзначный пароль (4 цифры)</span>
+                        <button type="button" onclick="openRequestAccessModal('owner')" style="background:none; border:none; color:var(--burgundy); font-size:11.5px; font-weight:800; cursor:pointer; text-decoration:underline;" data-i18n="no_pin_btn">Нет пароля?</button>
                     </label>
                     <input type="password" id="owner-pin-input" class="inp" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="•••• (4 цифры)" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)">
                 </div>
 
                 <button type="button" class="btn-gold" onclick="submitOwnerLogin()">
-                    Войти в кабинет салона <i data-lucide="arrow-right" style="width:18px;height:18px;"></i>
+                    <span data-i18n="owner_login_btn">Войти в кабинет салона</span> <i data-lucide="arrow-right" style="width:18px;height:18px;"></i>
                 </button>
 
-                <button type="button" onclick="openRequestAccessModal('owner')" style="width:100%; margin-top:10px; padding:11px 14px; border-radius:14px; border:1.5px dashed var(--burgundy-line); background:var(--burgundy-soft); color:var(--burgundy); font-family:var(--font-sans); font-size:13px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+                <button type="button" onclick="openRequestAccessModal('owner')" style="width:100%; margin-top:10px; padding:11px 14px; border-radius:14px; border:1.5px dashed var(--burgundy-line); background:var(--burgundy-soft); color:var(--burgundy); font-family:var(--font-sans); font-size:13px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;" data-i18n="no_creds_btn">
                     🔑 Нет ID и пароля? Попросить доступ у Админа
                 </button>
 
-                <div class="err-msg" id="owner-err">Неверный цифровой ID или 4-значный пароль</div>
+                <div class="err-msg" id="owner-err" data-i18n="owner_err_msg">Неверный цифровой ID или 4-значный пароль</div>
             </div>
         </div>
     </div>
@@ -581,39 +590,39 @@
     <div class="modal-overlay" id="master-modal">
         <div class="modal-box">
             <div class="modal-top">
-                <h2><i data-lucide="scissors" style="width:22px;height:22px;"></i> Вход для Мастера</h2>
+                <h2><i data-lucide="scissors" style="width:22px;height:22px;"></i> <span data-i18n="master_modal_title">Вход для Мастера</span></h2>
                 <button type="button" class="close-btn" onclick="closeRoleModals()"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
             </div>
 
-            <div style="background:var(--navy-soft); border:1px solid var(--navy-line); border-radius:14px; padding:10px 12px; margin-bottom:14px; font-size:12px; color:var(--navy); font-weight:600; line-height:1.45;">
+            <div style="background:var(--navy-soft); border:1px solid var(--navy-line); border-radius:14px; padding:10px 12px; margin-bottom:14px; font-size:12px; color:var(--navy); font-weight:600; line-height:1.45;" data-i18n="master_lock_note">
                 🔒 <b>Личный кабинет мастера:</b> доступ выдаётся только главным администратором. Введите ваш <b>цифровой ID</b> и <b>4-значный пароль</b>.
             </div>
 
             <div class="form-group">
                 <label style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>1. Цифровой ID мастера (только цифры)</span>
-                    <button type="button" onclick="openRequestAccessModal('master')" style="background:none; border:none; color:var(--burgundy); font-size:11.5px; font-weight:800; cursor:pointer; text-decoration:underline;">Попросить у админа →</button>
+                    <span data-i18n="master_id_lbl">1. Цифровой ID мастера (только цифры)</span>
+                    <button type="button" onclick="openRequestAccessModal('master')" style="background:none; border:none; color:var(--burgundy); font-size:11.5px; font-weight:800; cursor:pointer; text-decoration:underline;" data-i18n="ask_admin_btn">Попросить у админа →</button>
                 </label>
                 <input type="text" id="solo-id-input" class="inp" inputmode="numeric" pattern="[0-9]*" placeholder="Например: 2001" oninput="this.value=this.value.replace(/\D/g,'')">
             </div>
 
             <div class="form-group">
                 <label style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>2. Четырёхзначный пароль (4 цифры)</span>
-                    <button type="button" onclick="openRequestAccessModal('master')" style="background:none; border:none; color:var(--burgundy); font-size:11.5px; font-weight:800; cursor:pointer; text-decoration:underline;">Нет пароля?</button>
+                    <span data-i18n="owner_pin_lbl">2. Четырёхзначный пароль (4 цифры)</span>
+                    <button type="button" onclick="openRequestAccessModal('master')" style="background:none; border:none; color:var(--burgundy); font-size:11.5px; font-weight:800; cursor:pointer; text-decoration:underline;" data-i18n="no_pin_btn">Нет пароля?</button>
                 </label>
                 <input type="password" id="solo-pin-input" class="inp" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="•••• (4 цифры)" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)">
             </div>
 
             <button type="button" class="btn-gold" onclick="submitMasterLogin()">
-                Войти в кабинет мастера <i data-lucide="arrow-right" style="width:18px;height:18px;"></i>
+                <span data-i18n="master_login_btn">Войти в кабинет мастера</span> <i data-lucide="arrow-right" style="width:18px;height:18px;"></i>
             </button>
 
-            <button type="button" onclick="openRequestAccessModal('master')" style="width:100%; margin-top:10px; padding:11px 14px; border-radius:14px; border:1.5px dashed var(--burgundy-line); background:var(--burgundy-soft); color:var(--burgundy); font-family:var(--font-sans); font-size:13px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+            <button type="button" onclick="openRequestAccessModal('master')" style="width:100%; margin-top:10px; padding:11px 14px; border-radius:14px; border:1.5px dashed var(--burgundy-line); background:var(--burgundy-soft); color:var(--burgundy); font-family:var(--font-sans); font-size:13px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;" data-i18n="no_creds_btn">
                 🔑 Нет ID и пароля? Попросить доступ у Админа
             </button>
 
-            <div class="err-msg" id="solo-err">Неверный цифровой ID или 4-значный пароль</div>
+            <div class="err-msg" id="solo-err" data-i18n="owner_err_msg">Неверный цифровой ID или 4-значный пароль</div>
         </div>
     </div>
 
@@ -621,11 +630,11 @@
     <div class="modal-overlay" id="request-access-modal">
         <div class="modal-box">
             <div class="modal-top">
-                <h2 id="req-modal-title"><i data-lucide="key-round" style="width:22px;height:22px;"></i> Запросить ID и пароль</h2>
+                <h2 id="req-modal-title"><i data-lucide="key-round" style="width:22px;height:22px;"></i> <span data-i18n="req_modal_title">Запросить ID и пароль</span></h2>
                 <button type="button" class="close-btn" onclick="closeRoleModals()"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
             </div>
 
-            <div style="background:linear-gradient(135deg, rgba(240,148,51,0.08) 0%, rgba(220,39,67,0.08) 100%); border:1.5px solid rgba(220,39,67,0.25); border-radius:14px; padding:12px 14px; margin-bottom:14px; font-size:12px; color:var(--navy); font-weight:600; line-height:1.45;">
+            <div style="background:linear-gradient(135deg, rgba(240,148,51,0.08) 0%, rgba(220,39,67,0.08) 100%); border:1.5px solid rgba(220,39,67,0.25); border-radius:14px; padding:12px 14px; margin-bottom:14px; font-size:12px; color:var(--navy); font-weight:600; line-height:1.45;" data-i18n="req_ig_note">
                 🛡 <b>Верификация владельца через Instagram @tu1anow</b><br>
                 Чтобы никто посторонний не мог привязать чужой барбершоп, верификация проходит через Instagram администратора <b>@tu1anow</b>. Нажмите кнопку внизу: готовый текст запроса скопируется, и откроется Direct Instagram. Отправьте сообщение с официального аккаунта вашего салона, и администратор моментально выдаст вам цифровой ID и PIN.
             </div>
@@ -634,28 +643,28 @@
             <input type="hidden" id="req-catalog-id-input" value="">
 
             <div class="form-group" id="req-shop-search-wrap">
-                <label>Ваш салон на карте (если он уже есть в каталоге)</label>
-                <input type="text" id="req-catalog-search" class="inp" placeholder="Начните вводить название салона на карте..." oninput="searchCatalogForRequest(this.value)">
+                <label data-i18n="req_search_lbl">Ваш салон на карте (если он уже есть в каталоге)</label>
+                <input type="text" id="req-catalog-search" class="inp" data-i18n-placeholder="req_search_ph" placeholder="Начните вводить название салона на карте..." oninput="searchCatalogForRequest(this.value)">
                 <div class="shop-search-results" id="req-catalog-results"></div>
             </div>
 
             <div class="form-group">
-                <label id="req-name-label">1. Название вашего барбершопа *</label>
+                <label id="req-name-label" data-i18n="req_name_lbl">1. Название вашего барбершопа *</label>
                 <input type="text" id="req-name-input" class="inp" placeholder="Например: Shine Barbershop">
             </div>
 
             <div class="form-group">
-                <label>2. Ваш номер телефона (WhatsApp для получения ID и PIN) *</label>
+                <label data-i18n="req_phone_lbl">2. Ваш номер телефона (WhatsApp для получения ID и PIN) *</label>
                 <input type="tel" id="req-phone-input" class="inp" placeholder="+996 555 00-00-00" oninput="checkExistingRequestStatus(this.value)">
             </div>
 
             <div class="form-group">
-                <label>3. Город / Адрес (необязательно)</label>
+                <label data-i18n="req_addr_lbl">3. Город / Адрес (необязательно)</label>
                 <input type="text" id="req-address-input" class="inp" placeholder="Бишкек, ул. Киевская...">
             </div>
 
             <div class="form-group">
-                <label>4. Instagram вашего салона / мастера (для быстрой сверки)</label>
+                <label data-i18n="req_insta_lbl">4. Instagram вашего салона / мастера (для быстрой сверки)</label>
                 <div style="position:relative;">
                     <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); font-weight:700; color:var(--muted); font-size:13px;">@</span>
                     <input type="text" id="req-insta-input" class="inp" placeholder="shine_barbershop" style="padding-left:28px;">
@@ -699,19 +708,236 @@
 
             <div id="req-submit-actions">
                 <button type="button" id="req-submit-btn" onclick="submitAccessRequestFromApp('ig')" style="background:linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color:#ffffff; width:100%; border:none; padding:13px 16px; border-radius:14px; font-weight:800; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 6px 18px rgba(220,39,67,0.3); transition:transform 0.15s ease;">
-                    <i data-lucide="instagram" style="width:19px;height:19px;"></i> Написать в Instagram @tu1anow
+                    <i data-lucide="instagram" style="width:19px;height:19px;"></i> <span data-i18n="req_ig_btn">Написать в Instagram @tu1anow</span>
                 </button>
-                <button type="button" onclick="submitAccessRequestFromApp('wa')" style="background:transparent; border:1px solid #d5e2f0; color:#0c192c; width:100%; padding:10px 14px; border-radius:12px; font-weight:700; font-size:12.5px; cursor:pointer; margin-top:8px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                <button type="button" onclick="submitAccessRequestFromApp('wa')" style="background:transparent; border:1px solid #d5e2f0; color:#0c192c; width:100%; padding:10px 14px; border-radius:12px; font-weight:700; font-size:12.5px; cursor:pointer; margin-top:8px; display:flex; align-items:center; justify-content:center; gap:6px;" data-i18n="req_wa_btn">
                     💬 Или отправить запрос в WhatsApp
                 </button>
             </div>
 
-            <div class="err-msg" id="req-err">Укажите название и ваш номер телефона</div>
+            <div class="err-msg" id="req-err" data-i18n="req_err_msg">Укажите название и ваш номер телефона</div>
         </div>
     </div>
 
     <script>
         lucide.createIcons();
+
+        const APP_I18N = {
+            ru: {
+                shops_count: "● 1 218 барбершопов",
+                hero_title: "Выберите вашу роль",
+                hero_sub: "Единая платформа поиска барбершопов, онлайн-записи и управления салонами в СНГ (Кыргызстан, Узбекистан, Казахстан)",
+                role_client_title: "Я Клиент",
+                role_client_tag: "Записаться",
+                role_client_desc: "Интерактивная карта 1 218 барбершопов, умный поиск по GPS рядом с вами и онлайн-запись",
+                role_owner_title: "Владелец барбершопа",
+                role_owner_tag: "Салон / CRM",
+                role_owner_desc: "Панель управления салоном: мастера, расписание, выручка, коворкинг, QR и точка на карте",
+                role_master_title: "Я Мастер",
+                role_master_tag: "Соло-кабинет",
+                role_master_desc: "Личное расписание в 1 колонку, автоподсчет заработка по %, аренда кресел и личный QR",
+                owner_modal_title: "Вход для Владельца",
+                owner_lock_note: "🔒 <b>Закрытый доступ:</b> у каждого салона строго своя админка. Введите ваш <b>цифровой ID</b> и <b>4-значный пароль</b>, выданные главным администратором.",
+                owner_id_lbl: "1. Цифровой ID салона (только цифры)",
+                ask_admin_btn: "Попросить у админа →",
+                owner_pin_lbl: "2. Четырёхзначный пароль (4 цифры)",
+                no_pin_btn: "Нет пароля?",
+                owner_login_btn: "Войти в кабинет салона",
+                no_creds_btn: "🔑 Нет ID и пароля? Попросить доступ у Админа",
+                owner_err_msg: "Неверный цифровой ID или 4-значный пароль",
+                master_modal_title: "Вход для Мастера",
+                master_lock_note: "🔒 <b>Личный кабинет мастера:</b> доступ выдаётся только главным администратором. Введите ваш <b>цифровой ID</b> и <b>4-значный пароль</b>.",
+                master_id_lbl: "1. Цифровой ID мастера (только цифры)",
+                master_login_btn: "Войти в кабинет мастера",
+                req_modal_title: "Запросить ID и пароль",
+                req_ig_note: "🛡 <b>Верификация владельца через Instagram @tu1anow</b><br>Чтобы никто посторонний не мог привязать чужой барбершоп, верификация проходит через Instagram администратора <b>@tu1anow</b>. Нажмите кнопку внизу: готовый текст запроса скопируется, и откроется Direct Instagram.",
+                req_search_lbl: "Ваш салон на карте (если он уже есть в каталоге)",
+                req_search_ph: "Начните вводить название салона на карте...",
+                req_name_lbl: "1. Название вашего барбершопа *",
+                req_phone_lbl: "2. Ваш номер телефона (WhatsApp для получения ID и PIN) *",
+                req_addr_lbl: "3. Город / Адрес (необязательно)",
+                req_insta_lbl: "4. Instagram вашего салона / мастера (для быстрой сверки)",
+                req_ig_btn: "Написать в Instagram @tu1anow",
+                req_wa_btn: "💬 Или отправить запрос в WhatsApp",
+                req_err_msg: "Укажите название и ваш номер телефона",
+                gps_toast: "📍 Запрос разрешения на геолокацию (GPS)..."
+            },
+            kg: {
+                shops_count: "● 1 218 барбершоп",
+                hero_title: "Ролуңузду тандаңыз",
+                hero_sub: "КМШ өлкөлөрүндө (Кыргызстан, Өзбекстан, Казакстан) барбершопторду издөө, онлайн жазылуу жана салонду башкаруу бирдиктүү платформасы",
+                role_client_title: "Мен Кардармын",
+                role_client_tag: "Жазылуу",
+                role_client_desc: "1 218 барбершоптун интерактивдүү картасы, GPS аркылуу жакын жерден издөө жана онлайн жазылуу",
+                role_owner_title: "Барбершоптун ээси",
+                role_owner_tag: "Салон / CRM",
+                role_owner_desc: "Салонду башкаруу панели: чеберлер, график, киреше, коворкинг, QR жана картадагы чекит",
+                role_master_title: "Мен Чебермин",
+                role_master_tag: "Соло-кабинет",
+                role_master_desc: "Жеке график (1 тилке), % боюнча кирешени авто-эсептөө, кресло ижарасы жана жеке QR",
+                owner_modal_title: "Салон ээси үчүн кирүү",
+                owner_lock_note: "🔒 <b>Жабык кирүү:</b> ар бир салондун өзүнүн гана админкасы бар. Башкы администратор берген <b>сандык ID</b> жана <b>4 орундуу сырсөздү</b> киргизиңиз.",
+                owner_id_lbl: "1. Салондун сандык ID'си (сандар гана)",
+                ask_admin_btn: "Админден суроо →",
+                owner_pin_lbl: "2. Төрт орундуу сырсөз (4 сан)",
+                no_pin_btn: "Сырсөз жокпу?",
+                owner_login_btn: "Салондун кабинетине кирүү",
+                no_creds_btn: "🔑 ID жана сырсөз жокпу? Админден суроо",
+                owner_err_msg: "Сандык ID же 4 орундуу сырсөз туура эмес",
+                master_modal_title: "Чебер үчүн кирүү",
+                master_lock_note: "🔒 <b>Чебердин жеке кабинети:</b> кирүү укугу башкы администратор тарабынан гана берилет. <b>Сандык ID</b> жана <b>4 орундуу сырсөздү</b> киргизиңиз.",
+                master_id_lbl: "1. Чебердин сандык ID'си (сандар гана)",
+                master_login_btn: "Чебердин кабинетине кирүү",
+                req_modal_title: "ID жана сырсөз алуу",
+                req_ig_note: "🛡 <b>Instagram @tu1anow аркылуу тастыктоо</b><br>Башка бирөө сиздин барбершопту ээлеп албашы үчүн, тастыктоо администратордун <b>@tu1anow</b> Instagram баракчасы аркылуу өтөт.",
+                req_search_lbl: "Картадагы салонуңуз (эгер каталогдо бар болсо)",
+                req_search_ph: "Салондун атын жаза баштаңыз...",
+                req_name_lbl: "1. Барбершопуңуздун аталышы *",
+                req_phone_lbl: "2. Телефон номериңиз (WhatsApp) *",
+                req_addr_lbl: "3. Шаар / Дарек (милдеттүү эмес)",
+                req_insta_lbl: "4. Салондун / чебердин Instagram баракчасы",
+                req_ig_btn: "Instagram @tu1anow баракчасына жазуу",
+                req_wa_btn: "💬 Же WhatsApp аркылуу жиберүү",
+                req_err_msg: "Аталышын жана телефон номериңизди жазыңыз",
+                gps_toast: "📍 Геолокация (GPS) суралууда..."
+            },
+            uz: {
+                shops_count: "● 1 218 ta barbershop",
+                hero_title: "Rolingizni tanlang",
+                hero_sub: "MDH davlatlarida (Qirg'iziston, O'zbekiston, Qozog'iston) barbershoplarni qidirish, onlayn yozilish va salonlarni boshqarish yagona platformasi",
+                role_client_title: "Men Mijozman",
+                role_client_tag: "Yozilish",
+                role_client_desc: "1 218 ta barbershopning interaktiv xaritasi, GPS orqali yaqin joylarni qidirish va onlayn yozilish",
+                role_owner_title: "Barbershop egasi",
+                role_owner_tag: "Salon / CRM",
+                role_owner_desc: "Salon boshqaruv paneli: ustalar, jadval, daromad, kovorking, QR va xaritadagi nuqta",
+                role_master_title: "Men Ustaman",
+                role_master_tag: "Solo-kabinet",
+                role_master_desc: "1 ustunli shaxsiy jadval, % bo'yicha daromadni avto-hisoblash, kreslo ijarasi va shaxsiy QR",
+                owner_modal_title: "Salon egasi uchun kirish",
+                owner_lock_note: "🔒 <b>Yopiq kirish:</b> har bir salonning o'z admin paneli bor. Bosh administrator bergan <b>raqamli ID</b> va <b>4 xonali parolni</b> kiriting.",
+                owner_id_lbl: "1. Salon raqamli ID'si (faqat raqamlar)",
+                ask_admin_btn: "Admindan so'rash →",
+                owner_pin_lbl: "2. To'rt xonali parol (4 ta raqam)",
+                no_pin_btn: "Parol yo'qmi?",
+                owner_login_btn: "Salon kabinetiga kirish",
+                no_creds_btn: "🔑 ID va parol yo'qmi? Admindan ruxsat so'rash",
+                owner_err_msg: "Raqamli ID yoki 4 xonali parol noto'g'ri",
+                master_modal_title: "Usta uchun kirish",
+                master_lock_note: "🔒 <b>Ustaning shaxsiy kabineti:</b> kirish faqat bosh administrator tomonidan beriladi. <b>Raqamli ID</b> va <b>4 xonali parolni</b> kiriting.",
+                master_id_lbl: "1. Usta raqamli ID'si (faqat raqamlar)",
+                master_login_btn: "Usta kabinetiga kirish",
+                req_modal_title: "ID va parol so'rash",
+                req_ig_note: "🛡 <b>Instagram @tu1anow orqali tasdiqlash</b><br>Begona shaxslar boshqa barbershopni ulab olmasligi uchun tasdiqlash administratorning <b>@tu1anow</b> Instagram sahifasi orqali amalga oshiriladi.",
+                req_search_lbl: "Xaritadagi saloningiz (agar katalogda bo'lsa)",
+                req_search_ph: "Salon nomini yozishni boshlang...",
+                req_name_lbl: "1. Barbershopingiz nomi *",
+                req_phone_lbl: "2. Telefon raqamingiz (WhatsApp) *",
+                req_addr_lbl: "3. Shahar / Manzil (ixtiyoriy)",
+                req_insta_lbl: "4. Salon / usta Instagram sahifasi",
+                req_ig_btn: "Instagram @tu1anow ga yozish",
+                req_wa_btn: "💬 Yoki WhatsApp orqali yuborish",
+                req_err_msg: "Salon nomi va telefon raqamingizni kiriting",
+                gps_toast: "📍 Geolokatsiya (GPS) so'ralmoqda..."
+            },
+            kz: {
+                shops_count: "● 1 218 барбершоп",
+                hero_title: "Рөліңізді таңдаңыз",
+                hero_sub: "ТМД елдерінде (Қырғызстан, Өзбекстан, Қазақстан) барбершоптарды іздеу, онлайн жазылу және салондарды басқару бірыңғай платформасы",
+                role_client_title: "Мен Клиентпін",
+                role_client_tag: "Жазылу",
+                role_client_desc: "1 218 барбершоптың интерактивті картасы, GPS арқылы жақын маңнан іздеу және онлайн жазылу",
+                role_owner_title: "Барбершоп иесі",
+                role_owner_tag: "Салон / CRM",
+                role_owner_desc: "Салонды басқару панелі: шеберлер, кесте, табыс, коворкинг, QR және картадағы нүкте",
+                role_master_title: "Мен Шебермін",
+                role_master_tag: "Соло-кабинет",
+                role_master_desc: "1 бағанды жеке кесте, % бойынша табысты авто-есептеу, кресло жалдау және жеке QR",
+                owner_modal_title: "Салон иесі үшін кіру",
+                owner_lock_note: "🔒 <b>Жабық кіру:</b> әр салонның жеке админкасы бар. Бас әкімші берген <b>сандық ID</b> мен <b>4 таңбалы құпиясөзді</b> енгізіңіз.",
+                owner_id_lbl: "1. Салонның сандық ID-і (тек цифрлар)",
+                ask_admin_btn: "Админнен сұрау →",
+                owner_pin_lbl: "2. Төрт таңбалы құпиясөз (4 цифр)",
+                no_pin_btn: "Құпиясөз жоқ па?",
+                owner_login_btn: "Салон кабинетіне кіру",
+                no_creds_btn: "🔑 ID мен құпиясөз жоқ па? Админнен сұрау",
+                owner_err_msg: "Сандық ID немесе 4 таңбалы құпиясөз қате",
+                master_modal_title: "Шебер үшін кіру",
+                master_lock_note: "🔒 <b>Шебердің жеке кабинеті:</b> рұқсат тек бас әкімші тарапынан беріледі. <b>Сандық ID</b> мен <b>4 таңбалы құпиясөзді</b> енгізіңіз.",
+                master_id_lbl: "1. Шебердің сандық ID-і (тек цифрлар)",
+                master_login_btn: "Шебер кабинетіне кіру",
+                req_modal_title: "ID мен құпиясөз сұрау",
+                req_ig_note: "🛡 <b>Instagram @tu1anow арқылы растау</b><br>Бөгде адамдар сіздің барбершопты иемденбеуі үшін растау әкімшінің <b>@tu1anow</b> Instagram парақшасы арқылы өтеді.",
+                req_search_lbl: "Картадағы салоныңыз (каталогта бар болса)",
+                req_search_ph: "Салон атауын жаза бастаңыз...",
+                req_name_lbl: "1. Барбершоп атауы *",
+                req_phone_lbl: "2. Телефон нөміріңіз (WhatsApp) *",
+                req_addr_lbl: "3. Қала / Мекенжай (міндетті емес)",
+                req_insta_lbl: "4. Салон / шебер Instagram парақшасы",
+                req_ig_btn: "Instagram @tu1anow парақшасына жазу",
+                req_wa_btn: "💬 Немесе WhatsApp арқылы жіберу",
+                req_err_msg: "Атауын және телефон нөміріңізді көрсетіңіз",
+                gps_toast: "📍 Геолокация (GPS) сұралуда..."
+            },
+            en: {
+                shops_count: "● 1,218 barbershops",
+                hero_title: "Choose Your Role",
+                hero_sub: "Unified barbershop discovery, online booking & salon management platform across Central Asia (Kyrgyzstan, Uzbekistan, Kazakhstan)",
+                role_client_title: "I'm a Client",
+                role_client_tag: "Book Now",
+                role_client_desc: "Interactive map of 1,218 barbershops, smart GPS search nearby & instant online booking",
+                role_owner_title: "Barbershop Owner",
+                role_owner_tag: "Salon / CRM",
+                role_owner_desc: "Salon management dashboard: barbers, schedule, revenue, coworking, QR & map pin",
+                role_master_title: "I'm a Barber",
+                role_master_tag: "Solo Cabinet",
+                role_master_desc: "1-column personal schedule, automatic % commission tracking, chair rental & personal QR",
+                owner_modal_title: "Owner Login",
+                owner_lock_note: "🔒 <b>Private Access:</b> each salon has its own dedicated dashboard. Enter your <b>numeric ID</b> and <b>4-digit PIN</b> issued by the administrator.",
+                owner_id_lbl: "1. Numeric Salon ID (digits only)",
+                ask_admin_btn: "Request from Admin →",
+                owner_pin_lbl: "2. Four-digit PIN (4 digits)",
+                no_pin_btn: "No PIN?",
+                owner_login_btn: "Sign in to Salon Dashboard",
+                no_creds_btn: "🔑 No ID or PIN? Request access from Admin",
+                owner_err_msg: "Invalid numeric ID or 4-digit PIN",
+                master_modal_title: "Barber Login",
+                master_lock_note: "🔒 <b>Personal Barber Cabinet:</b> access is issued by the platform administrator. Enter your <b>numeric ID</b> and <b>4-digit PIN</b>.",
+                master_id_lbl: "1. Numeric Barber ID (digits only)",
+                master_login_btn: "Sign in to Barber Cabinet",
+                req_modal_title: "Request ID & PIN",
+                req_ig_note: "🛡 <b>Owner Verification via Instagram @tu1anow</b><br>To protect salons from unauthorized claims, verification is done via the administrator's Instagram <b>@tu1anow</b>. Click the button below to copy your request and open Instagram Direct.",
+                req_search_lbl: "Your salon on the map (if already listed)",
+                req_search_ph: "Start typing your salon name...",
+                req_name_lbl: "1. Barbershop Name *",
+                req_phone_lbl: "2. Your Phone Number (WhatsApp) *",
+                req_addr_lbl: "3. City / Address (optional)",
+                req_insta_lbl: "4. Salon / Barber Instagram handle",
+                req_ig_btn: "Message on Instagram @tu1anow",
+                req_wa_btn: "💬 Or send request via WhatsApp",
+                req_err_msg: "Please enter your name and phone number",
+                gps_toast: "📍 Requesting GPS location..."
+            }
+        };
+
+        let currentAppLang = localStorage.getItem('barber_lang') || localStorage.getItem('adminLang') || 'ru';
+        function changeAppLang(lang) {
+            if (!APP_I18N[lang]) lang = 'ru';
+            currentAppLang = lang;
+            localStorage.setItem('barber_lang', lang);
+            localStorage.setItem('adminLang', lang);
+            const sel = document.getElementById('lang-select');
+            if (sel) sel.value = lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const k = el.getAttribute('data-i18n');
+                if (APP_I18N[lang][k]) el.innerHTML = APP_I18N[lang][k];
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const k = el.getAttribute('data-i18n-placeholder');
+                if (APP_I18N[lang][k]) el.placeholder = APP_I18N[lang][k];
+            });
+        }
+        changeAppLang(currentAppLang);
 
         async function getVerifiedTenantsList() {
             let list = [];

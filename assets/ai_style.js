@@ -34,15 +34,26 @@ const i18n = {
                 rec_title_1: "Сиз үчүн", rec_title_2: "идеалдуу чач кыркуулар", master_tip: "Чебердин кеңеши:", cta_title: "Жаңы образга даярсызбы?",
                 cta_desc: "Жазылыңыз — биздин чеберлер идеалдуу чач кыркууңузду жасап беришет", btn_book_now: "Онлайн жазылуу", btn_retry: "Башка сүрөт",
                 match_text: "Туура келет", find_master: "Чеберге жазылуу", face_shape_suffix: ""
+            },
+            kz: {
+                nav_back: "← Жазылу сайтына", hero_title: "Бет пішіні бойынша шаш үлгісін таңдау", hero_desc: "Фотосуретіңізді жүктеңіз — ЖИ бет пішініңізді анықтап, сізге мінсіз шаш үлгілерін таңдап береді.", btn_catalog: "Идеялар каталогын көру",
+                how_1_title: "Суретке түсіңіз", how_1_desc: "Тікелей қарап, жақсы жарықпен", how_2_title: "ЖИ талдайды", how_2_desc: "Бет пішінін секундтарда анықтайды", how_3_title: "Сіздің шаш үлгілеріңіз", how_3_desc: "Түсіндірмесі бар 4 мінсіз нұсқа",
+                upload_title: "Фотосуретіңізді жүктеңіз", upload_desc: "Осында басыңыз немесе файлды сүйреңіз<br><span style='font-size:0.8rem;opacity:0.6'>JPG, PNG — тікелей қарап, жақсы жарық</span>",
+                btn_analyze: "ЖИ көмегімен шаш үлгісін таңдау", loading_text: "ЖИ бет пішініңізді талдауда", loading_sub: "Әдетте 5-10 секунд",
+                rec_title_1: "Сізге арналған", rec_title_2: "мінсіз шаш үлгілері", master_tip: "Шебердің кеңесі:", cta_title: "Жаңа образға дайынсыз ба?",
+                cta_desc: "Жазылыңыз — шеберлеріміз мінсіз шаш үлгіңізді жасап береді", btn_book_now: "Онлайн жазылу", btn_retry: "Басқа фото",
+                match_text: "Сәйкестік", find_master: "Шеберге жазылу", face_shape_suffix: ""
             }
         };
 
-        let currentLang = localStorage.getItem('barber_lang') || 'ru';
+        let currentLang = localStorage.getItem('barber_lang') || localStorage.getItem('adminLang') || 'ru';
+        if (!i18n[currentLang]) currentLang = 'ru';
         let currentFaceData = null;
         let selectedImageBase64 = null;
 
         function changeLanguage(lang) {
-            currentLang = lang; localStorage.setItem('barber_lang', lang); document.getElementById('lang-select').value = lang;
+            if (!i18n[lang]) lang = 'ru';
+            currentLang = lang; localStorage.setItem('barber_lang', lang); localStorage.setItem('adminLang', lang); document.getElementById('lang-select').value = lang;
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (i18n[lang] && i18n[lang][key]) el.innerHTML = i18n[lang][key];
@@ -136,7 +147,7 @@ Your task is to analyze the user's photo and pick 4 perfect hairstyles.
 Current language for response: ${currentLang.toUpperCase()}.
 
 IMPORTANT: 
-- Respond STICTLY in ${currentLang === 'ru' ? 'Russian' : currentLang === 'en' ? 'English' : currentLang === 'uz' ? 'Uzbek' : 'Kyrgyz'} language.
+- Respond STICTLY in ${currentLang === 'ru' ? 'Russian' : currentLang === 'en' ? 'English' : currentLang === 'uz' ? 'Uzbek' : currentLang === 'kz' ? 'Kazakh' : 'Kyrgyz'} language.
 - Format the response as a JSON object.
 
 STEP 1: MORPHOLOGY ANALYSIS

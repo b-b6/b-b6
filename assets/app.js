@@ -1,23 +1,27 @@
 const i18n = {
             ru: {
+                menu_btn: "← Меню", back_to_map: "К карте барбершопов", mode_online: "Онлайн-запись",
+                step_p1: "1. Услуга", step_p2: "2. Мастер", step_p3: "3. Время", step_p4: "4. Бронь",
                 title: "Брутальный Барбершоп", subtitle: "Запишись онлайн к лучшим мастерам города за пару кликов.",
                 step1_master: "Выберите мастера", step2_service: "Выберите услугу", btn_next: "Далее", btn_back: "Назад", step3_date: "Выберите дату", step3_time: "Выберите время",
                 step4_title: "Ваши контакты", label_name: "Ваше имя", placeholder_name: "Иван Иванов", label_phone: "Номер телефона", details: "Детали записи:", btn_submit: "Записаться",
                 success_title: "Вы успешно записаны!", success_desc: "Ждем вас в назначенное время.", btn_home: "На главную", widget_title: "Напоминание о записи", widget_cancel: "Отменить мою запись", widget_close: "Скрыть", any_master: "Любой свободный мастер",
                 review_title: "Оцените работу мастера", review_placeholder: "Ваш отзыв (необязательно)", review_send: "Отправить отзыв", reviews_public_title: "Отзывы наших клиентов", reviews_empty: "Пока нет отзывов. Будьте первым!", review_success: "✅ Спасибо за ваш отзыв!",
                 auth_modal_title_booking: "Быстрый вход", auth_modal_desc_booking: "Войдите, чтобы получать бонусы и сохранять историю ваших записей, или продолжите без регистрации.", auth_modal_title_review: "Вход для отзыва", auth_modal_desc_review: "Войдите через Google или Telegram — после этого откроется форма отзыва о мастере.", auth_guest_skip: "Пропустить и записаться", review_auth_later: "Позже", review_auth_gate: "Чтобы оставить отзыв о мастере, войдите через Google или Telegram.", review_auth_btn: "Войти и оставить отзыв",
-                stat_masters: "Мастеров", stat_today: "Записей сегодня", stat_rating: "Рейтинг", stat_total: "Всего клиентов",
+                stat_masters: "Мастеров", stat_today: "Сегодня", stat_rating: "Рейтинг", stat_total: "Клиентов",
                 ai_promo_title: "Интеллектуальный подбор", ai_promo_desc: "Глубокий анализ лица и подбор идеального образа с помощью нейросети",
                 chat_header: "Барбер-Ассистент", chat_welcome: "Привет! Я ваш персональный ИИ-ассистент. Отвечу на любые вопросы о стрижках, мастерах и ценах. Как я могу вам помочь?", chat_typing: "Бот печатает...", chat_placeholder: "Спросите что-нибудь..."
             },
             en: {
+                menu_btn: "← Menu", back_to_map: "Back to map", mode_online: "Online Booking",
+                step_p1: "1. Service", step_p2: "2. Barber", step_p3: "3. Time", step_p4: "4. Confirm",
                 title: "Brutal Barbershop", subtitle: "Book online with the city's best barbers in a few clicks.",
                 step1_master: "Select a Barber", step2_service: "Choose a service", btn_next: "Next", btn_back: "Back", step3_date: "Select a date", step3_time: "Select a time",
                 step4_title: "Your contacts", label_name: "Your name", placeholder_name: "John Doe", label_phone: "Phone number", details: "Booking details:", btn_submit: "Book Appointment",
                 success_title: "Successfully booked!", success_desc: "We look forward to seeing you at the appointed time.", btn_home: "Back to home", widget_title: "Booking Reminder", widget_cancel: "Cancel my booking", widget_close: "Hide", any_master: "Any available barber",
                 review_title: "Rate your Master", review_placeholder: "Your review (optional)", review_send: "Submit Review", reviews_public_title: "Our Client Reviews", reviews_empty: "No reviews yet. Be the first!", review_success: "✅ Thank you for your feedback!",
                 auth_modal_title_booking: "Quick sign-in", auth_modal_desc_booking: "Sign in for perks and booking history, or continue as a guest.", auth_modal_title_review: "Sign in to review", auth_modal_desc_review: "Use Google or Telegram — then the review form will open.", auth_guest_skip: "Skip and book", review_auth_later: "Not now", review_auth_gate: "To leave a review about your barber, sign in with Google or Telegram.", review_auth_btn: "Sign in and review",
-                stat_masters: "Masters", stat_today: "Appointments today", stat_rating: "Rating", stat_total: "Total Clients",
+                stat_masters: "Masters", stat_today: "Today", stat_rating: "Rating", stat_total: "Clients",
                 ai_promo_title: "Smart AI Selection", ai_promo_desc: "Deep facial analysis to find your ideal look using neural networks",
                 chat_header: "Barber Assistant", chat_welcome: "Hi! I'm your personal AI Assistant. Ask me anything about haircuts, masters, or pricing. How can I help you?", chat_typing: "Bot is typing...", chat_placeholder: "Ask something...",
                 msg_err_fill: "Please fill all fields correctly.",
@@ -25,13 +29,15 @@ const i18n = {
                 def_review: "The haircut was great!"
             },
             uz: {
+                menu_btn: "← Menyu", back_to_map: "Xaritaga qaytish", mode_online: "Onlayn yozilish",
+                step_p1: "1. Xizmat", step_p2: "2. Usta", step_p3: "3. Vaqt", step_p4: "4. Tasdiq",
                 title: "Brutal Barbershop", subtitle: "Shaharning eng yaxshi ustalariga onlayn yoziling.",
                 step1_master: "Usta tanlang", step2_service: "Xizmatni tanlang", btn_next: "Keyingi", btn_back: "Orqaga", step3_date: "Sanani tanlang", step3_time: "Vaqtni tanlang",
                 step4_title: "Kontaktlaringiz", label_name: "Ismingiz", placeholder_name: "Sardor", label_phone: "Telefon raqami", details: "Yozuv tafsilotlari:", btn_submit: "Yozilish",
                 success_title: "Muvaffaqiyatli yozildingiz!", success_desc: "Sizni belgilangan vaqtda kutib qolamiz.", btn_home: "Bosh sahifaga", widget_title: "Eslatma", widget_cancel: "Bekor qilish", widget_close: "Yashirish", any_master: "Istalgan bo'sh usta",
                 review_title: "Ustani baholang", review_placeholder: "Fikringiz (ixtiyoriy)", review_send: "Yuborish", reviews_public_title: "Mijozlarimiz fikrlari", reviews_empty: "Hozircha sharhlar yo'q. Birinchi bo'ling!", review_success: "✅ Sharh uchun rahmat!",
                 auth_modal_title_booking: "Tezkor kirish", auth_modal_desc_booking: "Bonuslar va tarix uchun kiring yoki mehmon sifatida davom eting.", auth_modal_title_review: "Sharh uchun kirish", auth_modal_desc_review: "Google yoki Telegram orqali kiring — keyin sharh formasi ochiladi.", auth_guest_skip: "Mehmon sifatida yozilish", review_auth_later: "Keyinroq", review_auth_gate: "Usta haqida sharh qoldirish uchun Google yoki Telegram orqali kiring.", review_auth_btn: "Kirish va sharh",
-                stat_masters: "Ustalar", stat_today: "Bugun yozuvlar", stat_rating: "Reyting", stat_total: "Jami mijozlar",
+                stat_masters: "Ustalar", stat_today: "Bugun", stat_rating: "Reyting", stat_total: "Mijozlar",
                 ai_promo_title: "Aqlli sun'iy intellekt tanlovi", ai_promo_desc: "Sun'iy intellekt yordamida yuzingizni chuqur tahlil qilib, mos obrazni tanlash",
                 chat_header: "Barber Yordamchi", chat_welcome: "Salom! Men shaxsiy AI yordamchingizman. Menga soch turmaklari, ustalar va narxlar haqida savol berishingiz mumkin. Qanday yordam bera olaman?", chat_typing: "Bot yozmoqda...", chat_placeholder: "Biror narsa so'rang...",
                 msg_err_fill: "Iltimos, barcha maydonlarni to'g'ri to'ldiring.",
@@ -39,26 +45,46 @@ const i18n = {
                 def_review: "Soch turmagi ajoyib!"
             },
             kg: {
+                menu_btn: "← Меню", back_to_map: "Картага кайтуу", mode_online: "Онлайн-жазылуу",
+                step_p1: "1. Кызмат", step_p2: "2. Чебер", step_p3: "3. Убакыт", step_p4: "4. Бронь",
                 title: "Катаал Чачтарач", subtitle: "Шаардын эң мыкты чеберлерине онлайн жазылыңыз.",
                 step1_master: "Чеберди тандаңыз", step2_service: "Кызматты тандаңыз", btn_next: "Кийинки", btn_back: "Артка", step3_date: "Датаны тандаңыз", step3_time: "Убакытты тандаңыз",
                 step4_title: "Байланыштарыңыз", label_name: "Атыңыз", placeholder_name: "Азамат", label_phone: "Телефон номери", details: "Жазуунун чоо-жайы:", btn_submit: "Жазылуу",
                 success_title: "Ийгиликтүү жазылдыңыз!", success_desc: "Сизди белгиленген убакытта күтөбүз.", btn_home: "Башкы бетке", widget_title: "Эскертүү", widget_cancel: "Жоюу", widget_close: "Жашыруу", any_master: "Каалаган чебер",
                 review_title: "Чеберге баа бериңиз", review_placeholder: "Сиздин оюңуз (милдеттүү эмес)", review_send: "Жөнөтүү", reviews_public_title: "Кардарларыбыздын сын-пикирлери", reviews_empty: "Азырынча сын-пикирлер жок. Биринчи болуңуз!", review_success: "✅ Пикириңиз үчүн рахмат!",
                 auth_modal_title_booking: "Тез кирүү", auth_modal_desc_booking: "Бонустар жана тарых үчүн кириңиз же конок катары улантыңыз.", auth_modal_title_review: "Пикир үчүн кирүү", auth_modal_desc_review: "Google же Telegram аркылуу кириңиз — андан кийин пикир формасы ачылат.", auth_guest_skip: "Конок катары жазылуу", review_auth_later: "Кийин", review_auth_gate: "Чебер жөнүндө пикир калтыруу үчүн Google же Telegram аркылуу кириңиз.", review_auth_btn: "Кирүү жана пикир",
-                stat_masters: "Чеберлер", stat_today: "Бүгүнкү жазуулар", stat_rating: "Рейтинг", stat_total: "Жалпы кардарлар",
+                stat_masters: "Чеберлер", stat_today: "Бүгүн", stat_rating: "Рейтинг", stat_total: "Кардарлар",
                 ai_promo_title: "Акылдуу ЖИ тандоосу", ai_promo_desc: "Бетти терең анализдөө жана жасалма интеллект менен идеалдуу образды тандоо",
                 chat_header: "Чачтарач жардамчысы", chat_welcome: "Салам! Мен сиздин жеке ЖИ жардамчыңызмын. Чач кыркуу, чеберлер жана баалар жөнүндө сураңыз. Кантип жардам бере алам?", chat_typing: "Бот жазып жатат...", chat_placeholder: "Бир нерсе сураңыз...",
                 msg_err_fill: "Сураныч, бардык талааларды туура толтуруңуз.",
                 msg_tg_format: "🔥 Жаңы жазуу!\\nАты: {name}\\nТелефон: {phone}\\nКызмат: {service}\\nЧебер: {master}\\nДата: {date} саат {time}\\nБаасы: {price} сом",
                 def_review: "Чач кыркуу сонун болду!"
+            },
+            kz: {
+                menu_btn: "← Мәзір", back_to_map: "Картаға оралу", mode_online: "Онлайн-жазылу",
+                step_p1: "1. Қызмет", step_p2: "2. Шебер", step_p3: "3. Уақыт", step_p4: "4. Бронь",
+                title: "Барбершоп", subtitle: "Қаланың үздік шеберлеріне бірнеше басу арқылы онлайн жазылыңыз.",
+                step1_master: "Шеберді таңдаңыз", step2_service: "Қызметті таңдаңыз", btn_next: "Келесі", btn_back: "Артқа", step3_date: "Күнді таңдаңыз", step3_time: "Уақытты таңдаңыз",
+                step4_title: "Байланыс деректеріңіз", label_name: "Атыңыз", placeholder_name: "Ерлан", label_phone: "Телефон нөмірі", details: "Жазылу мәліметтері:", btn_submit: "Жазылу",
+                success_title: "Сіз сәтті жазылдыңыз!", success_desc: "Сізді белгіленген уақытта күтеміз.", btn_home: "Басты бетке", widget_title: "Жазылу туралы ескерту", widget_cancel: "Жазылуды болдырмау", widget_close: "Жасыру", any_master: "Кез келген бос шебер",
+                review_title: "Шебердің жұмысын бағалаңыз", review_placeholder: "Пікіріңіз (міндетті емес)", review_send: "Пікір жіберу", reviews_public_title: "Клиенттеріміздің пікірлері", reviews_empty: "Әзірге пікірлер жоқ. Бірінші болыңыз!", review_success: "✅ Пікіріңізге рақмет!",
+                auth_modal_title_booking: "Жылдам кіру", auth_modal_desc_booking: "Бонустар мен жазылу тарихын сақтау үшін кіріңіз немесе тіркеусіз жалғастырыңыз.", auth_modal_title_review: "Пікір қалдыру үшін кіру", auth_modal_desc_review: "Google немесе Telegram арқылы кіріңіз — содан кейін пікір формасы ашылады.", auth_guest_skip: "Тіркеусіз жазылу", review_auth_later: "Кейінірек", review_auth_gate: "Шебер туралы пікір қалдыру үшін Google немесе Telegram арқылы кіріңіз.", review_auth_btn: "Кіру және пікір қалдыру",
+                stat_masters: "Шеберлер", stat_today: "Бүгін", stat_rating: "Рейтинг", stat_total: "Клиенттер",
+                ai_promo_title: "ЖИ арқылы таңдау", ai_promo_desc: "Жасанды интеллект көмегімен бет пішінін талдау және мінсіз шаш үлгісін таңдау",
+                chat_header: "Барбер-Көмекші", chat_welcome: "Сәлем! Мен сіздің жеке ЖИ-көмекшіңізбін. Шаш үлгілері, шеберлер мен бағалар туралы кез келген сұраққа жауап беремін!", chat_typing: "Бот жазуда...", chat_placeholder: "Бірдеңе сұраңыз...",
+                msg_err_fill: "Барлық өрістерді дұрыс толтырыңыз.",
+                msg_tg_format: "🔥 Жаңа жазылу!\\nАты: {name}\\nТелефон: {phone}\\nҚызмет: {service}\\nШебер: {master}\\nКүні: {date} сағат {time}\\nБағасы: {price} сом",
+                def_review: "Шаш қию өте керемет болды!"
             }
         };
 
-        const locales = { ru: 'ru-RU', en: 'en-US', uz: 'uz-Latn-UZ', kg: 'ky-KG' };
-        let currentLang = localStorage.getItem('barber_lang') || 'ru';
+        const locales = { ru: 'ru-RU', en: 'en-US', uz: 'uz-Latn-UZ', kg: 'ky-KG', kz: 'kk-KZ' };
+        let currentLang = localStorage.getItem('barber_lang') || localStorage.getItem('adminLang') || 'ru';
+        if (!i18n[currentLang]) currentLang = 'ru';
 
         function changeLanguage(lang) {
-            currentLang = lang; localStorage.setItem('barber_lang', lang);
+            if (!i18n[lang]) lang = 'ru';
+            currentLang = lang; localStorage.setItem('barber_lang', lang); localStorage.setItem('adminLang', lang);
             const langSel = document.getElementById('lang-select');
             if (langSel) langSel.value = lang;
             document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.getAttribute('data-i18n'); if (i18n[lang] && i18n[lang][key]) el.innerText = i18n[lang][key]; });
@@ -81,8 +107,8 @@ const i18n = {
 
         // ВАЖНО: дефолты 1-в-1 совпадают с admin.js, чтобы клиент видел ровно то же, что и владелец в админке
         const defaultServices = [
-            { id: 'haircut', price: 1500, duration: 60, strings: { ru: { title: "Мужская стрижка", desc: "Мытье головы, стрижка, укладка" }, en: { title: "Men's Haircut", desc: "Hair wash, haircut, styling" }, uz: { title: "Erkaklar soch turmagi", desc: "Soch yuvish, soch kesish, turmaklash" }, kg: { title: "Эркектердин чач кыркуусу", desc: "Чач жуу, чач кыркуу, жасалгалоо" } } },
-            { id: 'beard', price: 1000, duration: 30, strings: { ru: { title: "Оформление бороды", desc: "Распаривание, коррекция формы, масло" }, en: { title: "Beard Styling", desc: "Steaming, shaping, oil" }, uz: { title: "Soqol olish", desc: "Bug'lash, shakl berish, yog'" }, kg: { title: "Сакал коюу", desc: "Буулоо, форма берүү, май" } } }
+            { id: 'haircut', price: 1500, duration: 60, strings: { ru: { title: "Мужская стрижка", desc: "Мытье головы, стрижка, укладка" }, en: { title: "Men's Haircut", desc: "Hair wash, haircut, styling" }, uz: { title: "Erkaklar soch turmagi", desc: "Soch yuvish, soch kesish, turmaklash" }, kg: { title: "Эркектердин чач кыркуусу", desc: "Чач жуу, чач кыркуу, жасалгалоо" }, kz: { title: "Ерлер шаш қиюы", desc: "Бас жуу, шаш қию, сәндеу" } } },
+            { id: 'beard', price: 1000, duration: 30, strings: { ru: { title: "Оформление бороды", desc: "Распаривание, коррекция формы, масло" }, en: { title: "Beard Styling", desc: "Steaming, shaping, oil" }, uz: { title: "Soqol olish", desc: "Bug'lash, shakl berish, yog'" }, kg: { title: "Сакал коюу", desc: "Буулоо, форма берүү, май" }, kz: { title: "Сақал сәндеу", desc: "Булау, пішінін түзету, май" } } }
         ];
         const defaultMasters = [
             { id: 'm1', name: 'Мастер Алексей', share: 50, productShare: 10, workingDays: [1,2,3,4,5,6,0] },

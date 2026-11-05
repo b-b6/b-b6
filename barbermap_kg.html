@@ -256,9 +256,16 @@ body.dragging .map-ctrls{transition:opacity .2s}
         <span class="mk"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg></span>
         Barber<span class="map-word">Map</span><span class="tag" id="logoTag">KG · UZ · KZ</span>
       </a>
-      <div style="display:flex;align-items:center;gap:8px;">
+      <div style="display:flex;align-items:center;gap:6px;">
         <span class="total" id="totalLabel"></span>
-        <a href="app.html?switch_role=1" class="chip" style="font-weight:700;color:var(--burgundy);text-decoration:none;border-color:var(--burgundy-line);height:28px;font-size:11.5px;padding:0 9px;" title="Вернуться к выбору роли">← Меню</a>
+        <select id="langSelect" class="chip" style="height:28px;font-size:11.5px;padding:0 7px;font-weight:700;cursor:pointer;outline:none;" aria-label="Language">
+          <option value="ru">🇷🇺 RU</option>
+          <option value="kg">🇰🇬 KG</option>
+          <option value="uz">🇺🇿 UZ</option>
+          <option value="kz">🇰🇿 KZ</option>
+          <option value="en">🇬🇧 EN</option>
+        </select>
+        <a href="app.html?switch_role=1" id="btnBackMenu" class="chip" style="font-weight:700;color:var(--burgundy);text-decoration:none;border-color:var(--burgundy-line);height:28px;font-size:11.5px;padding:0 9px;" title="Вернуться к выбору роли">← Меню</a>
       </div>
     </div>
     <label class="search">
@@ -273,10 +280,10 @@ body.dragging .map-ctrls{transition:opacity .2s}
     </label>
     <div class="chips-wrap" style="margin-bottom: 2px;">
       <div class="chips" id="countryChips" style="gap: 6px;">
-        <button class="chip on" data-country="all">🌍 Все страны <small id="cntAll">1218</small></button>
-        <button class="chip" data-country="KG">🇰🇬 Кыргызстан <small id="cntKG">461</small></button>
-        <button class="chip" data-country="UZ">🇺🇿 Узбекистан <small id="cntUZ">619</small></button>
-        <button class="chip" data-country="KZ">🇰🇿 Казахстан <small id="cntKZ">138</small></button>
+        <button class="chip on" data-country="all"><span id="lblCountryAll">🌍 Все страны</span> <small id="cntAll">1218</small></button>
+        <button class="chip" data-country="KG"><span id="lblCountryKG">🇰🇬 Кыргызстан</span> <small id="cntKG">461</small></button>
+        <button class="chip" data-country="UZ"><span id="lblCountryUZ">🇺🇿 Узбекистан</span> <small id="cntUZ">619</small></button>
+        <button class="chip" data-country="KZ"><span id="lblCountryKZ">🇰🇿 Казахстан</span> <small id="cntKZ">138</small></button>
       </div>
     </div>
     <div class="chips-wrap">
@@ -294,17 +301,17 @@ body.dragging .map-ctrls{transition:opacity .2s}
           <p id="listSub"></p>
         </div>
         <select id="sort" class="sort" aria-label="Сортировка">
-          <option value="rec">Рекомендуемые</option>
-          <option value="rating">По рейтингу</option>
-          <option value="reviews">По отзывам</option>
-          <option value="near">Ближе ко мне</option>
+          <option value="rec" id="optSortRec">Рекомендуемые</option>
+          <option value="rating" id="optSortRating">По рейтингу</option>
+          <option value="reviews" id="optSortReviews">По отзывам</option>
+          <option value="near" id="optSortNear">Ближе ко мне</option>
         </select>
       </div>
       <div class="chips filters" id="filterChips">
-        <button class="chip" data-f="open">Открыто сейчас</button>
+        <button class="chip" data-f="open" id="chip-open">Открыто сейчас</button>
         <button class="chip" data-f="coworking" id="chip-coworking">💺 Аренда кресел</button>
-        <button class="chip" data-f="top">Рейтинг 4.5+</button>
-        <button class="chip" data-f="popular">50+ отзывов</button>
+        <button class="chip" data-f="top" id="chip-top">Рейтинг 4.5+</button>
+        <button class="chip" data-f="popular" id="chip-popular">50+ отзывов</button>
       </div>
       <div id="list" class="list"></div>
     </div>
@@ -324,7 +331,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
 
 <div class="modal" id="routeModal">
   <div class="modal-card">
-    <h3>Построить маршрут</h3>
+    <h3 id="routeModalTitle">Построить маршрут</h3>
     <p id="routeTo"></p>
     <a class="opt" id="r2gis" target="_blank" rel="noopener"><i style="background:#2fad4f">2G</i>2GIS Навигатор</a>
     <a class="opt" id="rYa" target="_blank" rel="noopener"><i style="background:#fc3f1d">Я</i>Яндекс Карты</a>
@@ -348,12 +355,122 @@ body.dragging .map-ctrls{transition:opacity .2s}
 (() => {
   'use strict';
 
-  /* ================= helpers ================= */
+  /* ================= helpers & i18n ================= */
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const plural = (n, f) => { const a = Math.abs(n) % 100, b = a % 10; return f[(a > 10 && a < 20) ? 2 : b === 1 ? 0 : (b >= 2 && b <= 4) ? 1 : 2]; };
-  const W_BS = ['барбершоп', 'барбершопа', 'барбершопов'];
-  const W_RV = ['отзыв', 'отзыва', 'отзывов'];
+  let mapLang = localStorage.getItem('barber_lang') || localStorage.getItem('adminLang') || 'ru';
+  const MAP_I18N = {
+    ru: {
+      menu: '← Меню', search_ph: 'Поиск барбершопа, улицы или города',
+      c_all: '🌍 Все страны', c_kg: '🇰🇬 Кыргызстан', c_uz: '🇺🇿 Узбекистан', c_kz: '🇰🇿 Казахстан', all_cities: 'Все города',
+      t_all: 'Все страны', t_kg: 'Весь Кыргызстан', t_uz: 'Весь Узбекистан', t_kz: 'Весь Казахстан',
+      s_rec: 'Рекомендуемые', s_rating: 'По рейтингу', s_reviews: 'По отзывам', s_near: 'Ближе ко мне',
+      f_open: 'Открыто сейчас', f_cw: '💺 Аренда кресел', f_top: 'Рейтинг 4.5+', f_pop: '50+ отзывов',
+      w_bs: ['барбершоп', 'барбершопа', 'барбершопов'], w_rv: ['отзыв', 'отзыва', 'отзывов'],
+      open_24: 'Круглосуточно', open_to: 'Открыто до', closed_to: 'Закрыто · до',
+      online_bk: '⚡ Онлайн-запись', catalog_pill: 'Городской каталог', has_cw: '💺 Есть коворкинг',
+      chair_short: '💺 Кресло:', book_short: '✂️ Записаться',
+      empty_cw_b: 'Пока нет свободных кресел в аренду', empty_cw_d: 'Точки коворкинга появляются здесь только после того, как владелец салона включит «Аренду кресел» в своём кабинете.', empty_cw_btn: 'Показать все барбершопы',
+      empty_b: 'Ничего не найдено', empty_d: 'Попробуйте изменить запрос или сбросить фильтры', empty_btn: 'Сбросить всё',
+      back_list: 'К списку', book_online: 'Записаться онлайн', book_wa: 'Записаться (WhatsApp)', book_call: 'Записаться (Звонок)', book_def: 'Записаться', route_btn: 'Маршрут',
+      view_maps: 'Смотреть на картах:',
+      cw_title: '💺 Коворкинг / Аренда кресла', cw_free: 'Свободно мест:', cw_desc: 'Барбершоп сдаёт оборудованные места для мастеров со своими клиентами.', cw_hour: 'В час:', cw_day: 'В смену (день):', cw_perks: 'В стоимость аренды входит:', cw_rules: 'Условия:', cw_wa_btn: 'Забронировать кресло (WhatsApp)',
+      claim_t: 'Вы владелец или мастер заведения?', claim_d: 'Подключите бесплатный приём онлайн-записей через Instagram <b>@tu1anow</b>', claim_btn: 'Подключить',
+      lbl_addr: 'Адрес', btn_copy: 'Копировать', lbl_hours: 'Часы работы', daily: 'Ежедневно', not_spec: 'Не указаны',
+      lbl_phone: 'Телефон', btn_call: 'Позвонить', phone_maps: 'Актуален в 2GIS / Яндекс', wa_chat: 'Онлайн-чат', btn_write: 'Написать', btn_open: 'Открыть',
+      nearby: 'Ближайшие барбершопы', note: 'Данные проверены по официальным справочникам 2GIS и Яндекс Карты.',
+      route_title: 'Построить маршрут', btn_cancel: 'Отмена'
+    },
+    kg: {
+      menu: '← Меню', search_ph: 'Барбершоп, көчө же шаар издөө',
+      c_all: '🌍 Бардык өлкөлөр', c_kg: '🇰🇬 Кыргызстан', c_uz: '🇺🇿 Өзбекстан', c_kz: '🇰🇿 Казакстан', all_cities: 'Бардык шаарлар',
+      t_all: 'Бардык өлкөлөр', t_kg: 'Бүткүл Кыргызстан', t_uz: 'Бүткүл Өзбекстан', t_kz: 'Бүткүл Казакстан',
+      s_rec: 'Сунушталгандар', s_rating: 'Рейтинг боюнча', s_reviews: 'Пикирлер боюнча', s_near: 'Мага жакын',
+      f_open: 'Азыр ачык', f_cw: '💺 Кресло ижарасы', f_top: 'Рейтинг 4.5+', f_pop: '50+ пикир',
+      w_bs: ['барбершоп', 'барбершоп', 'барбершоп'], w_rv: ['пикир', 'пикир', 'пикир'],
+      open_24: 'Түнү-күнү ачык', open_to: 'Ачык:', closed_to: 'Жабык · ачылат:',
+      online_bk: '⚡ Онлайн-жазылуу', catalog_pill: 'Шаардык каталог', has_cw: '💺 Коворкинг бар',
+      chair_short: '💺 Кресло:', book_short: '✂️ Жазылуу',
+      empty_cw_b: 'Азырынча ижарага бош креслолор жок', empty_cw_d: 'Салон ээси жеке кабинетинде «Кресло ижарасын» күйгүзгөндөн кийин гана бул жерде көрүнөт.', empty_cw_btn: 'Бардык барбершопторду көрсөтүү',
+      empty_b: 'Эч нерсе табылган жок', empty_d: 'Сурамды өзгөртүп же фильтрлерди тазалап көрүңүз', empty_btn: 'Баарын тазалоо',
+      back_list: 'Тизмеге', book_online: 'Онлайн жазылуу', book_wa: 'Жазылуу (WhatsApp)', book_call: 'Жазылуу (Чалуу)', book_def: 'Жазылуу', route_btn: 'Маршрут',
+      view_maps: 'Карталардан көрүү:',
+      cw_title: '💺 Коворкинг / Кресло ижарасы', cw_free: 'Бош орун:', cw_desc: 'Барбершоп өз кардарлары бар чеберлер үчүн жабдылган орундарды ижарага берет.', cw_hour: 'Саатына:', cw_day: 'Сменасына (күн):', cw_perks: 'Ижара баасына кирет:', cw_rules: 'Шарттары:', cw_wa_btn: 'Кресло брондоо (WhatsApp)',
+      claim_t: 'Сиз салондун ээси же чеберисизби?', claim_d: 'Instagram <b>@tu1anow</b> аркылуу акысыз онлайн-жазылууну кошуңуз', claim_btn: 'Кошуу',
+      lbl_addr: 'Дарек', btn_copy: 'Көчүрүү', lbl_hours: 'Иштөө убактысы', daily: 'Күн сайын', not_spec: 'Көрсөтүлгөн эмес',
+      lbl_phone: 'Телефон', btn_call: 'Чалуу', phone_maps: '2GIS / Яндекс картада бар', wa_chat: 'Онлайн-чат', btn_write: 'Жазуу', btn_open: 'Ачуу',
+      nearby: 'Жакын жердеги барбершоптор', note: 'Маалыматтар 2GIS жана Яндекс Карталар расмий каталогдору боюнча текшерилген.',
+      route_title: 'Маршрут түзүү', btn_cancel: 'Жокко чыгаруу'
+    },
+    uz: {
+      menu: '← Menyu', search_ph: 'Barbershop, ko\'cha yoki shahar qidirish',
+      c_all: '🌍 Barcha davlatlar', c_kg: '🇰🇬 Qirg\'iziston', c_uz: '🇺🇿 O\'zbekiston', c_kz: '🇰🇿 Qozog\'iston', all_cities: 'Barcha shaharlar',
+      t_all: 'Barcha davlatlar', t_kg: 'Butun Qirg\'iziston', t_uz: 'Butun O\'zbekiston', t_kz: 'Butun Qozog\'iston',
+      s_rec: 'Tavsiya etilgan', s_rating: 'Reyting bo\'yicha', s_reviews: 'Sharhlar bo\'yicha', s_near: 'Menga yaqin',
+      f_open: 'Hozir ochiq', f_cw: '💺 Kreslo ijarasi', f_top: 'Reyting 4.5+', f_pop: '50+ sharhlar',
+      w_bs: ['barbershop', 'barbershop', 'barbershoplar'], w_rv: ['sharh', 'sharh', 'sharhlar'],
+      open_24: '24 soat ochiq', open_to: 'Ochiq:', closed_to: 'Yopiq · ochiladi:',
+      online_bk: '⚡ Onlayn yozilish', catalog_pill: 'Shahar katalogi', has_cw: '💺 Kovorking bor',
+      chair_short: '💺 Kreslo:', book_short: '✂️ Yozilish',
+      empty_cw_b: 'Hozircha ijaraga bo\'sh kreslolar yo\'q', empty_cw_d: 'Salon egasi o\'z kabinetida «Kreslo ijarasi»ni yoqqanidan keyin bu yerda paydo bo\'ladi.', empty_cw_btn: 'Barcha barbershoplarni ko\'rsatish',
+      empty_b: 'Hech narsa topilmadi', empty_d: 'Qidiruvni o\'zgartiring yoki filtrlarni tozalang', empty_btn: 'Hammasini tozalash',
+      back_list: 'Ro\'yxatga', book_online: 'Onlayn yozilish', book_wa: 'Yozilish (WhatsApp)', book_call: 'Yozilish (Qo\'ng\'iroq)', book_def: 'Yozilish', route_btn: 'Marshrut',
+      view_maps: 'Xaritalarda ko\'rish:',
+      cw_title: '💺 Kovorking / Kreslo ijarasi', cw_free: 'Bo\'sh joylar:', cw_desc: 'Barbershop o\'z mijozlari bilan ishlovchi ustalar uchun jihozlangan joylarni ijaraga beradi.', cw_hour: 'Soatiga:', cw_day: 'Smenaga (kun):', cw_perks: 'Ijara narxiga kiradi:', cw_rules: 'Shartlar:', cw_wa_btn: 'Kreslo band qilish (WhatsApp)',
+      claim_t: 'Siz salon egasi yoki ustamisiz?', claim_d: 'Instagram <b>@tu1anow</b> orqali bepul onlayn yozilishni ulang', claim_btn: 'Ulash',
+      lbl_addr: 'Manzil', btn_copy: 'Nusxalash', lbl_hours: 'Ish vaqti', daily: 'Har kuni', not_spec: 'Ko\'rsatilmagan',
+      lbl_phone: 'Telefon', btn_call: 'Qo\'ng\'iroq', phone_maps: '2GIS / Yandex xaritada mavjud', wa_chat: 'Onlayn-chat', btn_write: 'Yozish', btn_open: 'Ochish',
+      nearby: 'Yaqin atrofdagi barbershoplar', note: 'Ma\'lumotlar 2GIS va Yandex Xaritalar rasmiy ma\'lumotnomalari orqali tekshirilgan.',
+      route_title: 'Marshrut tuzish', btn_cancel: 'Bekor qilish'
+    },
+    kz: {
+      menu: '← Мәзір', search_ph: 'Барбершоп, көше немесе қала іздеу',
+      c_all: '🌍 Барлық елдер', c_kg: '🇰🇬 Қырғызстан', c_uz: '🇺🇿 Өзбекстан', c_kz: '🇰🇿 Қазақстан', all_cities: 'Барлық қалалар',
+      t_all: 'Барлық елдер', t_kg: 'Бүкіл Қырғызстан', t_uz: 'Бүкіл Өзбекстан', t_kz: 'Бүкіл Қазақстан',
+      s_rec: 'Ұсынылғандар', s_rating: 'Рейтинг бойынша', s_reviews: 'Пікірлер бойынша', s_near: 'Маған жақын',
+      f_open: 'Қазір ашық', f_cw: '💺 Кресло жалдау', f_top: 'Рейтинг 4.5+', f_pop: '50+ пікір',
+      w_bs: ['барбершоп', 'барбершоп', 'барбершоп'], w_rv: ['пікір', 'пікір', 'пікір'],
+      open_24: 'Тәулік бойы', open_to: 'Ашық:', closed_to: 'Жабық · ашылады:',
+      online_bk: '⚡ Онлайн-жазылу', catalog_pill: 'Қалалық каталог', has_cw: '💺 Коворкинг бар',
+      chair_short: '💺 Кресло:', book_short: '✂️ Жазылу',
+      empty_cw_b: 'Әзірге жалға берілетін бос креслолар жоқ', empty_cw_d: 'Салон иесі жеке кабинетінде «Кресло жалдау» функциясын қосқаннан кейін осында пайда болады.', empty_cw_btn: 'Барлық барбершоптарды көрсету',
+      empty_b: 'Ештеңе табылмады', empty_d: 'Сұранысты өзгертіп немесе сүзгілерді тазалап көріңіз', empty_btn: 'Бәрін тазалау',
+      back_list: 'Тізімге', book_online: 'Онлайн жазылу', book_wa: 'Жазылу (WhatsApp)', book_call: 'Жазылу (Қоңырау)', book_def: 'Жазылу', route_btn: 'Бағыт',
+      view_maps: 'Карталардан көру:',
+      cw_title: '💺 Коворкинг / Кресло жалдау', cw_free: 'Бос орын:', cw_desc: 'Барбершоп өз клиенттері бар шеберлерге жабдықталған орындарды жалға береді.', cw_hour: 'Сағатына:', cw_day: 'Ауысымға (күн):', cw_perks: 'Жалдау құнына кіреді:', cw_rules: 'Шарттары:', cw_wa_btn: 'Кресло брондау (WhatsApp)',
+      claim_t: 'Сіз салон иесі немесе шеберсіз бе?', claim_d: 'Instagram <b>@tu1anow</b> арқылы тегін онлайн-жазылуды қосыңыз', claim_btn: 'Қосу',
+      lbl_addr: 'Мекенжай', btn_copy: 'Көшіру', lbl_hours: 'Жұмыс уақыты', daily: 'Күн сайын', not_spec: 'Көрсетілмеген',
+      lbl_phone: 'Телефон', btn_call: 'Қоңырау шалу', phone_maps: '2GIS / Яндекс картада бар', wa_chat: 'Онлайн-чат', btn_write: 'Жазу', btn_open: 'Ашу',
+      nearby: 'Жақын маңдағы барбершоптар', note: 'Деректер 2GIS және Яндекс Карталар ресми анықтамалықтары бойынша тексерілген.',
+      route_title: 'Бағыт құру', btn_cancel: 'Болдырмау'
+    },
+    en: {
+      menu: '← Menu', search_ph: 'Search barbershop, street or city',
+      c_all: '🌍 All Countries', c_kg: '🇰🇬 Kyrgyzstan', c_uz: '🇺🇿 Uzbekistan', c_kz: '🇰🇿 Kazakhstan', all_cities: 'All cities',
+      t_all: 'All Countries', t_kg: 'All Kyrgyzstan', t_uz: 'All Uzbekistan', t_kz: 'All Kazakhstan',
+      s_rec: 'Recommended', s_rating: 'Top Rated', s_reviews: 'Most Reviewed', s_near: 'Nearest to me',
+      f_open: 'Open now', f_cw: '💺 Chair Rental', f_top: 'Rating 4.5+', f_pop: '50+ reviews',
+      w_bs: ['barbershop', 'barbershops', 'barbershops'], w_rv: ['review', 'reviews', 'reviews'],
+      open_24: 'Open 24/7', open_to: 'Open until', closed_to: 'Closed · until',
+      online_bk: '⚡ Online Booking', catalog_pill: 'City Directory', has_cw: '💺 Coworking',
+      chair_short: '💺 Chair:', book_short: '✂️ Book',
+      empty_cw_b: 'No chairs available for rent yet', empty_cw_d: 'Coworking spots appear here once a salon owner enables "Chair Rental" in their dashboard.', empty_cw_btn: 'Show all barbershops',
+      empty_b: 'Nothing found', empty_d: 'Try changing your search query or resetting filters', empty_btn: 'Reset all',
+      back_list: 'Back to list', book_online: 'Book Online', book_wa: 'Book (WhatsApp)', book_call: 'Book (Call)', book_def: 'Book Now', route_btn: 'Directions',
+      view_maps: 'Open in maps:',
+      cw_title: '💺 Coworking / Chair Rental', cw_free: 'Available chairs:', cw_desc: 'This barbershop rents out equipped stations for independent barbers with their own clients.', cw_hour: 'Per hour:', cw_day: 'Per shift (day):', cw_perks: 'Included in rent:', cw_rules: 'Terms:', cw_wa_btn: 'Book a Chair (WhatsApp)',
+      claim_t: 'Are you the salon owner or barber?', claim_d: 'Connect free online booking via Instagram <b>@tu1anow</b>', claim_btn: 'Claim',
+      lbl_addr: 'Address', btn_copy: 'Copy', lbl_hours: 'Working hours', daily: 'Daily', not_spec: 'Not specified',
+      lbl_phone: 'Phone', btn_call: 'Call', phone_maps: 'Available in 2GIS / Yandex', wa_chat: 'Online chat', btn_write: 'Message', btn_open: 'Open',
+      nearby: 'Nearby barbershops', note: 'Data verified via official 2GIS and Yandex Maps directories.',
+      route_title: 'Get Directions', btn_cancel: 'Cancel'
+    }
+  };
+  if (!MAP_I18N[mapLang]) mapLang = 'ru';
+  const tr = k => (MAP_I18N[mapLang] && MAP_I18N[mapLang][k]) || MAP_I18N.ru[k] || k;
+  let W_BS = MAP_I18N[mapLang].w_bs;
+  let W_RV = MAP_I18N[mapLang].w_rv;
   const isDesktop = () => window.matchMedia('(min-width: 900px)').matches;
   const svg = (p, s = 20, w = 2) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
   const ICON = {
@@ -396,10 +513,10 @@ body.dragging .map-ctrls{transition:opacity .2s}
   function statusOf(b) {
     const h = b.h;
     if (!h) return { known: false };
-    if (h.h24) return { known: true, open: true, text: 'Круглосуточно' };
+    if (h.h24) return { known: true, open: true, text: tr('open_24') };
     const t = bishkekMinutes();
     const open = h.c <= h.o ? (t >= h.o || t < h.c) : (t >= h.o && t < h.c);
-    return { known: true, open, text: open ? `Открыто до ${h.cs}` : `Закрыто · до ${h.os}` };
+    return { known: true, open, text: open ? `${tr('open_to')} ${h.cs}` : `${tr('closed_to')} ${h.os}` };
   }
   function distKm(a, b) {
     const R = 6371, r = x => x * Math.PI / 180;
@@ -741,12 +858,12 @@ body.dragging .map-ctrls{transition:opacity .2s}
     const st = statusOf(b);
     const dist = d != null ? d : (state.me ? distKm(state.me, b) : null);
     const metaParts = [b.kind, (state.city === 'all' || d != null) ? b.city : null, dist != null ? fmtDist(dist) : null];
-    if (state.country === 'all') metaParts.push(b.country === 'Узбекистан' ? '🇺🇿 UZ' : '🇰🇬 KG');
+    if (state.country === 'all') metaParts.push(b.countryCode === 'UZ' ? '🇺🇿 UZ' : (b.countryCode === 'KZ' ? '🇰🇿 KZ' : '🇰🇬 KG'));
     const meta = metaParts.filter(Boolean).join(' · ');
     const targetId = resolveBookingTargetId(b);
     const partner = isPartnerTenant(b);
     const rent = getChairRentInfo(b);
-    const rentBadge = rent ? `<span style="font-size:11px;font-weight:700;color:#0369a1;background:#e0f2fe;padding:2px 7px;border-radius:999px;border:1px solid #bae6fd;">💺 Кресло: ${rent.priceHour ? rent.priceHour + ' с/ч' : (rent.priceDay + ' с/день')}</span>` : '';
+    const rentBadge = rent ? `<span style="font-size:11px;font-weight:700;color:#0369a1;background:#e0f2fe;padding:2px 7px;border-radius:999px;border:1px solid #bae6fd;">${tr('chair_short')} ${rent.priceHour ? rent.priceHour + ' с/ч' : (rent.priceDay + ' с/день')}</span>` : '';
     return `<div class="card" data-id="${esc(b.id)}" role="button" tabindex="0">
       <div class="av">${esc(b.letter)}${st.known && st.open ? '<span class="dot-open"></span>' : ''}</div>
       <div class="card-main">
@@ -756,10 +873,10 @@ body.dragging .map-ctrls{transition:opacity .2s}
         <div class="card-addr">${esc(b.address)}</div>
         <div class="card-foot">
           ${st.known ? `<span class="st-pill ${st.open ? 'open' : 'closed'}" data-st="${esc(b.id)}">${st.text}</span>` : '<span></span>'}
-          ${partner ? `<span style="font-size:11px;font-weight:700;color:#15803d;background:#dcfce7;padding:2px 7px;border-radius:999px;">⚡ Онлайн-запись</span>` : ''}
+          ${partner ? `<span style="font-size:11px;font-weight:700;color:#15803d;background:#dcfce7;padding:2px 7px;border-radius:999px;">${tr('online_bk')}</span>` : ''}
           ${rentBadge}
           <a href="index.html?id=${encodeURIComponent(targetId)}&shopName=${encodeURIComponent(b.title || b.name || '')}" class="quick-book-link" onclick="event.stopPropagation()">
-            ✂️ Записаться
+            ${tr('book_short')}
           </a>
         </div>
       </div>
@@ -770,21 +887,22 @@ body.dragging .map-ctrls{transition:opacity .2s}
     const el = $('#list');
     if (!list.length) {
       if (state.f.has('coworking')) {
-        el.innerHTML = `<div class="empty"><b>Пока нет свободных кресел в аренду</b>Точки коворкинга появляются здесь только после того, как владелец салона включит «Аренду кресел» в своём кабинете.<br><button class="btn ghost sm" data-act="reset" style="margin-top:8px;">Показать все барбершопы</button></div>`;
+        el.innerHTML = `<div class="empty"><b>${tr('empty_cw_b')}</b>${tr('empty_cw_d')}<br><button class="btn ghost sm" data-act="reset" style="margin-top:8px;">${tr('empty_cw_btn')}</button></div>`;
       } else {
-        el.innerHTML = `<div class="empty"><b>Ничего не найдено</b>Попробуйте изменить запрос или сбросить фильтры<br><button class="btn ghost sm" data-act="reset">Сбросить всё</button></div>`;
+        el.innerHTML = `<div class="empty"><b>${tr('empty_b')}</b>${tr('empty_d')}<br><button class="btn ghost sm" data-act="reset">${tr('empty_btn')}</button></div>`;
       }
     } else {
       el.innerHTML = list.map(b => card(b)).join('');
     }
     el.scrollTop = 0;
     const n = list.length;
-    let defTitle = 'Все страны';
-    if (state.country === 'UZ') defTitle = 'Весь Узбекистан';
-    else if (state.country === 'KG') defTitle = 'Весь Кыргызстан';
+    let defTitle = tr('t_all');
+    if (state.country === 'UZ') defTitle = tr('t_uz');
+    else if (state.country === 'KZ') defTitle = tr('t_kz');
+    else if (state.country === 'KG') defTitle = tr('t_kg');
     $('#listTitle').textContent = state.city === 'all' ? defTitle : state.city;
     const extras = [];
-    if (state.q.trim()) extras.push(`по запросу «${state.q.trim()}»`);
+    if (state.q.trim()) extras.push(`«${state.q.trim()}»`);
     $('#listSub').textContent = `${n} ${plural(n, W_BS)}${extras.length ? ' ' + extras.join(', ') : ''}`;
   }
 
@@ -799,7 +917,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
     const scopedList = state.country === 'all' ? DATA : DATA.filter(b => b.countryCode === state.country);
     const total = scopedList.length;
     const scopedCities = [...scopedList.reduce((m, b) => m.set(b.city, (m.get(b.city) || 0) + 1), new Map())].sort((a, b) => b[1] - a[1]);
-    const items = [['all', total, 'Все города'], ...scopedCities.map(([c, n]) => [c, n, c])];
+    const items = [['all', total, tr('all_cities')], ...scopedCities.map(([c, n]) => [c, n, c])];
     $('#cityChips').innerHTML = items.map(([v, n, label]) =>
       `<button class="chip${state.city === v ? ' on' : ''}" data-city="${esc(v)}">${esc(label)} <small>${n}</small></button>`).join('');
     updateCountryCounters();
@@ -840,12 +958,12 @@ body.dragging .map-ctrls{transition:opacity .2s}
     if (b.rating) stats.push(`<span class="rate">${ICON.star(14)}${b.rating.toFixed(1)}</span><span style="color:var(--muted)">${b.reviews} ${plural(b.reviews, W_RV)}</span>`);
     if (st.known) stats.push(`<span class="st-pill ${st.open ? 'open' : 'closed'}">${st.text}</span>`);
     if (partner) {
-      stats.push(`<span class="partner-pill">⚡ Онлайн-запись</span>`);
+      stats.push(`<span class="partner-pill">${tr('online_bk')}</span>`);
     } else {
-      stats.push(`<span class="catalog-pill">Городской каталог</span>`);
+      stats.push(`<span class="catalog-pill">${tr('catalog_pill')}</span>`);
     }
     if (rent) {
-      stats.push(`<span style="font-size:11px;font-weight:700;color:#0369a1;background:#e0f2fe;padding:2px 8px;border-radius:999px;border:1px solid #bae6fd;">💺 Есть коворкинг</span>`);
+      stats.push(`<span style="font-size:11px;font-weight:700;color:#0369a1;background:#e0f2fe;padding:2px 8px;border-radius:999px;border:1px solid #bae6fd;">${tr('has_cw')}</span>`);
     }
     if (state.me) stats.push(`<span>${fmtDist(distKm(state.me, b))}</span>`);
 
@@ -866,12 +984,12 @@ body.dragging .map-ctrls{transition:opacity .2s}
     const linkGoogle = `https://www.google.com/maps/search/?api=1&query=${b.lat},${b.lon}`;
 
     const bookBtnLabel = partner
-      ? `${ICON.calendar}Записаться онлайн`
-      : (b.whatsapp ? `${ICON.calendar}Записаться (WhatsApp)` : (b.phone ? `${ICON.calendar}Записаться (Звонок)` : `${ICON.calendar}Записаться`));
+      ? `${ICON.calendar}${tr('book_online')}`
+      : (b.whatsapp ? `${ICON.calendar}${tr('book_wa')}` : (b.phone ? `${ICON.calendar}${tr('book_call')}` : `${ICON.calendar}${tr('book_def')}`));
 
     $('#detailView').innerHTML = `
       <div class="d-bar" id="dBar">
-        <button class="d-back" data-act="back" aria-label="Назад">${ICON.back}<span>К списку</span></button>
+        <button class="d-back" data-act="back" aria-label="Назад">${ICON.back}<span>${tr('back_list')}</span></button>
         <button class="icon-btn" data-act="share" aria-label="Поделиться">${ICON.share}</button>
       </div>
       <div class="d-body">
@@ -884,19 +1002,19 @@ body.dragging .map-ctrls{transition:opacity .2s}
           <a class="btn primary" href="index.html?id=${encodeURIComponent(resolveBookingTargetId(b))}&shopName=${encodeURIComponent(b.title || b.name || '')}">
             ${bookBtnLabel}
           </a>
-          <button class="btn navy" data-act="route">${ICON.route}Маршрут</button>
+          <button class="btn navy" data-act="route">${ICON.route}${tr('route_btn')}</button>
         </div>
 
         <div class="map-view-sec">
-          <div class="map-view-lbl">Смотреть на картах:</div>
+          <div class="map-view-lbl">${tr('view_maps')}</div>
           <div class="map-view-btns">
-            <a class="map-btn gis" href="${esc(link2gis)}" target="_blank" rel="noopener" title="Открыть в 2ГИС">
+            <a class="map-btn gis" href="${esc(link2gis)}" target="_blank" rel="noopener" title="2GIS">
               <i>2G</i>2GIS
             </a>
-            <a class="map-btn yandex" href="${esc(linkYandex)}" target="_blank" rel="noopener" title="Открыть в Яндекс Картах">
+            <a class="map-btn yandex" href="${esc(linkYandex)}" target="_blank" rel="noopener" title="Yandex">
               <i>Я</i>Яндекс
             </a>
-            <a class="map-btn google" href="${esc(linkGoogle)}" target="_blank" rel="noopener" title="Открыть в Google Maps">
+            <a class="map-btn google" href="${esc(linkGoogle)}" target="_blank" rel="noopener" title="Google Maps">
               <i>G</i>Google
             </a>
           </div>
@@ -906,32 +1024,32 @@ body.dragging .map-ctrls{transition:opacity .2s}
         <div class="coworking-detail-box" style="background:linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);border:1.5px solid #7dd3fc;border-radius:14px;padding:14px 16px;margin:14px 0;">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
             <div style="font-weight:700;font-size:15px;color:#0369a1;display:flex;align-items:center;gap:6px;">
-              <span>💺 Коворкинг / Аренда кресла</span>
+              <span>${tr('cw_title')}</span>
             </div>
-            <span style="font-size:11px;font-weight:700;background:#0284c7;color:#fff;padding:2px 8px;border-radius:12px;">Свободно мест: ${esc(rent.count || 1)}</span>
+            <span style="font-size:11px;font-weight:700;background:#0284c7;color:#fff;padding:2px 8px;border-radius:12px;">${tr('cw_free')} ${esc(rent.count || 1)}</span>
           </div>
           <div style="font-size:13px;color:#334155;margin-bottom:10px;">
-            Барбершоп сдаёт оборудованные места для мастеров со своими клиентами.
+            ${tr('cw_desc')}
           </div>
           <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
-            ${rent.priceHour ? `<div style="background:#fff;border-radius:8px;padding:6px 12px;border:1px solid #bae6fd;"><span style="font-size:11px;color:#64748b;display:block;">В час:</span><b style="font-size:15px;color:#0284c7;">${rent.priceHour} сом</b></div>` : ''}
-            ${rent.priceDay ? `<div style="background:#fff;border-radius:8px;padding:6px 12px;border:1px solid #bae6fd;"><span style="font-size:11px;color:#64748b;display:block;">В смену (день):</span><b style="font-size:15px;color:#0284c7;">${rent.priceDay} сом</b></div>` : ''}
+            ${rent.priceHour ? `<div style="background:#fff;border-radius:8px;padding:6px 12px;border:1px solid #bae6fd;"><span style="font-size:11px;color:#64748b;display:block;">${tr('cw_hour')}</span><b style="font-size:15px;color:#0284c7;">${rent.priceHour} сом</b></div>` : ''}
+            ${rent.priceDay ? `<div style="background:#fff;border-radius:8px;padding:6px 12px;border:1px solid #bae6fd;"><span style="font-size:11px;color:#64748b;display:block;">${tr('cw_day')}</span><b style="font-size:15px;color:#0284c7;">${rent.priceDay} сом</b></div>` : ''}
           </div>
           ${rent.perks && rent.perks.length ? `
           <div style="font-size:12px;color:#0f172a;margin-bottom:12px;">
-            <div style="font-weight:600;margin-bottom:4px;color:#0369a1;">В стоимость аренды входит:</div>
+            <div style="font-weight:600;margin-bottom:4px;color:#0369a1;">${tr('cw_perks')}</div>
             <div style="display:flex;flex-wrap:wrap;gap:6px;">
               ${rent.perks.map(p => `<span style="background:#ffffffd9;padding:3px 8px;border-radius:6px;border:1px solid #cbd5e1;font-size:11px;color:#1e293b;">✓ ${esc(p)}</span>`).join('')}
             </div>
           </div>` : ''}
           ${rent.rules ? `
           <div style="font-size:11px;color:#475569;margin-bottom:12px;background:#ffffffcc;padding:8px 10px;border-radius:8px;border:1px solid #e2e8f0;">
-            <b>Условия:</b> ${esc(rent.rules)}
+            <b>${tr('cw_rules')}</b> ${esc(rent.rules)}
           </div>` : ''}
           ${rentWhatsappLink ? `
           <a href="${rentWhatsappLink}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#25d366;color:#fff;font-weight:700;font-size:13px;padding:11px 14px;border-radius:10px;text-decoration:none;box-shadow:0 2px 6px rgba(37,211,102,0.3);transition:transform 0.15s ease;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-            Забронировать кресло (WhatsApp)
+            ${tr('cw_wa_btn')}
           </a>` : ''}
         </div>` : ''}
 
@@ -939,37 +1057,37 @@ body.dragging .map-ctrls{transition:opacity .2s}
         <div class="owner-claim-card">
           <div class="owner-claim-icon">💈</div>
           <div class="owner-claim-info">
-            <div class="owner-claim-t">Вы владелец или мастер заведения?</div>
-            <div class="owner-claim-d">Подключите бесплатный приём онлайн-записей через Instagram <b>@tu1anow</b></div>
+            <div class="owner-claim-t">${tr('claim_t')}</div>
+            <div class="owner-claim-d">${tr('claim_d')}</div>
           </div>
           <a class="owner-claim-btn" href="app.html?role=owner&claimId=${encodeURIComponent(b.id)}&name=${encodeURIComponent(b.title || b.name)}&city=${encodeURIComponent(b.city)}&phone=${encodeURIComponent(b.phone || '')}&insta=${encodeURIComponent(b.instaHandle || '')}">
-            Подключить
+            ${tr('claim_btn')}
           </a>
         </div>` : ''}
 
         <div class="info">
-          <div class="row">${ICON.pin}<div><div class="k">Адрес</div><div class="v">${esc(b.address)}, ${esc(b.city)}</div></div>
-            <button class="act" data-act="copy">Копировать</button></div>
-          <div class="row">${ICON.clock}<div><div class="k">Часы работы</div><div class="v">${b.h ? (b.h.h24 ? 'Круглосуточно' : `Ежедневно ${b.h.os} – ${b.h.cs}`) : esc(b.hours || 'Не указаны')}</div></div></div>
+          <div class="row">${ICON.pin}<div><div class="k">${tr('lbl_addr')}</div><div class="v">${esc(b.address)}, ${esc(b.city)}</div></div>
+            <button class="act" data-act="copy">${tr('btn_copy')}</button></div>
+          <div class="row">${ICON.clock}<div><div class="k">${tr('lbl_hours')}</div><div class="v">${b.h ? (b.h.h24 ? tr('open_24') : `${tr('daily')} ${b.h.os} – ${b.h.cs}`) : esc(b.hours || tr('not_spec'))}</div></div></div>
           ${b.phone
-            ? `<div class="row">${ICON.phone}<div><div class="k">Телефон</div><div class="v">${esc(b.phone)}</div></div>
-                <a class="act" href="tel:${esc(b.phone)}">Позвонить</a></div>`
-            : `<div class="row">${ICON.phone}<div><div class="k">Телефон</div><div class="v" style="color:var(--muted)">Актуален в 2GIS / Яндекс</div></div>
+            ? `<div class="row">${ICON.phone}<div><div class="k">${tr('lbl_phone')}</div><div class="v">${esc(b.phone)}</div></div>
+                <a class="act" href="tel:${esc(b.phone)}">${tr('btn_call')}</a></div>`
+            : `<div class="row">${ICON.phone}<div><div class="k">${tr('lbl_phone')}</div><div class="v" style="color:var(--muted)">${tr('phone_maps')}</div></div>
                 <a class="act" href="${esc(link2gis)}" target="_blank" rel="noopener">2GIS</a></div>`
           }
           ${b.whatsapp
-            ? `<div class="row"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><div><div class="k">WhatsApp</div><div class="v">Онлайн-чат</div></div>
-                <a class="act" href="${esc(b.whatsapp)}" target="_blank" rel="noopener">Написать</a></div>`
+            ? `<div class="row"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><div><div class="k">WhatsApp</div><div class="v">${tr('wa_chat')}</div></div>
+                <a class="act" href="${esc(b.whatsapp)}" target="_blank" rel="noopener">${tr('btn_write')}</a></div>`
             : ''
           }
           ${b.instagram
             ? `<div class="row"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E1306C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg><div><div class="k">Instagram</div><div class="v">@${esc(b.instagram)}</div></div>
-                <a class="act" href="https://instagram.com/${esc(b.instagram)}" target="_blank" rel="noopener">Открыть</a></div>`
+                <a class="act" href="https://instagram.com/${esc(b.instagram)}" target="_blank" rel="noopener">${tr('btn_open')}</a></div>`
             : ''
           }
         </div>
-        ${near.length ? `<h3 class="sec-title">Ближайшие барбершопы</h3><div class="near">${near.map(n => card(n.x, n.d)).join('')}</div>` : ''}
-        <p class="note">Данные проверены по официальным справочникам 2GIS и Яндекс Карты.</p>
+        ${near.length ? `<h3 class="sec-title">${tr('nearby')}</h3><div class="near">${near.map(n => card(n.x, n.d)).join('')}</div>` : ''}
+        <p class="note">${tr('note')}</p>
       </div>`;
     $('#detailView .d-body').scrollTop = 0;
     bindDrag($('#dBar'));
@@ -1246,8 +1364,40 @@ body.dragging .map-ctrls{transition:opacity .2s}
   }, 60000);
 
   /* ================= init ================= */
-  $('#totalLabel').textContent = `${DATA.length} ${plural(DATA.length, W_BS)}`;
-  renderCityChips();
+  function applyMapLang(lang) {
+    if (!MAP_I18N[lang]) lang = 'ru';
+    mapLang = lang;
+    W_BS = MAP_I18N[lang].w_bs;
+    W_RV = MAP_I18N[lang].w_rv;
+    localStorage.setItem('barber_lang', lang);
+    localStorage.setItem('adminLang', lang);
+    const sel = $('#langSelect');
+    if (sel) sel.value = lang;
+    if ($('#btnBackMenu')) $('#btnBackMenu').textContent = tr('menu');
+    if ($('#q')) $('#q').placeholder = tr('search_ph');
+    if ($('#lblCountryAll')) $('#lblCountryAll').textContent = tr('c_all');
+    if ($('#lblCountryKG')) $('#lblCountryKG').textContent = tr('c_kg');
+    if ($('#lblCountryUZ')) $('#lblCountryUZ').textContent = tr('c_uz');
+    if ($('#lblCountryKZ')) $('#lblCountryKZ').textContent = tr('c_kz');
+    if ($('#optSortRec')) $('#optSortRec').textContent = tr('s_rec');
+    if ($('#optSortRating')) $('#optSortRating').textContent = tr('s_rating');
+    if ($('#optSortReviews')) $('#optSortReviews').textContent = tr('s_reviews');
+    if ($('#optSortNear')) $('#optSortNear').textContent = tr('s_near');
+    if ($('#chip-open')) $('#chip-open').textContent = tr('f_open');
+    if ($('#chip-coworking')) $('#chip-coworking').textContent = tr('f_cw');
+    if ($('#chip-top')) $('#chip-top').textContent = tr('f_top');
+    if ($('#chip-popular')) $('#chip-popular').textContent = tr('f_pop');
+    if ($('#routeModalTitle')) $('#routeModalTitle').textContent = tr('route_title');
+    if ($('#routeClose')) $('#routeClose').textContent = tr('btn_cancel');
+    renderCityChips();
+    renderList(current);
+    if (state.sel && byId.has(state.sel)) renderDetail(byId.get(state.sel));
+  }
+  if ($('#langSelect')) {
+    $('#langSelect').value = mapLang;
+    $('#langSelect').addEventListener('change', e => applyMapLang(e.target.value));
+  }
+  applyMapLang(mapLang);
   if (!isDesktop()) setSheet('half');
 
   // URL Params GPS & filter handlers
