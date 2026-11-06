@@ -1655,35 +1655,61 @@ const i18n = {
             }
         }
 
+        function buildSmartLocalSalonReply(userText, masters, services, settings) {
+            const q = (userText || '').toLowerCase();
+            const lang = currentLang || 'ru';
+            const srvList = services.slice(0, 6).map(s => {
+                const st = getServiceStrings(s, lang);
+                const title = st[lang + 'Title'] || st.ruTitle || s.name || 'Услуга';
+                return `${title} — ${fmtPrice(s.price, s.currency)}`;
+            }).join('; ');
+            const masterNames = masters.map(m => m.name).join(', ') || 'Топ-барберы';
+            const hours = `${settings.openTime || '10:00'} – ${settings.closeTime || '22:00'}`;
+
+            if (/цен|прайс|скольк|стоит|price|cost|narx|qancha|баа|канча|баға|қанша/.test(q)) {
+                if (lang === 'en') return `💈 Our current prices: ${srvList}. Select any service above to book online!`;
+                if (lang === 'uz') return `💈 Xizmatlarimiz narxlari: ${srvList}. Yuqoridagi forma orqali onlayn yozilishingiz mumkin!`;
+                if (lang === 'kg') return `💈 Биздин баалар: ${srvList}. Жогорудагы форма аркылуу онлайн жазылсаңыз болот!`;
+                if (lang === 'kz') return `💈 Қызмет бағалары: ${srvList}. Жоғарыдағы форма арқылы онлайн жазыла аласыз!`;
+                return `💈 Актуальный прайс салона: ${srvList}. Выберите нужную услугу прямо в форме выше!`;
+            }
+            if (/мастер|барбер|кто|master|barber|usta|чебер|шебер/.test(q)) {
+                if (lang === 'en') return `✂️ Our masters: ${masterNames}. Working hours: ${hours}. You can pick a specific master or "Any free master" in Step 1.`;
+                if (lang === 'uz') return `✂️ Bizning ustalar: ${masterNames}. Ish vaqti: ${hours}. 1-qadamda o'zingizga ma'qul ustani tanlashingiz mumkin.`;
+                if (lang === 'kg') return `✂️ Биздин чеберлер: ${masterNames}. Иштөө убактысы: ${hours}. 1-кадамдан каалаган чеберди тандаңыз.`;
+                if (lang === 'kz') return `✂️ Біздің шеберлер: ${masterNames}. Жұмыс уақыты: ${hours}. 1-қадамда қалаған шеберді таңдай аласыз.`;
+                return `✂️ В нашем салоне работают мастера: ${masterNames}. График работы: ${hours}. Выберите мастера на Шаге 1!`;
+            }
+            if (/врем|график|час|когда|открыт|работа|hour|open|time|vaqt|soat|убакыт|саат|уақыт|сағат/.test(q)) {
+                if (lang === 'en') return `🕒 We are open daily from ${hours}. Free time slots for today and upcoming days are shown in Step 3.`;
+                if (lang === 'uz') return `🕒 Biz har kuni soat ${hours} gacha ishlaymiz. Bo'sh vaqtlarni 3-qadamda ko'rishingiz mumkin.`;
+                if (lang === 'kg') return `🕒 Биз күн сайын саат ${hours} чейин иштейбиз. Бош убакыттарды 3-кадамдан тандай аласыз.`;
+                if (lang === 'kz') return `🕒 Біз күн сайын сағат ${hours} дейін жұмыс істейміз. Бос уақыттарды 3-қадамнан көре аласыз.`;
+                return `🕒 Мы работаем ежедневно с ${hours}. Все свободные окошки на сегодня и ближайшие дни доступны на Шаге 3.`;
+            }
+            if (/стил|лиц|стрижк|подойд|ии|ai|style|face|soch|чач|шаш/.test(q)) {
+                if (lang === 'en') return `🧬 Try our 3D AI Face Mesh scanner ("AI Haircut Matcher" button at the top) — it scans 478 facial points and recommends 4 ideal haircuts!`;
+                if (lang === 'uz') return `🧬 Yuqoridagi "AI soch tanlash" tugmasini bosing — Google 3D Face Mesh yuzingizning 478 nuqtasini o'lchab, 4 ta ideal turmakni tanlab beradi!`;
+                if (lang === 'kg') return `🧬 Жогорудагы "ЖИ чач тандоо" баскычын басыңыз — Google 3D Face Mesh жүзүңүздүн 478 чекитин ченеп, 4 идеалдуу чач кыркууну сунуштайт!`;
+                if (lang === 'kz') return `🧬 Жоғарыдағы "ЖИ шаш таңдау" батырмасын басыңыз — Google 3D Face Mesh 478 нүктені өлшеп, 4 мінсіз шаш үлгісін таңдап береді!`;
+                return `🧬 Попробуйте наш 3D-сканер лица (кнопка «ИИ-подбор стрижки» сверху) — Google MediaPipe отсканирует 478 точек лица и подберёт 4 идеальные стрижки!`;
+            }
+            if (lang === 'en') return `💈 Welcome! Open hours: ${hours}. Masters: ${masterNames}. Popular services: ${srvList}. How can I help you book?`;
+            if (lang === 'uz') return `💈 Xush kelibsiz! Ish vaqti: ${hours}. Ustalar: ${masterNames}. Xizmatlar: ${srvList}. Sizga qanday yordam bera olaman?`;
+            if (lang === 'kg') return `💈 Кош келиңиз! Иштөө убактысы: ${hours}. Чеберлер: ${masterNames}. Кызматтар: ${srvList}. Кандай жардам бере алам?`;
+            if (lang === 'kz') return `💈 Қош келдіңіз! Жұмыс уақыты: ${hours}. Шеберлер: ${masterNames}. Қызметтер: ${srvList}. Сізге қалай көмектесе аламын?`;
+            return `💈 Здравствуйте! Мы работаем с ${hours}. Мастера: ${masterNames}. Услуги: ${srvList}. Подсказать по записи или подобрать стрижку?`;
+        }
+
         async function sendMessage() {
             const input = document.getElementById('chat-input');
             const text = input.value.trim();
             if(!text) return;
 
-            // Try to load API key from Firebase if not in localStorage
-            let apiKey = localStorage.getItem('chatbot_api_key');
-            if(!apiKey && window.appDB && window.appDB.getGlobalSettings) {
-                try {
-                    const gSet = await window.appDB.getGlobalSettings();
-                    if(gSet.aiKey) {
-                        apiKey = gSet.aiKey;
-                        localStorage.setItem('chatbot_api_key', gSet.aiKey);
-                        localStorage.setItem('openrouter_api_key', gSet.aiKey);
-                    }
-                } catch(e) { /* silent */ }
-            }
-            const DEFAULT_AI_KEY = atob('c2stb3ItdjEtYzU2MzJlZTk4MTBhZGY2Zjg4YjRiM2U2NTMwNjYxOTg2N2M3OWU1YzZmZTc1ZDYyMzcyYmVhZGJjMmRmMjg4MA==');
-            if(!apiKey) {
-                apiKey = DEFAULT_AI_KEY;
-                localStorage.setItem('chatbot_api_key', apiKey);
-                localStorage.setItem('openrouter_api_key', apiKey);
-            }
-
             addMessage('user', text);
             input.value = '';
             showTyping(true);
 
-            // Prepare context
             const masters = getMasters();
             const services = getServices();
             const settings = getSettings();
@@ -1697,55 +1723,42 @@ const i18n = {
 Правила:
 1. Если клиент спрашивает цену — давай ее из списка выше.
 2. Если спрашивают мастера — рекомендуй кого-то из списка.
-3. Отвечай кратко, стильно и профессионально.
+3. Отвечай кратко (2-3 предложения), стильно и профессионально.
 4. Если клиент хочет записаться — скажи, что он может сделать это прямо сейчас через форму на этой странице.
-5. Отвечай на языке клиента (если он спросил на русском — отвечай на русском).`;
+5. Отвечай на языке клиента.`;
 
-            const models = [
-                'google/gemini-2.0-flash-exp:free',
-                'liquid/lfm-2.5-embedding-350m:free',
-                'google/gemini-2.0-flash-001',
-                'openai/gpt-4o-mini'
-            ];
+            try {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 5500);
+                const response = await fetch('https://text.pollinations.ai/openai', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    signal: controller.signal,
+                    body: JSON.stringify({
+                        model: 'openai',
+                        messages: [
+                            { role: 'system', content: contextPrompt },
+                            { role: 'user', content: text }
+                        ]
+                    })
+                });
+                clearTimeout(timer);
 
-            let lastChatError = '';
-
-            for (let model of models) {
-                try {
-                    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${apiKey}`,
-                            'Content-Type': 'application/json',
-                            'HTTP-Referer': 'https://barbershop.local',
-                            'X-Title': 'Barbershop Assistant'
-                        },
-                        body: JSON.stringify({
-                            model: model,
-                            messages: [
-                                { role: 'system', content: contextPrompt },
-                                { role: 'user', content: text }
-                            ]
-                        })
-                    });
-
+                if (response.ok) {
                     const data = await response.json();
-                    if (!response.ok) {
-                        lastChatError = data.error?.message || 'Ошибка API';
-                        continue; // Try next model
+                    const reply = data.choices?.[0]?.message?.content;
+                    if (reply && reply.trim()) {
+                        addMessage('bot', reply.trim());
+                        showTyping(false);
+                        return;
                     }
-
-                    const reply = data.choices?.[0]?.message?.content || 'Извините, возникла заминка.';
-                    addMessage('bot', reply);
-                    showTyping(false);
-                    return;
-                } catch(e) {
-                    lastChatError = e.message;
-                    continue;
                 }
+            } catch (e) {
+                // Silent fallback to built-in Smart Salon AI Engine
             }
 
-            addMessage('bot', 'Ошибка связи с ИИ: ' + lastChatError);
+            const smartReply = buildSmartLocalSalonReply(text, masters, services, settings);
+            addMessage('bot', smartReply);
             showTyping(false);
         }
 

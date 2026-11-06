@@ -93,7 +93,13 @@
             <h3 data-i18n="upload_title">Загрузите своё фото</h3>
             <p data-i18n="upload_desc">Нажмите сюда или перетащите файл<br><span
                     style="font-size:0.8rem;opacity:0.6">JPG, PNG — фас, хорошее освещение</span></p>
-            <img id="preview-img" alt="Ваше фото">
+            <div id="preview-wrap" style="position:relative; display:none; width:100%; max-width:520px; margin:0 auto; border-radius:16px; overflow:hidden;">
+                <img id="preview-img" alt="Ваше фото" style="width:100%; height:auto; max-height:460px; object-fit:contain; display:block; margin:0 auto; background:#09090d;">
+                <canvas id="mesh-canvas" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></canvas>
+                <div id="mesh-status-badge" style="display:none; position:absolute; bottom:10px; left:50%; transform:translateX(-50%); background:rgba(12, 16, 28, 0.85); backdrop-filter:blur(8px); border:1px solid rgba(94, 106, 210, 0.55); color:#fff; font-size:0.75rem; font-weight:700; padding:6px 14px; border-radius:999px; white-space:nowrap; box-shadow:0 4px 16px rgba(0,0,0,0.4);">
+                    🧬 Google MediaPipe 3D Face Mesh · 478 точек
+                </div>
+            </div>
         </div>
         <input type="file" id="file-input" accept="image/*" onchange="handleFileSelect(event)">
 
@@ -101,7 +107,7 @@
                 style="display:inline-block; vertical-align:-3px; width:16px;"></i> <span id="error-text"></span></div>
 
         <button class="analyze-btn" id="analyze-btn" disabled onclick="analyzePhoto()">
-            <i data-lucide="bot" style="width:24px;height:24px; stroke-width:1.5;"></i> <span
+            <i data-lucide="scan-face" style="width:24px;height:24px; stroke-width:1.5;"></i> <span
                 data-i18n="btn_analyze">Подобрать стрижку с помощью ИИ</span>
         </button>
 
@@ -109,7 +115,7 @@
             <div class="loading-ring"></div>
             <p><span data-i18n="loading_text">ИИ анализирует форму вашего лица</span><span class="loading-dots"></span>
             </p>
-            <p style="font-size:0.85rem;margin-top:10px;opacity:0.6" data-i18n="loading_sub">Обычно 5-10 секунд</p>
+            <p style="font-size:0.85rem;margin-top:10px;opacity:0.6" data-i18n="loading_sub">3D-сканирование 478 биометрических точек...</p>
         </div>
 
         <div class="result-section" id="result-section">
@@ -118,6 +124,7 @@
                         style="width:56px;height:56px;stroke-width:1;"></i></div>
                 <h2 id="result-face-type"></h2>
             </div>
+            <div id="biometric-metrics" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:10px; margin: 14px 0 18px;"></div>
             <p id="result-face-desc" class="face-shape-desc"></p>
             <h3 class="rec-title"><span data-i18n="rec_title_1">Идеальные стрижки</span> <span
                     data-i18n="rec_title_2">для вас</span></h3>
