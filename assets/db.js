@@ -535,7 +535,7 @@ window.BarberCurrency = (function() {
         KGS: { code: 'KGS', symbol: 'сом', short: 'с', flag: '🇰🇬', label: '🇰🇬 KGS', fullLabel: '🇰🇬 KGS (сом)', rateFromKGS: 1, step: 10 },
         UZS: { code: 'UZS', symbol: 'сум', short: 'сум', flag: '🇺🇿', label: '🇺🇿 UZS', fullLabel: '🇺🇿 UZS (сум)', rateFromKGS: 145, step: 1000 },
         KZT: { code: 'KZT', symbol: '₸', short: '₸', flag: '🇰🇿', label: '🇰🇿 KZT', fullLabel: '🇰🇿 KZT (₸)', rateFromKGS: 5.8, step: 50 },
-        RUB: { code: 'RUB', symbol: '₽', short: '₽', flag: '🇷🇺', label: '🇷🇺 RUB', fullLabel: '🇷🇺 RUB (₽)', rateFromKGS: 1.1, step: 10 },
+        RUB: { code: 'RUB', symbol: 'руб', short: '₽', flag: '🇷🇺', label: '🇷🇺 RUB', fullLabel: '🇷🇺 RUB (руб)', rateFromKGS: 1.1, step: 10 },
         USD: { code: 'USD', symbol: '$', short: '$', flag: '🇺🇸', label: '🇺🇸 USD', fullLabel: '🇺🇸 USD ($)', rateFromKGS: 1 / 87.5, step: 0.5 }
     };
 
@@ -562,28 +562,18 @@ window.BarberCurrency = (function() {
         return null;
     }
 
-    function getSalonCountryCurrency() {
-        const savedCountryCurr = localStorage.getItem('barber_country_currency');
-        if (savedCountryCurr && CURRENCIES[savedCountryCurr]) return savedCountryCurr;
-        return detectTimezoneCountryCurr();
-    }
-
-    function currencyForLang(lang, countryCurr) {
-        const baseCountryCurr = countryCurr || getSalonCountryCurrency();
+    function currencyForLang(lang) {
         if (lang === 'en') return 'USD';
         if (lang === 'uz') return 'UZS';
         if (lang === 'kz') return 'KZT';
         if (lang === 'kg') return 'KGS';
-        // For Russian ('ru'), show the currency of the salon's country (KGS in KG, UZS in UZ, KZT in KZ)
-        return baseCountryCurr || 'KGS';
+        if (lang === 'ru') return 'RUB';
+        return 'RUB';
     }
 
     // Auto-detect initial language & currency on first visit
     (function initAutoDetect() {
         try {
-            if (!localStorage.getItem('barber_country_currency')) {
-                localStorage.setItem('barber_country_currency', detectTimezoneCountryCurr());
-            }
             if (!localStorage.getItem('barber_lang') && !localStorage.getItem('adminLang')) {
                 const navLang = ((navigator.language || (navigator.languages && navigator.languages[0]) || 'ru').toLowerCase());
                 let detectedLang = 'ru';
@@ -593,27 +583,25 @@ window.BarberCurrency = (function() {
                 else if (navLang.startsWith('en')) detectedLang = 'en';
                 localStorage.setItem('barber_lang', detectedLang);
                 localStorage.setItem('adminLang', detectedLang);
-                localStorage.setItem('barber_currency', currencyForLang(detectedLang));
-            } else if (!localStorage.getItem('barber_currency')) {
-                const curLang = localStorage.getItem('barber_lang') || localStorage.getItem('adminLang') || 'ru';
-                localStorage.setItem('barber_currency', currencyForLang(curLang));
             }
+            const curLang = localStorage.getItem('barber_lang') || localStorage.getItem('adminLang') || 'ru';
+            localStorage.setItem('barber_currency', currencyForLang(curLang));
         } catch (e) {}
     })();
 
     function getActive() {
+        const curLang = localStorage.getItem('barber_lang') || localStorage.getItem('adminLang');
+        if (curLang) return currencyForLang(curLang);
         const saved = localStorage.getItem('barber_currency');
-        return (saved && CURRENCIES[saved]) ? saved : 'KGS';
+        return (saved && CURRENCIES[saved]) ? saved : 'RUB';
     }
 
     function updateUnifiedSelectLabels() {
-        const countryCurr = getSalonCountryCurrency();
-        const ruSym = (CURRENCIES[countryCurr] || CURRENCIES.KGS).symbol;
         document.querySelectorAll('#lang-select, #langSelect').forEach(sel => {
             if (!sel || !sel.options) return;
             Array.from(sel.options).forEach(opt => {
                 const isFull = opt.textContent.includes('Русский') || opt.textContent.includes('English') || opt.textContent.includes('Кыргызча');
-                if (opt.value === 'ru') opt.textContent = isFull ? `🇷🇺 Русский · ${ruSym}` : `🇷🇺 RU · ${ruSym}`;
+                if (opt.value === 'ru') opt.textContent = isFull ? `🇷🇺 Русский · руб` : `🇷🇺 RU · руб`;
                 else if (opt.value === 'kg') opt.textContent = isFull ? `🇰🇬 Кыргызча · сом` : `🇰🇬 KG · сом`;
                 else if (opt.value === 'uz') opt.textContent = isFull ? `🇺🇿 O'zbek · сум` : `🇺🇿 UZ · сум`;
                 else if (opt.value === 'kz') opt.textContent = isFull ? `🇰🇿 Қазақша · ₸` : `🇰🇿 KZ · ₸`;
@@ -627,7 +615,7 @@ window.BarberCurrency = (function() {
     }
 
     function setActive(code, isManual) {
-        if (!CURRENCIES[code]) code = 'KGS';
+        if (!CURRENCIES[code]) code = 'RUB';
         localStorage.setItem('barber_currency', code);
         syncSelects(code);
         window.dispatchEvent(new CustomEvent('barber:currency', { detail: { currency: code } }));
@@ -643,12 +631,8 @@ window.BarberCurrency = (function() {
     }
 
     function autoSelectByCountry(shopOrCountry, city) {
-        const detected = detectCountryCurrency(shopOrCountry, city, typeof shopOrCountry === 'string' ? shopOrCountry : '');
-        if (detected && CURRENCIES[detected]) {
-            localStorage.setItem('barber_country_currency', detected);
-        }
         const curLang = localStorage.getItem('barber_lang') || localStorage.getItem('adminLang') || 'ru';
-        const targetCurr = currencyForLang(curLang, detected);
+        const targetCurr = currencyForLang(curLang);
         localStorage.setItem('barber_currency', targetCurr);
         updateUnifiedSelectLabels();
         return targetCurr;
