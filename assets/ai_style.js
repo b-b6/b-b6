@@ -28,7 +28,7 @@ const i18n = {
         axis_fh: "Лоб", axis_cheek: "Скулы", axis_jaw: "Челюсть",
         cat_modal_title: "Каталог мужских стрижек 2026",
         cat_modal_sub: "Чистые портреты без лишних надписей — выберите категорию и покажите карточку вашему мастеру",
-        cat_tab_all: "🔥 Все (16)", cat_tab_short: "⚡ Короткие", cat_tab_medium: "🌊 Средняя длина", cat_tab_trend: "💎 Тренды 2026",
+        cat_tab_all: "🔥 Все (45)", cat_tab_short: "⚡ Короткие (16)", cat_tab_medium: "🌊 Средняя длина (13)", cat_tab_trend: "💎 Тренды 2026 (16)",
         cat_faces_lbl: "Форма лица:"
     },
     en: {
@@ -60,7 +60,7 @@ const i18n = {
         axis_fh: "Forehead", axis_cheek: "Cheeks", axis_jaw: "Jaw",
         cat_modal_title: "Men's Haircut Catalog 2026",
         cat_modal_sub: "Clean style portraits — filter by category and show the card to your barber",
-        cat_tab_all: "🔥 All (16)", cat_tab_short: "⚡ Short", cat_tab_medium: "🌊 Medium Length", cat_tab_trend: "💎 Trends 2026",
+        cat_tab_all: "🔥 All (45)", cat_tab_short: "⚡ Short (16)", cat_tab_medium: "🌊 Medium Length (13)", cat_tab_trend: "💎 Trends 2026 (16)",
         cat_faces_lbl: "Best for face:"
     },
     uz: {
@@ -92,7 +92,7 @@ const i18n = {
         axis_fh: "Peshona", axis_cheek: "Yonoq", axis_jaw: "Jag'",
         cat_modal_title: "Erkaklar soch turmaklari katalogi 2026",
         cat_modal_sub: "Toza portretlar — toifani tanlang va kartochkani ustangizga ko'rsating",
-        cat_tab_all: "🔥 Barchasi (16)", cat_tab_short: "⚡ Qisqa", cat_tab_medium: "🌊 O'rta uzunlik", cat_tab_trend: "💎 Trendlar 2026",
+        cat_tab_all: "🔥 Barchasi (45)", cat_tab_short: "⚡ Qisqa (16)", cat_tab_medium: "🌊 O'rta uzunlik (13)", cat_tab_trend: "💎 Trendlar 2026 (16)",
         cat_faces_lbl: "Mos yuz shakli:"
     },
     kg: {
@@ -124,7 +124,7 @@ const i18n = {
         axis_fh: "Чеке", axis_cheek: "Бет сөөк", axis_jaw: "Жаак",
         cat_modal_title: "Мырзалардын чач кыркуу каталогу 2026",
         cat_modal_sub: "Таза портреттер — категорияны тандап, чебериңизге көрсөтүңүз",
-        cat_tab_all: "🔥 Баары (16)", cat_tab_short: "⚡ Кыска", cat_tab_medium: "🌊 Орто узундук", cat_tab_trend: "💎 Тренддер 2026",
+        cat_tab_all: "🔥 Баары (45)", cat_tab_short: "⚡ Кыска (16)", cat_tab_medium: "🌊 Орто узундук (13)", cat_tab_trend: "💎 Тренддер 2026 (16)",
         cat_faces_lbl: "Жүз формасы:"
     },
     kz: {
@@ -156,7 +156,7 @@ const i18n = {
         axis_fh: "Маңдай", axis_cheek: "Бет сүйегі", axis_jaw: "Жақ",
         cat_modal_title: "Ерлер шаш үлгілерінің каталогы 2026",
         cat_modal_sub: "Таза портреттер — санатты таңдап, шеберіңізге көрсетіңіз",
-        cat_tab_all: "🔥 Барлығы (16)", cat_tab_short: "⚡ Қысқа", cat_tab_medium: "🌊 Орташа ұзындық", cat_tab_trend: "💎 Трендтер 2026",
+        cat_tab_all: "🔥 Барлығы (45)", cat_tab_short: "⚡ Қысқа (16)", cat_tab_medium: "🌊 Орташа ұзындық (13)", cat_tab_trend: "💎 Трендтер 2026 (16)",
         cat_faces_lbl: "Бет пішіні:"
     }
 };
@@ -1098,7 +1098,10 @@ async function ensureMediaPipeLandmarker() {
             }
         }
         throw new Error('Could not initialize FaceLandmarker');
-    })();
+    })().catch(err => {
+        mediaPipeInitPromise = null; // allow a fresh retry on next scan
+        throw err;
+    });
 
     return mediaPipeInitPromise;
 }
@@ -1333,6 +1336,7 @@ function analyzeLandmarksMorphology(landmarks, natW, natH) {
     const cheekWidth = Math.max(1, dist(234, 454));
     const foreheadWidth = dist(54, 284);
     const jawWidth = dist(172, 397);
+    const chinWidth = dist(136, 365);
 
     // Jaw angle at chin (#172 -> #152 -> #397)
     const pJawL = pt(172), pChin = pt(152), pJawR = pt(397);
@@ -1352,98 +1356,182 @@ function analyzeLandmarksMorphology(landmarks, natW, natH) {
     const lwNum = faceHeight / cheekWidth;
     const jawRatio = jawWidth / cheekWidth;
     const fhRatio = foreheadWidth / cheekWidth;
-    const jawToFh = jawWidth / Math.max(1, foreheadWidth);
+    const chinRatio = chinWidth / cheekWidth;
 
-    // Calibrated classification rules for real MediaPipe 478-landmark geometry
-    let shapeKey = 'oval';
-    if (lwNum >= 1.48) {
-        shapeKey = 'oblong';
-    } else if (lwNum <= 1.29 && chinAngle >= 117) {
-        shapeKey = 'round';
-    } else if (jawRatio >= 0.83 && jawToFh >= 0.96 && lwNum <= 1.44) {
-        shapeKey = 'square';
-    } else if (jawToFh >= 1.03 && jawRatio >= 0.82) {
-        shapeKey = 'triangle';
-    } else if (fhRatio >= 0.87 && jawToFh <= 0.84 && chinAngle <= 110) {
-        shapeKey = 'heart';
-    } else if (fhRatio <= 0.79 && jawRatio <= 0.76) {
-        shapeKey = 'diamond';
-    } else {
-        shapeKey = 'oval';
-    }
+    // ── Multi-dimensional prototype classifier ──
+    // Each proportion is converted into a z-score against the typical MediaPipe 478-point
+    // geometry, then compared with the anatomical prototype of each of the 7 face shapes.
+    const z = {
+        L: (lwNum - 1.40) / 0.07,       // length vs width
+        J: (jawRatio - 0.765) / 0.04,   // jaw vs cheekbones
+        F: (fhRatio - 0.83) / 0.045,    // forehead vs cheekbones
+        C: (chinRatio - 0.62) / 0.05,   // lower chin width
+        A: (chinAngle - 116) / 6        // chin angle (wide = soft/round, narrow = pointed)
+    };
+    const PROTOTYPES = {
+        oval:     { L:  0.2, J:  0.0, F:  0.0, C:  0.0, A:  0.0 },
+        oblong:   { L:  1.8, J:  0.2, F:  0.2, C:  0.1, A: -0.2 },
+        round:    { L: -1.6, J:  0.4, F:  0.1, C:  0.5, A:  1.3 },
+        square:   { L: -0.7, J:  1.5, F:  0.5, C:  1.2, A:  0.9 },
+        heart:    { L:  0.0, J: -1.1, F:  1.1, C: -1.0, A: -1.3 },
+        diamond:  { L:  0.3, J: -1.0, F: -1.3, C: -0.7, A: -0.5 },
+        triangle: { L: -0.2, J:  1.3, F: -1.3, C:  0.9, A:  0.5 }
+    };
+    const WEIGHTS = { L: 1.2, J: 1.1, F: 1.0, C: 0.6, A: 0.8 };
+    const scores = {};
+    Object.keys(PROTOTYPES).forEach(key => {
+        const p = PROTOTYPES[key];
+        let d = 0;
+        Object.keys(WEIGHTS).forEach(f => {
+            const zv = Math.max(-3.5, Math.min(3.5, z[f]));
+            d += WEIGHTS[f] * Math.pow(zv - p[f], 2);
+        });
+        scores[key] = Math.sqrt(d);
+    });
+    scores.oval -= 0.10; // oval is the "balanced" class — small prior bonus
+    const ranked = Object.keys(scores).sort((a, b) => scores[a] - scores[b]);
+    const shapeKey = ranked[0];
+    const gap = scores[ranked[1]] - scores[ranked[0]];
+    const confidence = Math.max(72, Math.min(98, Math.round(80 + gap * 9)));
 
     return {
         shapeKey,
+        secondKey: ranked[1],
         metrics: {
             lw: lwNum.toFixed(2),
             jawPct: Math.round(jawRatio * 100),
             fhPct: Math.round(fhRatio * 100),
             chinAngle,
             sym,
+            confidence,
             pointsCount: landmarks.length
         }
     };
 }
 
-// Clean anatomical fallback if face is obscured or extreme profile
+// Pixel-based fallback when MediaPipe cannot load: measures REAL face widths from skin pixels
 function analyzeFallbackGeometry(scanCanvas) {
     const w = scanCanvas.width;
     const h = scanCanvas.height;
     const ctx = scanCanvas.getContext('2d');
     const imgData = ctx.getImageData(0, 0, w, h).data;
 
-    // Detect skin-tone center of mass so fallback mesh centers on the actual face
+    // YCbCr skin classifier (works for light and dark skin tones)
+    const isSkin = (x, y) => {
+        const i = (y * w + x) * 4;
+        const r = imgData[i], g = imgData[i + 1], b = imgData[i + 2];
+        const yy = 0.299 * r + 0.587 * g + 0.114 * b;
+        const cb = 128 - 0.168736 * r - 0.331264 * g + 0.5 * b;
+        const cr = 128 + 0.5 * r - 0.418688 * g - 0.081312 * b;
+        return yy > 40 && cb >= 77 && cb <= 130 && cr >= 133 && cr <= 175;
+    };
+
+    // Skin center of mass
     let sumX = 0, sumY = 0, count = 0;
-    for (let y = Math.floor(h * 0.15); y < Math.floor(h * 0.85); y += 4) {
-        for (let x = Math.floor(w * 0.15); x < Math.floor(w * 0.85); x += 4) {
-            const i = (y * w + x) * 4;
-            const r = imgData[i], g = imgData[i + 1], b = imgData[i + 2];
-            if (r > 85 && g > 50 && b > 35 && r > g && r > b && (r - Math.min(g, b)) > 18) {
-                sumX += x;
-                sumY += y;
-                count++;
-            }
+    for (let y = Math.floor(h * 0.10); y < Math.floor(h * 0.85); y += 3) {
+        for (let x = Math.floor(w * 0.12); x < Math.floor(w * 0.88); x += 3) {
+            if (isSkin(x, y)) { sumX += x; sumY += y; count++; }
         }
     }
-    const cx = count > 20 ? (sumX / count) / w : 0.50;
-    const cy = count > 20 ? (sumY / count) / h : 0.46;
-    const rx = 0.21;
-    const ry = 0.25;
+    const cxPx = count > 40 ? sumX / count : w * 0.5;
+    const cyPx = count > 40 ? sumY / count : h * 0.46;
 
-    // Build a clean 478-point anatomical template with NO random zig-zag lines
+    // Width of the contiguous skin run through the face's vertical axis at row y
+    const rowWidth = (y) => {
+        if (y < 0 || y >= h) return 0;
+        const cx = Math.round(cxPx);
+        let l = cx, r = cx, gap = 0;
+        for (let x = cx; x > 0; x--) {
+            if (isSkin(x, y)) { l = x; gap = 0; } else if (++gap > 6) break;
+        }
+        gap = 0;
+        for (let x = cx; x < w - 1; x++) {
+            if (isSkin(x, y)) { r = x; gap = 0; } else if (++gap > 6) break;
+        }
+        return Math.max(0, r - l);
+    };
+    const avgWidth = (y) => (rowWidth(Math.round(y) - 2) + rowWidth(Math.round(y)) + rowWidth(Math.round(y) + 2)) / 3;
+
+    // Cheekbone level = widest row around the center of mass
+    let cheekW = 0, cheekY = cyPx;
+    for (let y = Math.round(cyPx - h * 0.14); y <= Math.round(cyPx + h * 0.06); y += 2) {
+        const wd = avgWidth(y);
+        if (wd > cheekW) { cheekW = wd; cheekY = y; }
+    }
+
+    let usable = cheekW > w * 0.12;
+    let topY = cheekY, botY = cheekY;
+    if (usable) {
+        // Hairline: go up until skin width collapses
+        while (topY > 2 && avgWidth(topY) > cheekW * 0.50 && cheekY - topY < cheekW * 1.0) topY -= 2;
+        // Chin: go down until width collapses (or neck widens again after the chin minimum)
+        let minW = cheekW;
+        while (botY < h - 3 && botY - cheekY < cheekW * 1.0) {
+            const wd = avgWidth(botY);
+            if (wd < cheekW * 0.42) break;
+            if (wd < minW) minW = wd;
+            if (botY - cheekY > cheekW * 0.55 && wd > minW * 1.12) break; // neck
+            botY += 2;
+        }
+        if (botY - topY < cheekW * 0.9) usable = false;
+    }
+
+    let fhW, jawW, chinW, faceH;
+    if (usable) {
+        faceH = botY - topY;
+        fhW = avgWidth(topY + faceH * 0.16);
+        jawW = avgWidth(cheekY + (botY - cheekY) * 0.55);
+        chinW = avgWidth(cheekY + (botY - cheekY) * 0.80);
+    } else {
+        cheekW = w * 0.42; faceH = h * 0.50; topY = cyPx - faceH * 0.5; botY = cyPx + faceH * 0.5; cheekY = cyPx;
+        fhW = cheekW * 0.83; jawW = cheekW * 0.765; chinW = cheekW * 0.62;
+    }
+    fhW = Math.min(fhW, cheekW * 1.08);
+    jawW = Math.min(jawW, cheekW * 1.02);
+    chinW = Math.min(chinW, jawW);
+
+    // Build anatomical template from the measured widths (normalized coords)
+    const nx = px => px / w, ny = py => py / h;
+    const cx = cxPx;
     const synth = new Array(478);
+    const yForehead = topY + faceH * 0.13;            // ≈ landmark #10 (just below hairline)
+    const yFh = topY + faceH * 0.16;
+    const yJaw = cheekY + (botY - cheekY) * 0.55;
+    const yChinSide = cheekY + (botY - cheekY) * 0.80;
+
     const OVAL_RING = [10, 338, 297, 332, 284, 251, 389, 356, 454, 323, 361, 288, 397, 365, 379, 378, 400, 377, 152, 148, 176, 149, 150, 136, 172, 58, 132, 93, 234, 127, 162, 21, 54, 103, 67, 109];
     OVAL_RING.forEach((ptIdx, k) => {
         const ang = -Math.PI / 2 + (k / OVAL_RING.length) * Math.PI * 2;
-        const jawTapering = Math.sin(ang) > 0 ? (1 - 0.14 * Math.pow(Math.sin(ang), 2)) : 1;
-        synth[ptIdx] = {
-            x: cx + Math.cos(ang) * rx * jawTapering,
-            y: cy + Math.sin(ang) * ry
-        };
+        const s = Math.sin(ang);
+        const halfW = s < 0 ? (cheekW / 2) * (1 + s) + (fhW / 2) * (-s) : (cheekW / 2) * (1 - s) + (chinW / 2) * s;
+        const yy = s < 0 ? cheekY + s * (cheekY - yForehead) : cheekY + s * (botY - cheekY);
+        synth[ptIdx] = { x: nx(cx + Math.cos(ang) * halfW), y: ny(yy) };
     });
 
-    // Key anatomical landmarks
-    synth[10]  = { x: cx, y: cy - ry };
-    synth[152] = { x: cx, y: cy + ry };
-    synth[103] = { x: cx - rx * 0.80, y: cy - ry * 0.62 };
-    synth[332] = { x: cx + rx * 0.80, y: cy - ry * 0.62 };
-    synth[54]  = { x: cx - rx * 0.86, y: cy - ry * 0.45 };
-    synth[284] = { x: cx + rx * 0.86, y: cy - ry * 0.45 };
-    synth[234] = { x: cx - rx, y: cy - ry * 0.02 };
-    synth[454] = { x: cx + rx, y: cy - ry * 0.02 };
-    synth[172] = { x: cx - rx * 0.78, y: cy + ry * 0.56 };
-    synth[397] = { x: cx + rx * 0.78, y: cy + ry * 0.56 };
-    synth[168] = { x: cx, y: cy - ry * 0.25 };
-    synth[6]   = { x: cx, y: cy - ry * 0.15 };
-    synth[197] = { x: cx, y: cy - ry * 0.05 };
-    synth[195] = { x: cx, y: cy + ry * 0.04 };
-    synth[5]   = { x: cx, y: cy + ry * 0.10 };
-    synth[4]   = { x: cx, y: cy + ry * 0.15 };
-    synth[1]   = { x: cx, y: cy + ry * 0.18 };
-    synth[33]  = { x: cx - rx * 0.42, y: cy - ry * 0.22 };
-    synth[263] = { x: cx + rx * 0.42, y: cy - ry * 0.22 };
+    synth[10]  = { x: nx(cx), y: ny(yForehead) };
+    synth[152] = { x: nx(cx), y: ny(botY) };
+    synth[103] = { x: nx(cx - fhW * 0.42), y: ny(yForehead + faceH * 0.03) };
+    synth[332] = { x: nx(cx + fhW * 0.42), y: ny(yForehead + faceH * 0.03) };
+    synth[54]  = { x: nx(cx - fhW / 2), y: ny(yFh) };
+    synth[284] = { x: nx(cx + fhW / 2), y: ny(yFh) };
+    synth[234] = { x: nx(cx - cheekW / 2), y: ny(cheekY) };
+    synth[454] = { x: nx(cx + cheekW / 2), y: ny(cheekY) };
+    synth[172] = { x: nx(cx - jawW / 2), y: ny(yJaw) };
+    synth[397] = { x: nx(cx + jawW / 2), y: ny(yJaw) };
+    synth[136] = { x: nx(cx - chinW / 2), y: ny(yChinSide) };
+    synth[365] = { x: nx(cx + chinW / 2), y: ny(yChinSide) };
+    const midH = botY - yForehead;
+    synth[168] = { x: nx(cx), y: ny(yForehead + midH * 0.25) };
+    synth[6]   = { x: nx(cx), y: ny(yForehead + midH * 0.31) };
+    synth[197] = { x: nx(cx), y: ny(yForehead + midH * 0.38) };
+    synth[195] = { x: nx(cx), y: ny(yForehead + midH * 0.45) };
+    synth[5]   = { x: nx(cx), y: ny(yForehead + midH * 0.50) };
+    synth[4]   = { x: nx(cx), y: ny(yForehead + midH * 0.54) };
+    synth[1]   = { x: nx(cx), y: ny(yForehead + midH * 0.56) };
+    synth[33]  = { x: nx(cx - cheekW * 0.22), y: ny(yForehead + midH * 0.30) };
+    synth[263] = { x: nx(cx + cheekW * 0.22), y: ny(yForehead + midH * 0.30) };
 
-    // Fill remaining interior points in a neat anatomical grid inside the face oval
+    // Fill remaining interior points in a neat grid inside the measured face
     for (let i = 0; i < 478; i++) {
         if (!synth[i]) {
             const row = Math.floor(i / 24);
@@ -1451,8 +1539,8 @@ function analyzeFallbackGeometry(scanCanvas) {
             const ang = (col / 24) * Math.PI * 2;
             const rad = 0.15 + (row / 22) * 0.78;
             synth[i] = {
-                x: cx + Math.cos(ang) * rx * rad * 0.88,
-                y: cy + Math.sin(ang) * ry * rad * 0.92
+                x: nx(cx + Math.cos(ang) * (cheekW / 2) * rad * 0.85),
+                y: ny(cheekY + Math.sin(ang) * (faceH / 2) * rad * 0.85)
             };
         }
     }
@@ -1501,28 +1589,57 @@ async function analyzePhoto() {
 // ═══════════════════════════════════════════════════════════════════════════
 const SPRITE_SHEETS = {};
 const PORTRAIT_CROPS = {
-    side_part:       { sheet: 'trending', col: 0, y: 0.012, h: 0.142 },
-    textured_quiff:  { sheet: 'trending', col: 1, y: 0.012, h: 0.142 },
-    messy_shag:      { sheet: 'trending', col: 2, y: 0.012, h: 0.142 },
-    faux_hawk:       { sheet: 'trending', col: 3, y: 0.012, h: 0.142 },
-    pompadour:       { sheet: 'trending', col: 0, y: 0.208, h: 0.142 },
-    pompadour_beard: { sheet: 'trending', col: 1, y: 0.208, h: 0.142 },
-    undercut_long:   { sheet: 'trending', col: 2, y: 0.208, h: 0.142 },
-    two_block:       { sheet: 'trending', col: 3, y: 0.208, h: 0.142 },
-    slick_back:      { sheet: 'trending', col: 0, y: 0.404, h: 0.142 },
-    textured_crop:   { sheet: 'trending', col: 1, y: 0.404, h: 0.142 },
-    modern_mullet:   { sheet: 'trending', col: 2, y: 0.404, h: 0.142 },
-    bro_flow:        { sheet: 'trending', col: 3, y: 0.404, h: 0.142 },
-    ivy_league:      { sheet: 'trending', col: 0, y: 0.600, h: 0.142 },
-    wolf_cut:        { sheet: 'trending', col: 1, y: 0.600, h: 0.142 },
-    side_swept:      { sheet: 'trending', col: 3, y: 0.600, h: 0.142 },
-    crew_cut:        { sheet: 'trending', col: 0, y: 0.795, h: 0.140 },
-    textured_fringe: { sheet: 'trending', col: 1, y: 0.795, h: 0.140 },
-    curtains:        { sheet: 'trending', col: 2, y: 0.795, h: 0.140 },
-    french_crop:     { sheet: 'trending', col: 3, y: 0.795, h: 0.140 },
-    buzz_cut:        { sheet: 'short',    col: 0, y: 0.198, h: 0.150 },
-    caesar_cut:      { sheet: 'short',    col: 3, y: 0.198, h: 0.150 },
-    spiky_fade:      { sheet: 'short',    col: 3, y: 0.398, h: 0.150 }
+    // ── short.png — 16 short styles (4 × 4) ──
+    buzz_cut:              { sheet: 'short',    col: 0, y: 0.198, h: 0.148 },
+    crew_cut_s:            { sheet: 'short',    col: 1, y: 0.198, h: 0.148 },
+    high_fade:             { sheet: 'short',    col: 2, y: 0.198, h: 0.148 },
+    caesar_cut:            { sheet: 'short',    col: 3, y: 0.198, h: 0.148 },
+    french_crop_s:         { sheet: 'short',    col: 0, y: 0.398, h: 0.148 },
+    short_quiff:           { sheet: 'short',    col: 1, y: 0.398, h: 0.148 },
+    short_pompadour:       { sheet: 'short',    col: 2, y: 0.398, h: 0.148 },
+    spiky_fade:            { sheet: 'short',    col: 3, y: 0.398, h: 0.148 },
+    side_part_fade:        { sheet: 'short',    col: 0, y: 0.600, h: 0.146 },
+    ivy_league:            { sheet: 'short',    col: 1, y: 0.600, h: 0.146 },
+    high_tight:            { sheet: 'short',    col: 2, y: 0.600, h: 0.146 },
+    flat_top:              { sheet: 'short',    col: 3, y: 0.600, h: 0.146 },
+    taper_fade:            { sheet: 'short',    col: 0, y: 0.792, h: 0.146 },
+    butch_cut:             { sheet: 'short',    col: 1, y: 0.792, h: 0.146 },
+    faux_hawk_s:           { sheet: 'short',    col: 2, y: 0.792, h: 0.146 },
+    textured_crop_s:       { sheet: 'short',    col: 3, y: 0.792, h: 0.146 },
+    // ── medium.png — 13 medium-length styles ──
+    messy_waves:           { sheet: 'medium',   col: 0, y: 0.200, h: 0.148 },
+    layered_shag:          { sheet: 'medium',   col: 1, y: 0.200, h: 0.148 },
+    modern_pompadour:      { sheet: 'medium',   col: 2, y: 0.200, h: 0.148 },
+    bro_flow:              { sheet: 'medium',   col: 3, y: 0.200, h: 0.148 },
+    curtains_m:            { sheet: 'medium',   col: 0, y: 0.398, h: 0.148 },
+    textured_crop_m:       { sheet: 'medium',   col: 1, y: 0.398, h: 0.148 },
+    side_swept:            { sheet: 'medium',   col: 2, y: 0.398, h: 0.148 },
+    tapered_mullet:        { sheet: 'medium',   col: 3, y: 0.398, h: 0.148 },
+    slicked_back_m:        { sheet: 'medium',   col: 0, y: 0.590, h: 0.148 },
+    wavy_quiff:            { sheet: 'medium',   col: 1, y: 0.590, h: 0.148 },
+    disconnected_undercut: { sheet: 'medium',   col: 2, y: 0.590, h: 0.148 },
+    classic_side_m:        { sheet: 'medium',   col: 3, y: 0.590, h: 0.148 },
+    long_flow:             { sheet: 'medium',   col: 0, y: 0.782, h: 0.148 },
+    // ── trending.png — trend styles (4 × 5) ──
+    side_part:             { sheet: 'trending', col: 0, y: 0.012, h: 0.142 },
+    textured_quiff:        { sheet: 'trending', col: 1, y: 0.012, h: 0.142 },
+    messy_shag:            { sheet: 'trending', col: 2, y: 0.012, h: 0.142 },
+    faux_hawk:             { sheet: 'trending', col: 3, y: 0.012, h: 0.142 },
+    pompadour:             { sheet: 'trending', col: 0, y: 0.208, h: 0.142 },
+    pompadour_beard:       { sheet: 'trending', col: 1, y: 0.208, h: 0.142 },
+    undercut_long:         { sheet: 'trending', col: 2, y: 0.208, h: 0.142 },
+    two_block:             { sheet: 'trending', col: 3, y: 0.208, h: 0.142 },
+    slick_back:            { sheet: 'trending', col: 0, y: 0.404, h: 0.142 },
+    textured_crop:         { sheet: 'trending', col: 1, y: 0.404, h: 0.142 },
+    modern_mullet:         { sheet: 'trending', col: 2, y: 0.404, h: 0.142 },
+    soft_perm:             { sheet: 'trending', col: 3, y: 0.404, h: 0.142 },
+    neat_taper:            { sheet: 'trending', col: 0, y: 0.600, h: 0.142 },
+    wolf_cut:              { sheet: 'trending', col: 1, y: 0.600, h: 0.142 },
+    design_undercut:       { sheet: 'trending', col: 3, y: 0.600, h: 0.142 },
+    crew_cut:              { sheet: 'trending', col: 0, y: 0.795, h: 0.140 },
+    textured_fringe:       { sheet: 'trending', col: 1, y: 0.795, h: 0.140 },
+    curtains:              { sheet: 'trending', col: 2, y: 0.795, h: 0.140 },
+    french_crop:           { sheet: 'trending', col: 3, y: 0.795, h: 0.140 }
 };
 
 const SHAPE_PORTRAIT_KEYS = {
@@ -1566,106 +1683,91 @@ async function renderAllPortraitCanvases(rootEl) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 16 CURATED CATALOG STYLES WITH 5-LANGUAGE TRANSLATIONS & FILTER TAGS
+// 45 CURATED CATALOG STYLES WITH 5-LANGUAGE TRANSLATIONS & FILTER TAGS
 // ═══════════════════════════════════════════════════════════════════════════
-const CATALOG_ITEMS = [
-    {
-        cat: 'short', portrait: 'textured_crop',
-        name: { ru: 'Текстурный Кроп (Textured Crop)', kg: 'Текстуралуу Кроп (Textured Crop)', uz: 'Teksturali Krop (Textured Crop)', kz: 'Текстуралы Кроп (Textured Crop)', en: 'Textured Crop + Fade' },
-        spec: { ru: '✂️ Верх: 3–5 см · Бока: Средний фейд', kg: '✂️ Үстү: 3–5 см · Капталы: Орто фейд', uz: '✂️ Tepa: 3–5 sm · Yonlari: O\'rta feyd', kz: '✂️ Төбесі: 3–5 см · Самай: Орташа фейд', en: '✂️ Top: 3–5 cm · Sides: Mid Fade' },
-        faces: { ru: 'Овал, Квадрат, Прямоугольник', kg: 'Овал, Квадрат, Тик бурчтук', uz: 'Oval, Kvadrat, To\'rtburchak', kz: 'Сопақша, Квадрат, Тікбұрыш', en: 'Oval, Square, Oblong' }
-    },
-    {
-        cat: 'short', portrait: 'french_crop',
-        name: { ru: 'Французский Кроп (French Crop)', kg: 'Француз Кропу (French Crop)', uz: 'Fransuz Kropi (French Crop)', kz: 'Француз Кропы (French Crop)', en: 'Textured French Crop' },
-        spec: { ru: '✂️ Верх: 3–4 см (чёлка) · Бока: Drop Fade', kg: '✂️ Үстү: 3–4 см · Капталы: Drop Fade', uz: '✂️ Tepa: 3–4 sm · Yonlari: Drop Fade', kz: '✂️ Төбесі: 3–4 см · Самай: Drop Fade', en: '✂️ Top: 3–4 cm fringe · Sides: Drop Fade' },
-        faces: { ru: 'Прямоугольник, Квадрат, Овал', kg: 'Тик бурчтук, Квадрат, Овал', uz: 'To\'rtburchak, Kvadrat, Oval', kz: 'Тікбұрыш, Квадрат, Сопақша', en: 'Oblong, Square, Oval' }
-    },
-    {
-        cat: 'short', portrait: 'side_part',
-        name: { ru: 'Классика с пробором (Side Part)', kg: 'Каптал пробор классикасы (Side Part)', uz: 'Yon farqli klassika (Side Part)', kz: 'Жанынан айырым классикасы (Side Part)', en: 'Classic Side Part Fade' },
-        spec: { ru: '✂️ Верх: 5–7 см · Бока: Плавный тейпер', kg: '✂️ Үстү: 5–7 см · Капталы: Тейпер', uz: '✂️ Tepa: 5–7 sm · Yonlari: Teyper', kz: '✂️ Төбесі: 5–7 см · Самай: Тейпер', en: '✂️ Top: 5–7 cm · Sides: Taper Fade' },
-        faces: { ru: 'Овал, Круг, Треугольник', kg: 'Овал, Тегерек, Үч бурчтук', uz: 'Oval, Dumaloq, Uchburchak', kz: 'Сопақша, Дөңгелек, Үшбұрыш', en: 'Oval, Round, Triangle' }
-    },
-    {
-        cat: 'short', portrait: 'crew_cut',
-        name: { ru: 'Спортивный Полубокс (Crew Cut)', kg: 'Спорттук жарым бокс (Crew Cut)', uz: 'Sport yarim-boks (Crew Cut)', kz: 'Спорттық жартылай бокс (Crew Cut)', en: 'Refined Crew Cut' },
-        spec: { ru: '✂️ Верх: 2–3.5 см · Бока: Высокий фейд', kg: '✂️ Үстү: 2–3.5 см · Капталы: Жогорку фейд', uz: '✂️ Tepa: 2–3.5 sm · Yonlari: Yuqori feyd', kz: '✂️ Төбесі: 2–3.5 см · Самай: Жоғары фейд', en: '✂️ Top: 2–3.5 cm · Sides: High Fade' },
-        faces: { ru: 'Квадрат, Овал', kg: 'Квадрат, Овал', uz: 'Kvadrat, Oval', kz: 'Квадрат, Сопақша', en: 'Square, Oval' }
-    },
-    {
-        cat: 'short', portrait: 'buzz_cut',
-        name: { ru: 'Милитари Бокс + Фейд (Buzz Cut)', kg: 'Милитари Бокс + Фейд (Buzz Cut)', uz: 'Militari Boks + Feyd (Buzz Cut)', kz: 'Милитари Бокс + Фейд (Buzz Cut)', en: 'Buzz Cut + Skin Fade' },
-        spec: { ru: '✂️ Верх: 6–9 мм · Бока: Skin Fade в ноль', kg: '✂️ Үстү: 6–9 мм · Капталы: Skin Fade', uz: '✂️ Tepa: 6–9 mm · Yonlari: Skin Fade', kz: '✂️ Төбесі: 6–9 мм · Самай: Skin Fade', en: '✂️ Top: 6–9 mm · Sides: Skin Fade' },
-        faces: { ru: 'Квадрат, Овал', kg: 'Квадрат, Овал', uz: 'Kvadrat, Oval', kz: 'Квадрат, Сопақша', en: 'Square, Oval' }
-    },
-    {
-        cat: 'short', portrait: 'ivy_league',
-        name: { ru: 'Лига Плюща + Тейпер (Ivy League)', kg: 'Айви Лига + Тейпер (Ivy League)', uz: 'Ayvi Liga + Teyper (Ivy League)', kz: 'Айви Лига + Тейпер (Ivy League)', en: 'Neat Taper / Ivy League' },
-        spec: { ru: '✂️ Верх: 3–5 см · Бока: Низкий фейд', kg: '✂️ Үстү: 3–5 см · Капталы: Төмөнкү фейд', uz: '✂️ Tepa: 3–5 sm · Yonlari: Past feyd', kz: '✂️ Төбесі: 3–5 см · Самай: Төменгі фейд', en: '✂️ Top: 3–5 cm · Sides: Low Taper' },
-        faces: { ru: 'Сердце, Овал, Ромб', kg: 'Жүрөк, Овал, Ромб', uz: 'Yurak, Oval, Romb', kz: 'Жүрек, Сопақша, Ромб', en: 'Heart, Oval, Diamond' }
-    },
-    {
-        cat: 'medium', portrait: 'textured_quiff',
-        name: { ru: 'Текстурный Квифф (Textured Quiff)', kg: 'Текстуралуу Квифф (Textured Quiff)', uz: 'Teksturali Kviff (Textured Quiff)', kz: 'Текстуралы Квифф (Textured Quiff)', en: 'Textured Quiff' },
-        spec: { ru: '✂️ Верх: 6–8 см (вверх) · Бока: Средний фейд', kg: '✂️ Үстү: 6–8 см · Капталы: Орто фейд', uz: '✂️ Tepa: 6–8 sm · Yonlari: O\'rta feyd', kz: '✂️ Төбесі: 6–8 см · Самай: Орташа фейд', en: '✂️ Top: 6–8 cm · Sides: Mid Fade' },
-        faces: { ru: 'Круг, Овал, Треугольник', kg: 'Тегерек, Овал, Үч бурчтук', uz: 'Dumaloq, Oval, Uchburchak', kz: 'Дөңгелек, Сопақша, Үшбұрыш', en: 'Round, Oval, Triangle' }
-    },
-    {
-        cat: 'medium', portrait: 'pompadour',
-        name: { ru: 'Современный Помпадур (Pompadour)', kg: 'Заманбап Помпадур (Pompadour)', uz: 'Zamonaviy Pompadur (Pompadour)', kz: 'Заманауи Помпадур (Pompadour)', en: 'Modern Pompadour' },
-        spec: { ru: '✂️ Верх: 7–10 см (объём) · Бока: Taper Fade', kg: '✂️ Үстү: 7–10 см · Капталы: Taper Fade', uz: '✂️ Tepa: 7–10 sm · Yonlari: Taper Fade', kz: '✂️ Төбесі: 7–10 см · Самай: Taper Fade', en: '✂️ Top: 7–10 cm · Sides: Taper Fade' },
-        faces: { ru: 'Круг, Треугольник, Овал', kg: 'Тегерек, Үч бурчтук, Овал', uz: 'Dumaloq, Uchburchak, Oval', kz: 'Дөңгелек, Үшбұрыш, Сопақша', en: 'Round, Triangle, Oval' }
-    },
-    {
-        cat: 'medium', portrait: 'slick_back',
-        name: { ru: 'Объёмный Слик-Бэк назад (Slick Back)', kg: 'Көлөмдүү Слик-Бэк (Slick Back)', uz: 'Hajmli Slik-Bek (Slick Back)', kz: 'Көлемді Слик-Бэк (Slick Back)', en: 'Slick Back with Volume' },
-        spec: { ru: '✂️ Верх: 8–10 см (назад) · Бока: Классика', kg: '✂️ Үстү: 8–10 см (артка) · Капталы: Классика', uz: '✂️ Tepa: 8–10 sm (orqaga) · Yonlari: Klassika', kz: '✂️ Төбесі: 8–10 см (артқа) · Самай: Классика', en: '✂️ Top: 8–10 cm swept back · Sides: Taper' },
-        faces: { ru: 'Овал, Квадрат, Треугольник', kg: 'Овал, Квадрат, Үч бурчтук', uz: 'Oval, Kvadrat, Uchburchak', kz: 'Сопақша, Квадрат, Үшбұрыш', en: 'Oval, Square, Triangle' }
-    },
-    {
-        cat: 'medium', portrait: 'curtains',
-        name: { ru: 'Шторы / Пробор по центру (Curtains)', kg: 'Шторалар / Орто пробор (Curtains)', uz: 'Pardalar / Markaziy farq (Curtains)', kz: 'Перделер / Ортаңғы айырым (Curtains)', en: 'Curtain Bangs (Middle Part)' },
-        spec: { ru: '✂️ Верх: 9–12 см · Бока: Мягкие слои', kg: '✂️ Үстү: 9–12 см · Капталы: Жумшак катмарлар', uz: '✂️ Tepa: 9–12 sm · Yonlari: Yumshoq qatlamlar', kz: '✂️ Төбесі: 9–12 см · Самай: Жұмсақ қабаттар', en: '✂️ Top: 9–12 cm · Sides: Layered' },
-        faces: { ru: 'Овал, Ромб, Прямоугольник', kg: 'Овал, Ромб, Тик бурчтук', uz: 'Oval, Romb, To\'rtburchak', kz: 'Сопақша, Ромб, Тікбұрыш', en: 'Oval, Diamond, Oblong' }
-    },
-    {
-        cat: 'medium', portrait: 'bro_flow',
-        name: { ru: 'Текстурные волны средней длины (Bro Flow)', kg: 'Орто узундуктагы толкундар (Bro Flow)', uz: 'O\'rta uzunlikdagi to\'lqinlar (Bro Flow)', kz: 'Орташа ұзындықтағы толқындар (Bro Flow)', en: 'Soft Wavy Bro Flow' },
-        spec: { ru: '✂️ Верх: 10–13 см · Бока: Ножничная работа', kg: '✂️ Үстү: 10–13 см · Капталы: Кайчы менен', uz: '✂️ Tepa: 10–13 sm · Yonlari: Qaychida', kz: '✂️ Төбесі: 10–13 см · Самай: Қайшымен', en: '✂️ Top: 10–13 cm · Sides: Scissor layers' },
-        faces: { ru: 'Прямоугольник, Ромб, Треугольник', kg: 'Тик бурчтук, Ромб, Үч бурчтук', uz: 'To\'rtburchak, Romb, Uchburchak', kz: 'Тікбұрыш, Ромб, Үшбұрыш', en: 'Oblong, Diamond, Triangle' }
-    },
-    {
-        cat: 'trend', portrait: 'two_block',
-        name: { ru: 'Корейская двухблочная (Two-Block Cut)', kg: 'Эки блоктуу корей стили (Two-Block)', uz: 'Ikki blokli koreys uslubi (Two-Block)', kz: 'Екі блокты корей стилі (Two-Block)', en: 'Two-Block K-Style Cut' },
-        spec: { ru: '✂️ Верх: 8–10 см · Бока: Мягкий андеркат', kg: '✂️ Үстү: 8–10 см · Капталы: Андеркат', uz: '✂️ Tepa: 8–10 sm · Yonlari: Anderkat', kz: '✂️ Төбесі: 8–10 см · Самай: Андеркат', en: '✂️ Top: 8–10 cm · Sides: Soft undercut' },
-        faces: { ru: 'Сердце, Овал, Ромб', kg: 'Жүрөк, Овал, Ромб', uz: 'Yurak, Oval, Romb', kz: 'Жүрек, Сопақша, Ромб', en: 'Heart, Oval, Diamond' }
-    },
-    {
-        cat: 'trend', portrait: 'modern_mullet',
-        name: { ru: 'Современный Маллет (Modern Mullet)', kg: 'Заманбап Маллет (Modern Mullet)', uz: 'Zamonaviy Mallet (Modern Mullet)', kz: 'Заманауи Маллет (Modern Mullet)', en: 'Modern Tapered Mullet' },
-        spec: { ru: '✂️ Верх: 6–8 см · Виски: Burst/Taper Fade', kg: '✂️ Үстү: 6–8 см · Чыкый: Burst Fade', uz: '✂️ Tepa: 6–8 sm · Chakka: Burst Fade', kz: '✂️ Төбесі: 6–8 см · Самай: Burst Fade', en: '✂️ Top: 6–8 cm · Temples: Burst Fade' },
-        faces: { ru: 'Ромб, Овал, Квадрат', kg: 'Ромб, Овал, Квадрат', uz: 'Romb, Oval, Kvadrat', kz: 'Ромб, Сопақша, Квадрат', en: 'Diamond, Oval, Square' }
-    },
-    {
-        cat: 'trend', portrait: 'wolf_cut',
-        name: { ru: 'Мужской Вулфкат / Каскад (Wolf Cut)', kg: 'Вулфкат / Катмарлуу каскад (Wolf Cut)', uz: 'Vulfkat / Qatlamli kaskad (Wolf Cut)', kz: 'Вулфкат / Қабатты каскад (Wolf Cut)', en: 'Layered Wolf Cut' },
-        spec: { ru: '✂️ Верх: 9–13 см (рваные слои) · Бока: Удлинённые', kg: '✂️ Үстү: 9–13 см (катмарлар) · Капталы: Узун', uz: '✂️ Tepa: 9–13 sm (qatlamlar) · Yonlari: Uzun', kz: '✂️ Төбесі: 9–13 см (қабаттар) · Самай: Ұзын', en: '✂️ Top: 9–13 cm shaggy layers' },
-        faces: { ru: 'Ромб, Сердце, Прямоугольник', kg: 'Ромб, Жүрөк, Тик бурчтук', uz: 'Romb, Yurak, To\'rtburchak', kz: 'Ромб, Жүрек, Тікбұрыш', en: 'Diamond, Heart, Oblong' }
-    },
-    {
-        cat: 'trend', portrait: 'textured_fringe',
-        name: { ru: 'Текстурная чёлка (Messy Fringe)', kg: 'Текстуралуу көкүл (Messy Fringe)', uz: 'Teksturali kokil (Messy Fringe)', kz: 'Текстуралы кекіл (Messy Fringe)', en: 'Messy Textured Fringe' },
-        spec: { ru: '✂️ Верх: 6–8 см (воздушная чёлка) · Бока: Тейпер', kg: '✂️ Үстү: 6–8 см (көкүл) · Капталы: Тейпер', uz: '✂️ Tepa: 6–8 sm (kokil) · Yonlari: Teyper', kz: '✂️ Төбесі: 6–8 см (кекіл) · Самай: Тейпер', en: '✂️ Top: 6–8 cm fringe · Sides: Taper' },
-        faces: { ru: 'Сердце, Ромб, Прямоугольник', kg: 'Жүрөк, Ромб, Тик бурчтук', uz: 'Yurak, Romb, To\'rtburchak', kz: 'Жүрек, Ромб, Тікбұрыш', en: 'Heart, Diamond, Oblong' }
-    },
-    {
-        cat: 'trend', portrait: 'faux_hawk',
-        name: { ru: 'Бёрст-Фейд Ирокез (Burst Fade Mohawk)', kg: 'Бёрст-Фейд Ирокез (Burst Fade)', uz: 'Byorst-Feyd Irokez (Burst Fade)', kz: 'Бёрст-Фейд Ирокез (Burst Fade)', en: 'Burst Fade Mohawk / Faux Hawk' },
-        spec: { ru: '✂️ Верх: 5–7 см (пик к центру) · Бока: Burst Fade', kg: '✂️ Үстү: 5–7 см · Капталы: Burst Fade', uz: '✂️ Tepa: 5–7 sm · Yonlari: Burst Fade', kz: '✂️ Төбесі: 5–7 см · Самай: Burst Fade', en: '✂️ Top: 5–7 cm peaked · Sides: Burst Fade' },
-        faces: { ru: 'Круг, Овал, Квадрат', kg: 'Тегерек, Овал, Квадрат', uz: 'Dumaloq, Oval, Kvadrat', kz: 'Дөңгелек, Сопақша, Квадрат', en: 'Round, Oval, Square' }
-    }
+const CAT_FACE_NAMES = {
+    ru: { o: 'Овал', s: 'Квадрат', r: 'Круг', l: 'Прямоугольник', h: 'Сердце', d: 'Ромб', t: 'Треугольник' },
+    kg: { o: 'Овал', s: 'Квадрат', r: 'Тегерек', l: 'Тик бурчтук', h: 'Жүрөк', d: 'Ромб', t: 'Үч бурчтук' },
+    uz: { o: 'Oval', s: 'Kvadrat', r: 'Dumaloq', l: 'To\'rtburchak', h: 'Yurak', d: 'Romb', t: 'Uchburchak' },
+    kz: { o: 'Сопақша', s: 'Квадрат', r: 'Дөңгелек', l: 'Тікбұрыш', h: 'Жүрек', d: 'Ромб', t: 'Үшбұрыш' },
+    en: { o: 'Oval', s: 'Square', r: 'Round', l: 'Oblong', h: 'Heart', d: 'Diamond', t: 'Triangle' }
+};
+const CAT_SIDES = {
+    ru: { skin: 'Skin Fade в ноль', high: 'Высокий фейд', mid: 'Средний фейд', low: 'Низкий фейд', taper: 'Плавный тейпер', undercut: 'Андеркат', scissor: 'Ножницы, слои', burst: 'Burst Fade', natural: 'Естественная длина', drop: 'Drop Fade' },
+    kg: { skin: 'Skin Fade', high: 'Жогорку фейд', mid: 'Орто фейд', low: 'Төмөнкү фейд', taper: 'Тейпер', undercut: 'Андеркат', scissor: 'Кайчы менен', burst: 'Burst Fade', natural: 'Табигый узундук', drop: 'Drop Fade' },
+    uz: { skin: 'Skin Fade', high: 'Yuqori feyd', mid: 'O\'rta feyd', low: 'Past feyd', taper: 'Teyper', undercut: 'Anderkat', scissor: 'Qaychida', burst: 'Burst Fade', natural: 'Tabiiy uzunlik', drop: 'Drop Fade' },
+    kz: { skin: 'Skin Fade', high: 'Жоғары фейд', mid: 'Орташа фейд', low: 'Төменгі фейд', taper: 'Тейпер', undercut: 'Андеркат', scissor: 'Қайшымен', burst: 'Burst Fade', natural: 'Табиғи ұзындық', drop: 'Drop Fade' },
+    en: { skin: 'Skin Fade', high: 'High Fade', mid: 'Mid Fade', low: 'Low Fade', taper: 'Taper', undercut: 'Undercut', scissor: 'Scissor layers', burst: 'Burst Fade', natural: 'Natural length', drop: 'Drop Fade' }
+};
+const CAT_LABELS = {
+    ru: ['Верх', 'Бока', 'см', 'мм'], kg: ['Үстү', 'Капталы', 'см', 'мм'], uz: ['Tepa', 'Yonlari', 'sm', 'mm'],
+    kz: ['Төбесі', 'Самай', 'см', 'мм'], en: ['Top', 'Sides', 'cm', 'mm']
+};
+
+// [category, portrait, RU name, EN name, top length, unit, sides, suitable face codes]
+const CATALOG_RAW = [
+    // ⚡ SHORT — 16
+    ['short', 'buzz_cut', 'Милитари Бокс', 'Buzz Cut', '6–9', 'mm', 'skin', 'so'],
+    ['short', 'crew_cut_s', 'Полубокс', 'Crew Cut', '2–3', 'cm', 'high', 'sol'],
+    ['short', 'high_fade', 'Высокий фейд', 'High Fade', '3–4', 'cm', 'high', 'ros'],
+    ['short', 'caesar_cut', 'Цезарь', 'Caesar Cut', '2–3', 'cm', 'mid', 'ldo'],
+    ['short', 'french_crop_s', 'Французский кроп', 'French Crop', '3–4', 'cm', 'drop', 'lso'],
+    ['short', 'short_quiff', 'Короткий квифф', 'Short Quiff', '4–5', 'cm', 'mid', 'rot'],
+    ['short', 'short_pompadour', 'Короткий помпадур', 'Short Pompadour', '5–7', 'cm', 'taper', 'rto'],
+    ['short', 'spiky_fade', 'Текстурные шипы', 'Spiky Textured', '4–6', 'cm', 'high', 'ro'],
+    ['short', 'side_part_fade', 'Пробор + фейд', 'Side Part Fade', '5–6', 'cm', 'low', 'ort'],
+    ['short', 'ivy_league', 'Лига Плюща', 'Ivy League', '3–5', 'cm', 'taper', 'hod'],
+    ['short', 'high_tight', 'Хай энд Тайт', 'High and Tight', '1.5–2.5', 'cm', 'skin', 'so'],
+    ['short', 'flat_top', 'Флэт Топ (площадка)', 'Flat Top', '3–4', 'cm', 'high', 'ro'],
+    ['short', 'taper_fade', 'Тейпер Фейд', 'Taper Fade', '2–3', 'cm', 'taper', 'osh'],
+    ['short', 'butch_cut', 'Бутч', 'Butch Cut', '8–12', 'mm', 'mid', 'so'],
+    ['short', 'faux_hawk_s', 'Короткий фоухок', 'Faux Hawk (Short)', '4–6', 'cm', 'mid', 'ro'],
+    ['short', 'textured_crop_s', 'Текстурный кроп', 'Textured Crop (Short)', '3–5', 'cm', 'mid', 'osl'],
+    // 🌊 MEDIUM — 13
+    ['medium', 'messy_waves', 'Небрежные волны', 'Messy Waves', '10–12', 'cm', 'scissor', 'lsd'],
+    ['medium', 'layered_shag', 'Многослойный шэг', 'Layered Shag', '10–13', 'cm', 'scissor', 'hdl'],
+    ['medium', 'modern_pompadour', 'Современный помпадур', 'Modern Pompadour', '8–10', 'cm', 'taper', 'rto'],
+    ['medium', 'bro_flow', 'Бро Флоу', 'Bro Flow', '13–18', 'cm', 'natural', 'ldt'],
+    ['medium', 'curtains_m', 'Шторы / пробор по центру', 'Curtains (Middle Part)', '9–12', 'cm', 'scissor', 'odl'],
+    ['medium', 'textured_crop_m', 'Удлинённый текстурный кроп', 'Textured Crop (Medium)', '5–7', 'cm', 'mid', 'osr'],
+    ['medium', 'side_swept', 'Зачёс набок', 'Side Swept Medium', '8–11', 'cm', 'taper', 'dho'],
+    ['medium', 'tapered_mullet', 'Маллет с тейпером', 'Tapered Mullet', '6–8', 'cm', 'burst', 'dos'],
+    ['medium', 'slicked_back_m', 'Слик-бэк назад', 'Slicked Back (Medium)', '9–11', 'cm', 'taper', 'ost'],
+    ['medium', 'wavy_quiff', 'Волнистый квифф', 'Wavy Quiff', '7–9', 'cm', 'taper', 'rot'],
+    ['medium', 'disconnected_undercut', 'Андеркат-дисконнект', 'Disconnected Undercut', '8–10', 'cm', 'undercut', 'roh'],
+    ['medium', 'classic_side_m', 'Классика с пробором', 'Classic Side Part (Medium)', '6–8', 'cm', 'taper', 'ort'],
+    ['medium', 'long_flow', 'Длинный флоу', 'Long Flow', '12–15', 'cm', 'natural', 'ldh'],
+    // 💎 TRENDS 2026 — 16
+    ['trend', 'textured_quiff', 'Текстурный квифф', 'Textured Quiff', '6–8', 'cm', 'mid', 'rot'],
+    ['trend', 'messy_shag', 'Небрежный шэг', 'Messy Shag', '10–13', 'cm', 'scissor', 'hdl'],
+    ['trend', 'faux_hawk', 'Бёрст-фейд ирокез', 'Burst Fade Mohawk', '5–7', 'cm', 'burst', 'ros'],
+    ['trend', 'pompadour', 'Помпадур с тейпером', 'Pompadour with Taper', '7–10', 'cm', 'taper', 'rto'],
+    ['trend', 'pompadour_beard', 'Помпадур + борода', 'Pompadour Crop + Beard', '6–8', 'cm', 'skin', 'hdr'],
+    ['trend', 'undercut_long', 'Андеркат с длинным верхом', 'Undercut with Long Top', '9–12', 'cm', 'undercut', 'roh'],
+    ['trend', 'two_block', 'Корейский Two-Block', 'Two-Block K-Style Cut', '8–10', 'cm', 'undercut', 'hod'],
+    ['trend', 'slick_back', 'Объёмный слик-бэк', 'Slick Back with Volume', '8–10', 'cm', 'taper', 'ost'],
+    ['trend', 'textured_crop', 'Текстурный кроп + дизайн', 'Textured Crop + Design', '3–5', 'cm', 'mid', 'osl'],
+    ['trend', 'modern_mullet', 'Современный маллет', 'Modern Mullet', '6–8', 'cm', 'burst', 'dos'],
+    ['trend', 'soft_perm', 'Мягкая химия (кудри)', 'Soft Perm', '8–11', 'cm', 'scissor', 'ldh'],
+    ['trend', 'wolf_cut', 'Мужской вулфкат', 'Layered Wolf Cut', '9–13', 'cm', 'scissor', 'dhl'],
+    ['trend', 'design_undercut', 'Андеркат с узором', 'Design Undercut', '6–8', 'cm', 'undercut', 'ros'],
+    ['trend', 'textured_fringe', 'Небрежная чёлка', 'Messy Textured Fringe', '6–8', 'cm', 'taper', 'hdl'],
+    ['trend', 'curtains', 'Шторки (Curtain Bangs)', 'Curtain Bangs', '9–12', 'cm', 'scissor', 'odl'],
+    ['trend', 'french_crop', 'Текстурный френч-кроп', 'Textured French Crop', '3–4', 'cm', 'drop', 'lso']
 ];
+
+const CATALOG_ITEMS = CATALOG_RAW.map(([cat, portrait, ruName, enName, top, unit, sides, faceCodes]) => {
+    const name = {}, spec = {}, faces = {};
+    ['ru', 'kg', 'uz', 'kz', 'en'].forEach(lg => {
+        const lb = CAT_LABELS[lg];
+        name[lg] = lg === 'en' ? enName : (lg === 'uz' ? enName : `${ruName} (${enName})`);
+        spec[lg] = `✂️ ${lb[0]}: ${top} ${unit === 'mm' ? lb[3] : lb[2]} · ${lb[1]}: ${CAT_SIDES[lg][sides]}`;
+        faces[lg] = faceCodes.split('').map(c => CAT_FACE_NAMES[lg][c]).join(', ');
+    });
+    return { cat, portrait, name, spec, faces, faceCodes };
+});
+
+const SHAPE_CODE = { oval: 'o', square: 's', round: 'r', oblong: 'l', heart: 'h', diamond: 'd', triangle: 't' };
 
 let activeCatalogCategory = 'all';
 
@@ -1728,6 +1830,33 @@ function renderResults(data) {
             ${styleSpec ? `<div style="font-size:0.78rem; color:var(--accent); background:rgba(94,106,210,0.12); border:1px solid rgba(94,106,210,0.28); border-radius:8px; padding:6px 10px; margin-bottom:10px; font-weight:600;">${styleSpec}</div>` : ''}
             <p>${styleDesc}</p>
             <span class="match-badge">✓ ${t.match_text} ${s.baseMatch}%</span>
+            <a href="index.html" class="btn-book" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:15px; padding: 10px; font-size: 0.9rem; background: var(--surface-hover); color: var(--accent); border: 1px solid var(--accent);"><i data-lucide="scissors" style="width:16px;"></i> ${t.find_master}</a>
+        `;
+        grid.appendChild(card);
+    });
+
+    // +2 extra matching styles from the 45-style catalog (total 6)
+    const code = SHAPE_CODE[shapeKey] || 'o';
+    const used = new Set(portraitKeys);
+    const lastMatch = (profile.styles[profile.styles.length - 1] || {}).baseMatch || 90;
+    const extras = CATALOG_ITEMS.filter(it => it.faceCodes.indexOf(code) === 0 && !used.has(it.portrait))
+        .concat(CATALOG_ITEMS.filter(it => it.faceCodes.indexOf(code) > 0 && !used.has(it.portrait)));
+    const picked = [];
+    extras.forEach(it => {
+        if (picked.length < 2 && !picked.some(p => p.cat === it.cat)) picked.push(it);
+    });
+    extras.forEach(it => { if (picked.length < 2 && picked.indexOf(it) < 0) picked.push(it); });
+    picked.forEach((it, j) => {
+        const card = document.createElement('div');
+        card.className = 'style-card';
+        card.innerHTML = `
+            <div class="style-portrait-wrap">
+                <canvas class="style-portrait-canvas" data-portrait="${it.portrait}"></canvas>
+            </div>
+            <h4 style="line-height:1.35; margin-bottom:8px;">${it.name[lang] || it.name.ru}</h4>
+            <div style="font-size:0.78rem; color:var(--accent); background:rgba(94,106,210,0.12); border:1px solid rgba(94,106,210,0.28); border-radius:8px; padding:6px 10px; margin-bottom:10px; font-weight:600;">${it.spec[lang] || it.spec.ru}</div>
+            <p>👤 <b>${t.cat_faces_lbl || 'Форма лица:'}</b> ${it.faces[lang] || it.faces.ru}</p>
+            <span class="match-badge">✓ ${t.match_text} ${Math.max(80, lastMatch - 2 - j * 2)}%</span>
             <a href="index.html" class="btn-book" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:15px; padding: 10px; font-size: 0.9rem; background: var(--surface-hover); color: var(--accent); border: 1px solid var(--accent);"><i data-lucide="scissors" style="width:16px;"></i> ${t.find_master}</a>
         `;
         grid.appendChild(card);
