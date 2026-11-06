@@ -40,6 +40,22 @@
         }
         document.addEventListener('DOMContentLoaded', updateThemeIcon);
     </script>
+    <style>
+        .face-shape-card {
+            border-radius: 24px !important;
+            width: 100% !important;
+            max-width: 440px !important;
+            height: auto !important;
+            min-height: 138px !important;
+            padding: 22px 20px !important;
+        }
+        .face-shape-card h2 {
+            font-size: clamp(1.3rem, 4.8vw, 1.7rem) !important;
+            line-height: 1.25 !important;
+            margin-bottom: 4px !important;
+            word-break: break-word;
+        }
+    </style>
 </head>
 
 <body>
@@ -93,10 +109,10 @@
             <h3 data-i18n="upload_title">Загрузите своё фото</h3>
             <p data-i18n="upload_desc">Нажмите сюда или перетащите файл<br><span
                     style="font-size:0.8rem;opacity:0.6">JPG, PNG — фас, хорошее освещение</span></p>
-            <div id="preview-wrap" style="position:relative; display:none; width:100%; max-width:520px; margin:0 auto; border-radius:16px; overflow:hidden;">
-                <img id="preview-img" alt="Ваше фото" style="width:100%; height:auto; max-height:460px; object-fit:contain; display:block; margin:0 auto; background:#09090d;">
-                <canvas id="mesh-canvas" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></canvas>
-                <div id="mesh-status-badge" style="display:none; position:absolute; bottom:10px; left:50%; transform:translateX(-50%); background:rgba(12, 16, 28, 0.85); backdrop-filter:blur(8px); border:1px solid rgba(94, 106, 210, 0.55); color:#fff; font-size:0.75rem; font-weight:700; padding:6px 14px; border-radius:999px; white-space:nowrap; box-shadow:0 4px 16px rgba(0,0,0,0.4);">
+            <div id="preview-wrap" style="position:relative; display:none; width:100%; max-width:520px; margin:0 auto; border-radius:16px; overflow:hidden; background:#09090d;">
+                <img id="preview-img" alt="Ваше фото" style="display:none !important;">
+                <canvas id="mesh-canvas" style="width:100%; height:auto; max-height:480px; object-fit:contain; display:block; margin:0 auto;"></canvas>
+                <div id="mesh-status-badge" style="display:none; position:absolute; bottom:10px; left:50%; transform:translateX(-50%); background:rgba(12, 16, 28, 0.88); backdrop-filter:blur(8px); border:1px solid rgba(94, 106, 210, 0.65); color:#fff; font-size:0.75rem; font-weight:700; padding:6px 14px; border-radius:999px; white-space:nowrap; box-shadow:0 4px 16px rgba(0,0,0,0.45);">
                     🧬 Google MediaPipe 3D Face Mesh · 478 точек
                 </div>
             </div>
