@@ -92,6 +92,49 @@
             cursor: pointer;
             transition: all 0.2s;
         }
+        .face-filter-bar {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+        .style-filter-bar {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 6px;
+        }
+        .cat-filter-btn.sub {
+            padding: 5px 12px;
+            font-size: 0.78rem;
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+        .cat-filter-btn.sub.active {
+            background: rgba(94, 106, 210, 0.35);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        .face-tag-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: var(--text-main);
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .face-tag-pill:hover, .face-tag-pill.active-tag {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+            transform: scale(1.04);
+        }
         .cat-filter-btn.active, .cat-filter-btn:hover {
             background: var(--accent);
             color: #fff;
@@ -227,19 +270,47 @@
         </div>
     </div>
 
-    <!-- INTERACTIVE CATALOG MODAL -->
+        <!-- INTERACTIVE CATALOG MODAL -->
     <div id="catalog-modal" class="modal" onclick="if(event.target===this) closeCatalog()">
-        <div class="modal-content" style="max-width:960px; width:94%;">
+        <div class="modal-content" style="max-width:980px; width:95%; max-height:92vh; display:flex; flex-direction:column; padding:24px 20px;">
             <div class="modal-close" onclick="closeCatalog()">&times;</div>
-            <h2 style="font-family:var(--font-serif); margin-bottom:6px; font-size:clamp(1.25rem, 4vw, 1.65rem);" data-i18n="cat_modal_title">Каталог мужских стрижек 2026</h2>
-            <p style="color:var(--text-muted); font-size:0.88rem; margin-bottom:14px;" data-i18n="cat_modal_sub">Чистые портреты без лишних надписей — выберите категорию и покажите карточку вашему мастеру</p>
-            <div class="cat-filter-bar" id="cat-filter-bar">
-                <button type="button" class="cat-filter-btn active" data-cat="all" onclick="filterCatalog('all')" data-i18n="cat_tab_all">🔥 Все (45)</button>
-                <button type="button" class="cat-filter-btn" data-cat="short" onclick="filterCatalog('short')" data-i18n="cat_tab_short">⚡ Короткие (16)</button>
-                <button type="button" class="cat-filter-btn" data-cat="medium" onclick="filterCatalog('medium')" data-i18n="cat_tab_medium">🌊 Средняя длина (13)</button>
-                <button type="button" class="cat-filter-btn" data-cat="trend" onclick="filterCatalog('trend')" data-i18n="cat_tab_trend">💎 Тренды 2026 (16)</button>
+            <div style="flex-shrink:0;">
+                <h2 style="font-family:var(--font-serif); margin-bottom:4px; font-size:clamp(1.25rem, 4vw, 1.65rem);" data-i18n="cat_modal_title">Каталог мужских стрижек 2026</h2>
+                <p style="color:var(--text-muted); font-size:0.86rem; margin-bottom:12px;" data-i18n="cat_modal_sub">Выберите форму лица или стиль стрижки — покажите карточку вашему мастеру</p>
+                
+                <!-- 1. ПОДБОР ПО ЧЕРТАМ И ФОРМЕ ЛИЦА -->
+                <div style="margin-bottom:8px;">
+                    <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.8px; color:var(--accent); font-weight:700; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                        <span>👤</span> <span>Подбор по чертам и форме лица:</span>
+                    </div>
+                    <div class="cat-filter-bar face-filter-bar" id="face-filter-bar">
+                        <button type="button" class="cat-filter-btn active" data-face="all" onclick="filterCatalogByFace('all')">🔥 Все формы (57)</button>
+                        <button type="button" class="cat-filter-btn" data-face="o" onclick="filterCatalogByFace('o')">🔷 Овал (45)</button>
+                        <button type="button" class="cat-filter-btn" data-face="s" onclick="filterCatalogByFace('s')">⬛ Квадрат (24)</button>
+                        <button type="button" class="cat-filter-btn" data-face="r" onclick="filterCatalogByFace('r')">⚪ Круг (22)</button>
+                        <button type="button" class="cat-filter-btn" data-face="l" onclick="filterCatalogByFace('l')">📏 Вытянутое (20)</button>
+                        <button type="button" class="cat-filter-btn" data-face="h" onclick="filterCatalogByFace('h')">❤️ Сердце (17)</button>
+                        <button type="button" class="cat-filter-btn" data-face="d" onclick="filterCatalogByFace('d')">💎 Ромб (23)</button>
+                        <button type="button" class="cat-filter-btn" data-face="t" onclick="filterCatalogByFace('t')">🔺 Треугольник (14)</button>
+                    </div>
+                </div>
+
+                <!-- 2. ФИЛЬТР ПО СТИЛЮ И ДЛИНЕ -->
+                <div style="margin-bottom:10px;">
+                    <div class="cat-filter-bar style-filter-bar" id="cat-filter-bar">
+                        <button type="button" class="cat-filter-btn sub active" data-cat="all" onclick="filterCatalogCategory('all')">Все стили</button>
+                        <button type="button" class="cat-filter-btn sub" data-cat="short" onclick="filterCatalogCategory('short')">⚡ Короткие</button>
+                        <button type="button" class="cat-filter-btn sub" data-cat="medium" onclick="filterCatalogCategory('medium')">🌊 Средняя длина</button>
+                        <button type="button" class="cat-filter-btn sub" data-cat="trend" onclick="filterCatalogCategory('trend')">💎 Тренды 2026</button>
+                        <button type="button" class="cat-filter-btn sub" data-cat="long" onclick="filterCatalogCategory('long')">🦁 Удлинённые</button>
+                        <button type="button" class="cat-filter-btn sub" data-cat="photo" onclick="filterCatalogCategory('photo')">📸 Фото моделей</button>
+                    </div>
+                </div>
+
+                <div id="cat-count-badge" style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">Найдено стрижек: <b style="color:var(--accent);">57</b></div>
             </div>
-            <div id="catalog-grid" class="catalog-cards-grid"></div>
+
+            <div id="catalog-grid" class="catalog-cards-grid" style="flex:1; min-height:0; overflow-y:auto;"></div>
         </div>
     </div>
 

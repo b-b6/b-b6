@@ -1589,57 +1589,75 @@ async function analyzePhoto() {
 // ═══════════════════════════════════════════════════════════════════════════
 const SPRITE_SHEETS = {};
 const PORTRAIT_CROPS = {
-    // ── short.png — 16 short styles (4 × 4) ──
-    buzz_cut:              { sheet: 'short',    col: 0, y: 0.198, h: 0.148 },
-    crew_cut_s:            { sheet: 'short',    col: 1, y: 0.198, h: 0.148 },
-    high_fade:             { sheet: 'short',    col: 2, y: 0.198, h: 0.148 },
-    caesar_cut:            { sheet: 'short',    col: 3, y: 0.198, h: 0.148 },
-    french_crop_s:         { sheet: 'short',    col: 0, y: 0.398, h: 0.148 },
-    short_quiff:           { sheet: 'short',    col: 1, y: 0.398, h: 0.148 },
-    short_pompadour:       { sheet: 'short',    col: 2, y: 0.398, h: 0.148 },
-    spiky_fade:            { sheet: 'short',    col: 3, y: 0.398, h: 0.148 },
-    side_part_fade:        { sheet: 'short',    col: 0, y: 0.600, h: 0.146 },
-    ivy_league:            { sheet: 'short',    col: 1, y: 0.600, h: 0.146 },
-    high_tight:            { sheet: 'short',    col: 2, y: 0.600, h: 0.146 },
-    flat_top:              { sheet: 'short',    col: 3, y: 0.600, h: 0.146 },
-    taper_fade:            { sheet: 'short',    col: 0, y: 0.792, h: 0.146 },
-    butch_cut:             { sheet: 'short',    col: 1, y: 0.792, h: 0.146 },
-    faux_hawk_s:           { sheet: 'short',    col: 2, y: 0.792, h: 0.146 },
-    textured_crop_s:       { sheet: 'short',    col: 3, y: 0.792, h: 0.146 },
-    // ── medium.png — 13 medium-length styles ──
-    messy_waves:           { sheet: 'medium',   col: 0, y: 0.200, h: 0.148 },
-    layered_shag:          { sheet: 'medium',   col: 1, y: 0.200, h: 0.148 },
-    modern_pompadour:      { sheet: 'medium',   col: 2, y: 0.200, h: 0.148 },
-    bro_flow:              { sheet: 'medium',   col: 3, y: 0.200, h: 0.148 },
-    curtains_m:            { sheet: 'medium',   col: 0, y: 0.398, h: 0.148 },
-    textured_crop_m:       { sheet: 'medium',   col: 1, y: 0.398, h: 0.148 },
-    side_swept:            { sheet: 'medium',   col: 2, y: 0.398, h: 0.148 },
-    tapered_mullet:        { sheet: 'medium',   col: 3, y: 0.398, h: 0.148 },
-    slicked_back_m:        { sheet: 'medium',   col: 0, y: 0.590, h: 0.148 },
-    wavy_quiff:            { sheet: 'medium',   col: 1, y: 0.590, h: 0.148 },
-    disconnected_undercut: { sheet: 'medium',   col: 2, y: 0.590, h: 0.148 },
-    classic_side_m:        { sheet: 'medium',   col: 3, y: 0.590, h: 0.148 },
-    long_flow:             { sheet: 'medium',   col: 0, y: 0.782, h: 0.148 },
-    // ── trending.png — trend styles (4 × 5) ──
-    side_part:             { sheet: 'trending', col: 0, y: 0.012, h: 0.142 },
-    textured_quiff:        { sheet: 'trending', col: 1, y: 0.012, h: 0.142 },
-    messy_shag:            { sheet: 'trending', col: 2, y: 0.012, h: 0.142 },
-    faux_hawk:             { sheet: 'trending', col: 3, y: 0.012, h: 0.142 },
-    pompadour:             { sheet: 'trending', col: 0, y: 0.208, h: 0.142 },
-    pompadour_beard:       { sheet: 'trending', col: 1, y: 0.208, h: 0.142 },
-    undercut_long:         { sheet: 'trending', col: 2, y: 0.208, h: 0.142 },
-    two_block:             { sheet: 'trending', col: 3, y: 0.208, h: 0.142 },
-    slick_back:            { sheet: 'trending', col: 0, y: 0.404, h: 0.142 },
-    textured_crop:         { sheet: 'trending', col: 1, y: 0.404, h: 0.142 },
-    modern_mullet:         { sheet: 'trending', col: 2, y: 0.404, h: 0.142 },
-    soft_perm:             { sheet: 'trending', col: 3, y: 0.404, h: 0.142 },
-    neat_taper:            { sheet: 'trending', col: 0, y: 0.600, h: 0.142 },
-    wolf_cut:              { sheet: 'trending', col: 1, y: 0.600, h: 0.142 },
-    design_undercut:       { sheet: 'trending', col: 3, y: 0.600, h: 0.142 },
-    crew_cut:              { sheet: 'trending', col: 0, y: 0.795, h: 0.140 },
-    textured_fringe:       { sheet: 'trending', col: 1, y: 0.795, h: 0.140 },
-    curtains:              { sheet: 'trending', col: 2, y: 0.795, h: 0.140 },
-    french_crop:           { sheet: 'trending', col: 3, y: 0.795, h: 0.140 }
+    // ── 1. short.png — 16 short styles (4 × 4) ──
+    buzz_cut:              { sheet: 'short', col: 0, y: 0.198, h: 0.148, cols: 4 },
+    crew_cut_s:            { sheet: 'short', col: 1, y: 0.198, h: 0.148, cols: 4 },
+    high_fade:             { sheet: 'short', col: 2, y: 0.198, h: 0.148, cols: 4 },
+    caesar_cut:            { sheet: 'short', col: 3, y: 0.198, h: 0.148, cols: 4 },
+    french_crop_s:         { sheet: 'short', col: 0, y: 0.398, h: 0.148, cols: 4 },
+    short_quiff:           { sheet: 'short', col: 1, y: 0.398, h: 0.148, cols: 4 },
+    short_pompadour:       { sheet: 'short', col: 2, y: 0.398, h: 0.148, cols: 4 },
+    spiky_fade:            { sheet: 'short', col: 3, y: 0.398, h: 0.148, cols: 4 },
+    side_part_fade:        { sheet: 'short', col: 0, y: 0.600, h: 0.146, cols: 4 },
+    ivy_league:            { sheet: 'short', col: 1, y: 0.600, h: 0.146, cols: 4 },
+    high_tight:            { sheet: 'short', col: 2, y: 0.600, h: 0.146, cols: 4 },
+    flat_top:              { sheet: 'short', col: 3, y: 0.600, h: 0.146, cols: 4 },
+    taper_fade:            { sheet: 'short', col: 0, y: 0.792, h: 0.146, cols: 4 },
+    butch_cut:             { sheet: 'short', col: 1, y: 0.792, h: 0.146, cols: 4 },
+    faux_hawk_s:           { sheet: 'short', col: 2, y: 0.792, h: 0.146, cols: 4 },
+    textured_crop_s:       { sheet: 'short', col: 3, y: 0.792, h: 0.146, cols: 4 },
+
+    // ── 2. medium.png — 13 medium-length styles (4 × 4) ──
+    messy_waves:           { sheet: 'medium', col: 0, y: 0.200, h: 0.148, cols: 4 },
+    layered_shag:          { sheet: 'medium', col: 1, y: 0.200, h: 0.148, cols: 4 },
+    modern_pompadour:      { sheet: 'medium', col: 2, y: 0.200, h: 0.148, cols: 4 },
+    bro_flow:              { sheet: 'medium', col: 3, y: 0.200, h: 0.148, cols: 4 },
+    curtains_m:            { sheet: 'medium', col: 0, y: 0.398, h: 0.148, cols: 4 },
+    textured_crop_m:       { sheet: 'medium', col: 1, y: 0.398, h: 0.148, cols: 4 },
+    side_swept:            { sheet: 'medium', col: 2, y: 0.398, h: 0.148, cols: 4 },
+    tapered_mullet:        { sheet: 'medium', col: 3, y: 0.398, h: 0.148, cols: 4 },
+    slicked_back_m:        { sheet: 'medium', col: 0, y: 0.590, h: 0.148, cols: 4 },
+    wavy_quiff:            { sheet: 'medium', col: 1, y: 0.590, h: 0.148, cols: 4 },
+    disconnected_undercut: { sheet: 'medium', col: 2, y: 0.590, h: 0.148, cols: 4 },
+    classic_side_m:        { sheet: 'medium', col: 3, y: 0.590, h: 0.148, cols: 4 },
+    long_flow:             { sheet: 'medium', col: 0, y: 0.782, h: 0.148, cols: 4 },
+
+    // ── 3. trending.png — 16 trend styles (4 × 5) ──
+    side_part:             { sheet: 'trending', col: 0, y: 0.012, h: 0.142, cols: 4 },
+    textured_quiff:        { sheet: 'trending', col: 1, y: 0.012, h: 0.142, cols: 4 },
+    messy_shag:            { sheet: 'trending', col: 2, y: 0.012, h: 0.142, cols: 4 },
+    faux_hawk:             { sheet: 'trending', col: 3, y: 0.012, h: 0.142, cols: 4 },
+    pompadour:             { sheet: 'trending', col: 0, y: 0.208, h: 0.142, cols: 4 },
+    pompadour_beard:       { sheet: 'trending', col: 1, y: 0.208, h: 0.142, cols: 4 },
+    undercut_long:         { sheet: 'trending', col: 2, y: 0.208, h: 0.142, cols: 4 },
+    two_block:             { sheet: 'trending', col: 3, y: 0.208, h: 0.142, cols: 4 },
+    slick_back:            { sheet: 'trending', col: 0, y: 0.404, h: 0.142, cols: 4 },
+    textured_crop:         { sheet: 'trending', col: 1, y: 0.404, h: 0.142, cols: 4 },
+    modern_mullet:         { sheet: 'trending', col: 2, y: 0.404, h: 0.142, cols: 4 },
+    soft_perm:             { sheet: 'trending', col: 3, y: 0.404, h: 0.142, cols: 4 },
+    neat_taper:            { sheet: 'trending', col: 0, y: 0.600, h: 0.142, cols: 4 },
+    wolf_cut:              { sheet: 'trending', col: 1, y: 0.600, h: 0.142, cols: 4 },
+    design_undercut:       { sheet: 'trending', col: 3, y: 0.600, h: 0.142, cols: 4 },
+    crew_cut:              { sheet: 'trending', col: 0, y: 0.795, h: 0.140, cols: 4 },
+    textured_fringe:       { sheet: 'trending', col: 1, y: 0.795, h: 0.140, cols: 4 },
+    curtains:              { sheet: 'trending', col: 2, y: 0.795, h: 0.140, cols: 4 },
+    french_crop:           { sheet: 'trending', col: 3, y: 0.795, h: 0.140, cols: 4 },
+
+    // ── 4. hair_long.jpg — 6 long & special styles (5 cols) ──
+    samurai_bun:           { sheet: 'hair_long.jpg', col: 1, y: 0.595, h: 0.135, cols: 5 },
+    low_ponytail:          { sheet: 'hair_long.jpg', col: 2, y: 0.595, h: 0.135, cols: 5 },
+    undercut_flow:         { sheet: 'hair_long.jpg', col: 3, y: 0.595, h: 0.135, cols: 5 },
+    long_layers:           { sheet: 'hair_long.jpg', col: 0, y: 0.595, h: 0.135, cols: 5 },
+    blowout:               { sheet: 'hair_long.jpg', col: 1, y: 0.405, h: 0.135, cols: 5 },
+    tapered_flow:          { sheet: 'hair_long.jpg', col: 0, y: 0.405, h: 0.135, cols: 5 },
+
+    // ── 5. hair_photo.jpg — 6 realistic model photo styles (3 cols) ──
+    curly_top_photo:       { sheet: 'hair_photo.jpg', col: 0, y: 0.252, h: 0.245, cols: 3 },
+    wavy_shag_photo:       { sheet: 'hair_photo.jpg', col: 1, y: 0.252, h: 0.245, cols: 3 },
+    caesar_fade_photo:     { sheet: 'hair_photo.jpg', col: 2, y: 0.252, h: 0.245, cols: 3 },
+    mullet_photo:          { sheet: 'hair_photo.jpg', col: 0, y: 0.752, h: 0.245, cols: 3 },
+    side_part_photo:       { sheet: 'hair_photo.jpg', col: 1, y: 0.752, h: 0.245, cols: 3 },
+    curtains_photo:        { sheet: 'hair_photo.jpg', col: 2, y: 0.752, h: 0.245, cols: 3 }
 };
 
 const SHAPE_PORTRAIT_KEYS = {
@@ -1658,7 +1676,7 @@ function loadSpriteSheet(name) {
         const img = new Image();
         img.onload = () => resolve(img);
         img.onerror = () => resolve(null);
-        img.src = `assets/${name}.png`;
+        img.src = 'assets/' + (name.includes('.') ? name : name + '.png');
     });
     return SPRITE_SHEETS[name];
 }
@@ -1673,8 +1691,12 @@ async function renderAllPortraitCanvases(rootEl) {
         c.width = 260;
         c.height = 240;
         const ctx = c.getContext('2d');
-        const sx = (cfg.col * 0.25 + 0.022) * img.naturalWidth;
-        const sw = 0.206 * img.naturalWidth;
+        const cols = cfg.cols || 4;
+        const colW = 1.0 / cols;
+        const inset = cfg.inset !== undefined ? cfg.inset : (cols === 5 ? 0.015 : (cols === 3 ? 0.02 : 0.022));
+        const widthRatio = cfg.wRatio !== undefined ? cfg.wRatio : (cols === 5 ? 0.17 : (cols === 3 ? 0.29 : 0.206));
+        const sx = (cfg.col * colW + inset) * img.naturalWidth;
+        const sw = widthRatio * img.naturalWidth;
         const sy = cfg.y * img.naturalHeight;
         const sh = cfg.h * img.naturalHeight;
         ctx.clearRect(0, 0, c.width, c.height);
@@ -1683,93 +1705,224 @@ async function renderAllPortraitCanvases(rootEl) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 45 CURATED CATALOG STYLES WITH 5-LANGUAGE TRANSLATIONS & FILTER TAGS
+// 57 CURATED HAIRCUTS CLASSIFIED BY FACE SHAPE & STYLE
 // ═══════════════════════════════════════════════════════════════════════════
 const CAT_FACE_NAMES = {
-    ru: { o: 'Овал', s: 'Квадрат', r: 'Круг', l: 'Прямоугольник', h: 'Сердце', d: 'Ромб', t: 'Треугольник' },
+    ru: { o: 'Овал', s: 'Квадрат', r: 'Круг', l: 'Вытянутое', h: 'Сердце', d: 'Ромб', t: 'Треугольник' },
     kg: { o: 'Овал', s: 'Квадрат', r: 'Тегерек', l: 'Тик бурчтук', h: 'Жүрөк', d: 'Ромб', t: 'Үч бурчтук' },
-    uz: { o: 'Oval', s: 'Kvadrat', r: 'Dumaloq', l: 'To\'rtburchak', h: 'Yurak', d: 'Romb', t: 'Uchburchak' },
+    uz: { o: 'Oval', s: 'Kvadrat', r: 'Dumaloq', l: 'Cho\'zinchoq', h: 'Yurak', d: 'Romb', t: 'Uchburchak' },
     kz: { o: 'Сопақша', s: 'Квадрат', r: 'Дөңгелек', l: 'Тікбұрыш', h: 'Жүрек', d: 'Ромб', t: 'Үшбұрыш' },
     en: { o: 'Oval', s: 'Square', r: 'Round', l: 'Oblong', h: 'Heart', d: 'Diamond', t: 'Triangle' }
 };
+
+const CAT_FACE_ICONS = {
+    o: '🔷', s: '⬛', r: '⚪', l: '📏', h: '❤️', d: '💎', t: '🔺'
+};
+
 const CAT_SIDES = {
     ru: { skin: 'Skin Fade в ноль', high: 'Высокий фейд', mid: 'Средний фейд', low: 'Низкий фейд', taper: 'Плавный тейпер', undercut: 'Андеркат', scissor: 'Ножницы, слои', burst: 'Burst Fade', natural: 'Естественная длина', drop: 'Drop Fade' },
     kg: { skin: 'Skin Fade', high: 'Жогорку фейд', mid: 'Орто фейд', low: 'Төмөнкү фейд', taper: 'Тейпер', undercut: 'Андеркат', scissor: 'Кайчы менен', burst: 'Burst Fade', natural: 'Табигый узундук', drop: 'Drop Fade' },
     uz: { skin: 'Skin Fade', high: 'Yuqori feyd', mid: 'O\'rta feyd', low: 'Past feyd', taper: 'Teyper', undercut: 'Anderkat', scissor: 'Qaychida', burst: 'Burst Fade', natural: 'Tabiiy uzunlik', drop: 'Drop Fade' },
     kz: { skin: 'Skin Fade', high: 'Жоғары фейд', mid: 'Орташа фейд', low: 'Төменгі фейд', taper: 'Тейпер', undercut: 'Андеркат', scissor: 'Қайшымен', burst: 'Burst Fade', natural: 'Табиғи ұзындық', drop: 'Drop Fade' },
-    en: { skin: 'Skin Fade', high: 'High Fade', mid: 'Mid Fade', low: 'Low Fade', taper: 'Taper', undercut: 'Undercut', scissor: 'Scissor layers', burst: 'Burst Fade', natural: 'Natural length', drop: 'Drop Fade' }
-};
-const CAT_LABELS = {
-    ru: ['Верх', 'Бока', 'см', 'мм'], kg: ['Үстү', 'Капталы', 'см', 'мм'], uz: ['Tepa', 'Yonlari', 'sm', 'mm'],
-    kz: ['Төбесі', 'Самай', 'см', 'мм'], en: ['Top', 'Sides', 'cm', 'mm']
+    en: { skin: 'Skin Fade', high: 'High Fade', mid: 'Mid Fade', low: 'Low Fade', taper: 'Taper Fade', undercut: 'Undercut', scissor: 'Scissor layers', burst: 'Burst Fade', natural: 'Natural length', drop: 'Drop Fade' }
 };
 
-// [category, portrait, RU name, EN name, top length, unit, sides, suitable face codes]
+const CAT_LABELS = {
+    ru: ['Верх', 'Бока', 'см', 'мм', 'Форма лица', 'Идеально для:'],
+    kg: ['Үстү', 'Капталы', 'см', 'мм', 'Бет түзүлүшү', 'Идеалдуу:'],
+    uz: ['Tepa', 'Yonlari', 'sm', 'mm', 'Yuz shakli', 'Ideal mos:'],
+    kz: ['Төбесі', 'Самай', 'см', 'мм', 'Бет пішіні', 'Идеалды:'],
+    en: ['Top', 'Sides', 'cm', 'mm', 'Face Shape', 'Best for:']
+};
+
+// [category, portrait, RU name, EN name, top length, unit, sides, faceCodes, RU why, EN why]
 const CATALOG_RAW = [
-    // ⚡ SHORT — 16
-    ['short', 'buzz_cut', 'Милитари Бокс', 'Buzz Cut', '6–9', 'mm', 'skin', 'so'],
-    ['short', 'crew_cut_s', 'Полубокс', 'Crew Cut', '2–3', 'cm', 'high', 'sol'],
-    ['short', 'high_fade', 'Высокий фейд', 'High Fade', '3–4', 'cm', 'high', 'ros'],
-    ['short', 'caesar_cut', 'Цезарь', 'Caesar Cut', '2–3', 'cm', 'mid', 'ldo'],
-    ['short', 'french_crop_s', 'Французский кроп', 'French Crop', '3–4', 'cm', 'drop', 'lso'],
-    ['short', 'short_quiff', 'Короткий квифф', 'Short Quiff', '4–5', 'cm', 'mid', 'rot'],
-    ['short', 'short_pompadour', 'Короткий помпадур', 'Short Pompadour', '5–7', 'cm', 'taper', 'rto'],
-    ['short', 'spiky_fade', 'Текстурные шипы', 'Spiky Textured', '4–6', 'cm', 'high', 'ro'],
-    ['short', 'side_part_fade', 'Пробор + фейд', 'Side Part Fade', '5–6', 'cm', 'low', 'ort'],
-    ['short', 'ivy_league', 'Лига Плюща', 'Ivy League', '3–5', 'cm', 'taper', 'hod'],
-    ['short', 'high_tight', 'Хай энд Тайт', 'High and Tight', '1.5–2.5', 'cm', 'skin', 'so'],
-    ['short', 'flat_top', 'Флэт Топ (площадка)', 'Flat Top', '3–4', 'cm', 'high', 'ro'],
-    ['short', 'taper_fade', 'Тейпер Фейд', 'Taper Fade', '2–3', 'cm', 'taper', 'osh'],
-    ['short', 'butch_cut', 'Бутч', 'Butch Cut', '8–12', 'mm', 'mid', 'so'],
-    ['short', 'faux_hawk_s', 'Короткий фоухок', 'Faux Hawk (Short)', '4–6', 'cm', 'mid', 'ro'],
-    ['short', 'textured_crop_s', 'Текстурный кроп', 'Textured Crop (Short)', '3–5', 'cm', 'mid', 'osl'],
-    // 🌊 MEDIUM — 13
-    ['medium', 'messy_waves', 'Небрежные волны', 'Messy Waves', '10–12', 'cm', 'scissor', 'lsd'],
-    ['medium', 'layered_shag', 'Многослойный шэг', 'Layered Shag', '10–13', 'cm', 'scissor', 'hdl'],
-    ['medium', 'modern_pompadour', 'Современный помпадур', 'Modern Pompadour', '8–10', 'cm', 'taper', 'rto'],
-    ['medium', 'bro_flow', 'Бро Флоу', 'Bro Flow', '13–18', 'cm', 'natural', 'ldt'],
-    ['medium', 'curtains_m', 'Шторы / пробор по центру', 'Curtains (Middle Part)', '9–12', 'cm', 'scissor', 'odl'],
-    ['medium', 'textured_crop_m', 'Удлинённый текстурный кроп', 'Textured Crop (Medium)', '5–7', 'cm', 'mid', 'osr'],
-    ['medium', 'side_swept', 'Зачёс набок', 'Side Swept Medium', '8–11', 'cm', 'taper', 'dho'],
-    ['medium', 'tapered_mullet', 'Маллет с тейпером', 'Tapered Mullet', '6–8', 'cm', 'burst', 'dos'],
-    ['medium', 'slicked_back_m', 'Слик-бэк назад', 'Slicked Back (Medium)', '9–11', 'cm', 'taper', 'ost'],
-    ['medium', 'wavy_quiff', 'Волнистый квифф', 'Wavy Quiff', '7–9', 'cm', 'taper', 'rot'],
-    ['medium', 'disconnected_undercut', 'Андеркат-дисконнект', 'Disconnected Undercut', '8–10', 'cm', 'undercut', 'roh'],
-    ['medium', 'classic_side_m', 'Классика с пробором', 'Classic Side Part (Medium)', '6–8', 'cm', 'taper', 'ort'],
-    ['medium', 'long_flow', 'Длинный флоу', 'Long Flow', '12–15', 'cm', 'natural', 'ldh'],
-    // 💎 TRENDS 2026 — 16
-    ['trend', 'textured_quiff', 'Текстурный квифф', 'Textured Quiff', '6–8', 'cm', 'mid', 'rot'],
-    ['trend', 'messy_shag', 'Небрежный шэг', 'Messy Shag', '10–13', 'cm', 'scissor', 'hdl'],
-    ['trend', 'faux_hawk', 'Бёрст-фейд ирокез', 'Burst Fade Mohawk', '5–7', 'cm', 'burst', 'ros'],
-    ['trend', 'pompadour', 'Помпадур с тейпером', 'Pompadour with Taper', '7–10', 'cm', 'taper', 'rto'],
-    ['trend', 'pompadour_beard', 'Помпадур + борода', 'Pompadour Crop + Beard', '6–8', 'cm', 'skin', 'hdr'],
-    ['trend', 'undercut_long', 'Андеркат с длинным верхом', 'Undercut with Long Top', '9–12', 'cm', 'undercut', 'roh'],
-    ['trend', 'two_block', 'Корейский Two-Block', 'Two-Block K-Style Cut', '8–10', 'cm', 'undercut', 'hod'],
-    ['trend', 'slick_back', 'Объёмный слик-бэк', 'Slick Back with Volume', '8–10', 'cm', 'taper', 'ost'],
-    ['trend', 'textured_crop', 'Текстурный кроп + дизайн', 'Textured Crop + Design', '3–5', 'cm', 'mid', 'osl'],
-    ['trend', 'modern_mullet', 'Современный маллет', 'Modern Mullet', '6–8', 'cm', 'burst', 'dos'],
-    ['trend', 'soft_perm', 'Мягкая химия (кудри)', 'Soft Perm', '8–11', 'cm', 'scissor', 'ldh'],
-    ['trend', 'wolf_cut', 'Мужской вулфкат', 'Layered Wolf Cut', '9–13', 'cm', 'scissor', 'dhl'],
-    ['trend', 'design_undercut', 'Андеркат с узором', 'Design Undercut', '6–8', 'cm', 'undercut', 'ros'],
-    ['trend', 'textured_fringe', 'Небрежная чёлка', 'Messy Textured Fringe', '6–8', 'cm', 'taper', 'hdl'],
-    ['trend', 'curtains', 'Шторки (Curtain Bangs)', 'Curtain Bangs', '9–12', 'cm', 'scissor', 'odl'],
-    ['trend', 'french_crop', 'Текстурный френч-кроп', 'Textured French Crop', '3–4', 'cm', 'drop', 'lso']
+    // ⚡ 1. SHORT HAIRSTYLES (16)
+    ['short', 'buzz_cut', 'Милитари Бокс', 'Buzz Cut', '6–9', 'mm', 'skin', 'so', 'Подчёркивает мужественные скулы и сильную челюсть', 'Highlights masculine jawline and strong bone structure'],
+    ['short', 'crew_cut_s', 'Полубокс с текстурой', 'Crew Cut', '2–3', 'cm', 'high', 'sol', 'Универсальная форма, слегка вытягивает силуэт', 'Refined top adds subtle height to balance facial proportions'],
+    ['short', 'high_fade', 'Высокий фейд', 'High Fade', '3–4', 'cm', 'high', 'ros', 'Снимает объём по бокам, визуально сужая лицо', 'Cleans sides to create a slimmer vertical facial balance'],
+    ['short', 'caesar_cut', 'Цезарь с прямой чёлкой', 'Caesar Cut', '2–3', 'cm', 'mid', 'ldo', 'Прямая микрочёлка гармонизирует высокий лоб', 'Horizontal blunt fringe reduces forehead height'],
+    ['short', 'french_crop_s', 'Французский кроп', 'French Crop', '3–4', 'cm', 'drop', 'lso', 'Текстурная чёлка балансирует вытянутые пропорции', 'Short textured fringe softens elongated and angular faces'],
+    ['short', 'short_quiff', 'Короткий квифф', 'Short Quiff', '4–5', 'cm', 'mid', 'rot', 'Приподнятый объём спереди зрительно удлиняет лицо', 'Lifts front hair to elongate round and triangular faces'],
+    ['short', 'short_pompadour', 'Короткий помпадур', 'Short Pompadour', '5–7', 'cm', 'taper', 'rto', 'Классический кок добавляет авторитетную высоту', 'Adds vertical dimension and structure to softer face shapes'],
+    ['short', 'spiky_fade', 'Текстурные шипы', 'Spiky Textured', '4–6', 'cm', 'high', 'ro', 'Вертикальная текстура разрушает округлость', 'Upward texture breaks round symmetry and adds edge'],
+    ['short', 'side_part_fade', 'Пробор + фейд', 'Side Part Fade', '5–6', 'cm', 'low', 'ort', 'Диагональная линия пробора стройнит черты', 'Diagonal parting creates clean asymmetry for balanced look'],
+    ['short', 'ivy_league', 'Лига Плюща (Айви Лига)', 'Ivy League', '3–5', 'cm', 'taper', 'hod', 'Элегантный аккуратный объём у висков', 'Neat polished silhouette frames narrower cheekbones'],
+    ['short', 'high_tight', 'Хай энд Тайт', 'High and Tight', '1.5–2.5', 'cm', 'skin', 'so', 'Максимальный фокус на волевом подбородке', 'Clean skin fade spotlights strong jawline and cheekbones'],
+    ['short', 'flat_top', 'Флэт Топ (площадка)', 'Flat Top', '3–4', 'cm', 'high', 'ro', 'Чёткая геометрия создаёт структуру', 'Crisp horizontal plane adds angular contrast to soft faces'],
+    ['short', 'taper_fade', 'Тейпер Фейд', 'Taper Fade', '2–3', 'cm', 'taper', 'osh', 'Естественный плавный переход без агрессии', 'Subtle graduation flatters natural facial balance'],
+    ['short', 'butch_cut', 'Бутч под машинку', 'Butch Cut', '8–12', 'mm', 'mid', 'so', 'Ровная аккуратная форма для идеального черепа', 'Even masculine length accentuates square jaw geometry'],
+    ['short', 'faux_hawk_s', 'Короткий фоухок', 'Faux Hawk (Short)', '4–6', 'cm', 'mid', 'ro', 'Центральный гребень вытягивает пропорции', 'Central peak draws the eye upward, slimming wider cheeks'],
+    ['short', 'textured_crop_s', 'Текстурный кроп', 'Textured Crop (Short)', '3–5', 'cm', 'mid', 'osl', 'Рваный срез маскирует углы лба', 'Point-cut fringe softens wide forehead angles'],
+
+    // 🌊 2. MEDIUM LENGTH (13)
+    ['medium', 'messy_waves', 'Небрежные волны', 'Messy Waves', '10–12', 'cm', 'scissor', 'lsd', 'Мягкие волны сглаживают резкие черты лица', 'Soft wavy layers round off sharp cheek and jaw angles'],
+    ['medium', 'layered_shag', 'Многослойный шэг', 'Layered Shag', '10–13', 'cm', 'scissor', 'hdl', 'Объём по бокам выравнивает узкий подбородок', 'Side texture fills out narrower lower face profiles'],
+    ['medium', 'modern_pompadour', 'Современный помпадур', 'Modern Pompadour', '8–10', 'cm', 'taper', 'rto', 'Пышный начёс уравновешивает массивный низ', 'Generous crown volume balances wider lower jawline'],
+    ['medium', 'bro_flow', 'Бро Флоу (свободные волны)', 'Bro Flow', '13–18', 'cm', 'natural', 'ldt', 'Естественное движение волос расширяет виски', 'Effortless flow softens elongated face structure'],
+    ['medium', 'curtains_m', 'Шторы / пробор по центру', 'Curtains (Middle Part)', '9–12', 'cm', 'scissor', 'odl', 'Ниспадающие пряди прикрывают выступающие скулы', 'Framing side drapes soften prominent cheekbones'],
+    ['medium', 'textured_crop_m', 'Удлинённый текстурный кроп', 'Textured Crop (Medium)', '5–7', 'cm', 'mid', 'osr', 'Плотная текстура макушки гармонизирует лоб', 'Thick top density structures broad and round features'],
+    ['medium', 'side_swept', 'Зачёс набок средней длины', 'Side Swept Medium', '8–11', 'cm', 'taper', 'dho', 'Асимметричный баланс для сердцевидной формы', 'Asymmetric drape narrows wide temples and forehead'],
+    ['medium', 'tapered_mullet', 'Маллет с тейпером', 'Tapered Mullet', '6–8', 'cm', 'burst', 'dos', 'Удлинённая шея балансирует высокий лоб', 'Lengthened nape profile counterweights sharp facial planes'],
+    ['medium', 'slicked_back_m', 'Слик-бэк назад', 'Slicked Back (Medium)', '9–11', 'cm', 'taper', 'ost', 'Открывает благородные скулы и овал', 'Swept-back lines accentuate harmonious symmetry'],
+    ['medium', 'wavy_quiff', 'Волнистый квифф', 'Wavy Quiff', '7–9', 'cm', 'taper', 'rot', 'Текстура наверх даёт воздух круглому лицу', 'Voluminous texture creates dynamic height for round faces'],
+    ['medium', 'disconnected_undercut', 'Андеркат-дисконнект', 'Disconnected Undercut', '8–10', 'cm', 'undercut', 'roh', 'Резкий контраст боков подчёркивает форму', 'Crisp shaved sides contrast bold top styling'],
+    ['medium', 'classic_side_m', 'Классика с пробором', 'Classic Side Part (Medium)', '6–8', 'cm', 'taper', 'ort', 'Статусный объём подходит деловому типажу', 'Timeless executive silhouette for oval and round frames'],
+    ['medium', 'long_flow', 'Длинный флоу по плечи', 'Long Flow', '12–15', 'cm', 'natural', 'ldh', 'Свободные пряди маскируют вытянутость', 'Fluid shoulder layers visually widen slender jawlines'],
+
+    // 💎 3. TRENDS 2026 (16)
+    ['trend', 'textured_quiff', 'Текстурный квифф 2026', 'Textured Quiff', '6–8', 'cm', 'mid', 'rot', 'Хит сезона: идеальный баланс высоты и чётких висков', 'Flagship 2026 quiff elongating round and triangle jaws'],
+    ['trend', 'messy_shag', 'Небрежный текстурный шэг', 'Messy Shag', '10–13', 'cm', 'scissor', 'hdl', 'Рваные воздушные пряди смягчают угловатость', 'Airy shattered layers contour sharp diamond cheeks'],
+    ['trend', 'faux_hawk', 'Бёрст-фейд ирокез', 'Burst Fade Mohawk', '5–7', 'cm', 'burst', 'ros', 'Полукруглый фейд вокруг ушей с динамичным гребнем', 'Curved burst taper framing dynamic vertical quiff'],
+    ['trend', 'pompadour', 'Помпадур с тейпером', 'Pompadour with Taper', '7–10', 'cm', 'taper', 'rto', 'Классика в современном лёгком исполнении', 'Weightless pompadour sculpting round jaw contours'],
+    ['trend', 'pompadour_beard', 'Помпадур + борода', 'Pompadour Crop + Beard', '6–8', 'cm', 'skin', 'hdr', 'Связка с бородой создаёт брутальный контур челюсти', 'Integrated beard styling broadens narrow chin apex'],
+    ['trend', 'undercut_long', 'Андеркат с длинным верхом', 'Undercut with Long Top', '9–12', 'cm', 'undercut', 'roh', 'Длинный контрастный верх можно укладывать назад или набок', 'Versatile long deck easily parted or swept backward'],
+    ['trend', 'two_block', 'Корейский Two-Block Cut', 'Two-Block K-Style Cut', '8–10', 'cm', 'undercut', 'hod', 'Тренд K-Pop: скрытый андеркат со свободным верхом', 'K-Style curtain contouring heart and diamond faces'],
+    ['trend', 'slick_back', 'Объёмный слик-бэк', 'Slick Back with Volume', '8–10', 'cm', 'taper', 'ost', 'Без склеивания: натуральный объём назад', 'Pliable matte sweep-back highlighting balanced bone lines'],
+    ['trend', 'textured_crop', 'Текстурный кроп + дизайн', 'Textured Crop + Design', '3–5', 'cm', 'mid', 'osl', 'Филированная чёлка с геометрическим выбриванием', 'Razored edge fringe with custom temple hair design'],
+    ['trend', 'modern_mullet', 'Современный маллет', 'Modern Mullet', '6–8', 'cm', 'burst', 'dos', 'Главный модный хит: гармонизирует ромб и квадрат', 'Contemporary street mullet balancing angular diamond bone lines'],
+    ['trend', 'soft_perm', 'Мягкая биозавивка (кудри)', 'Soft Perm (Curls)', '8–11', 'cm', 'scissor', 'ldh', 'Кудри добавляют романтичный объём тонким волосам', 'Relaxed waves add plush volume for slender features'],
+    ['trend', 'wolf_cut', 'Мужской вулфкат', 'Layered Wolf Cut', '9–13', 'cm', 'scissor', 'dhl', 'Многослойный каскад убирает тяжесть скул', 'Multilevel cascade smoothing sharp cheekbone apexes'],
+    ['trend', 'design_undercut', 'Андеркат с узором', 'Design Undercut', '6–8', 'cm', 'undercut', 'ros', 'Акцентные линии на висках отвлекают от щёк', 'Razor-carved line art diverting focus from round cheeks'],
+    ['trend', 'textured_fringe', 'Небрежная рваная чёлка', 'Messy Textured Fringe', '6–8', 'cm', 'taper', 'hdl', 'Идеально скрывает залысины и сужает широкий лоб', 'Feathered fringe masking high temples on heart faces'],
+    ['trend', 'curtains', 'Шторки (Curtain Bangs)', 'Curtain Bangs', '9–12', 'cm', 'scissor', 'odl', 'Аниме-стиль: естественный пробор раскрывает глаза', 'Symmetrical center drape accentuating eyes and cheek flow'],
+    ['trend', 'french_crop', 'Текстурный френч-кроп', 'Textured French Crop', '3–4', 'cm', 'drop', 'lso', 'Универсальный городской стиль с матовой пудрой', 'Low maintenance French crop for clean masculine silhouette'],
+
+    // 🦁 4. LONG & SPECIAL STYLES (6)
+    ['long', 'samurai_bun', 'Самурайский пучок (Top Knot)', 'Samurai Bun', '18–25', 'cm', 'undercut', 'osr', 'Собранный узел акцентирует сильную челюсть и скулы', 'Elevated top knot framing angular masculine jawline'],
+    ['long', 'low_ponytail', 'Низкий хвост с текстурой', 'Low Ponytail', '20–30', 'cm', 'natural', 'osd', 'Сдержанный аристократичный стиль для длинных волос', 'Refined aristocratic tail highlighting cheekbone structure'],
+    ['long', 'undercut_flow', 'Андеркат с длинным флоу', 'Undercut Flow', '14–18', 'cm', 'undercut', 'hdo', 'Бритые виски снимают лишний объём, оставляя длину', 'Tight undercut reducing side bulk while keeping flow length'],
+    ['long', 'long_layers', 'Длинные каскадные слои', 'Long Layers', '18–24', 'cm', 'scissor', 'ldh', 'Разнодлинные пряди визуально укорачивают вытянутое лицо', 'Layered cascade breaking vertical line on oblong faces'],
+    ['long', 'blowout', 'Объёмный Блоуаут', 'Textured Blowout', '8–11', 'cm', 'taper', 'rot', 'Воздушная укладка феном добавляет роскошного объёма', 'Airy blown-out crown expanding round and narrow frames'],
+    ['long', 'tapered_flow', 'Тейпер Флоу назад', 'Tapered Flow', '11–14', 'cm', 'taper', 'ost', 'Стрижка серфера: волны назад с чистыми контурами', 'Swept surfer flow merging long texture with neat taper'],
+
+    // 📸 5. REAL MODEL PHOTO STYLES (6)
+    ['photo', 'curly_top_photo', 'Кудрявый кроп + фейд (Фото)', 'Curly Top Fade', '5–8', 'cm', 'mid', 'rsh', 'Натуральные кудри на макушке с чистыми висками', 'Real curls on top with mid fade sharpening jawline'],
+    ['photo', 'wavy_shag_photo', 'Текстурный шэг модели (Фото)', 'Model Wavy Shag', '10–13', 'cm', 'scissor', 'dhl', 'Мягкие волны идеальны для сердцевидной формы', 'Gentle wavy contour perfectly framing heart faces'],
+    ['photo', 'caesar_fade_photo', 'Чёткий Цезарь фейд (Фото)', 'Caesar Skin Fade', '2–4', 'cm', 'skin', 'lso', 'Чёткая геометрия чёлки в реальном барбер-стиле', 'Graphic blunt line reducing tall forehead height'],
+    ['photo', 'mullet_photo', 'Шэгги-маллет 2026 (Фото)', 'Modern Shaggy Mullet', '7–10', 'cm', 'taper', 'dos', 'Реальный пример топового уличного маллета', 'Real photo proof of modern textured street mullet'],
+    ['photo', 'side_part_photo', 'Деловой пробор с тейпером (Фото)', 'Gentleman Side Part', '6–9', 'cm', 'taper', 'ort', 'Безупречный вид для офиса и деловых встреч', 'Pristine professional taper parting for oval frames'],
+    ['photo', 'curtains_photo', 'Шторки мидл-парт (Фото)', 'Model Curtain Bangs', '9–12', 'cm', 'scissor', 'odl', 'Фотореалистичные шторки для ромбовидного лица', 'Model center part naturally contouring high cheekbones']
 ];
 
-const CATALOG_ITEMS = CATALOG_RAW.map(([cat, portrait, ruName, enName, top, unit, sides, faceCodes]) => {
-    const name = {}, spec = {}, faces = {};
+const CATALOG_ITEMS = CATALOG_RAW.map(([cat, portrait, ruName, enName, top, unit, sides, faceCodes, ruWhy, enWhy]) => {
+    const name = {}, spec = {}, faces = {}, why = {};
     ['ru', 'kg', 'uz', 'kz', 'en'].forEach(lg => {
-        const lb = CAT_LABELS[lg];
-        name[lg] = lg === 'en' ? enName : (lg === 'uz' ? enName : `${ruName} (${enName})`);
-        spec[lg] = `✂️ ${lb[0]}: ${top} ${unit === 'mm' ? lb[3] : lb[2]} · ${lb[1]}: ${CAT_SIDES[lg][sides]}`;
-        faces[lg] = faceCodes.split('').map(c => CAT_FACE_NAMES[lg][c]).join(', ');
+        const lb = CAT_LABELS[lg] || CAT_LABELS.ru;
+        name[lg] = lg === 'en' ? enName : (lg === 'uz' ? enName : (ruName + ' (' + enName + ')'));
+        spec[lg] = '✂️ ' + lb[0] + ': ' + top + ' ' + (unit === 'mm' ? lb[3] : lb[2]) + ' · ' + lb[1] + ': ' + (CAT_SIDES[lg] ? CAT_SIDES[lg][sides] : CAT_SIDES.ru[sides]);
+        faces[lg] = faceCodes.split('').map(c => (CAT_FACE_NAMES[lg] || CAT_FACE_NAMES.ru)[c]).join(', ');
+        why[lg] = lg === 'en' ? enWhy : ruWhy;
     });
-    return { cat, portrait, name, spec, faces, faceCodes };
+    return { cat, portrait, name, spec, faces, faceCodes, why };
 });
 
 const SHAPE_CODE = { oval: 'o', square: 's', round: 'r', oblong: 'l', heart: 'h', diamond: 'd', triangle: 't' };
 
-let activeCatalogCategory = 'all';
+let activeFaceFilter = 'all';
+let activeCategoryFilter = 'all';
+
+function filterCatalogByFace(faceCode) {
+    activeFaceFilter = faceCode || 'all';
+    document.querySelectorAll('#face-filter-bar .cat-filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-face') === activeFaceFilter);
+    });
+    renderCatalogCards();
+}
+
+function filterCatalogCategory(catKey) {
+    activeCategoryFilter = catKey || 'all';
+    document.querySelectorAll('#cat-filter-bar .cat-filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-cat') === activeCategoryFilter);
+    });
+    renderCatalogCards();
+}
+
+function filterCatalog(param) {
+    // Legacy support: if starts with face code or category
+    if (['all', 'short', 'medium', 'trend', 'long', 'photo'].includes(param)) {
+        filterCatalogCategory(param);
+    } else {
+        filterCatalogByFace(param);
+    }
+}
+
+function openCatalogForMyShape(shapeKey) {
+    const code = SHAPE_CODE[shapeKey] || 'all';
+    openCatalog();
+    filterCatalogByFace(code);
+    filterCatalogCategory('all');
+}
+
+function renderCatalogCards() {
+    const grid = document.getElementById('catalog-grid');
+    if (!grid) return;
+    const lang = i18n[currentLang] ? currentLang : 'ru';
+    const t = i18n[lang] || i18n.ru;
+
+    let items = CATALOG_ITEMS;
+    if (activeFaceFilter && activeFaceFilter !== 'all') {
+        items = items.filter(it => it.faceCodes.includes(activeFaceFilter));
+    }
+    if (activeCategoryFilter && activeCategoryFilter !== 'all') {
+        items = items.filter(it => it.cat === activeCategoryFilter);
+    }
+
+    const countBadge = document.getElementById('cat-count-badge');
+    if (countBadge) {
+        countBadge.innerHTML = 'Найдено стрижек: <b style="color:var(--accent); font-size:0.95rem;">' + items.length + '</b>';
+    }
+
+    grid.innerHTML = '';
+    if (items.length === 0) {
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:40px 20px; color:var(--text-muted); font-size:0.95rem;">Нет стрижек, подходящих под выбранную комбинацию фильтров. Попробуйте выбрать «Все стили».</div>';
+        return;
+    }
+
+    items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'catalog-item-card';
+        const title = item.name[lang] || item.name.ru;
+        const spec = item.spec[lang] || item.spec.ru;
+        const whyText = item.why[lang] || item.why.ru;
+
+        const faceTagsHtml = item.faceCodes.split('').map(c => {
+            const fName = (CAT_FACE_NAMES[lang] || CAT_FACE_NAMES.ru)[c] || c;
+            const fIcon = CAT_FACE_ICONS[c] || '👤';
+            const isMatch = activeFaceFilter === c;
+            return '<span class="face-tag-pill ' + (isMatch ? 'active-tag' : '') + '" onclick="event.stopPropagation(); filterCatalogByFace(\'' + c + '\')" title="Показать стрижки для формы ' + fName + '">' + fIcon + ' ' + fName + '</span>';
+        }).join(' ');
+
+        card.innerHTML = `
+            <div>
+                <div class="style-portrait-wrap" style="height:175px;">
+                    <canvas class="style-portrait-canvas" data-portrait="${item.portrait}"></canvas>
+                </div>
+                <h4 style="font-size:0.98rem; line-height:1.35; margin-bottom:7px; color:var(--text-main); font-weight:700;">${title}</h4>
+                <div style="font-size:0.75rem; color:var(--accent); background:rgba(94,106,210,0.12); border:1px solid rgba(94,106,210,0.26); border-radius:7px; padding:5px 8px; margin-bottom:8px; font-weight:600;">${spec}</div>
+                <div style="font-size:0.75rem; margin-bottom:8px; display:flex; flex-wrap:wrap; gap:4px; align-items:center;">
+                    <span style="color:var(--text-muted); font-weight:600; font-size:0.7rem;">👤 Подходит:</span>
+                    ${faceTagsHtml}
+                </div>
+                <div style="font-size:0.74rem; color:var(--text-muted); line-height:1.45; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:6px; padding:6px 8px; margin-bottom:10px;">
+                    <span style="color:#f59e0b; font-weight:700;">💡 Совет:</span> ${whyText}
+                </div>
+            </div>
+            <a href="index.html" class="btn-book" style="display:flex; align-items:center; justify-content:center; gap:6px; padding:9px 10px; font-size:0.84rem; text-decoration:none; border-radius:8px; background:var(--surface-hover); color:var(--accent); border:1px solid var(--accent); font-weight:700; transition:all 0.2s;">✂️ ${t.find_master}</a>
+        `;
+        grid.appendChild(card);
+    });
+
+    renderAllPortraitCanvases(grid);
+}
+
+function openCatalog() {
+    document.getElementById('catalog-modal').style.display = 'flex';
+    renderCatalogCards();
+}
+function closeCatalog() { document.getElementById('catalog-modal').style.display = 'none'; }
+function showError(msg) { document.getElementById('error-text').innerText = msg; document.getElementById('error-box').style.display = 'block'; }
+function hideError() { document.getElementById('error-box').style.display = 'none'; }
 
 function renderResults(data) {
     document.getElementById('loading-state').style.display = 'none';
@@ -1862,6 +2015,28 @@ function renderResults(data) {
         grid.appendChild(card);
     });
 
+    
+    // Add prominent button below recommendations to open catalog filtered by user's face shape
+    let shapeCta = document.getElementById('shape-catalog-cta');
+    if (!shapeCta) {
+        shapeCta = document.createElement('div');
+        shapeCta.id = 'shape-catalog-cta';
+        shapeCta.style.margin = '20px auto 26px';
+        shapeCta.style.textAlign = 'center';
+        const tipBox = document.querySelector('.tip-box');
+        if (tipBox && tipBox.parentNode) {
+            tipBox.parentNode.insertBefore(shapeCta, tipBox);
+        }
+    }
+    const shapeCode = SHAPE_CODE[shapeKey] || 'o';
+    const matchingCount = CATALOG_ITEMS.filter(it => it.faceCodes.includes(shapeCode)).length;
+    shapeCta.innerHTML = `
+        <button type="button" class="btn-match-shape" onclick="openCatalogForMyShape('${shapeKey}')" style="display:inline-flex; align-items:center; justify-content:center; gap:10px; background:linear-gradient(135deg, rgba(94,106,210,0.28), rgba(245,158,11,0.22)); border:1.5px solid var(--accent); color:#fff; font-family:var(--font-sans); font-size:clamp(0.88rem, 2.5vw, 1rem); font-weight:700; padding:13px 22px; border-radius:12px; cursor:pointer; box-shadow:0 6px 20px rgba(0,0,0,0.35); transition:all 0.25s;">
+            <span style="font-size:1.15rem;">✨</span>
+            <span>Посмотреть все <b>${matchingCount}</b> стрижек для формы «${profile.names[lang] || profile.names.ru}» в каталоге →</span>
+        </button>
+    `;
+
     renderAllPortraitCanvases(grid);
     document.getElementById('tip-text').innerText = profile.tip[lang] || profile.tip.ru;
     document.getElementById('result-section').classList.add('active');
@@ -1891,49 +2066,5 @@ function resetAnalysis() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function filterCatalog(cat) {
-    activeCatalogCategory = cat || 'all';
-    document.querySelectorAll('#cat-filter-bar .cat-filter-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('data-cat') === activeCatalogCategory);
-    });
-    renderCatalogCards(activeCatalogCategory);
-}
-
-function renderCatalogCards(cat) {
-    const grid = document.getElementById('catalog-grid');
-    if (!grid) return;
-    const lang = i18n[currentLang] ? currentLang : 'ru';
-    const t = i18n[lang];
-    const items = (!cat || cat === 'all') ? CATALOG_ITEMS : CATALOG_ITEMS.filter(it => it.cat === cat);
-
-    grid.innerHTML = '';
-    items.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'catalog-item-card';
-        const title = item.name[lang] || item.name.ru;
-        const spec = item.spec[lang] || item.spec.ru;
-        const faces = item.faces[lang] || item.faces.ru;
-        card.innerHTML = `
-            <div>
-                <div class="style-portrait-wrap" style="height:175px;">
-                    <canvas class="style-portrait-canvas" data-portrait="${item.portrait}"></canvas>
-                </div>
-                <h4 style="font-size:0.98rem; line-height:1.35; margin-bottom:7px; color:var(--text-main);">${title}</h4>
-                <div style="font-size:0.75rem; color:var(--accent); background:rgba(94,106,210,0.12); border:1px solid rgba(94,106,210,0.26); border-radius:7px; padding:5px 8px; margin-bottom:7px; font-weight:600;">${spec}</div>
-                <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px;">👤 <b>${t.cat_faces_lbl || 'Форма лица:'}</b> ${faces}</div>
-            </div>
-            <a href="index.html" class="btn-book" style="display:flex; align-items:center; justify-content:center; gap:6px; padding:9px 10px; font-size:0.84rem; text-decoration:none; border-radius:8px; background:var(--surface-hover); color:var(--accent); border:1px solid var(--accent); font-weight:700;">✂️ ${t.find_master}</a>
-        `;
-        grid.appendChild(card);
-    });
-
-    renderAllPortraitCanvases(grid);
-}
-
-function openCatalog() {
-    document.getElementById('catalog-modal').style.display = 'flex';
-    renderCatalogCards(activeCatalogCategory);
-}
-function closeCatalog() { document.getElementById('catalog-modal').style.display = 'none'; }
 function showError(msg) { document.getElementById('error-text').innerText = msg; document.getElementById('error-box').style.display = 'block'; }
 function hideError() { document.getElementById('error-box').style.display = 'none'; }
