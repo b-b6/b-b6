@@ -1400,8 +1400,10 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
         // SERVICES (from before)
         function renderServicesEditor() {
             let html = '';
+            const activeCurr = window.BarberCurrency ? window.BarberCurrency.getActive() : 'KGS';
             store.services.forEach(s => {
                 let dur = s.duration || 60;
+                let sCurr = s.currency || activeCurr || 'KGS';
                 html += `
                 <div class="admin-card" style="margin-bottom: 20px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
@@ -1409,12 +1411,23 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                         <button class="btn-danger" style="width: auto; padding: 6px 12px; font-size: 0.8rem;" onclick="deleteService('${s.id}')">Удалить</button>
                     </div>
                     <div style="display: flex; gap: 15px; margin-bottom: 15px; align-items: flex-end; flex-wrap: wrap;">
-                        <div class="form-group" style="margin:0; flex: 2; min-width: 250px;"><label>Название на сайт (RU)</label><input type="text" id="title_ru_${s.id}" class="form-control" value="${s.strings.ru.title}"></div>
-                        <div class="form-group" style="margin:0; flex: 1; min-width: 150px;"><label>Цена (${adminCurrSym()})</label><input type="number" id="price_${s.id}" class="form-control" value="${window.BarberCurrency ? window.BarberCurrency.convert(s.price, s.currency || 'KGS') : s.price}"></div>
-                        <div class="form-group" style="margin:0; flex: 1; min-width: 150px;">
+                        <div class="form-group" style="margin:0; flex: 2; min-width: 220px;"><label>Название на сайт (RU)</label><input type="text" id="title_ru_${s.id}" class="form-control" value="${s.strings.ru.title}"></div>
+                        <div class="form-group" style="margin:0; flex: 1; min-width: 120px;"><label>Цена</label><input type="number" id="price_${s.id}" class="form-control" value="${s.price}"></div>
+                        <div class="form-group" style="margin:0; flex: 1; min-width: 130px;">
+                            <label>Валюта</label>
+                            <select id="curr_${s.id}" class="form-control" style="appearance:auto; font-weight:700;">
+                                <option value="KGS" ${sCurr==='KGS'?'selected':''}>🇰🇬 сом (KGS)</option>
+                                <option value="RUB" ${sCurr==='RUB'?'selected':''}>🇷🇺 руб (RUB)</option>
+                                <option value="UZS" ${sCurr==='UZS'?'selected':''}>🇺🇿 сум (UZS)</option>
+                                <option value="KZT" ${sCurr==='KZT'?'selected':''}>🇰🇿 ₸ (KZT)</option>
+                                <option value="USD" ${sCurr==='USD'?'selected':''}>🇺🇸 $ (USD)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin:0; flex: 1; min-width: 130px;">
                             <label>Длительность (мин)</label>
                             <select id="duration_${s.id}" class="form-control" style="appearance:auto;">
                                 <option value="30" ${dur==30?'selected':''}>30 мин</option>
+                                <option value="45" ${dur==45?'selected':''}>45 мин</option>
                                 <option value="60" ${dur==60?'selected':''}>1 час</option>
                                 <option value="90" ${dur==90?'selected':''}>1.5 часа</option>
                                 <option value="120" ${dur==120?'selected':''}>2 часа</option>
@@ -1497,7 +1510,8 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             let s = store.services.find(x => x.id === id);
             if(s) {
                 s.price = parseFloat(document.getElementById(`price_${id}`).value) || 0;
-                s.currency = window.BarberCurrency ? window.BarberCurrency.getActive() : 'KGS';
+                const currEl = document.getElementById(`curr_${id}`);
+                s.currency = currEl ? currEl.value : (window.BarberCurrency ? window.BarberCurrency.getActive() : 'KGS');
                 s.duration = parseInt(document.getElementById(`duration_${id}`).value);
 
                 let curTitle = document.getElementById(`title_ru_${id}`).value;

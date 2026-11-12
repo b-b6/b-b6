@@ -552,23 +552,32 @@ window.renderSoloServices = async function () {
     }
     const services = soloServicesCache;
 
-    const sym = window.BarberCurrency ? window.BarberCurrency.symbol() : 'сом';
-    const newPriceInput = document.getElementById('new-srv-price');
-    if (newPriceInput) newPriceInput.placeholder = `Цена (${sym})`;
+    const activeCurr = window.BarberCurrency ? window.BarberCurrency.getActive() : 'KGS';
+    const currSelectEl = document.getElementById('new-srv-curr');
+    if (currSelectEl && !currSelectEl.dataset.userChanged) {
+        currSelectEl.value = activeCurr;
+    }
 
     listEl.innerHTML = services.map(s => {
         const title = s.name || (s.strings && s.strings.ru ? s.strings.ru.title : 'Услуга');
-        const convPrice = window.BarberCurrency ? window.BarberCurrency.convert(s.price || 500, s.currency || 'KGS') : (s.price || 500);
+        const sCurr = s.currency || activeCurr || 'KGS';
+        const priceVal = s.price || 0;
         return `
-        <div class="service-item">
-            <div>
+        <div class="service-item" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 140px;">
                 <div style="font-size: 14.5px; font-weight: 800; color: var(--text-main);">${title}</div>
-                <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;">⏱ ${s.duration || 45} мин</div>
+                <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 2px;">⏱ ${s.duration || 45} мин</div>
             </div>
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <input type="number" class="form-input" style="width: 95px; padding: 7px 10px; text-align: right; color: var(--gold); font-weight: 800;" value="${convPrice}" onchange="updateSoloServicePrice('${s.id}', this.value)">
-                <span style="font-size: 12px; color: var(--text-muted); font-weight: 700;">${sym}</span>
-                <button class="btn-outline" style="padding: 7px 10px; color: #f87171;" onclick="deleteSoloService('${s.id}')">🗑</button>
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <input type="number" class="form-input" style="width: 85px; padding: 7px 8px; text-align: right; color: var(--gold); font-weight: 800;" value="${priceVal}" onchange="updateSoloServicePrice('${s.id}', this.value)">
+                <select class="form-input" style="width: 90px; padding: 7px 4px; font-size: 12px; font-weight: 700; cursor: pointer; color: var(--gold); border-color: rgba(212,175,55,0.35);" onchange="updateSoloServiceCurrency('${s.id}', this.value)">
+                    <option value="KGS" ${sCurr === 'KGS' ? 'selected' : ''}>🇰🇬 сом</option>
+                    <option value="RUB" ${sCurr === 'RUB' ? 'selected' : ''}>🇷🇺 руб</option>
+                    <option value="UZS" ${sCurr === 'UZS' ? 'selected' : ''}>🇺🇿 сум</option>
+                    <option value="KZT" ${sCurr === 'KZT' ? 'selected' : ''}>🇰🇿 ₸</option>
+                    <option value="USD" ${sCurr === 'USD' ? 'selected' : ''}>🇺🇸 $</option>
+                </select>
+                <button class="btn-outline" style="padding: 7px 10px; color: #f87171;" onclick="deleteSoloService('${s.id}')" title="Удалить услугу">🗑</button>
             </div>
         </div>
     `;}).join('');
@@ -577,13 +586,15 @@ window.renderSoloServices = async function () {
 window.addSoloService = async function () {
     const nameEl = document.getElementById('new-srv-name');
     const priceEl = document.getElementById('new-srv-price');
+    const currEl = document.getElementById('new-srv-curr');
     const durEl = document.getElementById('new-srv-dur');
 
     const name = nameEl.value.trim();
     const price = Number(priceEl.value);
+    const currency = (currEl && currEl.value) || (window.BarberCurrency ? window.BarberCurrency.getActive() : 'KGS');
     const duration = Number(durEl.value) || 45;
 
-    if (!name || !price) {
+    if (!name || isNaN(price) || price < 0) {
         alert('Укажите название услуги и цену');
         return;
     }
@@ -593,6 +604,7 @@ window.addSoloService = async function () {
         id: 'srv_' + Date.now(),
         name,
         price,
+        currency,
         duration,
         icon: '✂️',
         strings: {
@@ -611,7 +623,17 @@ window.updateSoloServicePrice = async function (id, newPrice) {
     const item = services.find(s => String(s.id) === String(id));
     if (item) {
         item.price = Number(newPrice) || 0;
-        item.currency = window.BarberCurrency ? window.BarberCurrency.getActive() : 'KGS';
+        await window.appDB.saveServices(services);
+        soloServicesCache = services;
+        renderSoloSchedule();
+    }
+};
+
+window.updateSoloServiceCurrency = async function (id, newCurr) {
+    const services = (await window.appDB.getServices()) || [];
+    const item = services.find(s => String(s.id) === String(id));
+    if (item) {
+        item.currency = newCurr;
         await window.appDB.saveServices(services);
         soloServicesCache = services;
         renderSoloSchedule();

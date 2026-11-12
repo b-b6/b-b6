@@ -718,10 +718,19 @@
                     <h2>💈 Мои услуги и цены</h2>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 110px 90px; gap: 8px; margin-bottom: 14px;">
-                    <input type="text" id="new-srv-name" class="form-input" placeholder="Название услуги">
-                    <input type="number" id="new-srv-price" class="form-input" placeholder="Цена (с)">
-                    <input type="number" id="new-srv-dur" class="form-input" placeholder="Мин" value="45">
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;">
+                    <input type="text" id="new-srv-name" class="form-input" placeholder="Название услуги (напр. Стрижка + Борода)">
+                    <div style="display: grid; grid-template-columns: 1fr 140px 85px; gap: 8px;">
+                        <input type="number" id="new-srv-price" class="form-input" placeholder="Цена">
+                        <select id="new-srv-curr" class="form-input" style="font-weight: 700; cursor: pointer; background: var(--bg-card); color: var(--gold); border-color: rgba(212,175,55,0.4);">
+                            <option value="KGS">🇰🇬 KGS (сом)</option>
+                            <option value="RUB">🇷🇺 RUB (руб)</option>
+                            <option value="UZS">🇺🇿 UZS (сум)</option>
+                            <option value="KZT">🇰🇿 KZT (₸)</option>
+                            <option value="USD">🇺🇸 USD ($)</option>
+                        </select>
+                        <input type="number" id="new-srv-dur" class="form-input" placeholder="Мин" value="45" title="Длительность (минут)">
+                    </div>
                 </div>
                 <button class="btn-gold" style="width: 100%; margin-bottom: 16px;" onclick="addSoloService()">
                     + Добавить услугу в мой прайс
