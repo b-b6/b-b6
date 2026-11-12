@@ -337,11 +337,18 @@ window.renderSoloSchedule = function () {
     const bookings = getSoloBookingsForDate(dateStr);
 
     // Update personal stats & commission auto-calculation
+    const activeCurr = window.BarberCurrency ? window.BarberCurrency.getActive() : 'KGS';
     const completedOrActive = bookings.filter(b => b.status !== 'cancelled');
     const completedCount = bookings.filter(b => b.status === 'completed').length;
-    const grossSum = completedOrActive.reduce((acc, b) => acc + (Number(b.price) || 0), 0);
+    const convertSoloPrice = (val, fromCurr, toCurr) => {
+        const num = Number(val) || 0;
+        if (!num || !window.BarberCurrency) return num;
+        return window.BarberCurrency.convert(num, fromCurr || 'KGS', toCurr || activeCurr);
+    };
+    const grossSum = completedOrActive.reduce((acc, b) => acc + convertSoloPrice(b.price, b.currency, activeCurr), 0);
     const pct = Number(soloProfile.commissionPct) || 60;
-    const netEarnings = Math.round(grossSum * (pct / 100));
+    const rawNet = grossSum * (pct / 100);
+    const netEarnings = activeCurr === 'USD' ? Math.round(rawNet * 100) / 100 : Math.round(rawNet);
 
     const statCountEl = document.getElementById('stat-today-count');
     const statCompEl = document.getElementById('stat-completed-count');
@@ -353,9 +360,9 @@ window.renderSoloSchedule = function () {
 
     if (statCountEl) statCountEl.textContent = String(completedOrActive.length);
     if (statCompEl) statCompEl.textContent = `${completedCount} завершено`;
-    if (statGrossEl) statGrossEl.textContent = fmtSolo(grossSum, 'KGS', true);
+    if (statGrossEl) statGrossEl.textContent = fmtSolo(grossSum, activeCurr, true);
     if (statPctEl) statPctEl.textContent = String(pct);
-    if (statNetEl) statNetEl.textContent = fmtSolo(netEarnings, 'KGS', true);
+    if (statNetEl) statNetEl.textContent = fmtSolo(netEarnings, activeCurr, true);
 
     // Build 1-column slots from workStart to workEnd using BookingLogic (with 30-min granularity and night shift support)
     const rawSlots = (window.BookingLogic && window.BookingLogic.buildRawAvailableTimes)
@@ -408,7 +415,8 @@ window.renderSoloSchedule = function () {
             const clientPhone = booking.phone || booking.clientPhone || '—';
             const serviceName = booking.service || booking.serviceName || 'Стрижка';
             const cleanPhone = clientPhone.replace(/[^0-9]/g, '');
-            const masterCut = Math.round((Number(booking.price) || 0) * (pct / 100));
+            const masterCutRaw = (Number(booking.price) || 0) * (pct / 100);
+            const masterCut = (booking.currency === 'USD') ? Math.round(masterCutRaw * 100) / 100 : Math.round(masterCutRaw);
             return `
                 <div class="slot-row ${isDone ? 'completed' : 'booked'}">
                     <div class="slot-time">${timeStr}</div>
@@ -522,6 +530,7 @@ window.saveManualSoloBooking = async function () {
         date: dateVal,
         time: timeVal,
         price: Number(srv.price) || 600,
+        currency: srv.currency || (window.BarberCurrency ? window.BarberCurrency.getActive() : 'KGS'),
         duration: Number(srv.duration) || 45,
         status: 'confirmed'
     };

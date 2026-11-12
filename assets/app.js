@@ -743,7 +743,7 @@ const i18n = {
                 if (String(bookingData.serviceKey) === String(s.id)) card.classList.add('selected');
                 let durText = (s.duration || 45) + " мин";
                 card.onclick = () => {
-                    bookingData.serviceKey = s.id; bookingData.price = s.price; bookingData.serviceRuName = t.ruTitle; bookingData.duration = s.duration || 45;
+                    bookingData.serviceKey = s.id; bookingData.price = s.price; bookingData.currency = s.currency || (getSettings().currency) || 'KGS'; bookingData.serviceRuName = t.ruTitle; bookingData.duration = s.duration || 45;
                     bookingData.time = null; // Сбрасываем выбранный слот времени при смене услуги
                     document.querySelectorAll('#step-1 .service-card').forEach(c => c.classList.remove('selected')); card.classList.add('selected');
                     document.getElementById('btn-next-1').disabled = false;
@@ -1231,6 +1231,7 @@ const i18n = {
             let dbEntry = {
                 id: bookingData.id, masterId: bookingData.masterId, masterName: bookingData.masterName,
                 service: bookingData.serviceRuName, serviceKey: bookingData.serviceKey, price: bookingData.price,
+                currency: bookingData.currency || (getSettings().currency) || 'KGS',
                 date: bookingData.date, time: bookingData.time, name: bookingData.name, phone: bookingData.phone, timestamp: bookingData.timestamp,
                 authUid: bookingData.authUid || null, authType: bookingData.authType || 'guest',
                 telegramChatId: (window.telegramUser && window.telegramUser.id) ? window.telegramUser.id : null,

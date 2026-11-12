@@ -166,6 +166,14 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             return window.BarberCurrency ? window.BarberCurrency.format(amount, base) : (amount + ' сом');
         }
 
+        function toAdminBaseAmount(amount, baseCurr) {
+            const num = parseFloat(amount || 0) || 0;
+            if (!num) return 0;
+            const storeBase = (store.settings && store.settings.currency) || 'KGS';
+            const from = baseCurr || storeBase;
+            return window.BarberCurrency ? window.BarberCurrency.convert(num, from, storeBase) : num;
+        }
+
         function adminCurrSym(short) {
             return window.BarberCurrency ? window.BarberCurrency.symbol(short) : (short ? 'с' : 'сом');
         }
@@ -383,8 +391,9 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                         if(b.date === today) todayCnt++; 
                     }
                     if (isCompleted) {
-                        tRev += parseInt(b.price || 0);
-                        if(b.date === today) todayRev += parseInt(b.price || 0);
+                        const revVal = toAdminBaseAmount(b.price, b.currency);
+                        tRev += revVal;
+                        if(b.date === today) todayRev += revVal;
                     }
                     
                     let groupBadge = (b.isGroupBooking || isPendingConf)
@@ -1468,6 +1477,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             let newS = {
                 id: sId,
                 price: 1000,
+                currency: window.BarberCurrency ? window.BarberCurrency.getActive() : ((store.settings && store.settings.currency) || 'KGS'),
                 duration: 60,
                 strings: {
                     ru: { title: "Новая Услуга", desc: "" },
@@ -1500,7 +1510,6 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             showCustomConfirm('Удалить эту услугу навсегда?', async () => {
                 store.services = store.services.filter(s => s.id !== id);
                 await window.appDB.saveServices(store.services);
-                renderServicesList(store.services);
                 renderManualOptions(store.services, store.masters);
                 renderServicesEditor();
             });
@@ -1533,6 +1542,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                 }
 
                 await window.appDB.saveServices(store.services);
+                renderManualOptions(store.services, store.masters);
                 alert('✅ Сохранено!');
                 
                 // Re-render to update the header title of the card if it was RU
@@ -1714,7 +1724,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                 
                 clients[p].visits++;
                 if (st === 'completed') {
-                    clients[p].revenue += parseInt(b.price || 0);
+                    clients[p].revenue += toAdminBaseAmount(b.price, b.currency);
                 }
                 
                 if (b.date > clients[p].lastVisit) clients[p].lastVisit = b.date;
@@ -1764,11 +1774,12 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             let todayObj = new Date();
             let labels7Days = [];
             let data7Days = [];
+            const storeBase = (store.settings && store.settings.currency) || 'KGS';
             for (let i=6; i>=0; i--) {
                 let d = new Date(todayObj); d.setDate(d.getDate() - i);
                 let iso = d.toISOString().split('T')[0];
                 labels7Days.push(d.toLocaleDateString('ru-RU', {day:'numeric', month:'short'}));
-                let dayRev = bookings.filter(b => b.date === iso && b.status === 'completed').reduce((sum, b) => sum + parseInt(b.price || 0), 0);
+                let dayRev = bookings.filter(b => b.date === iso && b.status === 'completed').reduce((sum, b) => sum + toAdminBaseAmount(b.price, b.currency), 0);
                 data7Days.push(dayRev);
             }
 
@@ -1776,7 +1787,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             let ctxRev = document.getElementById('revenueChart').getContext('2d');
             revenueChartInstance = new Chart(ctxRev, {
                 type: 'bar',
-                data: { labels: labels7Days, datasets: [{ label: 'Доход Завершено (' + adminCurrSym() + ')', data: data7Days.map(v => window.BarberCurrency ? window.BarberCurrency.convert(v, 'KGS') : v), backgroundColor: '#111827', borderRadius: 6 }] },
+                data: { labels: labels7Days, datasets: [{ label: 'Доход Завершено (' + adminCurrSym() + ')', data: data7Days.map(v => window.BarberCurrency ? window.BarberCurrency.convert(v, storeBase) : v), backgroundColor: '#111827', borderRadius: 6 }] },
                 options: { responsive: true, scales: { y: { beginAtZero: true, grid: { color: '#e5e7eb' } }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
             });
 
@@ -1786,7 +1797,8 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                 if (b.status !== 'completed') return; // Только завершенные стрижки!
                 let m = b.masterName === 'any' ? 'Без мастера' : (b.masterName || 'Удаленный мастер');
                 if(!mastersRev[m]) mastersRev[m] = 0;
-                mastersRev[m] += parseInt(b.price || 0);
+                const val = window.BarberCurrency ? window.BarberCurrency.convert(parseFloat(b.price || 0) || 0, b.currency || storeBase) : (parseFloat(b.price || 0) || 0);
+                mastersRev[m] += val;
             });
             let mLabels = Object.keys(mastersRev);
             let mData = Object.values(mastersRev);
@@ -1946,7 +1958,14 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             const sell = parseInt(document.getElementById('add_prod_sell').value) || 0;
             const cnt = parseInt(document.getElementById('add_prod_cnt').value) || 0;
             if (!name) return alert('Введите название товара!');
-            const newP = { id: 'p_' + Date.now(), name, buyPrice: buy, sellPrice: sell, count: cnt };
+            const newP = {
+                id: 'p_' + Date.now(),
+                name,
+                buyPrice: buy,
+                sellPrice: sell,
+                currency: window.BarberCurrency ? window.BarberCurrency.getActive() : ((store.settings && store.settings.currency) || 'KGS'),
+                count: cnt
+            };
             store.products.push(newP);
             await window.appDB.saveProducts(store.products);
             document.getElementById('add_prod_name').value = '';
@@ -1975,7 +1994,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             bookings.filter(b => b.status === 'completed').forEach(b => {
                 let mId = (b.masterId === 'any' || !b.masterId) ? 'any' : b.masterId;
                 if(mId !== 'any' && mRev[mId]) {
-                    let val = parseInt(b.price || 0);
+                    let val = toAdminBaseAmount(b.price, b.currency);
                     mRev[mId].total += val;
                     let share = masters.find(m => m.id === mId).share || 50;
                     mRev[mId].salary += val * (share / 100);
@@ -2275,6 +2294,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             let srv = store.services.find(s => s.id === servId);
             let srvName = srv ? srv.strings.ru.title : '';
             let srvPrice = srv ? srv.price : 0;
+            let srvCurrency = (srv && srv.currency) || (store.settings && store.settings.currency) || 'KGS';
             
             let mObj = store.masters.find(m => m.id === mastId);
             let mName = mObj ? mObj.name : 'Любой';
@@ -2288,6 +2308,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                 serviceKey: servId,
                 service: srvName,
                 price: srvPrice,
+                currency: srvCurrency,
                 masterId: mastId,
                 masterName: mName,
                 status: 'pending',
