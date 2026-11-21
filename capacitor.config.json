@@ -4,10 +4,10 @@
   "webDir": ".",
   "bundledWebRuntime": false,
   "server": {
-    "url": "https://b-b6.github.io/b-b6/app.html",
+    "url": "https://barbersmaps.netlify.app/app.html",
     "cleartext": true,
     "allowNavigation": [
-      "b-b6.github.io",
+      "barbersmaps.netlify.app",
       "*.2gis.com",
       "*.google.com",
       "*.googleapis.com"

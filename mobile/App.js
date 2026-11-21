@@ -16,7 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Linking from 'expo-linking';
 import * as Notifications from 'expo-notifications';
 
-const BASE_WEB_URL = 'https://b-b6.github.io/b-b6';
+const BASE_WEB_URL = 'https://barbersmaps.netlify.app';
 const SESSION_STORAGE_KEY = 'barber_saas_active_session_v1';
 const DEFERRED_DEEPLINK_KEY = 'barber_saas_deferred_deeplink_v1';
 

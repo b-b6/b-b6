@@ -1,0 +1,8 @@
+[build]
+  command = "bash scripts/build-web.sh"
+  publish = "dist"
+
+[[headers]]
+  for = "/.well-known/apple-app-site-association"
+  [headers.values]
+    Content-Type = "application/json"
