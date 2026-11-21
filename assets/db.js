@@ -167,7 +167,7 @@ class BarberDB {
                 const docRef = this.fsTools.doc(this.fs, `tenants/${this.tenantId}/data/${type}`);
                 const snap = await Promise.race([
                     this.fsTools.getDoc(docRef),
-                    new Promise((_, rej) => setTimeout(() => rej(new Error('Read timeout')), 1500))
+                    new Promise((_, rej) => setTimeout(() => rej(new Error('Read timeout')), 5000))
                 ]);
                 if (snap.exists()) {
                     const data = snap.data().items || fallback;

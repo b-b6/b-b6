@@ -349,11 +349,11 @@ body.dragging .map-ctrls{transition:opacity .2s}
 <!-- Scripts -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-<script src="barbershops_kg.js"></script>
-<script src="barbershops_uz.js"></script>
-<script src="barbershops_kz.js"></script>
-<script src="assets/db.js?v=10"></script>
-<script src="assets/mobile-bridge.js?v=12"></script>
+<script src="barbershops_kg.js?v=14"></script>
+<script src="barbershops_uz.js?v=14"></script>
+<script src="barbershops_kz.js?v=14"></script>
+<script src="assets/db.js?v=14"></script>
+<script src="assets/mobile-bridge.js?v=14"></script>
 
 <script>
 (() => {
@@ -548,10 +548,18 @@ body.dragging .map-ctrls{transition:opacity .2s}
     if (window.BarberMobileBridge && window.BarberMobileBridge.getCustomLocationsLocal) {
       try {
         const customLocs = window.BarberMobileBridge.getCustomLocationsLocal() || {};
-        Object.keys(customLocs).forEach(tenantId => {
-          const item = customLocs[tenantId];
+        const globalTenants = JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
+        Object.keys(customLocs).forEach(locKey => {
+          const item = customLocs[locKey];
           if (item && isFinite(item.lat) && isFinite(item.lon)) {
-            const idx = rawCatalog.findIndex(b => String(b.id) === String(tenantId));
+            let idx = rawCatalog.findIndex(b => String(b.id) === String(locKey));
+            if (idx < 0 && item.tenantId) {
+              const boundT = Array.isArray(globalTenants) ? globalTenants.find(t => String(t.id) === String(item.tenantId)) : null;
+              idx = rawCatalog.findIndex(b =>
+                (b.tenantId && String(b.tenantId) === String(item.tenantId)) ||
+                (boundT && boundT.catalogId && String(b.id) === String(boundT.catalogId))
+              );
+            }
             if (idx >= 0) {
               rawCatalog[idx] = {
                 ...rawCatalog[idx],
@@ -561,7 +569,10 @@ body.dragging .map-ctrls{transition:opacity .2s}
                 address: item.address || rawCatalog[idx].address,
                 city: item.city || rawCatalog[idx].city,
                 phone: item.phone || rawCatalog[idx].phone || '',
-                avatar: item.avatar || rawCatalog[idx].avatar || ''
+                avatar: item.avatar || rawCatalog[idx].avatar || '',
+                spec: item.spec || rawCatalog[idx].spec || '',
+                isSolo: rawCatalog[idx].isSolo || Boolean(item.isSolo),
+                tenantId: rawCatalog[idx].tenantId || item.tenantId || ''
               };
             } else {
               rawCatalog.unshift({

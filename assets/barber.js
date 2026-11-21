@@ -189,6 +189,9 @@ async function loadSoloStateFromDB(masterRecord) {
             colorInput.value = settings.design.accentColor;
         }
 
+        if (window.BarberMobileBridge && window.BarberMobileBridge.syncRemoteLocationsToMap) {
+            await window.BarberMobileBridge.syncRemoteLocationsToMap().catch(() => {});
+        }
         populateSoloMapInputs(settings);
     } catch (e) {
         console.warn('loadSoloStateFromDB error:', e);
@@ -1612,7 +1615,23 @@ window.saveSoloDesign = async function () {
 let soloLocMap = null;
 let soloLocMarker = null;
 
+function getBoundCatalogPointForSolo() {
+    const tid = (window.appDB && window.appDB.tenantId) ? String(window.appDB.tenantId) : '';
+    const catalog = Array.isArray(window.BARBERSHOPS_DATA) ? window.BARBERSHOPS_DATA : [];
+    try {
+        const tenants = JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
+        const myT = Array.isArray(tenants) ? tenants.find(t => String(t.id) === tid) : null;
+        if (myT && myT.catalogId) {
+            const byCat = catalog.find(b => String(b.id) === String(myT.catalogId));
+            if (byCat) return byCat;
+        }
+    } catch (e) {}
+    return catalog.find(b => b.tenantId && String(b.tenantId) === tid) || null;
+}
+
 function getSoloLocationId() {
+    const bound = getBoundCatalogPointForSolo();
+    if (bound && bound.id) return String(bound.id);
     const tid = (window.appDB && window.appDB.tenantId) ? String(window.appDB.tenantId) : '1';
     return 'solo_' + tid.replace(/^solo_/, '');
 }
@@ -1634,13 +1653,17 @@ function populateSoloMapInputs(settings) {
     const customLocs = (window.BarberMobileBridge && window.BarberMobileBridge.getCustomLocationsLocal)
         ? (window.BarberMobileBridge.getCustomLocationsLocal() || {})
         : {};
-    const savedLoc = customLocs[getSoloLocationId()] || {};
+    const tid = (window.appDB && window.appDB.tenantId) ? String(window.appDB.tenantId) : '1';
+    const boundShop = getBoundCatalogPointForSolo();
+    const savedLoc = customLocs[getSoloLocationId()] || customLocs['solo_' + tid] || {};
 
-    const latVal = parseFloat(st.lat || savedLoc.lat);
-    const lonVal = parseFloat(st.lon || savedLoc.lon);
+    const latVal = parseFloat(st.lat || savedLoc.lat || (boundShop && boundShop.lat));
+    const lonVal = parseFloat(st.lon || savedLoc.lon || (boundShop && boundShop.lon));
     const initLat = isFinite(latVal) ? latVal : 42.8746;
     const initLon = isFinite(lonVal) ? lonVal : 74.5698;
-    const isVisible = Boolean(st.soloMapVisible && isFinite(latVal) && isFinite(lonVal));
+    const isVisible = st.soloMapVisible !== undefined
+        ? Boolean(st.soloMapVisible && isFinite(latVal) && isFinite(lonVal))
+        : Boolean((savedLoc.lat || boundShop) && isFinite(latVal) && isFinite(lonVal));
 
     const latInp = document.getElementById('solo-pin-lat');
     const lonInp = document.getElementById('solo-pin-lon');
@@ -1650,8 +1673,8 @@ function populateSoloMapInputs(settings) {
 
     if (latInp) latInp.value = initLat.toFixed(6);
     if (lonInp) lonInp.value = initLon.toFixed(6);
-    if (cityInp) cityInp.value = st.city || savedLoc.city || 'Бишкек';
-    if (addrInp) addrInp.value = st.address || savedLoc.address || '';
+    if (cityInp) cityInp.value = st.city || savedLoc.city || (boundShop && boundShop.city) || 'Бишкек';
+    if (addrInp) addrInp.value = st.address || savedLoc.address || (boundShop && boundShop.address) || '';
     if (visCheck) visCheck.checked = isVisible;
     syncSoloMapStatusPill(isVisible);
 }
@@ -1706,10 +1729,14 @@ window.initSoloLocationMap = function () {
     }
 };
 
-window.panSoloMapCity = function (city, lat, lon) {
+window.panSoloMapCity = function (city, lat, lon, addrPrefix) {
     const cityInp = document.getElementById('solo-pin-city');
     if (cityInp) cityInp.value = city;
-    setSoloMarkerCoords(lat, lon, 13);
+    if (addrPrefix) {
+        const addrInp = document.getElementById('solo-pin-address');
+        if (addrInp && !addrInp.value.trim()) addrInp.value = addrPrefix;
+    }
+    setSoloMarkerCoords(lat, lon, 14);
 };
 
 window.updateSoloPinFromInputs = function () {
@@ -1841,6 +1868,12 @@ window.saveSoloLocationCoordinates = async function (btnEl) {
             await window.appDB.saveSettings(st);
         }
         await publishSoloMapPin(st);
+        // Clean up any stale legacy solo_<id> pin if this master is bound to a catalog point ID
+        const locId = getSoloLocationId();
+        const tidStr = String((window.appDB && window.appDB.tenantId) || '').replace(/^solo_/, '');
+        if (tidStr && locId !== ('solo_' + tidStr) && window.BarberMobileBridge && window.BarberMobileBridge.deleteBarbershopLocation) {
+            await window.BarberMobileBridge.deleteBarbershopLocation('solo_' + tidStr);
+        }
         syncSoloMapStatusPill(true);
 
         if (window.BarberMobileBridge && window.BarberMobileBridge.vibrate) {

@@ -10,11 +10,11 @@
     <link rel="apple-touch-icon" href="assets/pwa-icon-192.png">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/pwa-icon-192.png">
     <title>BarberMap KG — Super Admin</title>
-    <script src="barbershops_kg.js"></script>
-    <script src="barbershops_uz.js"></script>
-    <script src="barbershops_kz.js"></script>
-    <script src="assets/db.js?v=9"></script>
-    <script src="assets/mobile-bridge.js?v=9"></script>
+    <script src="barbershops_kg.js?v=14"></script>
+    <script src="barbershops_uz.js?v=14"></script>
+    <script src="barbershops_kz.js?v=14"></script>
+    <script src="assets/db.js?v=14"></script>
+    <script src="assets/mobile-bridge.js?v=14"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
@@ -539,7 +539,7 @@
         </div>
     </div>
 
-    <script src="assets/super_admin.js?v=10"></script>
+    <script src="assets/super_admin.js?v=14"></script>
     <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
@@ -691,6 +691,7 @@
                 boundsArr.push([lat, lon]);
 
                 const boundTenant = (window.tenants || []).find(t =>
+                    (b.tenantId && String(t.id) === String(b.tenantId)) ||
                     (t.catalogId && String(t.catalogId) === String(b.id)) ||
                     (String(t.id) === String(b.id)) ||
                     (t.shopName && b.name && t.shopName.toLowerCase() === b.name.toLowerCase())
@@ -776,6 +777,7 @@
                 const safeName = String(b.name || '').replace(/'/g, '');
                 const letter = (String(b.name || 'Б').trim().match(/[A-Za-zА-Яа-яЁё0-9]/) || ['Б'])[0].toUpperCase();
                 const boundTenant = (window.tenants || []).find(t =>
+                    (b.tenantId && String(t.id) === String(b.tenantId)) ||
                     (t.catalogId && String(t.catalogId) === String(b.id)) ||
                     (String(t.id) === String(b.id)) ||
                     (t.shopName && b.name && t.shopName.toLowerCase() === b.name.toLowerCase())

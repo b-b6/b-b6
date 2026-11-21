@@ -158,6 +158,9 @@
                     await window.appDB.saveGlobalTenants(tenants);
                 }
                 window.tenants = tenants;
+                if (window.BarberMobileBridge && window.BarberMobileBridge.syncRemoteLocationsToMap) {
+                    await window.BarberMobileBridge.syncRemoteLocationsToMap();
+                }
             } else {
                 document.getElementById('ai-key').value = localStorage.getItem('openrouter_api_key') || '';
                 console.warn("DB not ready");
@@ -681,6 +684,7 @@
                         cur.phone = cur.phone || catShop.phone || email || '';
                         cur.lat = catShop.lat;
                         cur.lon = catShop.lon != null ? catShop.lon : catShop.lng;
+                        if (role === 'master') cur.soloMapVisible = true;
                     }
                 } else if (!isNaN(customLat) && !isNaN(customLon)) {
                     cur.city = cur.city || 'Бишкек';
