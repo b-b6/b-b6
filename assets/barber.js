@@ -128,6 +128,8 @@ async function loadSoloStateFromDB(masterRecord) {
             id: primaryMaster.id || 1,
             name: settings.soloMasterName || (primaryMaster.name && primaryMaster.name !== 'Мастер' ? primaryMaster.name : defaultName),
             spec: settings.soloMasterSpec || (primaryMaster.spec && primaryMaster.spec !== 'Барбер' ? primaryMaster.spec : 'Fade • Борода • Классика'),
+            photo: settings.soloMasterPhoto || primaryMaster.photo || '',
+            mapAvatar: settings.soloMapAvatar || '',
             active: settings.soloMasterActive !== undefined ? Boolean(settings.soloMasterActive) : true,
             workDays: Array.isArray(settings.soloWorkDays) ? settings.soloWorkDays : ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'],
             workStart: settings.soloWorkStart || settings.workStart || settings.openTime || '10:00',
@@ -154,6 +156,8 @@ async function loadSoloStateFromDB(masterRecord) {
                 soloMode: true,
                 soloMasterName: soloProfile.name,
                 soloMasterSpec: soloProfile.spec,
+                soloMasterPhoto: soloProfile.photo || settings.soloMasterPhoto || '',
+                soloMapAvatar: soloProfile.mapAvatar || settings.soloMapAvatar || '',
                 soloMasterActive: soloProfile.active,
                 soloWorkDays: soloProfile.workDays,
                 workingDays: mapWorkDaysToNumbers(soloProfile.workDays),
@@ -194,11 +198,44 @@ async function loadSoloStateFromDB(masterRecord) {
 function renderSoloHeader() {
     const titleEl = document.getElementById('master-display-name');
     const avatarEl = document.getElementById('master-avatar-letter');
+    const avatarImg = document.getElementById('master-avatar-img');
+    const prevLetter = document.getElementById('solo-photo-preview-letter');
+    const prevImg = document.getElementById('solo-photo-preview-img');
+    const rmBtn = document.getElementById('solo-photo-remove-btn');
     const statusBtn = document.getElementById('status-toggle-btn');
     const statusText = document.getElementById('status-toggle-text');
 
+    const letter = (soloProfile.name || 'М').trim().charAt(0).toUpperCase() || 'М';
+    const photo = soloProfile.photo || '';
+
     if (titleEl) titleEl.textContent = soloProfile.name;
-    if (avatarEl) avatarEl.textContent = (soloProfile.name || 'М').charAt(0).toUpperCase();
+    if (avatarEl) {
+        avatarEl.textContent = letter;
+        avatarEl.style.display = photo ? 'none' : '';
+    }
+    if (avatarImg) {
+        if (photo) {
+            avatarImg.src = photo;
+            avatarImg.style.display = 'block';
+        } else {
+            avatarImg.style.display = 'none';
+            avatarImg.removeAttribute('src');
+        }
+    }
+    if (prevLetter) {
+        prevLetter.textContent = letter;
+        prevLetter.style.display = photo ? 'none' : '';
+    }
+    if (prevImg) {
+        if (photo) {
+            prevImg.src = photo;
+            prevImg.style.display = 'block';
+        } else {
+            prevImg.style.display = 'none';
+            prevImg.removeAttribute('src');
+        }
+    }
+    if (rmBtn) rmBtn.style.display = photo ? 'inline-flex' : 'none';
 
     if (statusBtn && statusText) {
         if (soloProfile.active) {
@@ -272,6 +309,8 @@ window.saveSoloProfile = async function (showToast) {
                 soloMode: true,
                 soloMasterName: soloProfile.name,
                 soloMasterSpec: soloProfile.spec,
+                soloMasterPhoto: soloProfile.photo || settings.soloMasterPhoto || '',
+                soloMapAvatar: soloProfile.mapAvatar || settings.soloMapAvatar || '',
                 soloMasterActive: soloProfile.active,
                 active: soloProfile.active,
                 soloWorkDays: soloProfile.workDays,
@@ -296,6 +335,7 @@ window.saveSoloProfile = async function (showToast) {
                 id: soloProfile.id || 1,
                 name: soloProfile.name,
                 spec: soloProfile.spec,
+                photo: soloProfile.photo || '',
                 rating: '5.0',
                 reviews: 45,
                 commission: soloProfile.commissionPct,
@@ -1732,6 +1772,7 @@ async function publishSoloMapPin(st) {
         isSolo: true,
         name: soloProfile.name || st.soloMasterName || ('Мастер #' + tid),
         spec: soloProfile.spec || st.soloMasterSpec || 'Частный барбер',
+        avatar: soloProfile.mapAvatar || st.soloMapAvatar || '',
         city: st.city || 'Бишкек',
         address: st.address || 'Адрес указан на карте',
         lat,
@@ -1824,4 +1865,68 @@ window.openSoloPinOnBarberMap = function () {
     } else {
         window.open('barbermap_kg.html?filter=solo', '_blank');
     }
+};
+
+// 7. Solo Master Profile Photo Upload & Compression
+function cropSquareImage(img, targetSize, quality) {
+    const minSide = Math.min(img.width, img.height);
+    const sx = Math.floor((img.width - minSide) / 2);
+    const sy = Math.floor((img.height - minSide) / 2);
+    const canvas = document.createElement('canvas');
+    canvas.width = targetSize;
+    canvas.height = targetSize;
+    canvas.getContext('2d').drawImage(img, sx, sy, minSide, minSide, 0, 0, targetSize, targetSize);
+    return canvas.toDataURL('image/jpeg', quality);
+}
+
+async function persistSoloPhoto(photoUrl, mapAvatarUrl) {
+    soloProfile.photo = photoUrl || '';
+    soloProfile.mapAvatar = mapAvatarUrl || '';
+    renderSoloHeader();
+
+    if (!window.appDB) return;
+    try {
+        const st = (await window.appDB.getSettings()) || soloSettingsCache || {};
+        st.soloMasterPhoto = soloProfile.photo;
+        st.soloMapAvatar = soloProfile.mapAvatar;
+        soloSettingsCache = st;
+        await window.appDB.saveSettings(st);
+
+        const masters = (await window.appDB.getMasters()) || [];
+        if (masters.length > 0) {
+            masters[0] = { ...masters[0], photo: soloProfile.photo };
+            await window.appDB.saveMasters(masters);
+        }
+
+        if (st.soloMapVisible && isFinite(parseFloat(st.lat)) && isFinite(parseFloat(st.lon))) {
+            await publishSoloMapPin(st);
+        }
+        if (window.BarberMobileBridge && window.BarberMobileBridge.vibrate) {
+            window.BarberMobileBridge.vibrate(25);
+        }
+    } catch (e) {
+        console.error('persistSoloPhoto error:', e);
+    }
+}
+
+window.handleSoloPhotoUpload = function (inputEl) {
+    const file = inputEl && inputEl.files && inputEl.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (ev) {
+        const img = new Image();
+        img.onload = async function () {
+            const fullPhoto = cropSquareImage(img, 260, 0.80);
+            const mapThumb = cropSquareImage(img, 112, 0.65);
+            await persistSoloPhoto(fullPhoto, mapThumb);
+        };
+        img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+};
+
+window.removeSoloProfilePhoto = async function () {
+    const fileEl = document.getElementById('solo-photo-file');
+    if (fileEl) fileEl.value = '';
+    await persistSoloPhoto('', '');
 };

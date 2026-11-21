@@ -168,6 +168,7 @@
             if (locData.isSolo) entry.isSolo = true;
             if (locData.tenantId) entry.tenantId = String(locData.tenantId);
             if (locData.spec) entry.spec = String(locData.spec);
+            if (locData.avatar) entry.avatar = String(locData.avatar);
             if (locData.chairRent) entry.chairRent = locData.chairRent;
             all[entry.id] = entry;
             localStorage.setItem(CUSTOM_LOCATIONS_KEY, JSON.stringify(all));

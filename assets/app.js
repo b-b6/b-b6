@@ -454,9 +454,11 @@ const i18n = {
                     resolvedDays = s.soloWorkDays.map(d => dayMap[d]).filter(v => v !== undefined);
                 }
                 const isActive = s.soloMasterActive !== undefined ? Boolean(s.soloMasterActive) : (s.active !== false);
+                const firstMaster = Array.isArray(store.masters) && store.masters[0] ? store.masters[0] : null;
                 return [{
                     id: window.appDB ? String(window.appDB.tenantId) : 'solo_1',
                     name: soloName,
+                    photo: s.soloMasterPhoto || (firstMaster && firstMaster.photo) || '',
                     description: s.soloMasterSpec || 'Частный мастер • Индивидуальная запись',
                     workingDays: resolvedDays,
                     active: isActive
@@ -529,18 +531,38 @@ const i18n = {
 
             const badgeTextEl = document.getElementById('booking-mode-badge-text');
             const avatarLetterEl = document.getElementById('shop-avatar-letter');
+            const avatarImgEl = document.getElementById('shop-avatar-img');
             const step2Pill = document.getElementById('step-ind-2');
             const step1Pill = document.getElementById('step-ind-1');
             const step3Pill = document.getElementById('step-ind-3');
             const step4Pill = document.getElementById('step-ind-4');
             const aiWrap = document.getElementById('ai-promo-wrap');
 
+            const applyHeaderAvatar = (photoUrl, fallbackTitle) => {
+                const letter = ((fallbackTitle || '').trim().charAt(0) || 'B').toUpperCase();
+                if (avatarLetterEl) {
+                    avatarLetterEl.textContent = letter;
+                    avatarLetterEl.style.display = photoUrl ? 'none' : '';
+                }
+                if (avatarImgEl) {
+                    if (photoUrl) {
+                        avatarImgEl.src = photoUrl;
+                        avatarImgEl.style.display = 'block';
+                    } else {
+                        avatarImgEl.style.display = 'none';
+                        avatarImgEl.removeAttribute('src');
+                    }
+                }
+            };
+
             if (solo) {
                 const soloName = st.soloMasterName || (st.shopName && st.shopName !== 'Брутальный Барбершоп' ? st.shopName : null) || urlShopName || ('Топ-Мастер #' + (window.appDB ? window.appDB.tenantId : '1'));
                 const soloSpec = st.soloMasterSpec || 'Частный мастер • Запись напрямую без ожидания';
+                const firstMaster = Array.isArray(store.masters) && store.masters[0] ? store.masters[0] : null;
+                const soloPhoto = st.soloMasterPhoto || (firstMaster && firstMaster.photo) || (catShop && (catShop.avatar || catShop.photo)) || '';
 
                 if (badgeTextEl) badgeTextEl.textContent = '● Личная запись к мастеру';
-                if (avatarLetterEl) avatarLetterEl.textContent = (soloName.trim().charAt(0) || 'М').toUpperCase();
+                applyHeaderAvatar(soloPhoto, soloName);
                 document.title = soloName + ' — Онлайн-запись';
                 document.querySelectorAll('[data-i18n="title"]').forEach(el => { el.textContent = soloName; });
                 document.querySelectorAll('[data-i18n="subtitle"]').forEach(el => {
@@ -557,9 +579,10 @@ const i18n = {
                 const customName = (window.appDB && window.appDB.tenantId === 'shine_barbershop') ? 'Shine Barbershop' : null;
                 const savedName = (st.shopName && st.shopName !== 'Брутальный Барбершоп') ? st.shopName : null;
                 const effectiveName = savedName || urlShopName || (catShop && catShop.name) || customName || formatTenantTitle(window.appDB && window.appDB.tenantId);
+                const shopPhoto = st.shopLogo || (catShop && (catShop.avatar || catShop.photo)) || '';
 
                 if (badgeTextEl) badgeTextEl.textContent = '● Онлайн-запись открыта';
-                if (avatarLetterEl) avatarLetterEl.textContent = (effectiveName.trim().charAt(0) || 'B').toUpperCase();
+                applyHeaderAvatar(shopPhoto, effectiveName);
                 document.title = effectiveName + ' — Онлайн-запись';
                 document.querySelectorAll('[data-i18n="title"]').forEach(el => { el.textContent = effectiveName; });
 

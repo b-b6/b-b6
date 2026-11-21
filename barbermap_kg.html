@@ -353,7 +353,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
 <script src="barbershops_uz.js"></script>
 <script src="barbershops_kz.js"></script>
 <script src="assets/db.js?v=10"></script>
-<script src="assets/mobile-bridge.js?v=11"></script>
+<script src="assets/mobile-bridge.js?v=12"></script>
 
 <script>
 (() => {
@@ -560,7 +560,8 @@ body.dragging .map-ctrls{transition:opacity .2s}
                 name: item.name || rawCatalog[idx].name,
                 address: item.address || rawCatalog[idx].address,
                 city: item.city || rawCatalog[idx].city,
-                phone: item.phone || rawCatalog[idx].phone || ''
+                phone: item.phone || rawCatalog[idx].phone || '',
+                avatar: item.avatar || rawCatalog[idx].avatar || ''
               };
             } else {
               rawCatalog.unshift({
@@ -568,6 +569,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
                 tenantId: item.tenantId || '',
                 isSolo: Boolean(item.isSolo),
                 spec: item.spec || '',
+                avatar: item.avatar || item.photo || '',
                 name: item.name || (item.isSolo ? 'Мастер' : 'Барбершоп'),
                 city: item.city || 'Бишкек',
                 address: item.address || 'Адрес указан на карте',
@@ -615,6 +617,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
           tenantId: b.tenantId ? String(b.tenantId) : (b.isSolo ? String(b.id).replace(/^solo_/, '') : ''),
           isSolo: Boolean(b.isSolo),
           spec: b.spec || '',
+          avatar: b.avatar || b.photo || '',
           name: b.name, city: b.city || '', address: b.address || '',
           country: country, countryCode: countryCode,
           phone: b.phone || '',
@@ -869,6 +872,14 @@ body.dragging .map-ctrls{transition:opacity .2s}
     return String(b.id);
   }
 
+  function renderAvBox(b, openDotHtml) {
+    const src = String(b && b.avatar || '').trim();
+    const safeImg = (src.startsWith('data:image/') || src.startsWith('https://') || src.startsWith('http://'))
+      ? `<img src="${esc(src)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
+      : esc(b.letter);
+    return `<div class="av">${safeImg}${openDotHtml}</div>`;
+  }
+
   function card(b, d) {
     const st = statusOf(b);
     const dist = d != null ? d : (state.me ? distKm(state.me, b) : null);
@@ -883,7 +894,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
     const soloBadge = b.isSolo ? `<span style="font-size:11px;font-weight:700;color:#7a1c2d;background:#fbf0f2;padding:2px 7px;border-radius:999px;border:1px solid #f0cdd3;">✂️ ${esc(tr('solo_kind'))}</span>` : '';
     const bookHref = `index.html?id=${encodeURIComponent(targetId)}${b.isSolo ? '&solo=1' : ''}&shopName=${encodeURIComponent(b.title || b.name || '')}`;
     return `<div class="card" data-id="${esc(b.id)}" role="button" tabindex="0">
-      <div class="av">${esc(b.letter)}${st.known && st.open ? '<span class="dot-open"></span>' : ''}</div>
+      ${renderAvBox(b, st.known && st.open ? '<span class="dot-open"></span>' : '')}
       <div class="card-main">
         <div class="card-top"><span class="card-title">${esc(b.title)}</span>
           ${b.rating ? `<span class="rate">${ICON.star(12)}${b.rating.toFixed(1)}<em>(${b.reviews})</em></span>` : ''}</div>
@@ -1014,7 +1025,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
       </div>
       <div class="d-body">
         <div class="d-head">
-          <div class="av">${esc(b.letter)}${st.known && st.open ? '<span class="dot-open"></span>' : ''}</div>
+          ${renderAvBox(b, st.known && st.open ? '<span class="dot-open"></span>' : '')}
           <div><h2 class="d-title">${esc(b.title)}</h2><div class="d-kind">${esc(b.kind)} · ${esc(b.city)}</div></div>
         </div>
         <div class="d-stats">${stats.join('<span class="dot"></span>')}</div>
