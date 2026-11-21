@@ -165,6 +165,10 @@
                 phone: locData.phone || '',
                 updatedAt: new Date().toISOString()
             };
+            if (locData.isSolo) entry.isSolo = true;
+            if (locData.tenantId) entry.tenantId = String(locData.tenantId);
+            if (locData.spec) entry.spec = String(locData.spec);
+            if (locData.chairRent) entry.chairRent = locData.chairRent;
             all[entry.id] = entry;
             localStorage.setItem(CUSTOM_LOCATIONS_KEY, JSON.stringify(all));
 
@@ -210,7 +214,15 @@
                     const ref = doc(window.appDB.fs, 'global/data_locations');
                     const snap = await getDoc(ref);
                     if (snap.exists() && snap.data().items) {
-                        const merged = Object.assign({}, this.getCustomLocationsLocal(), snap.data().items);
+                        const remoteItems = snap.data().items;
+                        const localItems = this.getCustomLocationsLocal();
+                        // Remove solo master pins from local cache if master hid them remotely
+                        Object.keys(localItems).forEach(k => {
+                            if (String(k).startsWith('solo_') && !remoteItems[k]) {
+                                delete localItems[k];
+                            }
+                        });
+                        const merged = Object.assign({}, localItems, remoteItems);
                         localStorage.setItem(CUSTOM_LOCATIONS_KEY, JSON.stringify(merged));
                         return merged;
                     }

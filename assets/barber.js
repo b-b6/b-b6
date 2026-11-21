@@ -184,6 +184,8 @@ async function loadSoloStateFromDB(masterRecord) {
         if (colorInput && settings.design && settings.design.accentColor) {
             colorInput.value = settings.design.accentColor;
         }
+
+        populateSoloMapInputs(settings);
     } catch (e) {
         console.warn('loadSoloStateFromDB error:', e);
     }
@@ -285,6 +287,9 @@ window.saveSoloProfile = async function (showToast) {
             };
             soloSettingsCache = updatedSettings;
             await window.appDB.saveSettings(updatedSettings);
+            if (updatedSettings.soloMapVisible && isFinite(parseFloat(updatedSettings.lat)) && isFinite(parseFloat(updatedSettings.lon))) {
+                publishSoloMapPin(updatedSettings).catch(() => {});
+            }
 
             const masters = (await window.appDB.getMasters()) || [];
             const updatedMaster = {
@@ -751,6 +756,10 @@ window.switchSoloTab = function (tabId, btnEl) {
 
     document.querySelectorAll('.bottom-nav .nav-item').forEach(b => b.classList.remove('active'));
     if (btnEl) btnEl.classList.add('active');
+
+    if (tabId === 'settings') {
+        setTimeout(() => initSoloLocationMap(), 120);
+    }
 };
 
 window.logoutMasterSession = function () {
@@ -1556,5 +1565,263 @@ window.saveSoloDesign = async function () {
         }
     } catch (e) {
         console.error('saveSoloDesign error:', e);
+    }
+};
+
+// 6. Interactive Geolocation Pin for BarberMap (Solo Master)
+let soloLocMap = null;
+let soloLocMarker = null;
+
+function getSoloLocationId() {
+    const tid = (window.appDB && window.appDB.tenantId) ? String(window.appDB.tenantId) : '1';
+    return 'solo_' + tid.replace(/^solo_/, '');
+}
+
+function syncSoloMapStatusPill(isVisible) {
+    const pill = document.getElementById('solo-map-status-pill');
+    if (!pill) return;
+    if (isVisible) {
+        pill.className = 'push-status-pill on';
+        pill.textContent = '✅ На карте BarberMap';
+    } else {
+        pill.className = 'push-status-pill off';
+        pill.textContent = 'Скрыт с карты';
+    }
+}
+
+function populateSoloMapInputs(settings) {
+    const st = settings || soloSettingsCache || {};
+    const customLocs = (window.BarberMobileBridge && window.BarberMobileBridge.getCustomLocationsLocal)
+        ? (window.BarberMobileBridge.getCustomLocationsLocal() || {})
+        : {};
+    const savedLoc = customLocs[getSoloLocationId()] || {};
+
+    const latVal = parseFloat(st.lat || savedLoc.lat);
+    const lonVal = parseFloat(st.lon || savedLoc.lon);
+    const initLat = isFinite(latVal) ? latVal : 42.8746;
+    const initLon = isFinite(lonVal) ? lonVal : 74.5698;
+    const isVisible = Boolean(st.soloMapVisible && isFinite(latVal) && isFinite(lonVal));
+
+    const latInp = document.getElementById('solo-pin-lat');
+    const lonInp = document.getElementById('solo-pin-lon');
+    const cityInp = document.getElementById('solo-pin-city');
+    const addrInp = document.getElementById('solo-pin-address');
+    const visCheck = document.getElementById('solo-map-visible');
+
+    if (latInp) latInp.value = initLat.toFixed(6);
+    if (lonInp) lonInp.value = initLon.toFixed(6);
+    if (cityInp) cityInp.value = st.city || savedLoc.city || 'Бишкек';
+    if (addrInp) addrInp.value = st.address || savedLoc.address || '';
+    if (visCheck) visCheck.checked = isVisible;
+    syncSoloMapStatusPill(isVisible);
+}
+
+function setSoloMarkerCoords(lat, lon, flyZoom) {
+    const latInp = document.getElementById('solo-pin-lat');
+    const lonInp = document.getElementById('solo-pin-lon');
+    if (latInp) latInp.value = Number(lat).toFixed(6);
+    if (lonInp) lonInp.value = Number(lon).toFixed(6);
+    if (soloLocMarker) soloLocMarker.setLatLng([lat, lon]);
+    if (soloLocMap) {
+        if (flyZoom) soloLocMap.flyTo([lat, lon], flyZoom);
+        else soloLocMap.panTo([lat, lon]);
+    }
+}
+
+window.initSoloLocationMap = function () {
+    const container = document.getElementById('solo-location-map');
+    if (!container || typeof L === 'undefined') return;
+
+    const latVal = parseFloat(document.getElementById('solo-pin-lat')?.value);
+    const lonVal = parseFloat(document.getElementById('solo-pin-lon')?.value);
+    const initLat = isFinite(latVal) ? latVal : 42.8746;
+    const initLon = isFinite(lonVal) ? lonVal : 74.5698;
+
+    if (!soloLocMap) {
+        soloLocMap = L.map('solo-location-map').setView([initLat, initLon], 15);
+        L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&hl=ru', {
+            subdomains: ['0', '1', '2', '3'],
+            maxZoom: 20,
+            attribution: '&copy; Google Maps'
+        }).addTo(soloLocMap);
+
+        soloLocMarker = L.marker([initLat, initLon], { draggable: true }).addTo(soloLocMap);
+        soloLocMarker.bindPopup('<b>✂️ Перетащите метку</b><br>или нажмите на карту, где вы принимаете').openPopup();
+
+        soloLocMarker.on('dragend', function (e) {
+            const pos = e.target.getLatLng();
+            const latInp = document.getElementById('solo-pin-lat');
+            const lonInp = document.getElementById('solo-pin-lon');
+            if (latInp) latInp.value = pos.lat.toFixed(6);
+            if (lonInp) lonInp.value = pos.lng.toFixed(6);
+        });
+
+        soloLocMap.on('click', function (e) {
+            setSoloMarkerCoords(e.latlng.lat, e.latlng.lng);
+        });
+    } else {
+        soloLocMap.invalidateSize();
+        soloLocMap.setView([initLat, initLon], 15);
+        if (soloLocMarker) soloLocMarker.setLatLng([initLat, initLon]);
+    }
+};
+
+window.panSoloMapCity = function (city, lat, lon) {
+    const cityInp = document.getElementById('solo-pin-city');
+    if (cityInp) cityInp.value = city;
+    setSoloMarkerCoords(lat, lon, 13);
+};
+
+window.updateSoloPinFromInputs = function () {
+    const lat = parseFloat(document.getElementById('solo-pin-lat')?.value);
+    const lon = parseFloat(document.getElementById('solo-pin-lon')?.value);
+    if (isFinite(lat) && isFinite(lon)) {
+        setSoloMarkerCoords(lat, lon);
+    }
+};
+
+window.detectSoloLocationGPS = function () {
+    if (!navigator.geolocation) {
+        alert('Геолокация не поддерживается вашим браузером');
+        return;
+    }
+    navigator.geolocation.getCurrentPosition(
+        (pos) => {
+            setSoloMarkerCoords(pos.coords.latitude, pos.coords.longitude, 17);
+            if (soloLocMarker) soloLocMarker.openPopup();
+        },
+        () => {
+            alert('Не удалось определить GPS. Разрешите доступ к геолокации или просто перетащите метку по карте пальцем.');
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+    );
+};
+
+window.geocodeSoloAddress = async function () {
+    const city = (document.getElementById('solo-pin-city')?.value || '').trim();
+    const addr = (document.getElementById('solo-pin-address')?.value || '').trim();
+    if (!addr && !city) return alert('Введите город или адрес');
+    const q = [city, addr].filter(Boolean).join(', ');
+    try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)}`);
+        const arr = await res.json();
+        if (Array.isArray(arr) && arr[0]) {
+            const lat = parseFloat(arr[0].lat);
+            const lon = parseFloat(arr[0].lon);
+            if (isFinite(lat) && isFinite(lon)) {
+                setSoloMarkerCoords(lat, lon, 17);
+                return;
+            }
+        }
+        alert('Адрес не найден точно — просто переместите метку на карте вручную.');
+    } catch (e) {
+        alert('Не удалось выполнить поиск адреса. Перетащите метку на карте вручную.');
+    }
+};
+
+async function publishSoloMapPin(st) {
+    if (!window.BarberMobileBridge || !window.BarberMobileBridge.saveBarbershopLocation) return;
+    const tid = (window.appDB && window.appDB.tenantId) ? String(window.appDB.tenantId) : '1';
+    const lat = parseFloat(st.lat);
+    const lon = parseFloat(st.lon);
+    if (!isFinite(lat) || !isFinite(lon)) return;
+
+    await window.BarberMobileBridge.saveBarbershopLocation(getSoloLocationId(), {
+        id: getSoloLocationId(),
+        tenantId: tid,
+        isSolo: true,
+        name: soloProfile.name || st.soloMasterName || ('Мастер #' + tid),
+        spec: soloProfile.spec || st.soloMasterSpec || 'Частный барбер',
+        city: st.city || 'Бишкек',
+        address: st.address || 'Адрес указан на карте',
+        lat,
+        lon,
+        hours: `${soloProfile.workStart || '10:00'} - ${soloProfile.workEnd || '21:00'}`,
+        rating: 5.0,
+        reviews: 15
+    });
+}
+
+window.toggleSoloMapVisibility = async function (visible) {
+    if (!window.appDB) return;
+    const st = (await window.appDB.getSettings()) || soloSettingsCache || {};
+    st.soloMapVisible = Boolean(visible);
+
+    if (!visible) {
+        soloSettingsCache = st;
+        await window.appDB.saveSettings(st);
+        if (window.BarberMobileBridge && window.BarberMobileBridge.deleteBarbershopLocation) {
+            await window.BarberMobileBridge.deleteBarbershopLocation(getSoloLocationId());
+        }
+        syncSoloMapStatusPill(false);
+        const statusEl = document.getElementById('solo-pin-save-status');
+        if (statusEl) {
+            statusEl.style.display = 'block';
+            statusEl.style.color = 'var(--text-muted)';
+            statusEl.textContent = 'Точка скрыта с общей карты BarberMap.';
+        }
+    } else {
+        const lat = parseFloat(document.getElementById('solo-pin-lat')?.value);
+        const lon = parseFloat(document.getElementById('solo-pin-lon')?.value);
+        if (isFinite(lat) && isFinite(lon)) {
+            await window.saveSoloLocationCoordinates();
+        } else {
+            soloSettingsCache = st;
+            await window.appDB.saveSettings(st);
+        }
+    }
+};
+
+window.saveSoloLocationCoordinates = async function (btnEl) {
+    const lat = parseFloat(document.getElementById('solo-pin-lat')?.value);
+    const lon = parseFloat(document.getElementById('solo-pin-lon')?.value);
+    const city = (document.getElementById('solo-pin-city')?.value || 'Бишкек').trim();
+    const address = (document.getElementById('solo-pin-address')?.value || 'Адрес указан на карте').trim();
+
+    if (!isFinite(lat) || !isFinite(lon)) {
+        alert('Пожалуйста, поставьте метку на карте или укажите корректные координаты.');
+        return;
+    }
+
+    if (btnEl) btnEl.disabled = true;
+    const visCheck = document.getElementById('solo-map-visible');
+    if (visCheck) visCheck.checked = true;
+
+    try {
+        const st = (window.appDB ? await window.appDB.getSettings() : null) || soloSettingsCache || {};
+        st.lat = lat;
+        st.lon = lon;
+        st.city = city;
+        st.address = address;
+        st.soloMapVisible = true;
+        soloSettingsCache = st;
+
+        if (window.appDB) {
+            await window.appDB.saveSettings(st);
+        }
+        await publishSoloMapPin(st);
+        syncSoloMapStatusPill(true);
+
+        if (window.BarberMobileBridge && window.BarberMobileBridge.vibrate) {
+            window.BarberMobileBridge.vibrate(30);
+        }
+        const statusEl = document.getElementById('solo-pin-save-status');
+        if (statusEl) {
+            statusEl.style.display = 'block';
+            statusEl.style.color = 'var(--green)';
+            statusEl.textContent = `✅ Готово! Метка (${lat.toFixed(5)}, ${lon.toFixed(5)}) сохранена — теперь клиенты находят вас в BarberMap!`;
+        }
+    } catch (e) {
+        alert('Ошибка при сохранении координат');
+    }
+    if (btnEl) btnEl.disabled = false;
+};
+
+window.openSoloPinOnBarberMap = function () {
+    const st = soloSettingsCache || {};
+    if (st.soloMapVisible && isFinite(parseFloat(st.lat))) {
+        window.open(`barbermap_kg.html#${encodeURIComponent(getSoloLocationId())}`, '_blank');
+    } else {
+        window.open('barbermap_kg.html?filter=solo', '_blank');
     }
 };

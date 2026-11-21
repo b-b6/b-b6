@@ -544,7 +544,8 @@ const i18n = {
                 document.title = soloName + ' — Онлайн-запись';
                 document.querySelectorAll('[data-i18n="title"]').forEach(el => { el.textContent = soloName; });
                 document.querySelectorAll('[data-i18n="subtitle"]').forEach(el => {
-                    el.textContent = `✂️ ${soloSpec} • 🕒 ${st.openTime || '10:00'}–${st.closeTime || '21:00'}`;
+                    const addrPart = st.address ? `📍 ${st.city ? st.city + ', ' : ''}${st.address} • ` : '';
+                    el.textContent = `${addrPart}✂️ ${soloSpec} • 🕒 ${st.openTime || '10:00'}–${st.closeTime || '21:00'}`;
                 });
 
                 if (step2Pill) step2Pill.style.display = 'none';

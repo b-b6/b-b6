@@ -50,6 +50,9 @@ a{color:inherit}
 .pin.sel{background:var(--burgundy);color:#fff;transform:translate(-50%,-50%) scale(1.12);box-shadow:0 6px 20px rgba(122,28,45,.42)}
 .pin.sel .pr{color:#fff}
 .pin.sel .pr svg{color:#ffd166}
+.pin.solo{background:var(--navy);color:#fff;border:1.5px solid #ffd166;box-shadow:0 4px 14px rgba(12,25,44,.28)}
+.pin.solo .pr{color:#ffd166}
+.pin.solo.sel{background:var(--burgundy);border-color:#fff}
 .cl{width:100%;height:100%;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;
   font-weight:700;font-size:13px;box-shadow:0 0 0 4px rgba(122,28,45,.25),0 4px 14px rgba(12,25,44,.35);transition:transform .15s var(--ease)}
 .cl:hover{transform:scale(1.08);box-shadow:0 0 0 5px rgba(122,28,45,.35),0 6px 18px rgba(12,25,44,.4)}
@@ -309,6 +312,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
       </div>
       <div class="chips filters" id="filterChips">
         <button class="chip" data-f="open" id="chip-open">Открыто сейчас</button>
+        <button class="chip" data-f="solo" id="chip-solo">✂️ Соло-мастера</button>
         <button class="chip" data-f="coworking" id="chip-coworking">💺 Аренда кресел</button>
         <button class="chip" data-f="top" id="chip-top">Рейтинг 4.5+</button>
         <button class="chip" data-f="popular" id="chip-popular">50+ отзывов</button>
@@ -348,8 +352,8 @@ body.dragging .map-ctrls{transition:opacity .2s}
 <script src="barbershops_kg.js"></script>
 <script src="barbershops_uz.js"></script>
 <script src="barbershops_kz.js"></script>
-<script src="assets/db.js?v=9"></script>
-<script src="assets/mobile-bridge.js?v=9"></script>
+<script src="assets/db.js?v=10"></script>
+<script src="assets/mobile-bridge.js?v=11"></script>
 
 <script>
 (() => {
@@ -366,7 +370,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
       c_all: '🌍 Все страны', c_kg: '🇰🇬 Кыргызстан', c_uz: '🇺🇿 Узбекистан', c_kz: '🇰🇿 Казахстан', all_cities: 'Все города',
       t_all: 'Все страны', t_kg: 'Весь Кыргызстан', t_uz: 'Весь Узбекистан', t_kz: 'Весь Казахстан',
       s_rec: 'Рекомендуемые', s_rating: 'По рейтингу', s_reviews: 'По отзывам', s_near: 'Ближе ко мне',
-      f_open: 'Открыто сейчас', f_cw: '💺 Аренда кресел', f_top: 'Рейтинг 4.5+', f_pop: '50+ отзывов',
+      f_open: 'Открыто сейчас', f_solo: '✂️ Соло-мастера', solo_kind: 'Соло-мастер', f_cw: '💺 Аренда кресел', f_top: 'Рейтинг 4.5+', f_pop: '50+ отзывов',
       w_bs: ['барбершоп', 'барбершопа', 'барбершопов'], w_rv: ['отзыв', 'отзыва', 'отзывов'],
       open_24: 'Круглосуточно', open_to: 'Открыто до', closed_to: 'Закрыто · до',
       online_bk: '⚡ Онлайн-запись', catalog_pill: 'Городской каталог', has_cw: '💺 Есть коворкинг',
@@ -387,7 +391,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
       c_all: '🌍 Бардык өлкөлөр', c_kg: '🇰🇬 Кыргызстан', c_uz: '🇺🇿 Өзбекстан', c_kz: '🇰🇿 Казакстан', all_cities: 'Бардык шаарлар',
       t_all: 'Бардык өлкөлөр', t_kg: 'Бүткүл Кыргызстан', t_uz: 'Бүткүл Өзбекстан', t_kz: 'Бүткүл Казакстан',
       s_rec: 'Сунушталгандар', s_rating: 'Рейтинг боюнча', s_reviews: 'Пикирлер боюнча', s_near: 'Мага жакын',
-      f_open: 'Азыр ачык', f_cw: '💺 Кресло ижарасы', f_top: 'Рейтинг 4.5+', f_pop: '50+ пикир',
+      f_open: 'Азыр ачык', f_solo: '✂️ Соло-чеберлер', solo_kind: 'Соло-чебер', f_cw: '💺 Кресло ижарасы', f_top: 'Рейтинг 4.5+', f_pop: '50+ пикир',
       w_bs: ['барбершоп', 'барбершоп', 'барбершоп'], w_rv: ['пикир', 'пикир', 'пикир'],
       open_24: 'Түнү-күнү ачык', open_to: 'Ачык:', closed_to: 'Жабык · ачылат:',
       online_bk: '⚡ Онлайн-жазылуу', catalog_pill: 'Шаардык каталог', has_cw: '💺 Коворкинг бар',
@@ -408,7 +412,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
       c_all: '🌍 Barcha davlatlar', c_kg: '🇰🇬 Qirg\'iziston', c_uz: '🇺🇿 O\'zbekiston', c_kz: '🇰🇿 Qozog\'iston', all_cities: 'Barcha shaharlar',
       t_all: 'Barcha davlatlar', t_kg: 'Butun Qirg\'iziston', t_uz: 'Butun O\'zbekiston', t_kz: 'Butun Qozog\'iston',
       s_rec: 'Tavsiya etilgan', s_rating: 'Reyting bo\'yicha', s_reviews: 'Sharhlar bo\'yicha', s_near: 'Menga yaqin',
-      f_open: 'Hozir ochiq', f_cw: '💺 Kreslo ijarasi', f_top: 'Reyting 4.5+', f_pop: '50+ sharhlar',
+      f_open: 'Hozir ochiq', f_solo: '✂️ Solo ustalar', solo_kind: 'Solo usta', f_cw: '💺 Kreslo ijarasi', f_top: 'Reyting 4.5+', f_pop: '50+ sharhlar',
       w_bs: ['barbershop', 'barbershop', 'barbershoplar'], w_rv: ['sharh', 'sharh', 'sharhlar'],
       open_24: '24 soat ochiq', open_to: 'Ochiq:', closed_to: 'Yopiq · ochiladi:',
       online_bk: '⚡ Onlayn yozilish', catalog_pill: 'Shahar katalogi', has_cw: '💺 Kovorking bor',
@@ -429,7 +433,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
       c_all: '🌍 Барлық елдер', c_kg: '🇰🇬 Қырғызстан', c_uz: '🇺🇿 Өзбекстан', c_kz: '🇰🇿 Қазақстан', all_cities: 'Барлық қалалар',
       t_all: 'Барлық елдер', t_kg: 'Бүкіл Қырғызстан', t_uz: 'Бүкіл Өзбекстан', t_kz: 'Бүкіл Қазақстан',
       s_rec: 'Ұсынылғандар', s_rating: 'Рейтинг бойынша', s_reviews: 'Пікірлер бойынша', s_near: 'Маған жақын',
-      f_open: 'Қазір ашық', f_cw: '💺 Кресло жалдау', f_top: 'Рейтинг 4.5+', f_pop: '50+ пікір',
+      f_open: 'Қазір ашық', f_solo: '✂️ Соло-шеберлер', solo_kind: 'Соло-шебер', f_cw: '💺 Кресло жалдау', f_top: 'Рейтинг 4.5+', f_pop: '50+ пікір',
       w_bs: ['барбершоп', 'барбершоп', 'барбершоп'], w_rv: ['пікір', 'пікір', 'пікір'],
       open_24: 'Тәулік бойы', open_to: 'Ашық:', closed_to: 'Жабық · ашылады:',
       online_bk: '⚡ Онлайн-жазылу', catalog_pill: 'Қалалық каталог', has_cw: '💺 Коворкинг бар',
@@ -450,7 +454,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
       c_all: '🌍 All Countries', c_kg: '🇰🇬 Kyrgyzstan', c_uz: '🇺🇿 Uzbekistan', c_kz: '🇰🇿 Kazakhstan', all_cities: 'All cities',
       t_all: 'All Countries', t_kg: 'All Kyrgyzstan', t_uz: 'All Uzbekistan', t_kz: 'All Kazakhstan',
       s_rec: 'Recommended', s_rating: 'Top Rated', s_reviews: 'Most Reviewed', s_near: 'Nearest to me',
-      f_open: 'Open now', f_cw: '💺 Chair Rental', f_top: 'Rating 4.5+', f_pop: '50+ reviews',
+      f_open: 'Open now', f_solo: '✂️ Solo Barbers', solo_kind: 'Solo Barber', f_cw: '💺 Chair Rental', f_top: 'Rating 4.5+', f_pop: '50+ reviews',
       w_bs: ['barbershop', 'barbershops', 'barbershops'], w_rv: ['review', 'reviews', 'reviews'],
       open_24: 'Open 24/7', open_to: 'Open until', closed_to: 'Closed · until',
       online_bk: '⚡ Online Booking', catalog_pill: 'City Directory', has_cw: '💺 Coworking',
@@ -561,14 +565,17 @@ body.dragging .map-ctrls{transition:opacity .2s}
             } else {
               rawCatalog.unshift({
                 id: item.id,
-                name: item.name || 'Барбершоп',
+                tenantId: item.tenantId || '',
+                isSolo: Boolean(item.isSolo),
+                spec: item.spec || '',
+                name: item.name || (item.isSolo ? 'Мастер' : 'Барбершоп'),
                 city: item.city || 'Бишкек',
                 address: item.address || 'Адрес указан на карте',
                 phone: item.phone || '',
                 lat: item.lat,
                 lon: item.lon,
                 rating: item.rating || 5.0,
-                reviews: item.reviews || 25,
+                reviews: item.reviews || (item.isSolo ? 15 : 25),
                 hours: item.hours || '10:00 - 21:00'
               });
             }
@@ -604,17 +611,22 @@ body.dragging .map-ctrls{transition:opacity .2s}
           .trim();
 
         return {
-          id: String(b.id), name: b.name, city: b.city || '', address: b.address || '',
+          id: String(b.id),
+          tenantId: b.tenantId ? String(b.tenantId) : (b.isSolo ? String(b.id).replace(/^solo_/, '') : ''),
+          isSolo: Boolean(b.isSolo),
+          spec: b.spec || '',
+          name: b.name, city: b.city || '', address: b.address || '',
           country: country, countryCode: countryCode,
           phone: b.phone || '',
           whatsapp: waUrl,
           instagram: cleanInsta,
           lat: +b.lat, lon: +b.lon, rating, reviews,
           hours: b.hours ?? b.working_hours, link: b.link ?? b.link_2gis ?? '',
-          title: n.title || b.name, short: shortTitle.slice(0, 16), kind: n.kind,
+          title: n.title || b.name, short: shortTitle.slice(0, 16),
+          kind: b.isSolo ? (b.spec ? `${tr('solo_kind')} · ${b.spec}` : tr('solo_kind')) : n.kind,
           h: parseHours(b.hours ?? b.working_hours),
           letter: ((n.title || '').match(/[A-Za-zА-Яа-яЁё0-9]/) || ['B'])[0].toUpperCase(),
-          search: `${b.name} ${b.address} ${b.city} ${country}`.toLowerCase(),
+          search: `${b.name} ${b.spec || ''} ${b.address} ${b.city} ${country} ${b.isSolo ? 'мастер соло barber solo' : ''}`.toLowerCase(),
           score: (rating * reviews + 4.4 * 8) / (reviews + 8),
         };
       });
@@ -712,7 +724,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
   const markers = new Map();
   const pinIcon = (b, sel) => L.divIcon({
     className: 'pin-wrap', iconSize: [0, 0],
-    html: `<div class="pin${sel ? ' sel' : ''}"><b>${esc(b.short)}</b>${b.rating ? `<span class="pr">${ICON.star(11)}${b.rating.toFixed(1)}</span>` : ''}</div>`,
+    html: `<div class="pin${b.isSolo ? ' solo' : ''}${sel ? ' sel' : ''}"><b>${b.isSolo ? '✂️ ' : ''}${esc(b.short)}</b>${b.rating ? `<span class="pr">${ICON.star(11)}${b.rating.toFixed(1)}</span>` : ''}</div>`,
   });
   function markerFor(b) {
     let m = markers.get(b.id);
@@ -776,6 +788,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
       if (state.city !== 'all' && b.city !== state.city) return false;
       if (words.length && !words.every(w => b.search.includes(w))) return false;
       if (state.f.has('open')) { const st = statusOf(b); if (!st.open) return false; }
+      if (state.f.has('solo') && !b.isSolo) return false;
       if (state.f.has('top') && b.rating < 4.5) return false;
       if (state.f.has('popular') && b.reviews < 50) return false;
       if (state.f.has('coworking') && !hasChairRent(b)) return false;
@@ -823,6 +836,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
   }
 
   function isPartnerTenant(b) {
+    if (b && b.isSolo && b.tenantId) return true;
     try {
       const tenants = JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
       if (!Array.isArray(tenants)) return false;
@@ -837,6 +851,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
   }
 
   function resolveBookingTargetId(b) {
+    if (b && b.isSolo && b.tenantId) return String(b.tenantId);
     try {
       const tenants = JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
       if (Array.isArray(tenants)) {
@@ -865,6 +880,8 @@ body.dragging .map-ctrls{transition:opacity .2s}
     const rent = getChairRentInfo(b);
     const fmtPrice = (val, short) => window.BarberCurrency ? window.BarberCurrency.format(val, (rent && rent.currencyCode) || 'KGS', short) : (val + (short ? ' с' : ' сом'));
     const rentBadge = rent ? `<span style="font-size:11px;font-weight:700;color:#0369a1;background:#e0f2fe;padding:2px 7px;border-radius:999px;border:1px solid #bae6fd;">${tr('chair_short')} ${rent.priceHour ? fmtPrice(rent.priceHour, true) + '/ч' : (fmtPrice(rent.priceDay, true) + '/день')}</span>` : '';
+    const soloBadge = b.isSolo ? `<span style="font-size:11px;font-weight:700;color:#7a1c2d;background:#fbf0f2;padding:2px 7px;border-radius:999px;border:1px solid #f0cdd3;">✂️ ${esc(tr('solo_kind'))}</span>` : '';
+    const bookHref = `index.html?id=${encodeURIComponent(targetId)}${b.isSolo ? '&solo=1' : ''}&shopName=${encodeURIComponent(b.title || b.name || '')}`;
     return `<div class="card" data-id="${esc(b.id)}" role="button" tabindex="0">
       <div class="av">${esc(b.letter)}${st.known && st.open ? '<span class="dot-open"></span>' : ''}</div>
       <div class="card-main">
@@ -874,9 +891,10 @@ body.dragging .map-ctrls{transition:opacity .2s}
         <div class="card-addr">${esc(b.address)}</div>
         <div class="card-foot">
           ${st.known ? `<span class="st-pill ${st.open ? 'open' : 'closed'}" data-st="${esc(b.id)}">${st.text}</span>` : '<span></span>'}
+          ${soloBadge}
           ${partner ? `<span style="font-size:11px;font-weight:700;color:#15803d;background:#dcfce7;padding:2px 7px;border-radius:999px;">${tr('online_bk')}</span>` : ''}
           ${rentBadge}
-          <a href="index.html?id=${encodeURIComponent(targetId)}&shopName=${encodeURIComponent(b.title || b.name || '')}" class="quick-book-link" onclick="event.stopPropagation()">
+          <a href="${bookHref}" class="quick-book-link" onclick="event.stopPropagation()">
             ${tr('book_short')}
           </a>
         </div>
@@ -958,6 +976,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
     const stats = [];
     if (b.rating) stats.push(`<span class="rate">${ICON.star(14)}${b.rating.toFixed(1)}</span><span style="color:var(--muted)">${b.reviews} ${plural(b.reviews, W_RV)}</span>`);
     if (st.known) stats.push(`<span class="st-pill ${st.open ? 'open' : 'closed'}">${st.text}</span>`);
+    if (b.isSolo) stats.push(`<span style="font-size:12px;font-weight:700;color:#7a1c2d;background:#fbf0f2;padding:3px 9px;border-radius:999px;border:1px solid #f0cdd3;">✂️ ${esc(tr('solo_kind'))}</span>`);
     if (partner) {
       stats.push(`<span class="partner-pill">${tr('online_bk')}</span>`);
     } else {
@@ -1000,7 +1019,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
         </div>
         <div class="d-stats">${stats.join('<span class="dot"></span>')}</div>
         <div class="actions">
-          <a class="btn primary" href="index.html?id=${encodeURIComponent(resolveBookingTargetId(b))}&shopName=${encodeURIComponent(b.title || b.name || '')}">
+          <a class="btn primary" href="index.html?id=${encodeURIComponent(resolveBookingTargetId(b))}${b.isSolo ? '&solo=1' : ''}&shopName=${encodeURIComponent(b.title || b.name || '')}">
             ${bookBtnLabel}
           </a>
           <button class="btn navy" data-act="route">${ICON.route}${tr('route_btn')}</button>
@@ -1390,6 +1409,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
     if ($('#optSortReviews')) $('#optSortReviews').textContent = tr('s_reviews');
     if ($('#optSortNear')) $('#optSortNear').textContent = tr('s_near');
     if ($('#chip-open')) $('#chip-open').textContent = tr('f_open');
+    if ($('#chip-solo')) $('#chip-solo').textContent = tr('f_solo');
     if ($('#chip-coworking')) $('#chip-coworking').textContent = tr('f_cw');
     if ($('#chip-top')) $('#chip-top').textContent = tr('f_top');
     if ($('#chip-popular')) $('#chip-popular').textContent = tr('f_pop');
@@ -1412,6 +1432,11 @@ body.dragging .map-ctrls{transition:opacity .2s}
     state.f.add('coworking');
     const chipCoworking = document.getElementById('chip-coworking');
     if (chipCoworking) chipCoworking.classList.add('on');
+  }
+  if (urlParams.get('filter') === 'solo') {
+    state.f.add('solo');
+    const chipSolo = document.getElementById('chip-solo');
+    if (chipSolo) chipSolo.classList.add('on');
   }
   if (urlParams.get('gps') === '1' && urlParams.get('lat') && urlParams.get('lon')) {
     const lat = parseFloat(urlParams.get('lat'));
@@ -1456,6 +1481,17 @@ body.dragging .map-ctrls{transition:opacity .2s}
         $('#totalLabel').textContent = `${DATA.length} ${plural(DATA.length, W_BS)}`;
         renderCityChips();
         apply(false, false);
+        const hId = decodeURIComponent(location.hash.slice(1));
+        if (hId && !state.sel && byId.has(hId)) {
+          const hb = byId.get(hId);
+          if (hb && hb.countryCode) {
+            state.country = hb.countryCode;
+            document.querySelectorAll('#countryChips .chip').forEach(c => c.classList.toggle('on', c.dataset.country === state.country));
+            renderCityChips();
+          }
+          apply(false, false);
+          select(hId, false);
+        }
       }
     } catch (e) {}
   })();
