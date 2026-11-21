@@ -178,9 +178,19 @@
         let saBindMap = null;
         let saBindCluster = null;
         let saBindCustomMarker = null;
+        let saBindTargetTenantId = null;
 
         function openAddAccessModal(preselectedCatalogId, preselectedCatalogName) {
-            document.getElementById('t_role').value = 'owner';
+            saBindTargetTenantId = null;
+            const roleEl = document.getElementById('t_role');
+            const idEl = document.getElementById('t_id');
+            if (roleEl) { roleEl.disabled = false; roleEl.value = 'owner'; }
+            if (idEl) { idEl.disabled = false; }
+            const titleEl = document.getElementById('modal-add-title');
+            if (titleEl) titleEl.innerHTML = '<i data-lucide="key-round" style="width:20px;height:20px;color:#7a1c2d;"></i> Выдать доступ (ID + PIN) и привязать с карты';
+            const submitEl = document.getElementById('modal-add-submit-btn');
+            if (submitEl) submitEl.innerHTML = 'Создать и выдать доступ <i data-lucide="check" style="width:16px; margin-left:6px; vertical-align:middle;"></i>';
+
             document.getElementById('t_name').value = '';
             document.getElementById('t_email').value = '';
             document.getElementById('t_catalog_search').value = '';
@@ -189,6 +199,10 @@
             const customLonEl = document.getElementById('t_custom_lon');
             if (customLatEl) customLatEl.value = '';
             if (customLonEl) customLonEl.value = '';
+            if (saBindCustomMarker && saBindMap) {
+                saBindMap.removeLayer(saBindCustomMarker);
+                saBindCustomMarker = null;
+            }
             const boundCard = document.getElementById('sa-bound-shop-card');
             if (boundCard) boundCard.style.display = 'none';
             document.getElementById('sa-catalog-results').style.display = 'none';
@@ -201,6 +215,56 @@
                 initBindMapInModal();
                 if (preselectedCatalogId) {
                     selectCatalogShopInSA(preselectedCatalogId, preselectedCatalogName);
+                }
+            }, 180);
+        }
+
+        function openBindTenantToMapModal(tenantId) {
+            const t = tenants.find(x => String(x.id) === String(tenantId));
+            if (!t) return;
+            saBindTargetTenantId = String(t.id);
+
+            const roleEl = document.getElementById('t_role');
+            const idEl = document.getElementById('t_id');
+            const pinEl = document.getElementById('t_pin');
+            const nameEl = document.getElementById('t_name');
+            const emailEl = document.getElementById('t_email');
+            const titleEl = document.getElementById('modal-add-title');
+            const submitEl = document.getElementById('modal-add-submit-btn');
+
+            if (roleEl) { roleEl.value = t.role || 'owner'; roleEl.disabled = true; }
+            if (idEl) { idEl.value = t.id; idEl.disabled = true; }
+            if (pinEl) pinEl.value = t.pin || '';
+            if (nameEl) nameEl.value = t.shopName || '';
+            if (emailEl) emailEl.value = (t.email && t.email !== '—') ? t.email : '';
+            if (titleEl) titleEl.innerHTML = `<i data-lucide="map-pin" style="width:20px;height:20px;color:#7a1c2d;"></i> Привязать кабинет #${t.id} к карте`;
+            if (submitEl) submitEl.innerHTML = '💾 Сохранить привязку к карте';
+
+            document.getElementById('t_catalog_search').value = '';
+            document.getElementById('t_catalog_id').value = t.catalogId || '';
+            const customLatEl = document.getElementById('t_custom_lat');
+            const customLonEl = document.getElementById('t_custom_lon');
+            if (customLatEl) customLatEl.value = t.customLat || '';
+            if (customLonEl) customLonEl.value = t.customLon || '';
+            if (saBindCustomMarker && saBindMap) {
+                saBindMap.removeLayer(saBindCustomMarker);
+                saBindCustomMarker = null;
+            }
+            const boundCard = document.getElementById('sa-bound-shop-card');
+            if (boundCard) boundCard.style.display = 'none';
+            document.getElementById('sa-catalog-results').style.display = 'none';
+            onRoleSelectInSuperAdmin(t.role || 'owner');
+            openModal('add');
+
+            setTimeout(() => {
+                initBindMapInModal();
+                if (t.catalogId) {
+                    selectCatalogShopInSA(t.catalogId, t.shopName);
+                } else if (t.customLat && t.customLon && saBindMap) {
+                    const ll = [Number(t.customLat), Number(t.customLon)];
+                    saBindMap.setView(ll, 16);
+                    if (saBindCustomMarker) saBindCustomMarker.setLatLng(ll);
+                    else saBindCustomMarker = L.marker(ll).addTo(saBindMap);
                 }
             }, 180);
         }
@@ -338,15 +402,14 @@
         function onRoleSelectInSuperAdmin(role) {
             const bindWrap = document.getElementById('sa-catalog-bind-wrap');
             const nameLbl = document.getElementById('t_name_label');
+            if (bindWrap) bindWrap.style.display = 'block';
             if (role === 'master') {
-                if (bindWrap) bindWrap.style.display = 'none';
                 if (nameLbl) nameLbl.textContent = 'Имя и специализация Мастера (Соло)';
             } else {
-                if (bindWrap) bindWrap.style.display = 'block';
                 if (nameLbl) nameLbl.textContent = 'Название барбершопа';
-                setTimeout(() => initBindMapInModal(), 100);
             }
-            generateNumericId();
+            setTimeout(() => initBindMapInModal(), 100);
+            if (!saBindTargetTenantId) generateNumericId();
         }
 
         function generateNumericId() {
@@ -411,7 +474,11 @@
 
             document.getElementById('t_catalog_id').value = catId;
             document.getElementById('t_catalog_search').value = resolvedName;
-            document.getElementById('t_name').value = resolvedName;
+            const curRole = document.getElementById('t_role') ? document.getElementById('t_role').value : 'owner';
+            const nameInput = document.getElementById('t_name');
+            if (!saBindTargetTenantId && (curRole !== 'master' || !nameInput.value.trim())) {
+                nameInput.value = resolvedName;
+            }
             if (shop && shop.phone && !document.getElementById('t_email').value) {
                 document.getElementById('t_email').value = shop.phone;
             }
@@ -504,6 +571,9 @@
                         <button class="btn-link" style="background:#0c192c; color:#fff;" onclick="loginAsTenantFromSA('${t.id}', '${(t.shopName || '').replace(/'/g, '')}', '${isMaster ? 'master' : 'owner'}')" title="Войти в этот кабинет">
                             <i data-lucide="log-in" style="width:13px;height:13px;"></i> Войти
                         </button>
+                        <button class="btn-link" style="background:${(t.catalogId || t.customLat) ? '#e7f6ed' : '#f0f4f9'}; color:${(t.catalogId || t.customLat) ? '#00873d' : '#0c192c'}; border:1px solid ${(t.catalogId || t.customLat) ? 'rgba(0,135,61,0.35)' : '#d5e2f0'};" onclick="openBindTenantToMapModal('${t.id}')" title="Привязать этот кабинет к точке на карте">
+                            <i data-lucide="map-pin" style="width:13px;height:13px;"></i> ${(t.catalogId || t.customLat) ? 'На карте ✓' : 'На карту'}
+                        </button>
                         <button class="btn-block" style="background:#f0f4f9; color:#0c192c; border-color:#d5e2f0;" onclick="openTenantSettings('${t.id}')"><i data-lucide="settings" style="width:14px;height:14px;"></i></button>
                         <button class="btn-block" onclick="deleteTenant('${t.id}')"><i data-lucide="trash-2" style="width:13px;height:13px;"></i> Забрать доступ</button>
                     </td>
@@ -545,34 +615,62 @@
             const customLat = parseFloat(document.getElementById('t_custom_lat')?.value || '');
             const customLon = parseFloat(document.getElementById('t_custom_lon')?.value || '');
 
-            if (!name) return alert('Укажите название барбершопа или выберите салон кликом на карте!');
+            if (!name) return alert('Укажите название барбершопа или имя мастера!');
             if (!/^\d+$/.test(id)) return alert('Цифровой ID должен состоять ТОЛЬКО из цифр (например: 1001)!');
             if (!/^\d{4}$/.test(pin)) return alert('PIN-пароль должен состоять ровно из 4 цифр (например: 4829)!');
-            if (tenants.find(t => String(t.id) === String(id))) return alert('Этот цифровой ID уже занят! Нажмите «🎲 Авто», чтобы сгенерировать свободный ID.');
+            if (!saBindTargetTenantId && tenants.find(t => String(t.id) === String(id))) {
+                return alert('Этот цифровой ID уже занят! Нажмите «🎲 Авто», чтобы сгенерировать свободный ID.');
+            }
 
-            const newT = {
-                id: String(id),
-                pin: String(pin),
-                role: role,
-                shopName: name,
-                email: email || '—',
-                catalogId: catalogId || ((!isNaN(customLat) && !isNaN(customLon)) ? String(id) : ''),
-                createdAt: new Date().toLocaleDateString('ru-RU')
-            };
-            tenants.push(newT);
+            const existingTarget = saBindTargetTenantId ? tenants.find(t => String(t.id) === String(saBindTargetTenantId)) : null;
+            const resolvedCatalogId = catalogId || ((!isNaN(customLat) && !isNaN(customLon)) ? String(id) : (existingTarget ? (existingTarget.catalogId || '') : ''));
+
+            if (existingTarget) {
+                existingTarget.pin = String(pin);
+                existingTarget.shopName = name;
+                existingTarget.email = email || existingTarget.email || '—';
+                existingTarget.catalogId = resolvedCatalogId;
+                if (!isNaN(customLat) && !isNaN(customLon)) {
+                    existingTarget.customLat = customLat;
+                    existingTarget.customLon = customLon;
+                }
+            } else {
+                const newT = {
+                    id: String(id),
+                    pin: String(pin),
+                    role: role,
+                    shopName: name,
+                    email: email || '—',
+                    catalogId: resolvedCatalogId,
+                    createdAt: new Date().toLocaleDateString('ru-RU')
+                };
+                if (!isNaN(customLat) && !isNaN(customLon)) {
+                    newT.customLat = customLat;
+                    newT.customLon = customLon;
+                }
+                tenants.push(newT);
+            }
             window.tenants = tenants;
             if(window.appDB) await window.appDB.saveGlobalTenants(tenants);
 
-            // Initialize tenant settings so their cabinet immediately displays the right name & catalog details
+            // Safely merge tenant settings with existing Firestore settings so nothing is ever lost
             const sKey = id + '_barber_settings';
             try {
-                const cur = JSON.parse(localStorage.getItem(sKey) || '{}');
+                let remoteExisting = {};
+                if (window.appDB && window.appDB.useFirebase && window.appDB.fs) {
+                    const { doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+                    const ref = doc(window.appDB.fs, `tenants/${id}/data/barber_settings`);
+                    const snap = await getDoc(ref);
+                    if (snap.exists() && snap.data().items) remoteExisting = snap.data().items;
+                }
+                const cur = Object.assign({}, JSON.parse(localStorage.getItem(sKey) || '{}'), remoteExisting);
                 cur.shopName = name;
                 if (role === 'master') {
                     cur.soloMode = true;
                     cur.soloMasterName = name;
                     cur.soloPin = pin;
-                } else if (catalogId) {
+                }
+                if (catalogId) {
                     const fullCat = typeof window.getFullKGCatalogForSA === 'function'
                         ? window.getFullKGCatalogForSA()
                         : (window.BARBERSHOPS_DATA || []);
@@ -580,25 +678,29 @@
                     if (catShop) {
                         cur.city = catShop.city || 'Бишкек';
                         cur.address = catShop.address || '';
-                        cur.phone = catShop.phone || email || '';
+                        cur.phone = cur.phone || catShop.phone || email || '';
                         cur.lat = catShop.lat;
                         cur.lon = catShop.lon != null ? catShop.lon : catShop.lng;
                     }
                 } else if (!isNaN(customLat) && !isNaN(customLon)) {
-                    cur.city = 'Бишкек';
+                    cur.city = cur.city || 'Бишкек';
                     cur.lat = customLat;
                     cur.lon = customLon;
-                    cur.phone = email || '';
+                    cur.phone = cur.phone || email || '';
+                    if (role === 'master') cur.soloMapVisible = true;
                     if (window.BarberMobileBridge && window.BarberMobileBridge.saveBarbershopLocation) {
-                        await window.BarberMobileBridge.saveBarbershopLocation(String(id), {
+                        await window.BarberMobileBridge.saveBarbershopLocation(role === 'master' ? ('solo_' + id) : String(id), {
+                            id: role === 'master' ? ('solo_' + id) : String(id),
+                            tenantId: String(id),
+                            isSolo: role === 'master',
                             name: name,
-                            city: 'Бишкек',
-                            address: 'Точка с карты Super Admin',
-                            phone: email || '',
+                            city: cur.city || 'Бишкек',
+                            address: cur.address || 'Точка с карты Super Admin',
+                            phone: cur.phone || '',
                             lat: customLat,
                             lon: customLon,
                             rating: 5.0,
-                            reviews: 1
+                            reviews: 15
                         });
                     }
                 }
@@ -608,6 +710,7 @@
                 }
             } catch (e) {}
 
+            saBindTargetTenantId = null;
             renderStats();
             renderTenants();
             if (typeof window.renderSABarberList === 'function') window.renderSABarberList();

@@ -207,7 +207,15 @@ const i18n = {
 
         function isSoloBookingMode() {
             const params = new URLSearchParams(window.location.search);
-            return params.get('solo') === '1' || Boolean(store.settings && store.settings.soloMode);
+            if (params.get('solo') === '1' || Boolean(store.settings && store.settings.soloMode)) return true;
+            try {
+                const tid = window.appDB ? String(window.appDB.tenantId) : '';
+                const tenants = JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
+                if (tid && Array.isArray(tenants) && tenants.some(t => String(t.id) === tid && t.role === 'master')) {
+                    return true;
+                }
+            } catch (e) {}
+            return false;
         }
 
         function getMasterCoords(m, idx) {

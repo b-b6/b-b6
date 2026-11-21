@@ -838,37 +838,33 @@ body.dragging .map-ctrls{transition:opacity .2s}
     return Boolean(getChairRentInfo(b));
   }
 
-  function isPartnerTenant(b) {
-    if (b && b.isSolo && b.tenantId) return true;
-    try {
-      const tenants = JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
-      if (!Array.isArray(tenants)) return false;
-      const bName = String(b.name || b.title || '').trim().toLowerCase();
-      return tenants.some(t =>
-        (t.catalogId && String(t.catalogId) === String(b.id)) ||
-        (String(t.id) === String(b.id)) ||
-        (bName && String(t.id).toLowerCase() === bName) ||
-        (t.shopName && bName && String(t.shopName).trim().toLowerCase() === bName)
-      );
-    } catch (e) { return false; }
-  }
-
-  function resolveBookingTargetId(b) {
-    if (b && b.isSolo && b.tenantId) return String(b.tenantId);
+  function resolveBoundTenant(b) {
     try {
       const tenants = JSON.parse(localStorage.getItem('global_saas_tenants') || '[]');
       if (Array.isArray(tenants)) {
         const bName = String(b.name || b.title || '').trim().toLowerCase();
-        const bound = tenants.find(t =>
+        return tenants.find(t =>
           (t.catalogId && String(t.catalogId) === String(b.id)) ||
           (String(t.id) === String(b.id)) ||
+          (b.tenantId && String(t.id) === String(b.tenantId)) ||
           (bName && String(t.id).toLowerCase() === bName) ||
           (t.shopName && bName && String(t.shopName).trim().toLowerCase() === bName) ||
           (t.customLat && b.lat && Math.abs(Number(t.customLat) - Number(b.lat)) < 0.0005 && Math.abs(Number(t.customLon) - Number(b.lon != null ? b.lon : b.lng)) < 0.0005)
-        );
-        if (bound && bound.id) return String(bound.id);
+        ) || null;
       }
     } catch (e) {}
+    return null;
+  }
+
+  function isPartnerTenant(b) {
+    if (b && b.isSolo && b.tenantId) return true;
+    return Boolean(resolveBoundTenant(b));
+  }
+
+  function resolveBookingTargetId(b) {
+    const bound = resolveBoundTenant(b);
+    if (bound && bound.id) return String(bound.id);
+    if (b && b.isSolo && b.tenantId) return String(b.tenantId);
     return String(b.id);
   }
 
@@ -891,8 +887,10 @@ body.dragging .map-ctrls{transition:opacity .2s}
     const rent = getChairRentInfo(b);
     const fmtPrice = (val, short) => window.BarberCurrency ? window.BarberCurrency.format(val, (rent && rent.currencyCode) || 'KGS', short) : (val + (short ? ' с' : ' сом'));
     const rentBadge = rent ? `<span style="font-size:11px;font-weight:700;color:#0369a1;background:#e0f2fe;padding:2px 7px;border-radius:999px;border:1px solid #bae6fd;">${tr('chair_short')} ${rent.priceHour ? fmtPrice(rent.priceHour, true) + '/ч' : (fmtPrice(rent.priceDay, true) + '/день')}</span>` : '';
-    const soloBadge = b.isSolo ? `<span style="font-size:11px;font-weight:700;color:#7a1c2d;background:#fbf0f2;padding:2px 7px;border-radius:999px;border:1px solid #f0cdd3;">✂️ ${esc(tr('solo_kind'))}</span>` : '';
-    const bookHref = `index.html?id=${encodeURIComponent(targetId)}${b.isSolo ? '&solo=1' : ''}&shopName=${encodeURIComponent(b.title || b.name || '')}`;
+    const boundT = resolveBoundTenant(b);
+    const isSoloTarget = Boolean(b.isSolo || (boundT && boundT.role === 'master'));
+    const soloBadge = isSoloTarget ? `<span style="font-size:11px;font-weight:700;color:#7a1c2d;background:#fbf0f2;padding:2px 7px;border-radius:999px;border:1px solid #f0cdd3;">✂️ ${esc(tr('solo_kind'))}</span>` : '';
+    const bookHref = `index.html?id=${encodeURIComponent(targetId)}${isSoloTarget ? '&solo=1' : ''}&shopName=${encodeURIComponent(b.title || b.name || '')}`;
     return `<div class="card" data-id="${esc(b.id)}" role="button" tabindex="0">
       ${renderAvBox(b, st.known && st.open ? '<span class="dot-open"></span>' : '')}
       <div class="card-main">
@@ -987,7 +985,9 @@ body.dragging .map-ctrls{transition:opacity .2s}
     const stats = [];
     if (b.rating) stats.push(`<span class="rate">${ICON.star(14)}${b.rating.toFixed(1)}</span><span style="color:var(--muted)">${b.reviews} ${plural(b.reviews, W_RV)}</span>`);
     if (st.known) stats.push(`<span class="st-pill ${st.open ? 'open' : 'closed'}">${st.text}</span>`);
-    if (b.isSolo) stats.push(`<span style="font-size:12px;font-weight:700;color:#7a1c2d;background:#fbf0f2;padding:3px 9px;border-radius:999px;border:1px solid #f0cdd3;">✂️ ${esc(tr('solo_kind'))}</span>`);
+    const boundDetailT = resolveBoundTenant(b);
+    const isSoloDetail = Boolean(b.isSolo || (boundDetailT && boundDetailT.role === 'master'));
+    if (isSoloDetail) stats.push(`<span style="font-size:12px;font-weight:700;color:#7a1c2d;background:#fbf0f2;padding:3px 9px;border-radius:999px;border:1px solid #f0cdd3;">✂️ ${esc(tr('solo_kind'))}</span>`);
     if (partner) {
       stats.push(`<span class="partner-pill">${tr('online_bk')}</span>`);
     } else {
@@ -1030,7 +1030,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
         </div>
         <div class="d-stats">${stats.join('<span class="dot"></span>')}</div>
         <div class="actions">
-          <a class="btn primary" href="index.html?id=${encodeURIComponent(resolveBookingTargetId(b))}${b.isSolo ? '&solo=1' : ''}&shopName=${encodeURIComponent(b.title || b.name || '')}">
+          <a class="btn primary" href="index.html?id=${encodeURIComponent(resolveBookingTargetId(b))}${isSoloDetail ? '&solo=1' : ''}&shopName=${encodeURIComponent(b.title || b.name || '')}">
             ${bookBtnLabel}
           </a>
           <button class="btn navy" data-act="route">${ICON.route}${tr('route_btn')}</button>

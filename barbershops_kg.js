@@ -17915,5 +17915,44 @@ window.BARBERSHOPS_DATA = [
                 "role": "Top Barber"
             }
         ]
+    },
+    {
+        "id": "kg-ya-suzak-408948",
+        "name": "Suzak, барбершоп",
+        "brand": "Suzak",
+        "country": "Кыргызстан",
+        "city": "Джалал-Абад",
+        "area": "Сузак, ул. Навои",
+        "address": "Сузак, ул. Навои, 210",
+        "lat": 40.894836,
+        "lon": 72.897224,
+        "rating": 5.0,
+        "reviews_count": 12,
+        "phone": "",
+        "instagram": "",
+        "working_hours": "ежедневно, 09:00–21:00",
+        "price_range": "500 - 1 500 сом",
+        "booking_type": "whatsapp",
+        "source": "Yandex",
+        "link_2gis": "",
+        "photo": "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600&auto=format&fit=crop&q=80",
+        "services": [
+            {
+                "name": "Мужская стрижка",
+                "price": 500,
+                "duration": "40 min"
+            },
+            {
+                "name": "Моделирование бороды",
+                "price": 350,
+                "duration": "25 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Барбер",
+                "role": "Top Barber"
+            }
+        ]
     }
 ];
