@@ -14,7 +14,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "kg.barbermap.saas",
       "associatedDomains": [
-        "applinks:b-b6.github.io"
+        "applinks:barbersmaps.netlify.app"
       ],
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Геолокация используется только для поиска ближайших к вам барбершопов на карте Кыргызстана."
@@ -35,13 +35,13 @@
           "data": [
             {
               "scheme": "https",
-              "host": "b-b6.github.io",
-              "pathPrefix": "/b-b6/book"
+              "host": "barbersmaps.netlify.app",
+              "pathPrefix": "/book"
             },
             {
               "scheme": "https",
-              "host": "b-b6.github.io",
-              "pathPrefix": "/b-b6/index.html"
+              "host": "barbersmaps.netlify.app",
+              "pathPrefix": "/index.html"
             }
           ],
           "category": ["BROWSABLE", "DEFAULT"]
