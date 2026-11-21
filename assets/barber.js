@@ -20,7 +20,17 @@ let soloProfile = {
 
 let soloBookingsCache = [];
 let soloServicesCache = [];
+let soloSettingsCache = {};
 let lastSeenPushTs = Date.now();
+let soloBookingsInitialized = false;
+let soloKnownBookingIds = new Set();
+let soloKnownCancelledIds = new Set();
+let soloSuppressedAlertIds = new Set();
+let soloAlertedKeys = new Set();
+let soloToastTimer = null;
+let soloLatestToastDate = '';
+let soloPendingTgBindCode = '';
+const DEFAULT_PLATFORM_TG_TOKEN = '8924847843:AAFWkfnlKSeBYtPp2M8NQGFuGhlxj2FLghE';
 
 function getTodayIso() {
     const d = new Date();
@@ -85,8 +95,17 @@ window.addEventListener('DOMContentLoaded', async () => {
     renderWorkDaysUI();
     await renderSoloServices();
     await refreshBookingsAndRender();
+    syncSoloPushUI();
+    renderSoloNotifFeed();
     renderSoloQRCode();
     initSubscriptions();
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            refreshBookingsAndRender();
+            syncSoloPushUI();
+        }
+    });
 });
 
 const DAY_CODE_TO_NUM = { 'ВС': 0, 'ПН': 1, 'ВТ': 2, 'СР': 3, 'ЧТ': 4, 'ПТ': 5, 'СБ': 6 };
@@ -117,8 +136,20 @@ async function loadSoloStateFromDB(masterRecord) {
             pin: settings.soloPin || settings.adminPin || defaultPin
         };
 
-        if (!settings.soloMode || !settings.soloMasterName) {
-            await window.appDB.saveSettings({
+        let settingsDirty = false;
+        const tidStr = String((window.appDB && window.appDB.tenantId) || 'master').replace(/[^a-zA-Z0-9_-]/g, '');
+        if (!settings.solo_push_topic) {
+            settings.solo_push_topic = `bmap_solo_${tidStr}_${Math.random().toString(36).slice(2, 8)}`;
+            settingsDirty = true;
+        }
+        if (settings.solo_push_enabled === undefined) {
+            settings.solo_push_enabled = true;
+            settingsDirty = true;
+        }
+        soloSettingsCache = settings;
+
+        if (!settings.soloMode || !settings.soloMasterName || settingsDirty) {
+            const updatedInit = {
                 ...settings,
                 soloMode: true,
                 soloMasterName: soloProfile.name,
@@ -129,7 +160,9 @@ async function loadSoloStateFromDB(masterRecord) {
                 openTime: soloProfile.workStart,
                 closeTime: soloProfile.workEnd,
                 soloPin: soloProfile.pin
-            });
+            };
+            soloSettingsCache = updatedInit;
+            await window.appDB.saveSettings(updatedInit);
         }
 
         const nameInput = document.getElementById('solo-name-input');
@@ -250,6 +283,7 @@ window.saveSoloProfile = async function (showToast) {
                 soloCommissionPct: soloProfile.commissionPct,
                 soloPin: soloProfile.pin
             };
+            soloSettingsCache = updatedSettings;
             await window.appDB.saveSettings(updatedSettings);
 
             const masters = (await window.appDB.getMasters()) || [];
@@ -313,6 +347,7 @@ async function refreshBookingsAndRender() {
     if (window.appDB) {
         try {
             soloBookingsCache = (await window.appDB.getBookings()) || [];
+            processBookingsDiff(soloBookingsCache);
         } catch (e) {
             console.warn('refreshBookingsAndRender error:', e);
         }
@@ -473,8 +508,10 @@ window.cancelSoloBooking = async function (bookingId) {
     const bookings = (await window.appDB.getBookings()) || [];
     const b = bookings.find(x => String(x.id) === String(bookingId));
     if (b) {
+        soloSuppressedAlertIds.add('cancel_' + b.id);
         b.status = 'cancelled';
         await window.appDB.saveBookings(bookings);
+        soloKnownCancelledIds.add(String(b.id));
         soloBookingsCache = bookings;
         renderSoloSchedule();
     }
@@ -535,8 +572,11 @@ window.saveManualSoloBooking = async function () {
         status: 'confirmed'
     };
 
+    soloSuppressedAlertIds.add('new_' + newBooking.id);
+    soloKnownBookingIds.add(String(newBooking.id));
     await window.appDB.addBooking(newBooking);
     soloBookingsCache = (await window.appDB.getBookings()) || [];
+    persistSeenBookingIds();
     closeAddBookingModal();
     renderSoloSchedule();
 };
@@ -722,11 +762,260 @@ window.logoutMasterSession = function () {
 };
 
 // ================= REAL-TIME PUSH NOTIFICATION & DB SUBSCRIPTIONS =================
+function getSeenBookingsStorageKey() {
+    const tid = (window.appDB && window.appDB.tenantId) ? window.appDB.tenantId : 'default';
+    return 'solo_seen_booking_ids_' + tid;
+}
+
+function getNotifFeedStorageKey() {
+    const tid = (window.appDB && window.appDB.tenantId) ? window.appDB.tenantId : 'default';
+    return 'solo_notif_feed_' + tid;
+}
+
+function loadSeenBookingIds() {
+    try {
+        const raw = localStorage.getItem(getSeenBookingsStorageKey());
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? new Set(parsed.map(String)) : null;
+    } catch (e) {
+        return null;
+    }
+}
+
+function persistSeenBookingIds() {
+    try {
+        const arr = Array.from(soloKnownBookingIds).slice(-300);
+        localStorage.setItem(getSeenBookingsStorageKey(), JSON.stringify(arr));
+    } catch (e) {}
+}
+
+function loadSoloNotifFeed() {
+    try {
+        const raw = localStorage.getItem(getNotifFeedStorageKey());
+        const arr = raw ? JSON.parse(raw) : [];
+        return Array.isArray(arr) ? arr : [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function saveSoloNotifFeed(arr) {
+    try {
+        localStorage.setItem(getNotifFeedStorageKey(), JSON.stringify((arr || []).slice(0, 40)));
+    } catch (e) {}
+}
+
+function pushToSoloNotifFeed(item) {
+    const list = loadSoloNotifFeed();
+    if (item.dedupKey && list.some(x => x.dedupKey === item.dedupKey)) return false;
+    list.unshift({
+        id: item.id || ('n_' + Date.now()),
+        dedupKey: item.dedupKey || '',
+        title: item.title || '🔔 Новая запись!',
+        body: item.body || '',
+        date: item.date || '',
+        time: item.time || '',
+        kind: item.kind || 'new',
+        unread: true,
+        ts: Date.now()
+    });
+    saveSoloNotifFeed(list);
+    renderSoloNotifFeed();
+    return true;
+}
+
+function renderSoloNotifFeed() {
+    const list = loadSoloNotifFeed();
+    const unreadCount = list.filter(x => x.unread).length;
+    const badge = document.getElementById('solo-bell-badge');
+    if (badge) {
+        badge.textContent = unreadCount > 9 ? '9+' : String(unreadCount);
+        badge.style.display = unreadCount > 0 ? 'inline-flex' : 'none';
+    }
+
+    const feedEl = document.getElementById('solo-notif-feed');
+    if (!feedEl) return;
+    if (list.length === 0) {
+        feedEl.innerHTML = '<div style="font-size:12.5px; color:var(--text-muted); text-align:center; padding:14px; background:var(--bg-card); border-radius:12px;">Новых уведомлений пока нет</div>';
+        return;
+    }
+
+    const esc = (s) => window.escapeHTML ? window.escapeHTML(String(s || '')) : String(s || '');
+    feedEl.innerHTML = list.map(n => {
+        const dtStr = new Date(n.ts || Date.now()).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+        const jumpAttr = n.date ? `onclick="jumpToNotifBooking('${esc(n.date)}')" style="cursor:pointer;"` : '';
+        return `
+            <div class="notif-feed-item ${n.unread ? 'unread' : ''}" ${jumpAttr}>
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                    <div style="font-size:13px; font-weight:800; color:var(--navy);">${esc(n.title)}</div>
+                    <span style="font-size:11px; color:var(--text-muted); font-weight:700;">${dtStr}</span>
+                </div>
+                <div style="font-size:12px; color:var(--text-muted); margin-top:3px; line-height:1.35;">${esc(n.body)}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+window.jumpToNotifBooking = function (dateStr) {
+    const dateInput = document.getElementById('solo-schedule-date');
+    if (dateInput && dateStr) {
+        dateInput.value = dateStr;
+        renderSoloSchedule();
+    }
+    closeSoloNotifModal();
+    const schedBtn = document.querySelector('.bottom-nav .nav-item[data-tab="schedule"]');
+    if (schedBtn) switchSoloTab('schedule', schedBtn);
+};
+
+window.markSoloNotifsRead = function () {
+    const list = loadSoloNotifFeed().map(x => ({ ...x, unread: false }));
+    saveSoloNotifFeed(list);
+    renderSoloNotifFeed();
+};
+
+window.clearSoloNotifs = function () {
+    saveSoloNotifFeed([]);
+    renderSoloNotifFeed();
+};
+
+function showSoloToastBanner(title, body, dateStr) {
+    const el = document.getElementById('solo-toast-banner');
+    const tEl = document.getElementById('solo-toast-title');
+    const bEl = document.getElementById('solo-toast-body');
+    if (!el || !tEl || !bEl) return;
+    tEl.textContent = title || '🔔 Новая запись!';
+    bEl.textContent = body || '';
+    soloLatestToastDate = dateStr || '';
+    el.classList.add('show');
+    if (soloToastTimer) clearTimeout(soloToastTimer);
+    soloToastTimer = setTimeout(() => el.classList.remove('show'), 7000);
+}
+
+window.onSoloToastClick = function () {
+    const el = document.getElementById('solo-toast-banner');
+    if (el) el.classList.remove('show');
+    if (soloLatestToastDate) {
+        jumpToNotifBooking(soloLatestToastDate);
+    } else {
+        openSoloNotifModal();
+    }
+};
+
+function fireSoloIncomingAlert({ dedupKey, title, body, date, time, kind, silent }) {
+    if (dedupKey && soloAlertedKeys.has(dedupKey)) return;
+    if (dedupKey) soloAlertedKeys.add(dedupKey);
+
+    const added = pushToSoloNotifFeed({
+        id: dedupKey || ('a_' + Date.now()),
+        dedupKey,
+        title,
+        body,
+        date,
+        time,
+        kind
+    });
+    if (!added || silent) return;
+
+    showSoloToastBanner(title, body, date);
+    if (window.BarberMobileBridge) {
+        window.BarberMobileBridge.playNotificationSound();
+        if (window.BarberMobileBridge.vibrate) {
+            window.BarberMobileBridge.vibrate([200, 100, 200, 100, 300]);
+        }
+        const tid = (window.appDB && window.appDB.tenantId) ? window.appDB.tenantId : 'default';
+        window.BarberMobileBridge.showLocalNotification(title, body, {
+            tag: dedupKey || ('solo_' + Date.now()),
+            url: `barber.html?id=${encodeURIComponent(tid)}`
+        });
+    }
+}
+
+function processBookingsDiff(bookings) {
+    const list = Array.isArray(bookings) ? bookings : [];
+
+    if (!soloBookingsInitialized) {
+        soloBookingsInitialized = true;
+        const storedSeen = loadSeenBookingIds();
+        if (storedSeen === null) {
+            list.forEach(b => {
+                if (!b || !b.id) return;
+                soloKnownBookingIds.add(String(b.id));
+                if (b.status === 'cancelled') soloKnownCancelledIds.add(String(b.id));
+            });
+            persistSeenBookingIds();
+            return;
+        }
+        soloKnownBookingIds = storedSeen;
+        let missedAdded = false;
+        list.forEach(b => {
+            if (!b || !b.id || b.isBreak) return;
+            const idStr = String(b.id);
+            if (!soloKnownBookingIds.has(idStr)) {
+                soloKnownBookingIds.add(idStr);
+                missedAdded = true;
+                if (b.status !== 'cancelled') {
+                    fireSoloIncomingAlert({
+                        dedupKey: 'new_' + idStr,
+                        title: `✂️ Новая запись на ${b.time || ''}!`,
+                        body: `${b.name || 'Клиент'} (${b.phone || '—'}) • ${b.service || 'Стрижка'} • ${b.date || ''}`,
+                        date: b.date,
+                        time: b.time,
+                        kind: 'new',
+                        silent: true
+                    });
+                }
+            } else if (b.status === 'cancelled') {
+                soloKnownCancelledIds.add(idStr);
+            }
+        });
+        if (missedAdded) persistSeenBookingIds();
+        return;
+    }
+
+    let changedSeen = false;
+    list.forEach(b => {
+        if (!b || !b.id || b.isBreak) return;
+        const idStr = String(b.id);
+        if (!soloKnownBookingIds.has(idStr)) {
+            soloKnownBookingIds.add(idStr);
+            changedSeen = true;
+            if (!soloSuppressedAlertIds.has('new_' + idStr) && b.status !== 'cancelled') {
+                fireSoloIncomingAlert({
+                    dedupKey: 'new_' + idStr,
+                    title: `✂️ Новая запись на ${b.time || ''}!`,
+                    body: `${b.name || 'Клиент'} (${b.phone || '—'}) • ${b.service || 'Стрижка'} • ${b.date || ''}`,
+                    date: b.date,
+                    time: b.time,
+                    kind: 'new',
+                    silent: false
+                });
+            }
+        }
+        if (b.status === 'cancelled' && !soloKnownCancelledIds.has(idStr)) {
+            soloKnownCancelledIds.add(idStr);
+            if (!soloSuppressedAlertIds.has('cancel_' + idStr)) {
+                fireSoloIncomingAlert({
+                    dedupKey: 'cancel_' + idStr,
+                    title: `❌ Отмена записи (${b.time || ''})`,
+                    body: `${b.name || 'Клиент'} отменил запись на ${b.date || ''}`,
+                    date: b.date,
+                    time: b.time,
+                    kind: 'cancel',
+                    silent: false
+                });
+            }
+        }
+    });
+    if (changedSeen) persistSeenBookingIds();
+}
+
 function initSubscriptions() {
     if (window.appDB) {
         if (window.appDB.subscribe) {
             window.appDB.subscribe(window.appDB.collections.bookings, (data) => {
                 soloBookingsCache = data || [];
+                processBookingsDiff(soloBookingsCache);
                 renderSoloSchedule();
             });
             window.appDB.subscribe(window.appDB.collections.services, (data) => {
@@ -734,28 +1023,28 @@ function initSubscriptions() {
                 renderSoloServices();
             });
         }
-    }
-
-    try {
-        if (!window.firebase || !firebase.firestore || !window.appDB) return;
-        const db = firebase.firestore();
-        const tenantId = String(window.appDB.tenantId);
-        db.collection('tenants').doc(tenantId).collection('data').doc('last_push').onSnapshot(doc => {
-            if (!doc.exists) return;
-            const data = doc.data();
-            if (data && data.timestamp > lastSeenPushTs) {
+        if (window.appDB.subscribeRawDoc) {
+            window.appDB.subscribeRawDoc('last_push', (data) => {
+                if (!data || !data.timestamp || data.timestamp <= lastSeenPushTs) return;
                 lastSeenPushTs = data.timestamp;
-                if (window.BarberMobileBridge) {
-                    window.BarberMobileBridge.playNotificationSound();
-                    window.BarberMobileBridge.showLocalNotification(
-                        data.title || '✂️ Новая запись!',
-                        data.body || ''
-                    );
-                }
-            }
-            refreshBookingsAndRender();
-        });
-    } catch (e) {}
+                const b = data.booking || {};
+                const idStr = b.id ? String(b.id) : String(data.timestamp);
+                const isCancel = b.status === 'cancelled';
+                const dedupKey = (isCancel ? 'cancel_' : 'new_') + idStr;
+                if (soloSuppressedAlertIds.has(dedupKey)) return;
+                fireSoloIncomingAlert({
+                    dedupKey,
+                    title: data.title || '✂️ Новая запись!',
+                    body: data.body || '',
+                    date: b.date || '',
+                    time: b.time || '',
+                    kind: isCancel ? 'cancel' : 'new',
+                    silent: false
+                });
+                refreshBookingsAndRender();
+            });
+        }
+    }
 }
 
 // ================= ADMIN-GRADE EXTENSIONS FOR SOLO MASTER =================
@@ -817,29 +1106,405 @@ window.toggleSoloBreak = async function (timeStr) {
         createdAt: new Date().toISOString()
     };
 
+    soloSuppressedAlertIds.add('new_' + breakItem.id);
+    soloKnownBookingIds.add(String(breakItem.id));
     bookings.push(breakItem);
     await window.appDB.saveBookings(bookings);
     soloBookingsCache = bookings;
+    persistSeenBookingIds();
     renderSoloSchedule();
     if (window.BarberMobileBridge && window.BarberMobileBridge.vibrate) {
         window.BarberMobileBridge.vibrate(25);
     }
 };
 
-// 3. Telegram notification setup
-window.saveSoloTelegram = async function () {
+// 3. Push Center (ntfy + Telegram + Browser PWA notifications)
+function getNtfyConfirmKey() {
+    const tid = (window.appDB && window.appDB.tenantId) ? window.appDB.tenantId : 'default';
+    return 'solo_ntfy_confirmed_' + tid;
+}
+
+function syncSoloPushUI() {
+    const st = soloSettingsCache || {};
+    const topic = st.solo_push_topic || '';
+    const ntfyEnabled = st.solo_push_enabled !== false;
+    const ntfyConfirmed = Boolean(st.solo_ntfy_confirmed || localStorage.getItem(getNtfyConfirmKey()) === '1');
+    const tgVal = String(st.telegram_bot_token || '').trim();
+    const tgConnected = tgVal.includes('@@') && tgVal.split('@@')[1];
+
+    const topicInput = document.getElementById('solo-ntfy-topic');
+    const ntfyCheck = document.getElementById('solo-ntfy-enabled');
+    const appLink = document.getElementById('ntfy-app-link');
+    const webLink = document.getElementById('ntfy-web-link');
+    const ntfyPill = document.getElementById('ntfy-status-pill');
+
+    if (topicInput) topicInput.value = topic;
+    if (ntfyCheck) ntfyCheck.checked = ntfyEnabled;
+    if (appLink && topic) {
+        appLink.href = `ntfy://ntfy.sh/${encodeURIComponent(topic)}`;
+        appLink.onclick = () => markNtfyLinked();
+    }
+    if (webLink && topic) {
+        webLink.href = `https://ntfy.sh/${encodeURIComponent(topic)}`;
+        webLink.onclick = () => markNtfyLinked();
+    }
+    if (ntfyPill) {
+        if (!ntfyEnabled) {
+            ntfyPill.className = 'push-status-pill off';
+            ntfyPill.textContent = 'Отключен';
+        } else if (ntfyConfirmed) {
+            ntfyPill.className = 'push-status-pill on';
+            ntfyPill.textContent = '✅ Подключен';
+        } else {
+            ntfyPill.className = 'push-status-pill off';
+            ntfyPill.textContent = 'Канал готов — подпишитесь';
+        }
+    }
+
+    const tgPill = document.getElementById('tg-status-pill');
     const tgInput = document.getElementById('solo-tg-token');
-    const val = tgInput ? tgInput.value.trim() : '';
+    if (tgInput && !tgInput.value && tgVal) tgInput.value = tgVal;
+    if (tgPill) {
+        if (tgConnected) {
+            tgPill.className = 'push-status-pill on';
+            tgPill.textContent = `✅ Chat ID: ${tgVal.split('@@')[1]}`;
+        } else {
+            tgPill.className = 'push-status-pill off';
+            tgPill.textContent = 'Не подключен';
+        }
+    }
+
+    const brPill = document.getElementById('browser-notif-pill');
+    if (brPill) {
+        if (!('Notification' in window)) {
+            brPill.className = 'push-status-pill off';
+            brPill.textContent = 'Не поддерживается';
+        } else if (Notification.permission === 'granted') {
+            brPill.className = 'push-status-pill on';
+            brPill.textContent = '✅ Разрешено';
+        } else if (Notification.permission === 'denied') {
+            brPill.className = 'push-status-pill off';
+            brPill.textContent = '⚠️ Заблокировано в браузере';
+        } else {
+            brPill.className = 'push-status-pill off';
+            brPill.textContent = 'Нужно разрешить';
+        }
+    }
+
+    const anyBgReady = (ntfyEnabled && ntfyConfirmed && Boolean(topic)) || Boolean(tgConnected);
+    const pushDot = document.getElementById('solo-push-dot');
+    if (pushDot) pushDot.classList.toggle('on', anyBgReady);
+
+    const summaryPill = document.getElementById('settings-push-summary-pill');
+    if (summaryPill) {
+        summaryPill.className = anyBgReady ? 'push-status-pill on' : 'push-status-pill off';
+        summaryPill.textContent = anyBgReady ? '✅ Активно в фоне' : 'Нажмите, чтобы включить';
+    }
+    const summaryBox = document.getElementById('settings-push-channels-summary');
+    if (summaryBox) {
+        summaryBox.innerHTML = `
+            <div>📲 Системный ПУШ (ntfy): ${ntfyEnabled && ntfyConfirmed ? '<span style="color:var(--green);">Подключен</span>' : '<span style="color:#b45309;">Не привязан</span>'}</div>
+            <div>🤖 Telegram ПУШ: ${tgConnected ? '<span style="color:var(--green);">Подключен</span>' : '<span style="color:#b45309;">Не подключен</span>'}</div>
+            <div>🌐 Браузер / Звук: ${('Notification' in window && Notification.permission === 'granted') ? '<span style="color:var(--green);">Разрешён</span>' : '<span style="color:#b45309;">Не разрешён</span>'}</div>
+        `;
+    }
+}
+
+async function markNtfyLinked() {
+    try { localStorage.setItem(getNtfyConfirmKey(), '1'); } catch (e) {}
+    if (window.appDB) {
+        try {
+            const st = (await window.appDB.getSettings()) || soloSettingsCache || {};
+            st.solo_ntfy_confirmed = true;
+            soloSettingsCache = st;
+            await window.appDB.saveSettings(st);
+        } catch (e) {}
+    }
+    syncSoloPushUI();
+}
+
+window.openSoloNotifModal = function (scrollToSetup) {
+    const modal = document.getElementById('solo-notif-modal');
+    if (!modal) return;
+    renderSoloNotifFeed();
+    syncSoloPushUI();
+    modal.classList.add('show');
+    if (scrollToSetup) {
+        setTimeout(() => {
+            const anchor = document.getElementById('solo-push-setup-anchor');
+            if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 80);
+    }
+};
+
+window.closeSoloNotifModal = function () {
+    const modal = document.getElementById('solo-notif-modal');
+    if (modal) modal.classList.remove('show');
+};
+
+window.toggleSoloNtfyEnabled = async function (enabled) {
     if (!window.appDB) return;
     try {
-        const settings = (await window.appDB.getSettings()) || {};
+        const st = (await window.appDB.getSettings()) || soloSettingsCache || {};
+        st.solo_push_enabled = Boolean(enabled);
+        soloSettingsCache = st;
+        await window.appDB.saveSettings(st);
+        syncSoloPushUI();
+    } catch (e) {}
+};
+
+window.copyNtfyTopic = function () {
+    const val = (soloSettingsCache && soloSettingsCache.solo_push_topic) || document.getElementById('solo-ntfy-topic')?.value || '';
+    if (!val) return;
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(val).then(() => {
+            markNtfyLinked();
+            alert(`📋 Канал скопирован: ${val}\n\nОткройте приложение ntfy → нажмите "+" → вставьте этот код.`);
+        });
+    } else {
+        alert(val);
+    }
+};
+
+window.regenerateNtfyTopic = async function () {
+    if (!window.appDB) return;
+    if (!confirm('Создать новый секретный канал? Придётся заново подписаться в приложении ntfy.')) return;
+    const tidStr = String(window.appDB.tenantId || 'master').replace(/[^a-zA-Z0-9_-]/g, '');
+    const st = (await window.appDB.getSettings()) || soloSettingsCache || {};
+    st.solo_push_topic = `bmap_solo_${tidStr}_${Math.random().toString(36).slice(2, 8)}`;
+    st.solo_push_enabled = true;
+    st.solo_ntfy_confirmed = false;
+    try { localStorage.removeItem(getNtfyConfirmKey()); } catch (e) {}
+    soloSettingsCache = st;
+    await window.appDB.saveSettings(st);
+    syncSoloPushUI();
+};
+
+window.enableBrowserNotifications = async function () {
+    if (window.BarberMobileBridge && window.BarberMobileBridge.playNotificationSound) {
+        window.BarberMobileBridge.playNotificationSound();
+    }
+    if (!('Notification' in window)) {
+        alert('Этот браузер не поддерживает веб-уведомления. Используйте ntfy или Telegram выше — они работают всегда!');
+        return;
+    }
+    try {
+        const perm = await Notification.requestPermission();
+        syncSoloPushUI();
+        if (perm === 'granted' && window.BarberMobileBridge) {
+            await window.BarberMobileBridge.showLocalNotification(
+                '✅ Уведомления включены!',
+                'Теперь при открытой или свёрнутой вкладке вы сразу услышите новую запись.'
+            );
+        } else if (perm === 'denied') {
+            alert('Уведомления заблокированы в настройках браузера. Разрешите их в замке рядом с адресом сайта (или подключите ntfy / Telegram выше).');
+        }
+    } catch (e) {}
+};
+
+async function getPlatformBotToken() {
+    try {
+        if (window.appDB && window.appDB.getGlobalSettings) {
+            const gSet = await window.appDB.getGlobalSettings();
+            if (gSet && gSet.platformTgBotToken) return gSet.platformTgBotToken;
+        }
+    } catch (e) {}
+    return DEFAULT_PLATFORM_TG_TOKEN;
+}
+
+window.connectSoloTelegramStep1 = async function () {
+    const msgEl = document.getElementById('solo-tg-status-msg');
+    if (msgEl) msgEl.textContent = '⏳ Открываем бота в Telegram...';
+    const tidStr = String((window.appDB && window.appDB.tenantId) || '1');
+    soloPendingTgBindCode = `solo_${tidStr}_${Math.random().toString(36).slice(2, 6)}`;
+    try {
+        const botToken = await getPlatformBotToken();
+        const res = await fetch(`https://api.telegram.org/bot${botToken}/getMe`);
+        const data = await res.json();
+        if (!data.ok || !data.result || !data.result.username) {
+            if (msgEl) msgEl.textContent = '⚠️ Не удалось получить имя бота. Укажите токен своего бота ниже.';
+            return;
+        }
+        const botUsername = data.result.username;
+        const deepLink = `https://t.me/${botUsername}?start=${encodeURIComponent(soloPendingTgBindCode)}`;
+        window.open(deepLink, '_blank');
+        if (msgEl) {
+            msgEl.innerHTML = `1️⃣ Откройте <a href="${deepLink}" target="_blank" rel="noopener" style="color:var(--burgundy); font-weight:800;">@${botUsername}</a>, нажмите <b>START</b>, затем нажмите кнопку «2. Привязать мой чат».`;
+        }
+    } catch (e) {
+        if (msgEl) msgEl.textContent = '⚠️ Ошибка сети при обращении к Telegram.';
+    }
+};
+
+window.connectSoloTelegramStep2 = async function () {
+    const msgEl = document.getElementById('solo-tg-status-msg');
+    const btn = document.getElementById('btn-tg-bind-check');
+    if (btn) btn.disabled = true;
+    if (msgEl) msgEl.textContent = '⏳ Ищем ваш /start в Telegram...';
+    try {
+        const botToken = await getPlatformBotToken();
+        const tidStr = String((window.appDB && window.appDB.tenantId) || '1');
+        const res = await fetch(`https://api.telegram.org/bot${botToken}/getUpdates?limit=50`);
+        const data = await res.json();
+        if (!data.ok || !Array.isArray(data.result)) {
+            if (msgEl) msgEl.textContent = '⚠️ Не удалось прочитать сообщения бота.';
+            if (btn) btn.disabled = false;
+            return;
+        }
+
+        let matchedMsg = null;
+        for (let i = data.result.length - 1; i >= 0; i--) {
+            const m = data.result[i].message;
+            if (!m || !m.chat || !m.text) continue;
+            if (soloPendingTgBindCode && m.text.includes(soloPendingTgBindCode)) {
+                matchedMsg = m;
+                break;
+            }
+            if (m.text.includes(`solo_${tidStr}`)) {
+                matchedMsg = m;
+                break;
+            }
+        }
+
+        if (!matchedMsg) {
+            if (msgEl) msgEl.textContent = '⚠️ Не видим ваш /start. Нажмите «1. Открыть бота», отправьте ему Start в Telegram и повторите шаг 2.';
+            if (btn) btn.disabled = false;
+            return;
+        }
+
+        const chatId = String(matchedMsg.chat.id);
+        const fullToken = `${botToken}@@${chatId}`;
+        const st = (await window.appDB.getSettings()) || soloSettingsCache || {};
+        st.telegram_bot_token = fullToken;
+        soloSettingsCache = st;
+        await window.appDB.saveSettings(st);
+        const tgInput = document.getElementById('solo-tg-token');
+        if (tgInput) tgInput.value = fullToken;
+        syncSoloPushUI();
+
+        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: chatId,
+                text: `✅ Telegram привязан к кабинету Соло-Мастера «${soloProfile.name}»!\nТеперь все новые онлайн-записи и отмены будут приходить сюда мгновенно.`
+            })
+        }).catch(() => {});
+
+        if (msgEl) msgEl.innerHTML = `<span style="color:var(--green); font-weight:800;">✅ Готово! Telegram подключен (${matchedMsg.chat.first_name || chatId}).</span>`;
+    } catch (e) {
+        if (msgEl) msgEl.textContent = '⚠️ Ошибка при подключении Telegram.';
+    }
+    if (btn) btn.disabled = false;
+};
+
+window.saveSoloTelegram = async function () {
+    const tgInput = document.getElementById('solo-tg-token');
+    let val = tgInput ? tgInput.value.trim() : '';
+    if (!window.appDB) return;
+    try {
+        if (val && !val.includes('@@')) {
+            // Auto-detect chat_id from user's own BotFather token
+            const res = await fetch(`https://api.telegram.org/bot${val}/getUpdates?limit=10`);
+            const data = await res.json();
+            if (data.ok && Array.isArray(data.result) && data.result.length > 0) {
+                for (let i = data.result.length - 1; i >= 0; i--) {
+                    if (data.result[i].message && data.result[i].message.chat) {
+                        val = `${val}@@${data.result[i].message.chat.id}`;
+                        if (tgInput) tgInput.value = val;
+                        break;
+                    }
+                }
+            }
+            if (!val.includes('@@')) {
+                alert('Откройте своего бота в Telegram, отправьте ему /start и нажмите Сохранить ещё раз (либо укажите формат bot_token@@chat_id).');
+                return;
+            }
+        }
+        const settings = (await window.appDB.getSettings()) || soloSettingsCache || {};
         settings.telegram_bot_token = val;
+        soloSettingsCache = settings;
         await window.appDB.saveSettings(settings);
-        alert(val ? '✅ Telegram токен сохранен! Новые онлайн-записи будут приходить ботом.' : 'ℹ️ Telegram токен очищен.');
+        syncSoloPushUI();
+        alert(val ? '✅ Telegram подключен! Новые онлайн-записи будут приходить в ваш Telegram.' : 'ℹ️ Telegram отключен.');
     } catch (e) {
         console.error('saveSoloTelegram error:', e);
         alert('Ошибка при сохранении Telegram токена');
     }
+};
+
+window.disconnectSoloTelegram = async function () {
+    if (!window.appDB) return;
+    const settings = (await window.appDB.getSettings()) || soloSettingsCache || {};
+    settings.telegram_bot_token = '';
+    soloSettingsCache = settings;
+    await window.appDB.saveSettings(settings);
+    const tgInput = document.getElementById('solo-tg-token');
+    if (tgInput) tgInput.value = '';
+    const msgEl = document.getElementById('solo-tg-status-msg');
+    if (msgEl) msgEl.textContent = '';
+    syncSoloPushUI();
+};
+
+window.testSoloPushDelayed = function (channel) {
+    const btnId = channel === 'tg' ? 'btn-test-tg-delay' : 'btn-test-ntfy-delay';
+    const btn = document.getElementById(btnId);
+    const origText = btn ? btn.textContent : '';
+    let sec = 5;
+
+    if (channel === 'ntfy') {
+        const topic = (soloSettingsCache && soloSettingsCache.solo_push_topic) || document.getElementById('solo-ntfy-topic')?.value || '';
+        if (!topic) return alert('Канал ntfy не найден.');
+        markNtfyLinked();
+    } else {
+        const tgVal = (soloSettingsCache && soloSettingsCache.telegram_bot_token) || '';
+        if (!tgVal.includes('@@')) return alert('Сначала подключите Telegram (шаг 1 и 2 выше).');
+    }
+
+    if (btn) btn.disabled = true;
+    const tick = async () => {
+        if (sec > 0) {
+            if (btn) btn.textContent = `⏳ Отправка через ${sec} сек — выйди в TikTok или выключи экран!`;
+            sec--;
+            setTimeout(tick, 1000);
+            return;
+        }
+        if (btn) btn.textContent = '🚀 Отправляю ПУШ...';
+        let ok = false;
+        if (channel === 'ntfy' && window.BarberMobileBridge) {
+            const topic = (soloSettingsCache && soloSettingsCache.solo_push_topic) || '';
+            const tid = (window.appDB && window.appDB.tenantId) ? window.appDB.tenantId : '';
+            const base = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/');
+            ok = await window.BarberMobileBridge.sendNtfyPush({
+                topic,
+                title: '✂️ ТЕСТ: Новая запись на 16:00!',
+                message: `Клиент: Алишер (+996 555 12-34-56)\nУслуга: Стрижка + Борода • 900 сом`,
+                priority: 5,
+                tags: ['scissors', 'bell'],
+                clickUrl: `${base}barber.html?id=${encodeURIComponent(tid)}`
+            });
+        } else if (channel === 'tg') {
+            const parts = String(soloSettingsCache.telegram_bot_token || '').split('@@');
+            try {
+                const res = await fetch(`https://api.telegram.org/bot${parts[0]}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: parts[1],
+                        text: `🔔 ТЕСТ ПУШ-УВЕДОМЛЕНИЯ!\n\n✂️ Мастер: ${soloProfile.name}\n👤 Клиент: Алишер (+996 555 12-34-56)\n💈 Услуга: Стрижка + Борода • 900 сом`
+                    })
+                });
+                const d = await res.json();
+                ok = Boolean(d.ok);
+            } catch (e) {}
+        }
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = ok ? '✅ Тест-ПУШ отправлен! Проверьте телефон' : '⚠️ Ошибка отправки, попробуйте снова';
+            setTimeout(() => { if (btn) btn.textContent = origText; }, 3500);
+        }
+    };
+    tick();
 };
 
 // 4. Booking database export to CSV/Excel

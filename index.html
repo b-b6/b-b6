@@ -25,8 +25,8 @@
     <script src="barbershops_uz.js"></script>
     <script src="barbershops_kz.js"></script>
     <script src="assets/booking-logic.js?v=9"></script>
-    <script src="assets/db.js?v=9"></script>
-    <script src="assets/mobile-bridge.js?v=9"></script>
+    <script src="assets/db.js?v=10"></script>
+    <script src="assets/mobile-bridge.js?v=10"></script>
 
     <script>
         // If opened as root web entry without parameters, route to the main Role Selection Screen (app.html)
@@ -388,12 +388,12 @@
         </form>
     </div>
 
-    <script src="assets/app.js?v=9"></script>
+    <script src="assets/app.js?v=10"></script>
 
     <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-            navigator.serviceWorker.register('/sw.js').catch(function() {});
+            navigator.serviceWorker.register('sw.js').catch(function() {});
         });
     }
     </script>

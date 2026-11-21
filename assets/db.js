@@ -521,6 +521,20 @@ class BarberDB {
         }
         return true;
     }
+
+    /**
+     * Подписка на произвольный документ в tenants/{tenantId}/data/{docName} (например, last_push)
+     */
+    async subscribeRawDoc(docName, callback) {
+        await this.initPromise;
+        if (!this.useFirebase || !this.fsTools || !this.fs) return () => {};
+        const docRef = this.fsTools.doc(this.fs, `tenants/${this.tenantId}/data/${docName}`);
+        return this.fsTools.onSnapshot(docRef, (snap) => {
+            callback(snap.exists() ? snap.data() : null);
+        }, (error) => {
+            console.warn('⚠️ subscribeRawDoc error for', docName, error.message);
+        });
+    }
 }
 
 const db = new BarberDB();

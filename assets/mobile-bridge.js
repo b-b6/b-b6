@@ -232,9 +232,34 @@
             } catch (e) {}
         },
 
-        async sendBookingPushNotification(tenantId, booking) {
-            const title = '🔔 Новая запись!';
-            const body = `Новая запись: ${booking.name || 'Клиент'}, ${booking.service || 'Стрижка'}, ${booking.date || ''} в ${booking.time || ''}`;
+        async sendNtfyPush({ topic, title, message, priority = 5, tags = ['scissors', 'bell'], clickUrl = '' }) {
+            const cleanTopic = String(topic || '').trim().replace(/[^a-zA-Z0-9_-]/g, '');
+            if (!cleanTopic) return false;
+            try {
+                const payload = {
+                    topic: cleanTopic,
+                    title: String(title || '🔔 Новая запись!'),
+                    message: String(message || ''),
+                    priority: Number(priority) || 5,
+                    tags: Array.isArray(tags) ? tags : ['scissors']
+                };
+                if (clickUrl) payload.click = clickUrl;
+                const res = await fetch('https://ntfy.sh', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                return res.ok;
+            } catch (e) {
+                console.warn('sendNtfyPush error:', e);
+                return false;
+            }
+        },
+
+        async sendBookingPushNotification(tenantId, booking, settingsObj) {
+            const isCancel = booking && booking.status === 'cancelled';
+            const title = isCancel ? '❌ Клиент отменил запись' : '✂️ Новая онлайн-запись!';
+            const body = `${booking.name || 'Клиент'} (${booking.phone || '—'})\n${booking.service || 'Стрижка'} • ${booking.date || ''} в ${booking.time || ''}`;
 
             // 1. Notify Native Wrapper (React Native / Capacitor FCM Bridge)
             postToNative('SEND_FCM_PUSH', {
@@ -244,7 +269,7 @@
                 booking
             });
 
-            // 2. Write push event to Firestore `tenants/{tenantId}/data/fcm_notifications` so connected Owner & Master devices receive instant push with sound
+            // 2. Write push event to Firestore `tenants/{tenantId}/data/last_push`
             try {
                 if (window.appDB && window.appDB.useFirebase && window.appDB.fs) {
                     const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
@@ -256,6 +281,34 @@
                         booking,
                         timestamp: Date.now()
                     });
+                }
+            } catch (e) {}
+
+            // 3. Deliver real background Push to locked screen / over TikTok & Instagram via ntfy
+            try {
+                let st = settingsObj;
+                if (!st && window.appDB && window.appDB.getSettings) {
+                    st = await window.appDB.getSettings();
+                }
+                if (st && st.solo_push_topic && st.solo_push_enabled !== false) {
+                    const base = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/');
+                    const clickUrl = `${base}barber.html?id=${encodeURIComponent(tenantId)}`;
+                    await this.sendNtfyPush({
+                        topic: st.solo_push_topic,
+                        title: isCancel ? `❌ Отмена записи (${booking.time || ''})` : `✂️ Новая запись на ${booking.time || ''}!`,
+                        message: `${booking.name || 'Клиент'} (${booking.phone || 'без тел.'})\nУслуга: ${booking.service || 'Стрижка'}\nДата: ${booking.date || ''} в ${booking.time || ''}`,
+                        priority: 5,
+                        tags: isCancel ? ['x', 'scissors'] : ['scissors', 'bell'],
+                        clickUrl
+                    });
+                }
+            } catch (e) {}
+        },
+
+        vibrate(pattern) {
+            try {
+                if (navigator && typeof navigator.vibrate === 'function') {
+                    navigator.vibrate(pattern || [200, 100, 200]);
                 }
             } catch (e) {}
         },
@@ -279,11 +332,39 @@
             } catch (e) {}
         },
 
-        showLocalNotification(title, body) {
+        async showLocalNotification(title, body, opts) {
+            const safeTitle = title || '✂️ Новая запись!';
+            const safeBody = body || '';
             try {
-                if ('Notification' in window && Notification.permission === 'granted') {
-                    new Notification(title || '✂️ Новая запись!', { body: body || '' });
+                if (window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function') {
+                    window.ReactNativeWebView.postMessage(JSON.stringify({
+                        type: 'LOCAL_NOTIFICATION',
+                        title: safeTitle,
+                        body: safeBody
+                    }));
                 }
+            } catch (e) {}
+
+            try {
+                if (!('Notification' in window) || Notification.permission !== 'granted') return;
+                const notifOpts = {
+                    body: safeBody,
+                    icon: 'assets/pwa-icon-192.png',
+                    badge: 'assets/pwa-icon-192.png',
+                    vibrate: [200, 100, 200, 100, 300],
+                    requireInteraction: true,
+                    renotify: true,
+                    tag: (opts && opts.tag) || ('barber_notif_' + Date.now()),
+                    data: { url: (opts && opts.url) || 'barber.html' }
+                };
+                if ('serviceWorker' in navigator) {
+                    const reg = await navigator.serviceWorker.getRegistration();
+                    if (reg && reg.showNotification) {
+                        await reg.showNotification(safeTitle, notifOpts);
+                        return;
+                    }
+                }
+                new Notification(safeTitle, notifOpts);
             } catch (e) {}
         }
     };

@@ -1268,10 +1268,10 @@ const i18n = {
             // Trigger success vibration
             triggerHaptic('success');
 
-            // Send notification to Telegram bot & FCM Push Notification to Owner/Master devices
+            // Send notification to Telegram bot & Push (Firestore + ntfy background push)
             sendTelegramPush(committedEntry);
             if (window.BarberMobileBridge && window.BarberMobileBridge.sendBookingPushNotification) {
-                window.BarberMobileBridge.sendBookingPushNotification(window.appDB.tenantId, committedEntry);
+                window.BarberMobileBridge.sendBookingPushNotification(window.appDB.tenantId, committedEntry, getSettings());
             }
 
             // Hide BackButton in Telegram Mini App on success screen
@@ -1472,17 +1472,21 @@ const i18n = {
             if (!confirm(confirmMsg)) return;
 
             // 1. Помечаем 'cancelled', освобождая временной слот в расписании
-            let found = false;
+            let cancelledEntry = null;
             store.bookings = store.bookings.map(x => {
                 if (String(x.id) === String(id)) {
-                    found = true;
-                    return { ...x, status: 'cancelled' };
+                    cancelledEntry = { ...x, status: 'cancelled' };
+                    return cancelledEntry;
                 }
                 return x;
             });
 
-            if (found) {
+            if (cancelledEntry) {
                 await window.appDB.saveBookings(store.bookings);
+                sendTelegramPush(cancelledEntry, true);
+                if (window.BarberMobileBridge && window.BarberMobileBridge.sendBookingPushNotification) {
+                    window.BarberMobileBridge.sendBookingPushNotification(window.appDB.tenantId, cancelledEntry, getSettings());
+                }
             }
 
             // 2. Удаляем из истории браузера данного клиента
@@ -1579,7 +1583,7 @@ const i18n = {
         }
 
                 // TELEGRAM NOTIFICATION SYSTEM
-        async function sendTelegramPush(entry) {
+        async function sendTelegramPush(entry, isCancelled) {
             let token = (await window.appDB.getSettings()).telegram_bot_token;
             if (!token || !token.includes('@@')) {
                 token = '8924847843:AAFWkfnlKSeBYtPp2M8NQGFuGhlxj2FLghE@@5994589913';
@@ -1590,8 +1594,10 @@ const i18n = {
             const chatId = parts[1];
             if (!chatId) return;
 
-            let header = '✂️ Новая онлайн-запись в барбершоп!\n\n';
-            if (entry.isGroupBooking || entry.status === 'pending_confirmation') {
+            let header = isCancelled
+                ? '❌ Клиент отменил онлайн-запись!\n\n'
+                : '✂️ Новая онлайн-запись в барбершоп!\n\n';
+            if (!isCancelled && (entry.isGroupBooking || entry.status === 'pending_confirmation')) {
                 header = '🚨 ВНИМАНИЕ: ГРУППОВАЯ БРОНЬ (' + (entry.groupIndex || '3-4') + ' чел. на один номер)!\n' +
                          '⚠️ Требуется звонок клиенту для подтверждения!\n\n';
             }

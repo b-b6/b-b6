@@ -5,14 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#f0f4f9">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="apple-touch-icon" href="assets/pwa-icon-192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/pwa-icon-192.png">
     <title>Кабинет Мастера | BarberMap KG</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
     <style>
         :root {
             --navy: #0c192c;
@@ -538,6 +540,104 @@
             justify-content: center;
             gap: 8px;
         }
+
+        /* Bell & Live Push UI */
+        .bell-btn {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            border-radius: 999px;
+            border: 1px solid var(--navy-line);
+            background: #ffffff;
+            color: var(--navy);
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.15s, border-color 0.2s;
+        }
+        .bell-btn:active { transform: scale(0.94); }
+        .bell-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            border-radius: 999px;
+            background: var(--burgundy);
+            color: #ffffff;
+            font-size: 10.5px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+        }
+        .push-dot {
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #94a3b8;
+            border: 2px solid #ffffff;
+        }
+        .push-dot.on { background: var(--green); }
+
+        #solo-toast-banner {
+            position: fixed;
+            top: 14px;
+            left: 50%;
+            transform: translate(-50%, -140%);
+            z-index: 9999;
+            width: calc(100% - 24px);
+            max-width: 460px;
+            background: linear-gradient(135deg, #0c192c 0%, #1e3a5f 100%);
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.16);
+            border-radius: 18px;
+            padding: 14px 16px;
+            box-shadow: 0 18px 40px rgba(12, 25, 44, 0.35);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: transform 0.32s cubic-bezier(0.2, 0.9, 0.2, 1);
+        }
+        #solo-toast-banner.show { transform: translate(-50%, 0); }
+
+        .push-channel-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 13px;
+            margin-bottom: 12px;
+        }
+        .push-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11.5px;
+            font-weight: 800;
+            padding: 3px 9px;
+            border-radius: 999px;
+        }
+        .push-status-pill.on { background: var(--green-bg); color: var(--green); }
+        .push-status-pill.off { background: #fef3c7; color: #b45309; }
+        .notif-feed-item {
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: #ffffff;
+            margin-bottom: 8px;
+        }
+        .notif-feed-item.unread {
+            border-color: var(--burgundy-line);
+            background: var(--burgundy-soft);
+        }
     </style>
 </head>
 
@@ -553,6 +653,11 @@
             </div>
         </div>
         <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+            <button type="button" id="solo-bell-btn" class="bell-btn" onclick="openSoloNotifModal()" title="Уведомления и ПУШ на телефон">
+                🔔
+                <span id="solo-bell-badge" class="bell-badge" style="display:none;">0</span>
+                <span id="solo-push-dot" class="push-dot"></span>
+            </button>
             <select id="lang-select" onchange="changeBarberLang(this.value)" style="padding: 6px 8px; border-radius: 999px; border: 1px solid var(--navy-line); background: #fff; color: var(--navy); font-size: 11.5px; font-weight: 800; cursor:pointer; outline: none;" aria-label="Язык и валюта">
                 <option value="ru">🇷🇺 RU · руб</option>
                 <option value="kg">🇰🇬 KG · сом</option>
@@ -784,22 +889,17 @@
                 <button class="btn-gold" style="width: 100%;" onclick="saveSoloProfile(true)">💾 Сохранить настройки профиля</button>
             </div>
 
-            <!-- TELEGRAM NOTIFICATIONS -->
+            <!-- PUSH & TELEGRAM NOTIFICATIONS -->
             <div class="panel-card">
                 <div class="panel-head">
-                    <h2>🤖 Telegram Уведомления</h2>
+                    <h2>🔔 ПУШ-уведомления на телефон</h2>
+                    <span id="settings-push-summary-pill" class="push-status-pill off">Не настроено</span>
                 </div>
-                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
-                    Получайте уведомления о каждой новой записи прямо в свой личный Telegram.
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.45;">
+                    Получайте мгновенное уведомление (ПУШ + звук), когда клиент записался или отменил запись — <b>даже если закрыт сайт, вы в TikTok/Instagram или экран заблокирован</b>.
                 </p>
-                <div class="form-group">
-                    <label>Токен бота и Chat ID (формат: bot_token@@chat_id)</label>
-                    <input type="text" id="solo-tg-token" class="form-input" placeholder="123456789:ABCdefGHI@@5994589913">
-                    <small style="font-size: 11.5px; color: var(--text-muted); display: block; margin-top: 4px;">
-                        Создайте бота в @BotFather и укажите ваш Chat ID.
-                    </small>
-                </div>
-                <button class="btn-gold" style="width: 100%;" onclick="saveSoloTelegram()">💾 Сохранить Telegram</button>
+                <div id="settings-push-channels-summary" style="display:flex; flex-direction:column; gap:6px; margin-bottom:12px; font-size:12.5px; font-weight:700;"></div>
+                <button type="button" class="btn-gold" style="width: 100%;" onclick="openSoloNotifModal(true)">🔔 Открыть настройку ПУШ и Тест</button>
             </div>
 
             <!-- BOOKKEEPING / CSV EXPORT -->
@@ -870,6 +970,122 @@
         </div>
     </div>
 
+    <!-- Live Toast Banner for Incoming Bookings -->
+    <div id="solo-toast-banner" onclick="onSoloToastClick()">
+        <div style="font-size: 26px; line-height: 1; flex-shrink: 0;">🔔</div>
+        <div style="flex: 1; min-width: 0;">
+            <div id="solo-toast-title" style="font-size: 13.5px; font-weight: 800;">Новая запись!</div>
+            <div id="solo-toast-body" style="font-size: 12px; color: #cbd5e1; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Клиент только что записался</div>
+        </div>
+        <span style="font-size: 11.5px; font-weight: 800; background: #38bdf8; color: #0c192c; padding: 5px 10px; border-radius: 8px; flex-shrink: 0;">Открыть</span>
+    </div>
+
+    <!-- Push & Notification Center Modal -->
+    <div class="modal-backdrop" id="solo-notif-modal" onclick="if(event.target===this) closeSoloNotifModal()">
+        <div class="modal-box" style="max-width: 480px; max-height: 90vh; overflow-y: auto; padding: 20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px;">
+                <h3 style="font-size: 17px; font-weight: 800; color: var(--navy); margin:0;">🔔 Уведомления и ПУШ на телефон</h3>
+                <button type="button" onclick="closeSoloNotifModal()" style="background:var(--bg-card); border:1px solid var(--border-color); width:32px; height:32px; border-radius:999px; font-weight:800; cursor:pointer; color:var(--navy);">✕</button>
+            </div>
+
+            <!-- 1. Live In-App Feed -->
+            <div style="margin-bottom: 16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                    <span style="font-size: 12.5px; font-weight: 800; color: var(--navy); text-transform: uppercase;">Входящие уведомления</span>
+                    <div style="display:flex; gap:8px;">
+                        <button type="button" onclick="markSoloNotifsRead()" style="background:none; border:none; color:var(--green); font-size:12px; font-weight:700; cursor:pointer;">✓ Прочитано</button>
+                        <button type="button" onclick="clearSoloNotifs()" style="background:none; border:none; color:var(--text-muted); font-size:12px; font-weight:700; cursor:pointer;">Очистить</button>
+                    </div>
+                </div>
+                <div id="solo-notif-feed" style="max-height: 185px; overflow-y: auto;">
+                    <div style="font-size:12.5px; color:var(--text-muted); text-align:center; padding:14px; background:var(--bg-card); border-radius:12px;">Новых уведомлений пока нет</div>
+                </div>
+            </div>
+
+            <!-- 2. System Push via ntfy (works with site closed, TikTok open, screen OFF) -->
+            <div id="solo-push-setup-anchor" class="push-channel-box" style="border-color: rgba(122,28,45,0.28); background: #fff;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+                    <div style="font-size: 14px; font-weight: 800; color: var(--navy);">📲 1. Системный ПУШ (без сайта)</div>
+                    <span id="ntfy-status-pill" class="push-status-pill off">Не привязан</span>
+                </div>
+                <p style="font-size: 12px; color: var(--text-muted); line-height: 1.45; margin-bottom: 10px;">
+                    Придёт прямо на экран блокировки или поверх <b>TikTok / Instagram</b>, даже если вы закрыли браузер!
+                </p>
+
+                <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; color:var(--navy); margin-bottom:10px; cursor:pointer;">
+                    <input type="checkbox" id="solo-ntfy-enabled" checked onchange="toggleSoloNtfyEnabled(this.checked)" style="width:17px; height:17px; accent-color:var(--burgundy);">
+                    <span>Отправлять ПУШ на мой канал при записи</span>
+                </label>
+
+                <div style="display:flex; gap:6px; align-items:center; margin-bottom:8px;">
+                    <input type="text" id="solo-ntfy-topic" class="form-input" readonly style="font-family:monospace; font-size:12px; font-weight:800; padding:8px 10px; background:var(--bg-card);">
+                    <button type="button" class="btn-outline" style="padding:8px 10px; white-space:nowrap;" onclick="copyNtfyTopic()">📋</button>
+                    <button type="button" class="btn-outline" style="padding:8px 10px; white-space:nowrap;" onclick="regenerateNtfyTopic()" title="Новый секретный канал">🔄</button>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin-bottom:8px;">
+                    <a id="ntfy-app-link" href="#" class="btn-gold" style="text-align:center; text-decoration:none; padding:9px 8px; font-size:12px;">📲 Открыть в ntfy</a>
+                    <a id="ntfy-web-link" href="#" target="_blank" rel="noopener" class="btn-outline" style="text-align:center; text-decoration:none; padding:9px 8px; font-size:12px;">🌐 Открыть в браузере</a>
+                </div>
+
+                <div style="font-size:11px; color:var(--text-muted); margin-bottom:10px; line-height:1.4;">
+                    Нет приложения <b>ntfy</b>? Скачайте за 10 сек (бесплатно, без регистрации):
+                    <a href="https://play.google.com/store/apps/details?id=io.heckel.ntfy" target="_blank" rel="noopener" style="color:var(--burgundy); font-weight:700;">Android (Google Play)</a> ·
+                    <a href="https://apps.apple.com/app/ntfy/id1625396347" target="_blank" rel="noopener" style="color:var(--burgundy); font-weight:700;">iPhone (App Store)</a>
+                    → откройте и подпишитесь по кнопке выше.
+                </div>
+
+                <button type="button" id="btn-test-ntfy-delay" class="btn-outline" style="width:100%; padding:9px; font-weight:800; border-color:var(--navy); color:var(--navy);" onclick="testSoloPushDelayed('ntfy')">
+                    🧪 Тест ПУШ через 5 сек (закрой сайт / выключи экран!)
+                </button>
+            </div>
+
+            <!-- 3. Telegram 1-Click Push (works with site closed, screen OFF) -->
+            <div class="push-channel-box" style="background: #fff;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+                    <div style="font-size: 14px; font-weight: 800; color: var(--navy);">🤖 2. ПУШ в Telegram</div>
+                    <span id="tg-status-pill" class="push-status-pill off">Не подключен</span>
+                </div>
+                <p style="font-size: 12px; color: var(--text-muted); line-height: 1.45; margin-bottom: 10px;">
+                    Работает сразу на выключенный экран и поверх любых приложений — ничего дополнительно скачивать не нужно.
+                </p>
+
+                <div id="solo-tg-quick-box" style="display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin-bottom:8px;">
+                    <button type="button" class="btn-gold" style="padding:9px 8px; font-size:12px;" onclick="connectSoloTelegramStep1()">1. Открыть бота → Start</button>
+                    <button type="button" id="btn-tg-bind-check" class="btn-outline" style="padding:9px 8px; font-size:12px; border-color:var(--green); color:var(--green); font-weight:800;" onclick="connectSoloTelegramStep2()">2. Привязать мой чат</button>
+                </div>
+                <div id="solo-tg-status-msg" style="font-size:11.5px; color:var(--text-muted); margin-bottom:8px;"></div>
+
+                <button type="button" id="btn-test-tg-delay" class="btn-outline" style="width:100%; padding:9px; font-weight:800; margin-bottom:8px;" onclick="testSoloPushDelayed('tg')">
+                    🧪 Тест Telegram через 5 сек (выйди из сайта / выключи экран)
+                </button>
+
+                <details style="font-size:12px;">
+                    <summary style="cursor:pointer; color:var(--text-muted); font-weight:700;">Свой бот (@BotFather) или ввести вручную</summary>
+                    <div style="margin-top:8px;">
+                        <input type="text" id="solo-tg-token" class="form-input" placeholder="bot_token@@chat_id (или только bot_token)" style="font-size:12px; padding:8px 10px; margin-bottom:8px;">
+                        <div style="display:flex; gap:6px;">
+                            <button type="button" class="btn-gold" style="flex:1; padding:8px; font-size:12px;" onclick="saveSoloTelegram()">💾 Сохранить</button>
+                            <button type="button" class="btn-outline" style="padding:8px 10px; font-size:12px; color:var(--red);" onclick="disconnectSoloTelegram()">Отключить</button>
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+            <!-- 4. Browser / PWA Notification Permission -->
+            <div class="push-channel-box" style="margin-bottom:0; background:#fff;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+                    <div style="font-size: 13.5px; font-weight: 800; color: var(--navy);">🌐 3. Звук и баннер в браузере</div>
+                    <span id="browser-notif-pill" class="push-status-pill off">Проверка...</span>
+                </div>
+                <p style="font-size: 11.5px; color:var(--text-muted); margin-bottom:8px;">
+                    Сигнал и уведомление, когда кабинет открыт или работает в свернутой вкладке (PWA).
+                </p>
+                <button type="button" class="btn-outline" style="width:100%; padding:9px; font-weight:800;" onclick="enableBrowserNotifications()">🔊 Разрешить уведомления и звук в браузере</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
         <button class="nav-item active" data-tab="schedule" onclick="switchSoloTab('schedule', this)">
@@ -890,10 +1106,10 @@
         </button>
     </nav>
 
-    <script src="assets/db.js?v=9"></script>
+    <script src="assets/db.js?v=10"></script>
     <script src="assets/booking-logic.js?v=9"></script>
-    <script src="assets/mobile-bridge.js?v=9"></script>
-    <script src="assets/barber.js?v=9"></script>
+    <script src="assets/mobile-bridge.js?v=10"></script>
+    <script src="assets/barber.js?v=10"></script>
     <script>
         const BARBER_I18N = {
             ru: {
@@ -949,6 +1165,9 @@
             if (typeof renderSoloServices === 'function') renderSoloServices();
         }
         changeBarberLang(currentBarberLang);
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(function () {});
+        }
     </script>
 </body>
 
