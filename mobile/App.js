@@ -134,6 +134,24 @@ export default function App() {
           },
           trigger: null,
         });
+      } else if (msg.type === 'SCHEDULE_NOTIFICATION') {
+        const targetMs = Number(msg.triggerTimestampMs);
+        if (Number.isFinite(targetMs) && targetMs > Date.now() + 5000) {
+          const trigger = Notifications.SchedulableTriggerInputTypes?.DATE
+            ? { type: Notifications.SchedulableTriggerInputTypes.DATE, date: new Date(targetMs) }
+            : new Date(targetMs);
+          await Notifications.scheduleNotificationAsync({
+            ...(msg.identifier ? { identifier: String(msg.identifier) } : {}),
+            content: {
+              title: msg.title || '⏰ Скоро клиент!',
+              body: msg.body || '',
+              sound: 'default',
+            },
+            trigger,
+          });
+        }
+      } else if (msg.type === 'CANCEL_NOTIFICATION' && msg.identifier) {
+        await Notifications.cancelScheduledNotificationAsync(String(msg.identifier));
       }
     } catch (e) {}
   }

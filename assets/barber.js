@@ -99,11 +99,13 @@ window.addEventListener('DOMContentLoaded', async () => {
     renderSoloNotifFeed();
     renderSoloQRCode();
     initSubscriptions();
+    startSoloReminderTicker();
 
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') {
             refreshBookingsAndRender();
             syncSoloPushUI();
+            checkUpcomingSoloReminders();
         }
     });
 });
@@ -146,6 +148,10 @@ async function loadSoloStateFromDB(masterRecord) {
         }
         if (settings.solo_push_enabled === undefined) {
             settings.solo_push_enabled = true;
+            settingsDirty = true;
+        }
+        if (settings.solo_reminder_minutes === undefined) {
+            settings.solo_reminder_minutes = 15;
             settingsDirty = true;
         }
         soloSettingsCache = settings;
@@ -401,6 +407,7 @@ async function refreshBookingsAndRender() {
         }
     }
     renderSoloSchedule();
+    checkUpcomingSoloReminders();
 }
 
 function getSoloBookingsForDate(dateStr) {
@@ -547,6 +554,9 @@ window.markSoloBookingDone = async function (bookingId) {
         await window.appDB.saveBookings(bookings);
         soloBookingsCache = bookings;
         renderSoloSchedule();
+        if (window.BarberMobileBridge && window.BarberMobileBridge.cancelSoloMasterReminder) {
+            window.BarberMobileBridge.cancelSoloMasterReminder(window.appDB.tenantId, b, soloSettingsCache).catch(() => {});
+        }
     }
 };
 
@@ -562,6 +572,9 @@ window.cancelSoloBooking = async function (bookingId) {
         soloKnownCancelledIds.add(String(b.id));
         soloBookingsCache = bookings;
         renderSoloSchedule();
+        if (window.BarberMobileBridge && window.BarberMobileBridge.cancelSoloMasterReminder) {
+            window.BarberMobileBridge.cancelSoloMasterReminder(window.appDB.tenantId, b, soloSettingsCache).catch(() => {});
+        }
     }
 };
 
@@ -627,6 +640,10 @@ window.saveManualSoloBooking = async function () {
     persistSeenBookingIds();
     closeAddBookingModal();
     renderSoloSchedule();
+    if (window.BarberMobileBridge && window.BarberMobileBridge.scheduleSoloMasterReminder) {
+        window.BarberMobileBridge.scheduleSoloMasterReminder(window.appDB.tenantId, newBooking, soloSettingsCache).catch(() => {});
+    }
+    checkUpcomingSoloReminders();
 };
 
 // ================= PERSONAL SERVICES & PRICES =================
@@ -931,7 +948,7 @@ window.clearSoloNotifs = function () {
     renderSoloNotifFeed();
 };
 
-function showSoloToastBanner(title, body, dateStr) {
+function showSoloToastBanner(title, body, dateStr, durationMs) {
     const el = document.getElementById('solo-toast-banner');
     const tEl = document.getElementById('solo-toast-title');
     const bEl = document.getElementById('solo-toast-body');
@@ -941,7 +958,7 @@ function showSoloToastBanner(title, body, dateStr) {
     soloLatestToastDate = dateStr || '';
     el.classList.add('show');
     if (soloToastTimer) clearTimeout(soloToastTimer);
-    soloToastTimer = setTimeout(() => el.classList.remove('show'), 7000);
+    soloToastTimer = setTimeout(() => el.classList.remove('show'), durationMs || 7000);
 }
 
 window.onSoloToastClick = function () {
@@ -969,11 +986,16 @@ function fireSoloIncomingAlert({ dedupKey, title, body, date, time, kind, silent
     });
     if (!added || silent) return;
 
-    showSoloToastBanner(title, body, date);
+    const isReminder = kind === 'reminder';
+    showSoloToastBanner(title, body, date, isReminder ? 14000 : 7000);
     if (window.BarberMobileBridge) {
-        window.BarberMobileBridge.playNotificationSound();
+        if (isReminder && window.BarberMobileBridge.playReminderSound) {
+            window.BarberMobileBridge.playReminderSound();
+        } else {
+            window.BarberMobileBridge.playNotificationSound();
+        }
         if (window.BarberMobileBridge.vibrate) {
-            window.BarberMobileBridge.vibrate([200, 100, 200, 100, 300]);
+            window.BarberMobileBridge.vibrate(isReminder ? [300, 120, 300, 120, 450] : [200, 100, 200, 100, 300]);
         }
         const tid = (window.appDB && window.appDB.tenantId) ? window.appDB.tenantId : 'default';
         window.BarberMobileBridge.showLocalNotification(title, body, {
@@ -1069,6 +1091,7 @@ function initSubscriptions() {
                 soloBookingsCache = data || [];
                 processBookingsDiff(soloBookingsCache);
                 renderSoloSchedule();
+                checkUpcomingSoloReminders();
             });
             window.appDB.subscribe(window.appDB.collections.services, (data) => {
                 soloServicesCache = data || [];
@@ -1243,6 +1266,27 @@ function syncSoloPushUI() {
         }
     }
 
+    const remMin = (window.BarberMobileBridge && window.BarberMobileBridge.resolveReminderMinutes)
+        ? window.BarberMobileBridge.resolveReminderMinutes(st)
+        : (st.solo_reminder_minutes === undefined ? 15 : Number(st.solo_reminder_minutes));
+    const remSelect = document.getElementById('solo-reminder-minutes');
+    if (remSelect) {
+        const valStr = String(remMin);
+        if (Array.from(remSelect.options).some(o => o.value === valStr)) {
+            remSelect.value = valStr;
+        }
+    }
+    const remPill = document.getElementById('reminder-status-pill');
+    if (remPill) {
+        if (remMin > 0) {
+            remPill.className = 'push-status-pill on';
+            remPill.textContent = `За ${remMin} мин`;
+        } else {
+            remPill.className = 'push-status-pill off';
+            remPill.textContent = 'Выключено';
+        }
+    }
+
     const anyBgReady = (ntfyEnabled && ntfyConfirmed && Boolean(topic)) || Boolean(tgConnected);
     const pushDot = document.getElementById('solo-push-dot');
     if (pushDot) pushDot.classList.toggle('on', anyBgReady);
@@ -1256,6 +1300,7 @@ function syncSoloPushUI() {
     if (summaryBox) {
         summaryBox.innerHTML = `
             <div>📲 Системный ПУШ (ntfy): ${ntfyEnabled && ntfyConfirmed ? '<span style="color:var(--green);">Подключен</span>' : '<span style="color:#b45309;">Не привязан</span>'}</div>
+            <div>⏰ Напоминание до стрижки: ${remMin > 0 ? `<span style="color:var(--green);">За ${remMin} мин</span>` : '<span style="color:#b45309;">Выключено</span>'}</div>
             <div>🤖 Telegram ПУШ: ${tgConnected ? '<span style="color:var(--green);">Подключен</span>' : '<span style="color:#b45309;">Не подключен</span>'}</div>
             <div>🌐 Браузер / Звук: ${('Notification' in window && Notification.permission === 'granted') ? '<span style="color:var(--green);">Разрешён</span>' : '<span style="color:#b45309;">Не разрешён</span>'}</div>
         `;
@@ -1302,6 +1347,7 @@ window.toggleSoloNtfyEnabled = async function (enabled) {
         soloSettingsCache = st;
         await window.appDB.saveSettings(st);
         syncSoloPushUI();
+        await checkUpcomingSoloReminders(true);
     } catch (e) {}
 };
 
@@ -1330,6 +1376,7 @@ window.regenerateNtfyTopic = async function () {
     soloSettingsCache = st;
     await window.appDB.saveSettings(st);
     syncSoloPushUI();
+    await checkUpcomingSoloReminders(true);
 };
 
 window.enableBrowserNotifications = async function () {
@@ -1558,6 +1605,171 @@ window.testSoloPushDelayed = function (channel) {
     };
     tick();
 };
+
+function getSoloRemindedStorageKey() {
+    const tid = (window.appDB && window.appDB.tenantId) ? String(window.appDB.tenantId).replace(/[^a-zA-Z0-9_-]/g, '') : 'default';
+    return 'solo_reminded_v1_' + tid;
+}
+
+function loadSoloRemindedMap() {
+    try {
+        const raw = localStorage.getItem(getSoloRemindedStorageKey());
+        const parsed = raw ? JSON.parse(raw) : {};
+        return (parsed && typeof parsed === 'object') ? parsed : {};
+    } catch (e) {
+        return {};
+    }
+}
+
+function saveSoloRemindedMap(map) {
+    try {
+        const cutoff = Date.now() - 2 * 86400000;
+        const pruned = {};
+        Object.keys(map || {}).slice(-250).forEach(k => {
+            if (Number(map[k]) > cutoff) pruned[k] = map[k];
+        });
+        localStorage.setItem(getSoloRemindedStorageKey(), JSON.stringify(pruned));
+    } catch (e) {}
+}
+
+let soloReminderTickerId = null;
+let soloReminderCheckRunning = false;
+
+window.changeSoloReminderMinutes = async function (minutesVal) {
+    if (!window.appDB) return;
+    const mins = Math.max(0, parseInt(minutesVal, 10) || 0);
+    try {
+        const st = (await window.appDB.getSettings()) || soloSettingsCache || {};
+        st.solo_reminder_minutes = mins;
+        soloSettingsCache = st;
+        await window.appDB.saveSettings(st);
+        syncSoloPushUI();
+        await checkUpcomingSoloReminders(true);
+    } catch (e) {
+        console.warn('changeSoloReminderMinutes error:', e);
+    }
+};
+
+window.testSoloReminderScheduled = async function () {
+    const btn = document.getElementById('btn-test-ntfy-reminder');
+    const topic = (soloSettingsCache && soloSettingsCache.solo_push_topic) || document.getElementById('solo-ntfy-topic')?.value || '';
+    if (!topic) {
+        alert('Канал ntfy не найден.');
+        return;
+    }
+    markNtfyLinked();
+    const origText = btn ? btn.textContent : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = '⏳ Ставлю в очередь на ntfy.sh...';
+    }
+    const tid = (window.appDB && window.appDB.tenantId) ? window.appDB.tenantId : '';
+    const base = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/');
+    const ok = window.BarberMobileBridge && window.BarberMobileBridge.sendNtfyPush
+        ? await window.BarberMobileBridge.sendNtfyPush({
+            topic,
+            title: '⏰ ТЕСТ: Через 15 мин клиент (16:00)!',
+            message: 'Клиент: Алишер (+996 555 12-34-56)\nУслуга: Мужская стрижка\nЭто тест отложенного ПУШа на выключенный экран.',
+            priority: 5,
+            tags: ['alarm_clock', 'scissors'],
+            clickUrl: `${base}barber.html?id=${encodeURIComponent(tid)}`,
+            delay: '12s',
+            sequenceId: 'brem_test_' + Date.now()
+        })
+        : false;
+
+    if (btn) {
+        btn.disabled = false;
+        btn.textContent = ok
+            ? '✅ В очереди! Закрой сайт и выключи экран — придёт через ~12 сек'
+            : '⚠️ Не удалось связаться с ntfy.sh';
+        setTimeout(() => {
+            if (btn) btn.textContent = origText;
+        }, 7000);
+    }
+};
+
+async function checkUpcomingSoloReminders(forceResync) {
+    if (soloReminderCheckRunning) return;
+    if (!window.appDB || !window.BarberMobileBridge || !window.BarberMobileBridge.computeBookingStartMs) return;
+    soloReminderCheckRunning = true;
+    try {
+        const list = Array.isArray(soloBookingsCache) ? soloBookingsCache : [];
+        const tid = window.appDB.tenantId || 'default';
+        const st = soloSettingsCache || {};
+        const leadMin = window.BarberMobileBridge.resolveReminderMinutes
+            ? window.BarberMobileBridge.resolveReminderMinutes(st)
+            : 15;
+        const nowMs = Date.now();
+        const remindedMap = loadSoloRemindedMap();
+        const schedMap = window.BarberMobileBridge._readReminderSchedMap
+            ? window.BarberMobileBridge._readReminderSchedMap(tid)
+            : {};
+        let remindedDirty = false;
+
+        for (const b of list) {
+            if (!b || !b.id || b.isBreak) continue;
+            const bid = String(b.id);
+            const isInactive = (b.status === 'cancelled' || b.status === 'completed');
+
+            if (isInactive) {
+                if (schedMap[bid] && window.BarberMobileBridge.cancelSoloMasterReminder) {
+                    await window.BarberMobileBridge.cancelSoloMasterReminder(tid, b, st).catch(() => {});
+                }
+                continue;
+            }
+
+            if (leadMin <= 0) {
+                if (forceResync && schedMap[bid] && window.BarberMobileBridge.cancelSoloMasterReminder) {
+                    await window.BarberMobileBridge.cancelSoloMasterReminder(tid, b, st).catch(() => {});
+                }
+                continue;
+            }
+
+            const apptMs = window.BarberMobileBridge.computeBookingStartMs(b, st);
+            if (!Number.isFinite(apptMs)) continue;
+            const msLeft = apptMs - nowMs;
+
+            // 1. Live in-app alert if appointment is within reminder lead window (and still ahead)
+            if (msLeft > 0 && msLeft <= leadMin * 60 * 1000) {
+                const remKey = `${bid}_${leadMin}`;
+                if (!remindedMap[remKey]) {
+                    remindedMap[remKey] = nowMs;
+                    remindedDirty = true;
+                    const minsLeft = Math.max(1, Math.ceil(msLeft / 60000));
+                    fireSoloIncomingAlert({
+                        dedupKey: 'rem_' + remKey,
+                        title: `⏰ Через ${minsLeft} мин клиент (${b.time || ''})!`,
+                        body: `${b.name || 'Клиент'} (${b.phone || '—'}) • ${b.service || 'Стрижка'}`,
+                        date: b.date,
+                        time: b.time,
+                        kind: 'reminder',
+                        silent: false
+                    });
+                }
+            }
+
+            // 2. Sync into ntfy scheduled queue (also picks up bookings > 3 days out once they enter the window)
+            if (msLeft > leadMin * 60 * 1000 && window.BarberMobileBridge.scheduleSoloMasterReminder) {
+                await window.BarberMobileBridge.scheduleSoloMasterReminder(tid, b, st, { skipIfSame: !forceResync }).catch(() => {});
+            }
+        }
+
+        if (remindedDirty) {
+            saveSoloRemindedMap(remindedMap);
+        }
+    } finally {
+        soloReminderCheckRunning = false;
+    }
+}
+
+function startSoloReminderTicker() {
+    if (soloReminderTickerId) clearInterval(soloReminderTickerId);
+    checkUpcomingSoloReminders();
+    soloReminderTickerId = setInterval(() => {
+        checkUpcomingSoloReminders();
+    }, 25000);
+}
 
 // 4. Booking database export to CSV/Excel
 window.exportSoloBookingsToCSV = async function () {

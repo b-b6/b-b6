@@ -1300,10 +1300,16 @@ const i18n = {
             // Trigger success vibration
             triggerHaptic('success');
 
-            // Send notification to Telegram bot & Push (Firestore + ntfy background push)
+            // Send notification to Telegram bot & Push (Firestore + ntfy background push + delayed reminder)
             sendTelegramPush(committedEntry);
-            if (window.BarberMobileBridge && window.BarberMobileBridge.sendBookingPushNotification) {
-                window.BarberMobileBridge.sendBookingPushNotification(window.appDB.tenantId, committedEntry, getSettings());
+            if (window.BarberMobileBridge) {
+                const stNow = getSettings();
+                if (window.BarberMobileBridge.sendBookingPushNotification) {
+                    window.BarberMobileBridge.sendBookingPushNotification(window.appDB.tenantId, committedEntry, stNow).catch(() => {});
+                }
+                if (window.BarberMobileBridge.scheduleSoloMasterReminder) {
+                    window.BarberMobileBridge.scheduleSoloMasterReminder(window.appDB.tenantId, committedEntry, stNow).catch(() => {});
+                }
             }
 
             // Hide BackButton in Telegram Mini App on success screen
@@ -1516,8 +1522,14 @@ const i18n = {
             if (cancelledEntry) {
                 await window.appDB.saveBookings(store.bookings);
                 sendTelegramPush(cancelledEntry, true);
-                if (window.BarberMobileBridge && window.BarberMobileBridge.sendBookingPushNotification) {
-                    window.BarberMobileBridge.sendBookingPushNotification(window.appDB.tenantId, cancelledEntry, getSettings());
+                if (window.BarberMobileBridge) {
+                    const stNow = getSettings();
+                    if (window.BarberMobileBridge.sendBookingPushNotification) {
+                        window.BarberMobileBridge.sendBookingPushNotification(window.appDB.tenantId, cancelledEntry, stNow).catch(() => {});
+                    }
+                    if (window.BarberMobileBridge.cancelSoloMasterReminder) {
+                        window.BarberMobileBridge.cancelSoloMasterReminder(window.appDB.tenantId, cancelledEntry, stNow).catch(() => {});
+                    }
                 }
             }
 

@@ -245,7 +245,7 @@
             } catch (e) {}
         },
 
-        async sendNtfyPush({ topic, title, message, priority = 5, tags = ['scissors', 'bell'], clickUrl = '' }) {
+        async sendNtfyPush({ topic, title, message, priority = 5, tags = ['scissors', 'bell'], clickUrl = '', delay = '', sequenceId = '' }) {
             const cleanTopic = String(topic || '').trim().replace(/[^a-zA-Z0-9_-]/g, '');
             if (!cleanTopic) return false;
             try {
@@ -257,6 +257,13 @@
                     tags: Array.isArray(tags) ? tags : ['scissors']
                 };
                 if (clickUrl) payload.click = clickUrl;
+                if (delay !== undefined && delay !== null && delay !== '') {
+                    payload.delay = typeof delay === 'number' ? Math.floor(delay) : String(delay);
+                }
+                if (sequenceId) {
+                    const cleanSeq = String(sequenceId).trim().replace(/[^a-zA-Z0-9_-]/g, '');
+                    if (cleanSeq) payload.sequence_id = cleanSeq;
+                }
                 const res = await fetch('https://ntfy.sh', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -267,6 +274,236 @@
                 console.warn('sendNtfyPush error:', e);
                 return false;
             }
+        },
+
+        async cancelNtfyPush(topic, sequenceId) {
+            const cleanTopic = String(topic || '').trim().replace(/[^a-zA-Z0-9_-]/g, '');
+            const cleanSeq = String(sequenceId || '').trim().replace(/[^a-zA-Z0-9_-]/g, '');
+            if (!cleanTopic || !cleanSeq) return false;
+            try {
+                const res = await fetch(`https://ntfy.sh/${encodeURIComponent(cleanTopic)}/${encodeURIComponent(cleanSeq)}`, {
+                    method: 'DELETE'
+                });
+                return res.ok;
+            } catch (e) {
+                console.warn('cancelNtfyPush error:', e);
+                return false;
+            }
+        },
+
+        resolveReminderMinutes(settingsObj) {
+            if (!settingsObj || settingsObj.solo_reminder_minutes === undefined || settingsObj.solo_reminder_minutes === null || settingsObj.solo_reminder_minutes === '') {
+                return 15;
+            }
+            const n = Number(settingsObj.solo_reminder_minutes);
+            return Number.isFinite(n) && n >= 0 ? n : 15;
+        },
+
+        computeBookingStartMs(booking, settingsObj) {
+            if (!booking || !booking.date || !booking.time) return NaN;
+            const dMatch = String(booking.date).trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+            const tMatch = String(booking.time).trim().match(/^(\d{1,2}):(\d{2})/);
+            if (!dMatch || !tMatch) return NaN;
+
+            const yr = parseInt(dMatch[1], 10);
+            const mo = parseInt(dMatch[2], 10) - 1;
+            const da = parseInt(dMatch[3], 10);
+            const hh = parseInt(tMatch[1], 10);
+            const mm = parseInt(tMatch[2], 10);
+            const dt = new Date(yr, mo, da, hh, mm, 0, 0);
+            if (isNaN(dt.getTime())) return NaN;
+
+            // Match BookingLogic night-shift rule (e.g. open 10:00, close 02:00 -> 00:30 belongs to next calendar morning)
+            const st = settingsObj || {};
+            const parseHHMM = (str, defMin) => {
+                const m = String(str || '').trim().match(/^(\d{1,2}):(\d{2})/);
+                return m ? (parseInt(m[1], 10) * 60 + parseInt(m[2], 10)) : defMin;
+            };
+            const openMins = parseHHMM(st.soloWorkStart || st.workStart || st.openTime, 10 * 60);
+            const closeMins = parseHHMM(st.soloWorkEnd || st.workEnd || st.closeTime, 21 * 60);
+            const slotMins = hh * 60 + mm;
+            if (closeMins <= openMins && closeMins <= 4 * 60 && slotMins < openMins && hh <= 4) {
+                dt.setDate(dt.getDate() + 1);
+            }
+            return dt.getTime();
+        },
+
+        _getReminderSchedKey(tenantId) {
+            return `barber_ntfy_sched_v1_${String(tenantId || 'default').replace(/[^a-zA-Z0-9_-]/g, '')}`;
+        },
+
+        _readReminderSchedMap(tenantId) {
+            try {
+                const raw = localStorage.getItem(this._getReminderSchedKey(tenantId));
+                const parsed = raw ? JSON.parse(raw) : {};
+                return (parsed && typeof parsed === 'object') ? parsed : {};
+            } catch (e) {
+                return {};
+            }
+        },
+
+        _writeReminderSchedMap(tenantId, map) {
+            try {
+                const cutoff = Date.now() - 2 * 86400000;
+                const pruned = {};
+                const keys = Object.keys(map || {}).slice(-200);
+                keys.forEach(k => {
+                    const entry = map[k];
+                    if (entry && (!entry.remindAtMs || entry.remindAtMs > cutoff)) {
+                        pruned[k] = entry;
+                    }
+                });
+                localStorage.setItem(this._getReminderSchedKey(tenantId), JSON.stringify(pruned));
+            } catch (e) {}
+        },
+
+        _bookingReminderSeqId(booking) {
+            const cleanId = String((booking && booking.id) || Date.now()).replace(/[^a-zA-Z0-9_-]/g, '');
+            return `brem_${cleanId}`;
+        },
+
+        async scheduleSoloMasterReminder(tenantId, booking, settingsObj, opts) {
+            if (!booking || !booking.id || booking.isBreak) {
+                return { scheduled: false, reason: 'invalid_booking' };
+            }
+            let st = settingsObj;
+            if (!st && window.appDB && window.appDB.getSettings) {
+                try { st = await window.appDB.getSettings(); } catch (e) {}
+            }
+            if (booking.status === 'cancelled' || booking.status === 'completed') {
+                await this.cancelSoloMasterReminder(tenantId, booking, st);
+                return { scheduled: false, reason: 'inactive_status' };
+            }
+
+            const leadMin = this.resolveReminderMinutes(st);
+            if (leadMin <= 0) {
+                await this.cancelSoloMasterReminder(tenantId, booking, st);
+                return { scheduled: false, reason: 'disabled' };
+            }
+
+            const apptMs = this.computeBookingStartMs(booking, st);
+            if (!Number.isFinite(apptMs)) {
+                return { scheduled: false, reason: 'invalid_datetime' };
+            }
+
+            const remindAtMs = apptMs - leadMin * 60 * 1000;
+            const diffSec = Math.floor((remindAtMs - Date.now()) / 1000);
+            const seqId = this._bookingReminderSeqId(booking);
+            const title = `⏰ Через ${leadMin} мин клиент (${booking.time || ''})!`;
+            const body = `${booking.name || 'Клиент'} (${booking.phone || 'без тел.'})\nУслуга: ${booking.service || 'Стрижка'}\nЗапись на ${booking.date || ''} в ${booking.time || ''}`;
+
+            const bid = String(booking.id);
+            const schedMap = this._readReminderSchedMap(tenantId);
+            const existing = schedMap[bid];
+            const skipSame = Boolean(opts && opts.skipIfSame);
+            const sameTiming = Boolean(existing && existing.remindAtMs === remindAtMs && existing.leadMin === leadMin);
+            const ntfyTopic = (st && st.solo_push_topic && st.solo_push_enabled !== false) ? String(st.solo_push_topic) : '';
+
+            // Native Expo APK local offline alarm (works for any future date > 3 days too)
+            const hasNative = Boolean(window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function');
+            let nativeDone = Boolean(sameTiming && existing.nativeSent);
+            if (hasNative && remindAtMs > Date.now() + 5000 && (!skipSame || !nativeDone)) {
+                try {
+                    window.ReactNativeWebView.postMessage(JSON.stringify({
+                        type: 'SCHEDULE_NOTIFICATION',
+                        identifier: seqId,
+                        title,
+                        body,
+                        triggerTimestampMs: remindAtMs
+                    }));
+                    nativeDone = true;
+                } catch (e) {}
+            }
+
+            if (!ntfyTopic) {
+                if (existing && existing.ntfyTopicSent) {
+                    await this.cancelNtfyPush(existing.ntfyTopicSent, seqId).catch(() => {});
+                }
+                if (nativeDone) {
+                    if (!sameTiming || !existing.nativeSent || (existing && existing.ntfyTopicSent)) {
+                        schedMap[bid] = { remindAtMs, leadMin, ntfyTopicSent: '', nativeSent: true, updatedAt: Date.now() };
+                        this._writeReminderSchedMap(tenantId, schedMap);
+                    }
+                } else if (existing) {
+                    delete schedMap[bid];
+                    this._writeReminderSchedMap(tenantId, schedMap);
+                }
+                return { scheduled: nativeDone, reason: 'ntfy_not_configured', remindAtMs, leadMin };
+            }
+
+            if (existing && existing.ntfyTopicSent && existing.ntfyTopicSent !== ntfyTopic) {
+                await this.cancelNtfyPush(existing.ntfyTopicSent, seqId).catch(() => {});
+            }
+
+            // ntfy.sh supports delay from 10s up to 3 days (use 2-min margin below 3d)
+            const MAX_NTFY_DELAY_SEC = 3 * 86400 - 120;
+            if (diffSec < 10) {
+                return { scheduled: false, reason: diffSec < 0 ? 'reminder_time_passed' : 'too_soon', remindAtMs, leadMin };
+            }
+            if (diffSec > MAX_NTFY_DELAY_SEC) {
+                if (nativeDone && (!sameTiming || !existing.nativeSent)) {
+                    schedMap[bid] = { remindAtMs, leadMin, ntfyTopicSent: '', nativeSent: true, updatedAt: Date.now() };
+                    this._writeReminderSchedMap(tenantId, schedMap);
+                }
+                return { scheduled: false, reason: 'beyond_3d_limit', remindAtMs, leadMin };
+            }
+
+            if (skipSame && sameTiming && existing.ntfyTopicSent === ntfyTopic) {
+                return { scheduled: true, reason: 'already_scheduled', remindAtMs, leadMin };
+            }
+
+            const base = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/');
+            const clickUrl = `${base}barber.html?id=${encodeURIComponent(tenantId || '')}`;
+            const ok = await this.sendNtfyPush({
+                topic: ntfyTopic,
+                title,
+                message: body,
+                priority: 5,
+                tags: ['alarm_clock', 'scissors'],
+                clickUrl,
+                delay: Math.floor(remindAtMs / 1000),
+                sequenceId: seqId
+            });
+
+            if (ok || nativeDone) {
+                schedMap[bid] = {
+                    remindAtMs,
+                    leadMin,
+                    ntfyTopicSent: ok ? ntfyTopic : (sameTiming ? existing.ntfyTopicSent || '' : ''),
+                    nativeSent: nativeDone,
+                    updatedAt: Date.now()
+                };
+                this._writeReminderSchedMap(tenantId, schedMap);
+            }
+            return { scheduled: ok, reason: ok ? 'queued_ntfy' : 'ntfy_failed', remindAtMs, leadMin };
+        },
+
+        async cancelSoloMasterReminder(tenantId, booking, settingsObj) {
+            if (!booking || !booking.id) return false;
+            const seqId = this._bookingReminderSeqId(booking);
+            try {
+                if (window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function') {
+                    window.ReactNativeWebView.postMessage(JSON.stringify({
+                        type: 'CANCEL_NOTIFICATION',
+                        identifier: seqId
+                    }));
+                }
+            } catch (e) {}
+
+            let st = settingsObj;
+            if (!st && window.appDB && window.appDB.getSettings) {
+                try { st = await window.appDB.getSettings(); } catch (e) {}
+            }
+            const bid = String(booking.id);
+            const schedMap = this._readReminderSchedMap(tenantId);
+            const topic = (st && st.solo_push_topic) || (schedMap[bid] && (schedMap[bid].ntfyTopicSent || schedMap[bid].topic)) || '';
+            delete schedMap[bid];
+            this._writeReminderSchedMap(tenantId, schedMap);
+
+            if (topic) {
+                return this.cancelNtfyPush(topic, seqId);
+            }
+            return true;
         },
 
         async sendBookingPushNotification(tenantId, booking, settingsObj) {
@@ -342,6 +579,28 @@
                 gain.connect(ctx.destination);
                 osc.start();
                 osc.stop(ctx.currentTime + 0.45);
+            } catch (e) {}
+        },
+
+        playReminderSound() {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                const ctx = new AudioCtx();
+                const notes = [659.25, 880, 1046.5];
+                notes.forEach((freq, i) => {
+                    const t = ctx.currentTime + i * 0.16;
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, t);
+                    gain.gain.setValueAtTime(0.22, t);
+                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(t);
+                    osc.stop(t + 0.28);
+                });
             } catch (e) {}
         },
 
