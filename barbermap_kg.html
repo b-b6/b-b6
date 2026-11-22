@@ -561,18 +561,23 @@ body.dragging .map-ctrls{transition:opacity .2s}
               );
             }
             if (idx >= 0) {
+              const cat = rawCatalog[idx];
+              const isPlaceholderAddr = (a) => !a || a === 'Адрес указан на карте' || a === 'Точка с карты Super Admin';
+              const sameSpot = Math.abs(+item.lat - (+cat.lat)) < 0.003 && Math.abs(+item.lon - (+cat.lon)) < 0.003;
+              const useOverrideAddr = !isPlaceholderAddr(item.address);
+              const useOverrideCity = Boolean(item.city) && !(sameSpot && item.city === 'Бишкек' && cat.city && cat.city !== 'Бишкек' && !useOverrideAddr);
               rawCatalog[idx] = {
-                ...rawCatalog[idx],
+                ...cat,
                 lat: item.lat,
                 lon: item.lon,
-                name: item.name || rawCatalog[idx].name,
-                address: item.address || rawCatalog[idx].address,
-                city: item.city || rawCatalog[idx].city,
-                phone: item.phone || rawCatalog[idx].phone || '',
-                avatar: item.avatar || rawCatalog[idx].avatar || '',
-                spec: item.spec || rawCatalog[idx].spec || '',
-                isSolo: rawCatalog[idx].isSolo || Boolean(item.isSolo),
-                tenantId: rawCatalog[idx].tenantId || item.tenantId || ''
+                name: item.name || cat.name,
+                address: useOverrideAddr ? item.address : (cat.address || item.address),
+                city: useOverrideCity ? item.city : (cat.city || item.city),
+                phone: item.phone || cat.phone || '',
+                avatar: item.avatar || cat.avatar || '',
+                spec: item.spec || cat.spec || '',
+                isSolo: cat.isSolo || Boolean(item.isSolo),
+                tenantId: cat.tenantId || item.tenantId || ''
               };
             } else {
               rawCatalog.unshift({
