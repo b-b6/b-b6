@@ -14,7 +14,7 @@
     <script src="barbershops_uz.js?v=14"></script>
     <script src="barbershops_kz.js?v=14"></script>
     <script src="assets/db.js?v=14"></script>
-    <script src="assets/mobile-bridge.js?v=15"></script>
+    <script src="assets/mobile-bridge.js?v=16"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
@@ -610,13 +610,32 @@
             const customItems = [];
             try {
                 const customMap = window.BarberMobileBridge ? window.BarberMobileBridge.getCustomLocationsLocal() : {};
+                const globalTenants = Array.isArray(window.tenants) ? window.tenants : [];
+                const isPlaceholderAddr = (a) => !a || a === 'Адрес указан на карте' || a === 'Точка с карты Super Admin';
                 Object.keys(customMap).forEach(id => {
                     const c = Object.assign({}, customMap[id], { isCustom: true });
-                    const existingIdx = base.findIndex(b => String(b.id) === String(id));
-                    if (existingIdx !== -1) {
-                        base.splice(existingIdx, 1);
+                    let existingIdx = base.findIndex(b => String(b.id) === String(id));
+                    if (existingIdx < 0 && c.tenantId) {
+                        const boundT = globalTenants.find(t => String(t.id) === String(c.tenantId));
+                        existingIdx = base.findIndex(b =>
+                            (b.tenantId && String(b.tenantId) === String(c.tenantId)) ||
+                            (boundT && boundT.catalogId && String(b.id) === String(boundT.catalogId))
+                        );
                     }
-                    customItems.push(c);
+                    if (existingIdx !== -1) {
+                        const cat = base.splice(existingIdx, 1)[0];
+                        const sameSpot = isFinite(+c.lat) && isFinite(+c.lon) && Math.abs(+c.lat - (+cat.lat)) < 0.003 && Math.abs(+c.lon - (+cat.lon)) < 0.003;
+                        const useOverrideAddr = !isPlaceholderAddr(c.address);
+                        const useOverrideCity = Boolean(c.city) && !(sameSpot && c.city === 'Бишкек' && cat.city && cat.city !== 'Бишкек' && !useOverrideAddr);
+                        customItems.push(Object.assign({}, cat, c, {
+                            id: cat.id,
+                            address: useOverrideAddr ? c.address : (cat.address || c.address),
+                            city: useOverrideCity ? c.city : (cat.city || c.city),
+                            isCustom: true
+                        }));
+                    } else {
+                        customItems.push(c);
+                    }
                 });
             } catch (e) {}
             barbersCatalog.forEach(b => {

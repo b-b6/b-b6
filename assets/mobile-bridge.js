@@ -258,7 +258,7 @@
                 };
                 if (clickUrl) payload.click = clickUrl;
                 if (delay !== undefined && delay !== null && delay !== '') {
-                    payload.delay = typeof delay === 'number' ? Math.floor(delay) : String(delay);
+                    payload.delay = typeof delay === 'number' ? String(Math.floor(delay)) : String(delay);
                 }
                 if (sequenceId) {
                     const cleanSeq = String(sequenceId).trim().replace(/[^a-zA-Z0-9_-]/g, '');
