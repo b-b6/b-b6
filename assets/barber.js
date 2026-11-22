@@ -504,7 +504,9 @@ window.renderSoloSchedule = function () {
             const clientName = booking.name || booking.clientName || 'Клиент';
             const clientPhone = booking.phone || booking.clientPhone || '—';
             const serviceName = booking.service || booking.serviceName || 'Стрижка';
-            const cleanPhone = clientPhone.replace(/[^0-9]/g, '');
+            const cleanPhone = (window.BarberMobileBridge && window.BarberMobileBridge.normalizeWhatsAppPhone)
+                ? window.BarberMobileBridge.normalizeWhatsAppPhone(clientPhone)
+                : clientPhone.replace(/[^0-9]/g, '');
             const masterCutRaw = (Number(booking.price) || 0) * (pct / 100);
             const masterCut = (booking.currency === 'USD') ? Math.round(masterCutRaw * 100) / 100 : Math.round(masterCutRaw);
             return `
@@ -523,7 +525,8 @@ window.renderSoloSchedule = function () {
                     </div>
                     <div class="slot-actions">
                         ${!isDone ? `<button class="btn-gold" style="padding: 6px 10px; font-size: 11.5px;" onclick="markSoloBookingDone('${booking.id}')" title="Отметить выполненным">✓ Готово</button>` : `<span style="color: var(--green); font-size: 12px; font-weight: 800;">✓ Оплачено</span>`}
-                        ${cleanPhone ? `<a href="https://wa.me/${cleanPhone}" target="_blank" class="btn-outline" style="padding: 6px 9px; text-decoration: none;">WA</a>` : ''}
+                        ${cleanPhone ? `<button type="button" class="btn-outline" style="padding: 6px 9px; border-color:rgba(22,163,74,0.45); color:#15803d; font-weight:800;" onclick="openSoloBookingWhatsApp('${booking.id}')" title="Отправить талон клиенту в WhatsApp">💬 WA</button>` : ''}
+                        <button type="button" class="btn-outline" style="padding: 6px 8px;" onclick="copySoloBookingTicket('${booking.id}')" title="Скопировать текст талона">📋</button>
                         <button class="btn-outline" style="padding: 6px 9px; color: #f87171;" onclick="cancelSoloBooking('${booking.id}')" title="Отменить запись">✕</button>
                     </div>
                 </div>
@@ -582,7 +585,14 @@ window.openAddBookingModal = async function (prefillTime) {
     const modal = document.getElementById('manual-booking-modal');
     const srvSelect = document.getElementById('mb-service-select');
     const timeInput = document.getElementById('mb-time-input');
+    const waLangEl = document.getElementById('mb-wa-lang');
     if (prefillTime && timeInput) timeInput.value = prefillTime;
+    if (waLangEl) {
+        try {
+            const savedWaLang = localStorage.getItem('barber_manual_wa_lang');
+            waLangEl.value = (savedWaLang === 'ru' || savedWaLang === 'kg') ? savedWaLang : 'kg';
+        } catch (e) { waLangEl.value = 'kg'; }
+    }
 
     if (srvSelect && window.appDB) {
         if (!soloServicesCache.length) {
@@ -602,13 +612,65 @@ window.closeAddBookingModal = function () {
     if (modal) modal.classList.remove('show');
 };
 
+function getSoloWhatsAppContext(langOverride) {
+    const st = soloSettingsCache || {};
+    const boundShop = (typeof getBoundCatalogPointForSolo === 'function') ? getBoundCatalogPointForSolo() : null;
+    const tid = (window.appDB && window.appDB.tenantId) ? window.appDB.tenantId : '';
+    const langSel = document.getElementById('mb-wa-lang');
+    let lang = langOverride || (langSel && langSel.value);
+    if (!lang) {
+        try { lang = localStorage.getItem('barber_manual_wa_lang') || 'kg'; } catch (e) { lang = 'kg'; }
+    }
+    const bookingUrl = (window.BarberMobileBridge && window.BarberMobileBridge.getUniversalBookLink && tid)
+        ? window.BarberMobileBridge.getUniversalBookLink(tid, true)
+        : '';
+    return {
+        lang: lang || 'kg',
+        isSolo: true,
+        shopName: soloProfile.name || st.soloMasterName || 'Мастер',
+        masterName: soloProfile.name || st.soloMasterName || '',
+        city: st.city || (boundShop && boundShop.city) || '',
+        address: st.address || (boundShop && boundShop.address) || '',
+        bookingUrl
+    };
+}
+
+window.openSoloBookingWhatsApp = function (bookingId) {
+    const b = soloBookingsCache.find(x => String(x.id) === String(bookingId));
+    if (!b || !window.BarberMobileBridge || !window.BarberMobileBridge.openBookingWhatsAppChat) return;
+    const res = window.BarberMobileBridge.openBookingWhatsAppChat(b, getSoloWhatsAppContext());
+    if (!res.opened) {
+        alert('У клиента не указан корректный номер телефона для WhatsApp.');
+    }
+};
+
+window.copySoloBookingTicket = function (bookingId) {
+    const b = soloBookingsCache.find(x => String(x.id) === String(bookingId));
+    if (!b || !window.BarberMobileBridge || !window.BarberMobileBridge.buildWhatsAppBookingMessage) return;
+    const text = window.BarberMobileBridge.buildWhatsAppBookingMessage(b, getSoloWhatsAppContext());
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+            showSoloToastBanner('📋 Талон скопирован!', 'Можете вставить и отправить клиенту в WhatsApp / Instagram / Telegram', b.date, 4000);
+        }).catch(() => alert(text));
+    } else {
+        alert(text);
+    }
+};
+
 window.saveManualSoloBooking = async function () {
     if (!window.appDB) return;
-    const clientName = document.getElementById('mb-client-name').value.trim() || 'Клиент';
-    const clientPhone = document.getElementById('mb-client-phone').value.trim() || '+996 555 00-00-00';
+    const nameEl = document.getElementById('mb-client-name');
+    const phoneEl = document.getElementById('mb-client-phone');
+    const clientName = (nameEl ? nameEl.value.trim() : '') || 'Клиент';
+    const rawPhone = phoneEl ? phoneEl.value.trim() : '';
+    const clientPhone = rawPhone || '—';
     const srvId = document.getElementById('mb-service-select').value;
     const timeVal = document.getElementById('mb-time-input').value || '14:00';
     const dateVal = document.getElementById('solo-schedule-date').value || getTodayIso();
+    const sendWaCheck = document.getElementById('mb-send-wa');
+    const shouldOpenWa = !sendWaCheck || sendWaCheck.checked;
+    const waLangEl = document.getElementById('mb-wa-lang');
+    const waLang = (waLangEl && waLangEl.value) || 'kg';
 
     const services = soloServicesCache.length ? soloServicesCache : ((await window.appDB.getServices()) || []);
     const srv = services.find(s => String(s.id) === String(srvId)) || services[0] || { id: 1, name: 'Мужская стрижка', price: 600, duration: 45 };
@@ -638,12 +700,18 @@ window.saveManualSoloBooking = async function () {
     await window.appDB.addBooking(newBooking);
     soloBookingsCache = (await window.appDB.getBookings()) || [];
     persistSeenBookingIds();
+    if (nameEl) nameEl.value = '';
+    if (phoneEl) phoneEl.value = '';
     closeAddBookingModal();
     renderSoloSchedule();
     if (window.BarberMobileBridge && window.BarberMobileBridge.scheduleSoloMasterReminder) {
         window.BarberMobileBridge.scheduleSoloMasterReminder(window.appDB.tenantId, newBooking, soloSettingsCache).catch(() => {});
     }
     checkUpcomingSoloReminders();
+
+    if (shouldOpenWa && rawPhone && window.BarberMobileBridge && window.BarberMobileBridge.openBookingWhatsAppChat) {
+        window.BarberMobileBridge.openBookingWhatsAppChat(newBooking, getSoloWhatsAppContext(waLang));
+    }
 };
 
 // ================= PERSONAL SERVICES & PRICES =================

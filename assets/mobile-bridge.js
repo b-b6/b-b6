@@ -604,6 +604,112 @@
             } catch (e) {}
         },
 
+        normalizeWhatsAppPhone(rawPhone, defaultCountryCode = '996') {
+            const digits = String(rawPhone || '').replace(/\D/g, '');
+            if (!digits || digits.length < 9 || /^0+$/.test(digits)) return '';
+            if (digits === '996555000000' || digits === '555000000') return '';
+
+            const defCc = String(defaultCountryCode || '996').replace(/\D/g, '') || '996';
+            let normalized = digits;
+            if (digits.length === 10 && digits.startsWith('0')) {
+                normalized = defCc + digits.slice(1);
+            } else if (digits.length === 9) {
+                normalized = defCc + digits;
+            } else if (digits.length === 11 && digits.startsWith('8')) {
+                normalized = '7' + digits.slice(1);
+            }
+
+            if (normalized.length < 11 || normalized.length > 15) return '';
+            return normalized;
+        },
+
+        buildWhatsAppBookingMessage(booking, opts = {}) {
+            const b = booking || {};
+            const lang = String(opts.lang || 'kg').toLowerCase();
+            const rawName = String(b.name || b.clientName || '').trim();
+            const isGenericName = !rawName || /^(клиент|кардар|client)$/i.test(rawName);
+            const shopLabel = String(opts.shopName || b.shopName || opts.masterName || b.masterName || 'BarberMap').trim();
+            const masterName = String(opts.masterName || b.masterName || '').trim();
+            const srvName = String(b.service || b.serviceName || '').trim();
+
+            let priceText = String(opts.priceFormatted || '').trim();
+            if (!priceText && Number(b.price) > 0) {
+                const c = b.currency || 'KGS';
+                if (typeof window !== 'undefined' && window.BarberCurrency && window.BarberCurrency.format) {
+                    priceText = window.BarberCurrency.format(b.price, c, false, c);
+                } else {
+                    priceText = `${b.price} ${c === 'KGS' ? 'сом' : c}`;
+                }
+            }
+
+            let dateText = String(b.date || '').trim();
+            const dm = dateText.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+            if (dm) dateText = `${dm[3]}.${dm[2]}.${dm[1]}`;
+            const timeText = String(b.time || '').trim();
+
+            const cityPart = String(opts.city || '').trim();
+            const addrPart = String(opts.address || '').trim();
+            const isPlaceholder = !addrPart || addrPart === 'Адрес указан на карте' || addrPart === 'Точка с карты Super Admin';
+            const locationText = (!isPlaceholder && cityPart && !addrPart.toLowerCase().includes(cityPart.toLowerCase()))
+                ? `${cityPart}, ${addrPart}`
+                : (!isPlaceholder ? addrPart : cityPart);
+
+            const lines = [];
+            if (lang === 'ru') {
+                lines.push(isGenericName ? 'Здравствуйте! ✂️' : `Здравствуйте, ${rawName}! ✂️`);
+                lines.push(opts.isSolo
+                    ? `Вы записаны к мастеру «${shopLabel}»:`
+                    : `Вы записаны в «${shopLabel}»:`);
+                if (!opts.isSolo && masterName && masterName !== 'Любой') lines.push(`👤 Мастер: ${masterName}`);
+                if (srvName) lines.push(`💈 Услуга: ${srvName}${priceText ? ' — ' + priceText : ''}`);
+                if (dateText || timeText) lines.push(`📅 Дата: ${dateText}${timeText ? ' • 🕒 Время: ' + timeText : ''}`);
+                if (locationText) lines.push(`📍 Адрес: ${locationText}`);
+                if (opts.bookingUrl) lines.push(`🔗 Онлайн-запись: ${opts.bookingUrl}`);
+                lines.push('');
+                lines.push('Ждём вас к назначенному времени! 🤝');
+            } else {
+                lines.push(isGenericName ? 'Саламатсызбы! ✂️' : `Саламатсызбы, ${rawName}! ✂️`);
+                lines.push(opts.isSolo
+                    ? `Сиз «${shopLabel}» чеберине жазылдыңыз:`
+                    : `Сиз «${shopLabel}» барбершопуна жазылдыңыз:`);
+                if (!opts.isSolo && masterName && !/^(любой|каалаган)$/i.test(masterName)) {
+                    lines.push(`👤 Чебер: ${masterName}`);
+                }
+                if (srvName) lines.push(`💈 Кызмат: ${srvName}${priceText ? ' — ' + priceText : ''}`);
+                if (dateText || timeText) lines.push(`📅 Күнү: ${dateText}${timeText ? ' • 🕒 Саат: ' + timeText : ''}`);
+                if (locationText) lines.push(`📍 Дарек: ${locationText}`);
+                if (opts.bookingUrl) lines.push(`🔗 Онлайн-жазуу: ${opts.bookingUrl}`);
+                lines.push('');
+                lines.push('Белгиленген убакытта күтөбүз! 🤝');
+            }
+            return lines.join('\n');
+        },
+
+        openBookingWhatsAppChat(booking, opts = {}) {
+            const cleanPhone = this.normalizeWhatsAppPhone(booking && (booking.phone || booking.clientPhone), opts.defaultCountryCode || '996');
+            const text = this.buildWhatsAppBookingMessage(booking, opts);
+            if (!cleanPhone) {
+                return { opened: false, reason: 'no_phone', cleanPhone: '', url: '', text };
+            }
+            const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
+            let opened = false;
+            try {
+                const win = window.open(url, '_blank');
+                if (win && !win.closed) {
+                    opened = true;
+                } else {
+                    window.location.href = url;
+                    opened = true;
+                }
+            } catch (e) {
+                try {
+                    window.location.href = url;
+                    opened = true;
+                } catch (e2) {}
+            }
+            return { opened, reason: opened ? 'ok' : 'failed', cleanPhone, url, text };
+        },
+
         async showLocalNotification(title, body, opts) {
             const safeTitle = title || '✂️ Новая запись!';
             const safeBody = body || '';

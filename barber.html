@@ -1036,8 +1036,8 @@
                 <input type="text" id="mb-client-name" class="form-input" placeholder="Имя клиента">
             </div>
             <div class="form-group">
-                <label>Телефон</label>
-                <input type="tel" id="mb-client-phone" class="form-input" placeholder="+996 555 00-00-00">
+                <label>Телефон (WhatsApp)</label>
+                <input type="tel" id="mb-client-phone" class="form-input" placeholder="+996 555 12-34-56 или 0555...">
             </div>
             <div class="form-group">
                 <label>Услуга</label>
@@ -1046,6 +1046,19 @@
             <div class="form-group">
                 <label>Время</label>
                 <input type="time" id="mb-time-input" class="form-input" value="14:00">
+            </div>
+            <div style="background: #f0fdf4; border: 1px solid rgba(22,163,74,0.3); border-radius: 12px; padding: 10px 12px; margin-top: 8px;">
+                <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:800; color:#14532d; cursor:pointer; margin:0;">
+                    <input type="checkbox" id="mb-send-wa" checked style="width:17px; height:17px; accent-color:#16a34a;">
+                    <span>💬 Сактагандан кийин дароо WhatsApp чатка өтүү</span>
+                </label>
+                <div style="display:flex; align-items:center; gap:8px; margin-top:7px;">
+                    <span style="font-size:11.5px; color:#166534; font-weight:700;">Билдирүү тили:</span>
+                    <select id="mb-wa-lang" class="form-input" style="padding:5px 8px; font-size:12px; font-weight:800; width:auto; flex:1; background:#fff;" onchange="try{localStorage.setItem('barber_manual_wa_lang',this.value)}catch(e){}">
+                        <option value="kg" selected>🇰🇬 Кыргызча (талон)</option>
+                        <option value="ru">🇷🇺 Русский (талон)</option>
+                    </select>
+                </div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px;">
                 <button class="btn-outline" onclick="closeAddBookingModal()">Отмена</button>
@@ -1218,8 +1231,8 @@
     <script src="barbershops_kg.js?v=14"></script>
     <script src="assets/db.js?v=14"></script>
     <script src="assets/booking-logic.js?v=9"></script>
-    <script src="assets/mobile-bridge.js?v=16"></script>
-    <script src="assets/barber.js?v=15"></script>
+    <script src="assets/mobile-bridge.js?v=17"></script>
+    <script src="assets/barber.js?v=16"></script>
     <script>
         const BARBER_I18N = {
             ru: {

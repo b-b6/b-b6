@@ -400,7 +400,10 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                         ? `<span style="background:rgba(245,158,11,0.2); border:1px solid #f59e0b; color:#d97706; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:700; margin-left:6px;">👥 Групповая (${b.groupIndex || '3-4'} чел) — Позвонить!</span>`
                         : '';
 
-                    list.innerHTML += `<div class="booking-item" style="${isCancelled ? 'opacity: 0.5;' : ''} align-items: stretch; flex-direction: column;"><div style="display: flex; justify-content: space-between; align-items: flex-start;"><div class="booking-details" style="flex: 1;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 5px; flex-wrap:wrap; gap:6px;"><div style="display:flex; align-items:center;"><h4 style="margin:0;">${b.date} в ${b.time}</h4>${groupBadge}</div><select onchange="updateBookingStatus('${b.id}', this.value)" style="background:var(--bg-dark); color:${stColor}; border:1px solid var(--border); padding:4px 8px; border-radius:6px; outline:none; font-size:0.85rem; font-weight:600; cursor:pointer;"><option value="pending_confirmation" style="color:#f59e0b;" ${st === 'pending_confirmation' ? 'selected' : ''}>⏳ Требует звонка</option><option value="pending" style="color:#f1c40f;" ${st === 'pending' || st === 'confirmed' ? 'selected' : ''}>🟡 Ожидается</option><option value="in_progress" style="color:#1e90ff;" ${st === 'in_progress' ? 'selected' : ''}>🔵 В кресле</option><option value="completed" style="color:#2ed573;" ${st === 'completed' ? 'selected' : ''}>🟢 Завершено</option><option value="cancelled" style="color:#ff4757;" ${st === 'cancelled' ? 'selected' : ''}>🔴 Отменено</option></select></div><p><strong style="color: var(--text-main);">КЛИЕНТ:</strong> ${b.name} (${b.phone})</p><p><strong style="color: var(--text-main);">УСЛУГА:</strong> ${b.service} - ${fmtAdminPrice(b.price, b.currency)}</p><p><strong style="color: var(--text-main);">МАСТЕР:</strong> ${b.masterName || 'Любой'}</p></div><div style="display: flex; flex-direction: column; justify-content: flex-end; margin-left: 15px; gap: 5px;"><button class="btn-danger" onclick="deleteBooking('${b.id}')">Удалить</button></div></div></div>`;
+                    const waCleanPhone = (window.BarberMobileBridge && window.BarberMobileBridge.normalizeWhatsAppPhone)
+                        ? window.BarberMobileBridge.normalizeWhatsAppPhone(b.phone || '')
+                        : '';
+                    list.innerHTML += `<div class="booking-item" style="${isCancelled ? 'opacity: 0.5;' : ''} align-items: stretch; flex-direction: column;"><div style="display: flex; justify-content: space-between; align-items: flex-start;"><div class="booking-details" style="flex: 1;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 5px; flex-wrap:wrap; gap:6px;"><div style="display:flex; align-items:center;"><h4 style="margin:0;">${b.date} в ${b.time}</h4>${groupBadge}</div><select onchange="updateBookingStatus('${b.id}', this.value)" style="background:var(--bg-dark); color:${stColor}; border:1px solid var(--border); padding:4px 8px; border-radius:6px; outline:none; font-size:0.85rem; font-weight:600; cursor:pointer;"><option value="pending_confirmation" style="color:#f59e0b;" ${st === 'pending_confirmation' ? 'selected' : ''}>⏳ Требует звонка</option><option value="pending" style="color:#f1c40f;" ${st === 'pending' || st === 'confirmed' ? 'selected' : ''}>🟡 Ожидается</option><option value="in_progress" style="color:#1e90ff;" ${st === 'in_progress' ? 'selected' : ''}>🔵 В кресле</option><option value="completed" style="color:#2ed573;" ${st === 'completed' ? 'selected' : ''}>🟢 Завершено</option><option value="cancelled" style="color:#ff4757;" ${st === 'cancelled' ? 'selected' : ''}>🔴 Отменено</option></select></div><p><strong style="color: var(--text-main);">КЛИЕНТ:</strong> ${b.name} (${b.phone})</p><p><strong style="color: var(--text-main);">УСЛУГА:</strong> ${b.service} - ${fmtAdminPrice(b.price, b.currency)}</p><p><strong style="color: var(--text-main);">МАСТЕР:</strong> ${b.masterName || 'Любой'}</p></div><div style="display: flex; flex-direction: column; justify-content: flex-end; margin-left: 15px; gap: 6px;">${waCleanPhone ? `<button type="button" class="btn-outline" style="padding:7px 10px; font-size:0.8rem; border-color:#16a34a; color:#15803d; font-weight:700; white-space:nowrap;" onclick="openAdminBookingWhatsApp('${b.id}')">💬 WhatsApp</button>` : ''}<button class="btn-danger" onclick="deleteBooking('${b.id}')">Удалить</button></div></div></div>`;
                 });
             }
 
@@ -2281,6 +2284,46 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             });
         }
 
+        function getAdminWhatsAppContext(langOverride) {
+            const st = store.settings || {};
+            const langEl = document.getElementById('manual_wa_lang');
+            let lang = langOverride || (langEl && langEl.value);
+            if (!lang) {
+                try { lang = localStorage.getItem('barber_manual_wa_lang') || 'kg'; } catch (e) { lang = 'kg'; }
+            }
+            const headerName = document.getElementById('header-shop-name') ? document.getElementById('header-shop-name').innerText.replace(/^—\s*|\s*\(ID:.*\)$/g, '').trim() : '';
+            const tid = window.appDB ? window.appDB.tenantId : '';
+            const bookingUrl = (window.BarberMobileBridge && window.BarberMobileBridge.getUniversalBookLink && tid)
+                ? window.BarberMobileBridge.getUniversalBookLink(tid, false)
+                : '';
+            return {
+                lang: lang || 'kg',
+                isSolo: false,
+                shopName: st.shopName || headerName || 'Барбершоп',
+                city: st.city || '',
+                address: st.address || '',
+                bookingUrl
+            };
+        }
+
+        function openAdminBookingWhatsApp(bookingId, langOverride) {
+            const b = (store.bookings || []).find(x => String(x.id) === String(bookingId));
+            if (!b || !window.BarberMobileBridge || !window.BarberMobileBridge.openBookingWhatsAppChat) return;
+            const res = window.BarberMobileBridge.openBookingWhatsAppChat(b, getAdminWhatsAppContext(langOverride));
+            if (!res.opened) alert('У клиента не указан корректный номер телефона для WhatsApp.');
+        }
+
+        function copyAdminBookingTicket(bookingId, langOverride) {
+            const b = (store.bookings || []).find(x => String(x.id) === String(bookingId));
+            if (!b || !window.BarberMobileBridge || !window.BarberMobileBridge.buildWhatsAppBookingMessage) return;
+            const text = window.BarberMobileBridge.buildWhatsAppBookingMessage(b, getAdminWhatsAppContext(langOverride));
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => alert('📋 Текст талона скопирован!')).catch(() => alert(text));
+            } else {
+                alert(text);
+            }
+        }
+
         async function addManualBooking() {
             let name = document.getElementById('manual_client_name').value.trim();
             let phone = document.getElementById('manual_client_phone').value.trim();
@@ -2288,15 +2331,24 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             let time = document.getElementById('manual_time').value;
             let servId = document.getElementById('manual_service').value;
             let mastId = document.getElementById('manual_master').value;
+            const sendWaEl = document.getElementById('manual_send_wa');
+            const shouldOpenWa = !sendWaEl || sendWaEl.checked;
+            const waLangEl = document.getElementById('manual_wa_lang');
+            const waLang = (waLangEl && waLangEl.value) || 'kg';
 
             if(!name || !time || !date) return alert('Введите имя, дату и время!');
 
-            let srv = store.services.find(s => s.id === servId);
-            let srvName = srv ? srv.strings.ru.title : '';
+            let srv = store.services.find(s => String(s.id) === String(servId));
+            let srvName = srv
+                ? ((srv.strings && (srv.strings.kg?.title || srv.strings.ru?.title)) || srv.name || '')
+                : '';
+            if (waLang === 'ru' && srv && srv.strings && srv.strings.ru && srv.strings.ru.title) {
+                srvName = srv.strings.ru.title;
+            }
             let srvPrice = srv ? srv.price : 0;
             let srvCurrency = (srv && srv.currency) || (store.settings && store.settings.currency) || 'KGS';
             
-            let mObj = store.masters.find(m => m.id === mastId);
+            let mObj = store.masters.find(m => String(m.id) === String(mastId));
             let mName = mObj ? mObj.name : 'Любой';
 
             let newBooking = {
@@ -2315,6 +2367,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                 timestamp: new Date().toISOString()
             };
 
+            let savedEntry = newBooking;
             try {
                 const result = await window.appDB.commitNewBooking(newBooking, {
                     masters: store.masters,
@@ -2323,6 +2376,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                     allowPast: true // админ может внести запись «задним числом» (клиент пришёл без записи)
                 });
                 store.bookings = result.items;
+                savedEntry = result.entry || newBooking;
             } catch (e) {
                 alert(e.message || 'Этот слот уже занят или данные некорректны.');
                 return;
@@ -2331,10 +2385,29 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             // Clear inputs
             document.getElementById('manual_client_name').value = '';
             document.getElementById('manual_client_phone').value = '';
-            
-            alert('Ручная запись успешно добавлена!');
-            renderCalendarGrid(store.bookings);
-            renderCharts(store.bookings);
+
+            const waCtx = getAdminWhatsAppContext(waLang);
+            const statusBox = document.getElementById('manual-booking-wa-status');
+            let waRes = null;
+            if (shouldOpenWa && window.BarberMobileBridge && window.BarberMobileBridge.openBookingWhatsAppChat) {
+                waRes = window.BarberMobileBridge.openBookingWhatsAppChat({ ...newBooking, id: savedEntry.id }, waCtx);
+            }
+
+            if (statusBox) {
+                if (waRes && waRes.url) {
+                    const safeHref = waRes.url.replace(/"/g, '%22').replace(/'/g, '%27');
+                    statusBox.innerHTML = `<div style="padding:12px 14px; border-radius:12px; background:rgba(22,163,74,0.1); border:1px solid rgba(22,163,74,0.35); display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;"><span style="color:#15803d; font-weight:700; font-size:0.9rem;">✅ Запись добавлена! Переход в WhatsApp...</span><div style="display:flex; gap:8px;"><a href="${safeHref}" target="_blank" rel="noopener" class="btn" style="width:auto; padding:8px 14px; font-size:0.85rem; background:#16a34a; color:#fff; text-decoration:none;">💬 Открыть WhatsApp</a><button type="button" class="btn btn-outline" style="width:auto; padding:8px 12px; font-size:0.85rem;" onclick="copyAdminBookingTicket('${savedEntry.id}','${waLang}')">📋 Копировать</button></div></div>`;
+                    statusBox.style.display = 'block';
+                } else {
+                    const note = shouldOpenWa ? ' (WhatsApp не открыт — укажите номер телефона клиента)' : '';
+                    statusBox.innerHTML = `<div style="padding:10px 14px; border-radius:10px; background:rgba(46,213,115,0.12); color:#15803d; font-weight:700; font-size:0.9rem;">✅ Ручная запись успешно добавлена!${note}</div>`;
+                    statusBox.style.display = 'block';
+                }
+            } else if (!waRes || !waRes.opened) {
+                alert('Ручная запись успешно добавлена!');
+            }
+
+            loadAdminData();
         }
 
         function fastBook(time, masterId) {

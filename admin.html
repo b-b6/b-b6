@@ -18,7 +18,7 @@
     <script src="assets/booking-logic.js?v=9"></script>
     <!-- Import DB Layer & Mobile Bridge -->
     <script src="assets/db.js?v=14"></script>
-    <script src="assets/mobile-bridge.js?v=16"></script>
+    <script src="assets/mobile-bridge.js?v=17"></script>
     <!-- Leaflet Interactive Map for Pinning Barbershop Coordinates -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -174,8 +174,8 @@
                         <input type="text" id="manual_client_name" class="form-control" placeholder="Имя">
                     </div>
                     <div class="form-group" style="margin: 0; flex: 1;">
-                        <label style="display:block; margin-bottom:5px; color:var(--text-muted); font-size:0.9rem;">Телефон</label>
-                        <input type="tel" id="manual_client_phone" class="form-control" placeholder="+7 (999) ...">
+                        <label style="display:block; margin-bottom:5px; color:var(--text-muted); font-size:0.9rem;">Телефон (WhatsApp)</label>
+                        <input type="tel" id="manual_client_phone" class="form-control" placeholder="+996 555 12-34-56 или 0555...">
                     </div>
                 </div>
                 <div class="flex-row" style="margin-bottom: 15px;">
@@ -188,7 +188,7 @@
                         <input type="time" id="manual_time" class="form-control">
                     </div>
                 </div>
-                <div class="flex-row" style="margin-bottom: 20px;">
+                <div class="flex-row" style="margin-bottom: 15px;">
                     <div class="form-group" style="margin: 0; flex: 1;">
                         <label style="display:block; margin-bottom:5px; color:var(--text-muted); font-size:0.9rem;">Услуга</label>
                         <select id="manual_service" class="form-control" style="appearance: auto;"></select>
@@ -198,7 +198,18 @@
                         <select id="manual_master" class="form-control" style="appearance: auto;"></select>
                     </div>
                 </div>
+                <div style="background: rgba(22,163,74,0.08); border: 1px solid rgba(22,163,74,0.3); border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+                    <label style="display:flex; align-items:center; gap:9px; font-weight:700; color:#15803d; cursor:pointer; margin:0; font-size:0.92rem;">
+                        <input type="checkbox" id="manual_send_wa" checked style="width:18px; height:18px; accent-color:#16a34a;">
+                        <span>💬 Сактагандан кийин дароо WhatsApp чатка өтүү (кыргызча талон)</span>
+                    </label>
+                    <select id="manual_wa_lang" class="form-control" style="width:auto; min-width:170px; padding:7px 10px; font-weight:700; appearance:auto;" onchange="try{localStorage.setItem('barber_manual_wa_lang',this.value)}catch(e){}">
+                        <option value="kg" selected>🇰🇬 Кыргызча талон</option>
+                        <option value="ru">🇷🇺 Русский талон</option>
+                    </select>
+                </div>
                 <button class="btn" style="width: auto; padding: 14px 30px; display:inline-flex; align-items:center; gap:8px;" onclick="addManualBooking()"><i data-lucide="file-plus" style="width:18px;height:18px;"></i> Добавить запись</button>
+                <div id="manual-booking-wa-status" style="display:none; margin-top:12px;"></div>
             </div>
 
             <h3 style="margin-top: 30px;">Список всех записей</h3>
@@ -823,7 +834,7 @@
         </div>
     </main>
 
-    <script src="assets/admin.js?v=9"></script>
+    <script src="assets/admin.js?v=10"></script>
 
     <!-- CUSTOM CONFIRM MODAL HTML structure -->
     <div id="customConfirmModal" class="modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index:999999; display:none; align-items: center; justify-content: center; background: rgba(12,25,44,0.55); backdrop-filter: blur(6px); transition: opacity 0.25s ease; opacity: 0;">
