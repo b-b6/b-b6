@@ -32809,6 +32809,59 @@ window.BARBERSHOPS_UZ_DATA = [
                 "role": "Barber"
             }
         ]
+    },
+    {
+        "id": "uz-fergana-modern-mens-403608",
+        "name": "Modern mens Barbershop, барбершоп",
+        "brand": "Modern mens Barbershop",
+        "country": "Узбекистан",
+        "city": "Фергана",
+        "area": "массив Кадыри",
+        "address": "ул. Абдуллы Кадыри, 49",
+        "lat": 40.360854,
+        "lon": 71.851222,
+        "rating": 5.0,
+        "reviews_count": 5,
+        "phone": "",
+        "instagram": "",
+        "working_hours": "ежедневно, 09:00–21:00",
+        "price_range": "50 000 - 150 000 сум",
+        "booking_type": "online",
+        "source": "User Added / BarberMap UZ",
+        "link_2gis": "https://2gis.uz/search/Modern%20mens%20Barbershop%20%D0%A4%D0%B5%D1%80%D0%B3%D0%B0%D0%BD%D0%B0",
+        "photo": "",
+        "services": [
+            {
+                "name": "Мужская стрижка (Fade / Классика)",
+                "price": 55000,
+                "duration": "45 min"
+            },
+            {
+                "name": "Моделирование бороды и усов",
+                "price": 35000,
+                "duration": "30 min"
+            },
+            {
+                "name": "Комплекс (Стрижка + Борода + Мытье)",
+                "price": 80000,
+                "duration": "60 min"
+            },
+            {
+                "name": "Королевское бритье опасной бритвой",
+                "price": 45000,
+                "duration": "35 min"
+            }
+        ],
+        "masters": [
+            {
+                "name": "Топ-Барбер",
+                "role": "Top Barber"
+            },
+            {
+                "name": "Мастер-стилист",
+                "role": "Barber"
+            }
+        ]
     }
 ];
 
