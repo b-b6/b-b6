@@ -728,9 +728,19 @@
                     <button class="btn-outline" onclick="shiftScheduleDate(1)" data-i18n="btn_tom">Завтра ▶</button>
                 </div>
 
+                <div id="solo-upcoming-banner" style="display:none; margin-bottom: 12px;"></div>
+
                 <div id="solo-slots-container" class="single-col-grid">
                     <!-- Populated by assets/barber.js -->
                 </div>
+            </div>
+
+            <div class="panel-card" id="solo-reviews-panel">
+                <div class="panel-head">
+                    <h2>⭐ Отзывы клиентов</h2>
+                    <span id="solo-reviews-summary" class="push-status-pill off">Пока нет отзывов</span>
+                </div>
+                <div id="solo-reviews-list"></div>
             </div>
         </section>
 
@@ -1232,7 +1242,7 @@
     <script src="assets/db.js?v=14"></script>
     <script src="assets/booking-logic.js?v=9"></script>
     <script src="assets/mobile-bridge.js?v=17"></script>
-    <script src="assets/barber.js?v=16"></script>
+    <script src="assets/barber.js?v=17"></script>
     <script>
         const BARBER_I18N = {
             ru: {

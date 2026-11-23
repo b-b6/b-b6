@@ -667,19 +667,22 @@ const i18n = {
             if (window.lucide) lucide.createIcons();
 
             // 2. ФОНОВАЯ СИНХРОНИЗАЦИЯ С БАЗОЙ (без зависания интерфейса)
-            Promise.all([
-                window.appDB.getBookings().then(b => { if(b && b.length) store.bookings = b; }),
-                window.appDB.getReviews().then(r => { if(r && r.length) { store.reviews = r; renderPublicReviews(); } }),
-                window.appDB.getServices().then(s => { if(s && s.length) { store.services = s; if(currentStep===1) renderServicesUI(); } }),
-                window.appDB.getMasters().then(m => { if(m && m.length) { store.masters = m; if(currentStep===2) renderMastersUI(); } }),
-                window.appDB.getSettings().then(st => { if(st && Object.keys(st).length) { store.settings = st; } applySettings(store.settings); })
-            ]).then(() => {
-                applySettings(store.settings);
-                renderLiveStats();
-                if (currentStep === 1) renderServicesUI();
-                if (currentStep === 2) renderMastersUI();
-                if (window.lucide) lucide.createIcons();
-            }).catch(err => console.warn('Background sync error:', err));
+            const initialSyncPromise = (window.appDB.initPromise || Promise.resolve())
+                .then(() => Promise.all([
+                    window.appDB.getBookings().then(b => { if(b && b.length) store.bookings = b; }),
+                    window.appDB.getReviews().then(r => { if(r && r.length) { store.reviews = r; renderPublicReviews(); } }),
+                    window.appDB.getServices().then(s => { if(s && s.length) { store.services = s; if(currentStep===1) renderServicesUI(); } }),
+                    window.appDB.getMasters().then(m => { if(m && m.length) { store.masters = m; if(currentStep===2) renderMastersUI(); } }),
+                    window.appDB.getSettings().then(st => { if(st && Object.keys(st).length) { store.settings = st; } applySettings(store.settings); })
+                ]))
+                .then(() => {
+                    applySettings(store.settings);
+                    renderLiveStats();
+                    if (currentStep === 1) renderServicesUI();
+                    if (currentStep === 2) renderMastersUI();
+                    if (window.lucide) lucide.createIcons();
+                })
+                .catch(err => console.warn('Background sync error:', err));
 
             // Подписка на обновления в реальном времени
             window.appDB.subscribe('barber_bookings', data => { store.bookings = data || []; renderLiveStats(); loadMyBookings(); if(currentStep===3 && bookingData.date) renderTimes(); });
@@ -706,7 +709,8 @@ const i18n = {
                 }
             }, 60000);
 
-            handleGoogleRedirectResult();
+            initFirebaseAuthListener();
+            await handleGoogleRedirectResult(initialSyncPromise);
         }
 
         document.addEventListener("DOMContentLoaded", initApp);
@@ -968,8 +972,94 @@ const i18n = {
         }
 
         let activeUserAuth = null;
-        /** 'booking' — вход перед записью; 'review' — вход после записи, чтобы оставить отзыв */
+        /** 'booking' — вход перед записью; 'review' — вход после записи; 'public_review' — вход со списка отзывов */
         let authModalMode = 'booking';
+        const GOOGLE_REDIRECT_STATE_KEY = 'barber_google_redirect_state';
+
+        function applyGoogleUserToAuthState(user) {
+            if (!user) return null;
+            activeUserAuth = {
+                type: 'google',
+                uid: user.uid,
+                name: user.displayName || (user.email ? user.email.split('@')[0] : 'Клиент'),
+                email: user.email || ''
+            };
+            return activeUserAuth;
+        }
+
+        function resolveSoloFallbackMaster() {
+            const m0 = (typeof getMasters === 'function' && getMasters()[0]) || null;
+            if (m0) return { masterId: String(m0.id), masterName: m0.name };
+            const tid = window.appDB ? String(window.appDB.tenantId) : 'solo_1';
+            const fallbackName = (store.settings && (store.settings.soloMasterName || store.settings.shopName)) || 'Мастер';
+            return { masterId: tid, masterName: fallbackName };
+        }
+
+        function persistRedirectState(stepType, snapshotObj) {
+            const payload = JSON.stringify({
+                step: stepType,
+                snapshot: snapshotObj || null,
+                ts: Date.now()
+            });
+            try { sessionStorage.setItem('pendingBookingStep', stepType); } catch (e) {}
+            try { localStorage.setItem(GOOGLE_REDIRECT_STATE_KEY, payload); } catch (e) {}
+            if (stepType === 'google_redirect_review') {
+                try { sessionStorage.setItem('review_snapshot', JSON.stringify(snapshotObj || {})); } catch (e) {}
+            } else if (stepType === 'google_redirect') {
+                try { sessionStorage.setItem('pendingBooking', JSON.stringify(snapshotObj || {})); } catch (e) {}
+            }
+        }
+
+        function readRedirectState() {
+            try {
+                const raw = localStorage.getItem(GOOGLE_REDIRECT_STATE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed && parsed.step && (!parsed.ts || (Date.now() - parsed.ts) < 15 * 60 * 1000)) {
+                        return parsed;
+                    }
+                }
+            } catch (e) {}
+            try {
+                const legacyStep = sessionStorage.getItem('pendingBookingStep');
+                if (!legacyStep) return null;
+                let snap = null;
+                if (legacyStep === 'google_redirect_review') {
+                    const sRaw = sessionStorage.getItem('review_snapshot');
+                    snap = sRaw ? JSON.parse(sRaw) : null;
+                } else if (legacyStep === 'google_redirect') {
+                    const bRaw = sessionStorage.getItem('pendingBooking');
+                    snap = bRaw ? JSON.parse(bRaw) : null;
+                }
+                return { step: legacyStep, snapshot: snap };
+            } catch (e) {}
+            return null;
+        }
+
+        function clearRedirectState() {
+            ['pendingBookingStep', 'pendingBooking', 'review_snapshot'].forEach(k => {
+                try { sessionStorage.removeItem(k); } catch (e) {}
+            });
+            try { localStorage.removeItem(GOOGLE_REDIRECT_STATE_KEY); } catch (e) {}
+        }
+
+        async function initFirebaseAuthListener() {
+            if (!window.appDB) return;
+            try {
+                if (window.appDB.initPromise) await window.appDB.initPromise;
+                if (!window.appDB.useFirebase || !window.appDB.app) return;
+                const { getAuth, onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
+                const auth = getAuth(window.appDB.app);
+                if (auth.currentUser && !activeUserAuth) {
+                    applyGoogleUserToAuthState(auth.currentUser);
+                }
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        applyGoogleUserToAuthState(user);
+                    }
+                });
+            } catch (e) {}
+        }
 
         function applyAuthModalConfig(mode) {
             authModalMode = mode;
@@ -978,7 +1068,7 @@ const i18n = {
             const descEl = document.getElementById('auth-modal-desc');
             const guestBtn = document.getElementById('auth-modal-guest-btn');
             if (!titleEl || !descEl || !guestBtn) return;
-            if (mode === 'review') {
+            if (mode === 'review' || mode === 'public_review') {
                 titleEl.innerText = L.auth_modal_title_review;
                 descEl.innerText = L.auth_modal_desc_review;
                 guestBtn.innerText = L.review_auth_later;
@@ -990,9 +1080,10 @@ const i18n = {
         }
 
         function saveReviewSnapshotForRedirect() {
-            return JSON.stringify({
-                masterId: bookingData.masterId,
-                masterName: bookingData.masterName,
+            const fallbackMaster = isSoloBookingMode() ? resolveSoloFallbackMaster() : null;
+            return {
+                masterId: bookingData.masterId || (fallbackMaster ? fallbackMaster.masterId : null),
+                masterName: bookingData.masterName || (fallbackMaster ? fallbackMaster.masterName : null),
                 serviceKey: bookingData.serviceKey,
                 serviceRuName: bookingData.serviceRuName,
                 name: bookingData.name,
@@ -1001,7 +1092,7 @@ const i18n = {
                 date: bookingData.date,
                 time: bookingData.time,
                 price: bookingData.price
-            });
+            };
         }
 
         function renderReviewAuthGate() {
@@ -1017,6 +1108,7 @@ const i18n = {
         function showFullReviewForm() {
             const box = document.getElementById('review-form-box');
             if (!box) return;
+            box.style.display = 'block';
             const L = i18n[currentLang] || i18n.ru;
             box.innerHTML = `<h3 style="margin-bottom: 15px; font-size:1.1rem;" data-i18n="review_title"></h3>
                 <div style="display: flex; gap: 10px; margin-bottom: 15px;" id="rating-stars">
@@ -1046,13 +1138,21 @@ const i18n = {
             document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
             const stepOk = document.getElementById('step-success');
             if (stepOk) stepOk.classList.add('active');
-            showFullReviewForm();
+            if (activeUserAuth) {
+                showFullReviewForm();
+            } else {
+                renderReviewAuthGate();
+            }
             if (window.lucide) lucide.createIcons();
         }
 
         function openAuthModalForReview() {
             if (!window.appDB || !window.appDB.useFirebase) {
                 alert((i18n[currentLang] || i18n.ru).auth_modal_desc_review + ' (Firebase недоступен.)');
+                return;
+            }
+            if (activeUserAuth) {
+                showFullReviewForm();
                 return;
             }
             applyAuthModalConfig('review');
@@ -1072,7 +1172,7 @@ const i18n = {
         }
 
         function continueAsGuest() {
-            if (authModalMode === 'review') {
+            if (authModalMode === 'review' || authModalMode === 'public_review') {
                 document.getElementById('auth-modal-overlay').style.display = 'none';
                 applyAuthModalConfig('booking');
                 return;
@@ -1081,10 +1181,25 @@ const i18n = {
             finalizeBooking();
         }
 
+        function completePostAuthAction(mode) {
+            document.getElementById('auth-modal-overlay').style.display = 'none';
+            applyAuthModalConfig('booking');
+            if (mode === 'review') {
+                showFullReviewForm();
+            } else if (mode === 'public_review') {
+                showPublicReviewComposerForm();
+            } else {
+                finalizeBooking();
+            }
+        }
+
         async function loginWithGoogle() {
             try {
-                if (!window.appDB.useFirebase) {
-                    if (authModalMode === 'review') {
+                if (window.appDB && window.appDB.initPromise) {
+                    await window.appDB.initPromise;
+                }
+                if (!window.appDB || !window.appDB.useFirebase || !window.appDB.app) {
+                    if (authModalMode === 'review' || authModalMode === 'public_review') {
                         document.getElementById('auth-modal-overlay').style.display = 'none';
                         applyAuthModalConfig('booking');
                         alert('SaaS Firebase отключен — войти для отзыва нельзя.');
@@ -1097,108 +1212,107 @@ const i18n = {
                 const { getAuth, signInWithPopup, signInWithRedirect, GoogleAuthProvider } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
                 const auth = getAuth(window.appDB.app);
                 const provider = new GoogleAuthProvider();
-                
-                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
-                
-                if (isMobile) {
-                    if (authModalMode === 'review') {
-                        sessionStorage.setItem('pendingBookingStep', 'google_redirect_review');
-                        sessionStorage.setItem('review_snapshot', saveReviewSnapshotForRedirect());
-                    } else {
-                        sessionStorage.setItem('pendingBooking', JSON.stringify(bookingData));
-                        sessionStorage.setItem('pendingBookingStep', 'google_redirect');
-                    }
-                    await signInWithRedirect(auth, provider);
-                } else {
-                    const result = await signInWithPopup(auth, provider);
-                    activeUserAuth = { type: 'google', uid: result.user.uid, name: result.user.displayName, email: result.user.email };
-                    document.getElementById('auth-modal-overlay').style.display = 'none';
-                    if (authModalMode === 'review') {
-                        applyAuthModalConfig('booking');
-                        showFullReviewForm();
-                    } else {
-                        finalizeBooking();
-                    }
-                }
+                const currentMode = authModalMode;
+
+                // Всегда пробуем signInWithPopup первым (и на телефоне, и в узком окне < 768px):
+                // cross-origin signInWithRedirect теряет сессию на стороннем домене и выбрасывает на 1-й шаг.
+                const result = await signInWithPopup(auth, provider);
+                applyGoogleUserToAuthState(result.user);
+                completePostAuthAction(currentMode);
             } catch(e) {
                 console.error("Google Auth error", e);
-                if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user') {
+                if (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment') {
                     try {
                         const { getAuth, signInWithRedirect, GoogleAuthProvider } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
                         const auth = getAuth(window.appDB.app);
                         if (authModalMode === 'review') {
-                            sessionStorage.setItem('pendingBookingStep', 'google_redirect_review');
-                            sessionStorage.setItem('review_snapshot', saveReviewSnapshotForRedirect());
+                            persistRedirectState('google_redirect_review', saveReviewSnapshotForRedirect());
+                        } else if (authModalMode === 'public_review') {
+                            persistRedirectState('google_redirect_public_review', {});
                         } else {
-                            sessionStorage.setItem('pendingBooking', JSON.stringify(bookingData));
-                            sessionStorage.setItem('pendingBookingStep', 'google_redirect');
+                            persistRedirectState('google_redirect', { ...bookingData });
                         }
                         await signInWithRedirect(auth, new GoogleAuthProvider());
                     } catch(e2) {
-                        alert('Ошибка авторизации.');
+                        alert('Ошибка авторизации: ' + (e2.message || 'попробуйте открыть сайт в браузере.'));
                     }
+                } else if (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') {
+                    // Пользователь сам закрыл окно входа — остаёмся на том же экране без сброса записи
                 } else {
                     alert('Ошибка: ' + (e.message || 'Неизвестная ошибка авторизации'));
                 }
             }
         }
 
-        async function handleGoogleReviewRedirectResult() {
-            if (!window.appDB || !window.appDB.app) {
-                sessionStorage.removeItem('pendingBookingStep');
-                sessionStorage.removeItem('review_snapshot');
-                return;
-            }
+        // Handle Google redirect result on page load (fallback when browser blocks popups)
+        async function handleGoogleRedirectResult(initialSyncPromise) {
+            if (!window.appDB) return;
+            const redirectState = readRedirectState();
+            if (!redirectState || !redirectState.step) return;
+
+            try {
+                if (window.appDB.initPromise) await window.appDB.initPromise;
+            } catch (e) {}
+            if (!window.appDB.app) return;
+
+            let signedUser = null;
             try {
                 const { getAuth, getRedirectResult } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
                 const auth = getAuth(window.appDB.app);
                 const result = await getRedirectResult(auth);
-                const snapRaw = sessionStorage.getItem('review_snapshot');
-                sessionStorage.removeItem('pendingBookingStep');
-                sessionStorage.removeItem('review_snapshot');
-                if (result && result.user && snapRaw) {
-                    activeUserAuth = { type: 'google', uid: result.user.uid, name: result.user.displayName, email: result.user.email };
-                    Object.assign(bookingData, JSON.parse(snapRaw));
-                    navigateToSuccessReviewOnly();
-                }
+                signedUser = (result && result.user) ? result.user : auth.currentUser;
             } catch (e) {
-                console.warn('Google review redirect error:', e);
-                sessionStorage.removeItem('pendingBookingStep');
-                sessionStorage.removeItem('review_snapshot');
+                console.warn('Redirect result error:', e);
             }
-        }
-        
-        // Handle Google redirect result on page load
-        async function handleGoogleRedirectResult() {
-            if (!window.appDB || !window.appDB.app) return;
-            if (sessionStorage.getItem('pendingBookingStep') === 'google_redirect_review') {
-                await handleGoogleReviewRedirectResult();
-                return;
+
+            if (initialSyncPromise) {
+                try { await initialSyncPromise; } catch (e) {}
             }
-            if (sessionStorage.getItem('pendingBookingStep') !== 'google_redirect') return;
-            try {
-                const { getAuth, getRedirectResult } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
-                const auth = getAuth(window.appDB.app);
-                const result = await getRedirectResult(auth);
-                if (result && result.user) {
-                    activeUserAuth = { type: 'google', uid: result.user.uid, name: result.user.displayName, email: result.user.email };
-                    const savedBooking = sessionStorage.getItem('pendingBooking');
-                    if (savedBooking) {
-                        Object.assign(bookingData, JSON.parse(savedBooking));
+
+            const { step, snapshot } = redirectState;
+            clearRedirectState();
+
+            if (signedUser) {
+                applyGoogleUserToAuthState(signedUser);
+                if (step === 'google_redirect_review') {
+                    if (snapshot && typeof snapshot === 'object') Object.assign(bookingData, snapshot);
+                    if (isSoloBookingMode() && (!bookingData.masterId || bookingData.masterId === 'any')) {
+                        Object.assign(bookingData, resolveSoloFallbackMaster());
                     }
-                    sessionStorage.removeItem('pendingBooking');
-                    sessionStorage.removeItem('pendingBookingStep');
-                    
+                    navigateToSuccessReviewOnly();
+                    return;
+                }
+                if (step === 'google_redirect_public_review') {
+                    showPublicReviewComposerForm();
+                    const pubEl = document.getElementById('public-reviews');
+                    if (pubEl && pubEl.scrollIntoView) pubEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    return;
+                }
+                if (step === 'google_redirect') {
+                    if (snapshot && typeof snapshot === 'object') Object.assign(bookingData, snapshot);
+                    if (isSoloBookingMode() && (!bookingData.masterId || bookingData.masterId === 'any')) {
+                        Object.assign(bookingData, resolveSoloFallbackMaster());
+                    }
                     if (bookingData.name) document.getElementById('client-name').value = bookingData.name;
                     if (bookingData.phone) document.getElementById('client-phone').value = bookingData.phone;
-                    finalizeBooking();
-                } else {
-                    sessionStorage.removeItem('pendingBookingStep');
+                    if (bookingData.serviceKey && bookingData.date && bookingData.time) {
+                        finalizeBooking();
+                    }
+                    return;
                 }
-            } catch(e) {
-                console.warn('Redirect result error:', e);
-                sessionStorage.removeItem('pendingBookingStep');
-                sessionStorage.removeItem('pendingBooking');
+            } else {
+                // Если браузер заблокировал redirect-сессию — не выбрасываем клиента в пустоту на Шаг 1
+                if (step === 'google_redirect_review') {
+                    if (snapshot && typeof snapshot === 'object') Object.assign(bookingData, snapshot);
+                    navigateToSuccessReviewOnly();
+                    alert('Не удалось завершить возврат из Google. Нажмите «Войти и оставить отзыв» ещё раз или откройте в браузере (Chrome/Safari).');
+                } else if (step === 'google_redirect' && snapshot && snapshot.serviceKey && snapshot.date && snapshot.time) {
+                    Object.assign(bookingData, snapshot);
+                    if (bookingData.name) document.getElementById('client-name').value = bookingData.name;
+                    if (bookingData.phone) document.getElementById('client-phone').value = bookingData.phone;
+                    nextStep(4);
+                    alert('Вход через Google не завершился в этом окне. Нажмите «Записаться» и выберите «Продолжить с Google» ещё раз (либо «Пропустить и записаться»).');
+                }
             }
         }
 
@@ -1219,13 +1333,7 @@ const i18n = {
 
         window.onTelegramAuthModal = function(user) {
             activeUserAuth = { type: 'telegram', uid: user.id, name: user.first_name };
-            document.getElementById('auth-modal-overlay').style.display = 'none';
-            if (authModalMode === 'review') {
-                applyAuthModalConfig('booking');
-                showFullReviewForm();
-            } else {
-                finalizeBooking();
-            }
+            completePostAuthAction(authModalMode);
         };
 
 
@@ -1249,6 +1357,11 @@ const i18n = {
                 bookingFinalizeInProgress = false;
                 if (btnSubmit) validateForm();
                 return;
+            }
+
+            // В соло-режиме всегда привязываем бронь к самому соло-мастеру (даже после reload)
+            if (isSoloBookingMode() && (!bookingData.masterId || bookingData.masterId === 'any')) {
+                Object.assign(bookingData, resolveSoloFallbackMaster());
             }
 
             let myHistory = getDB(DB_MY_HISTORY);
@@ -1591,39 +1704,157 @@ const i18n = {
 
         // REVIEWS LOGIC
         let currentRating = 5;
+        let publicRating = 5;
+        function applyStarPicker(selector, val) {
+            document.querySelectorAll(selector).forEach((s, i) => {
+                s.innerText = i < val ? '★' : '☆';
+                s.style.color = i < val ? 'var(--accent)' : 'var(--text-muted)';
+            });
+        }
         function setRating(val) {
             currentRating = val;
-            let stars = document.querySelectorAll('#rating-stars span');
-            stars.forEach((s, i) => {
-                if (i < val) { s.innerText = '★'; s.style.color = 'var(--accent)'; }
-                else { s.innerText = '☆'; s.style.color = 'var(--text-muted)'; }
+            applyStarPicker('#rating-stars span', val);
+        }
+
+        function setPublicRating(val) {
+            publicRating = val;
+            applyStarPicker('#public-rating-stars span', val);
+        }
+
+        async function saveReviewRecord(masterId, masterName, rating, comment) {
+            const existing = (window.appDB && window.appDB.getReviews)
+                ? ((await window.appDB.getReviews()) || store.reviews || [])
+                : (store.reviews || []);
+            const merged = Array.isArray(existing) ? existing.slice() : [];
+            let displayName = bookingData.name || 'Клиент';
+            if (activeUserAuth) {
+                displayName = activeUserAuth.name || activeUserAuth.email || displayName;
+            }
+            merged.push({
+                id: Date.now().toString(),
+                masterId: String(masterId),
+                masterName: masterName || 'Мастер',
+                clientName: displayName,
+                rating: Number(rating) || 5,
+                comment: String(comment || '').trim(),
+                date: new Date().toISOString().split('T')[0]
             });
+            store.reviews = merged;
+            await window.appDB.saveReviews(store.reviews);
+            renderLiveStats();
+            renderPublicReviews();
         }
 
         async function submitReview() {
-            if (bookingData.masterId === 'any') { alert('Выберите мастера для отзыва'); return; }
+            let targetMasterId = bookingData.masterId;
+            let targetMasterName = bookingData.masterName;
+            if (isSoloBookingMode() && (!targetMasterId || targetMasterId === 'any')) {
+                const soloM = resolveSoloFallbackMaster();
+                targetMasterId = soloM.masterId;
+                targetMasterName = soloM.masterName;
+            }
+            if (!targetMasterId || targetMasterId === 'any') { alert('Выберите мастера для отзыва'); return; }
             if (!activeUserAuth) {
                 alert((i18n[currentLang] || i18n.ru).review_auth_gate);
                 openAuthModalForReview();
                 return;
             }
-            let text = document.getElementById('review-text').value.trim();
-            let displayName = bookingData.name || 'Аноним';
-            if (activeUserAuth) {
-                displayName = activeUserAuth.name || activeUserAuth.email || displayName;
+            const textEl = document.getElementById('review-text');
+            const text = textEl ? textEl.value.trim() : '';
+            try {
+                await saveReviewRecord(targetMasterId, targetMasterName, currentRating, text);
+                document.getElementById('review-form-box').innerHTML = `<div style="text-align:center; padding: 20px; color: var(--success); font-weight:600;">${i18n[currentLang]['review_success']}</div>`;
+            } catch (err) {
+                alert('Не удалось сохранить отзыв: ' + (err.message || 'попробуйте ещё раз'));
             }
-            store.reviews.push({
-                id: Date.now().toString(),
-                masterId: bookingData.masterId,
-                masterName: bookingData.masterName,
-                clientName: displayName,
-                rating: currentRating,
-                comment: text,
-                date: new Date().toISOString().split('T')[0]
-            });
-            await window.appDB.saveReviews(store.reviews);
-            document.getElementById('review-form-box').innerHTML = `<div style="text-align:center; padding: 20px; color: var(--success); font-weight:600;">${i18n[currentLang]['review_success']}</div>`;
-            renderPublicReviews();
+        }
+
+        function showPublicReviewComposerForm() {
+            const wrap = document.getElementById('public-review-composer');
+            if (!wrap) return;
+            const L = i18n[currentLang] || i18n.ru;
+            const solo = isSoloBookingMode();
+            const masters = getMasters().filter(m => m && m.active !== false);
+            const esc = (s) => window.escapeHTML ? window.escapeHTML(String(s || '')) : String(s || '');
+            let masterSelectHtml = '';
+            if (!solo && masters.length > 1) {
+                const opts = masters.map(m => `<option value="${esc(m.id)}">${esc(m.name)}</option>`).join('');
+                masterSelectHtml = `<div style="margin-bottom:12px;">
+                    <label style="display:block; font-size:0.82rem; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Мастер</label>
+                    <select id="public-review-master" class="form-control">${opts}</select>
+                </div>`;
+            }
+            wrap.style.display = 'block';
+            wrap.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <h3 style="margin:0; font-size:1rem; font-weight:700;">${esc(L.review_title || 'Оцените работу мастера')}</h3>
+                    <button type="button" onclick="document.getElementById('public-review-composer').style.display='none'" style="background:none; border:none; font-size:1.2rem; color:var(--text-muted); cursor:pointer;">✕</button>
+                </div>
+                ${masterSelectHtml}
+                <div style="display: flex; gap: 10px; margin-bottom: 12px;" id="public-rating-stars">
+                    <span onclick="setPublicRating(1)" style="font-size: 1.9rem; cursor: pointer; color: var(--accent);">★</span>
+                    <span onclick="setPublicRating(2)" style="font-size: 1.9rem; cursor: pointer; color: var(--accent);">★</span>
+                    <span onclick="setPublicRating(3)" style="font-size: 1.9rem; cursor: pointer; color: var(--accent);">★</span>
+                    <span onclick="setPublicRating(4)" style="font-size: 1.9rem; cursor: pointer; color: var(--accent);">★</span>
+                    <span onclick="setPublicRating(5)" style="font-size: 1.9rem; cursor: pointer; color: var(--accent);">★</span>
+                </div>
+                <textarea id="public-review-text" class="form-control" style="height: 86px; margin-bottom: 12px;" placeholder="${esc(L.review_placeholder || 'Ваш отзыв (необязательно)')}"></textarea>
+                <button type="button" class="btn" style="margin-top:0;" onclick="submitPublicReview()">${esc(L.review_send || 'Отправить отзыв')}</button>`;
+            setPublicRating(5);
+        }
+
+        function openPublicReviewComposer() {
+            if (!window.appDB || !window.appDB.useFirebase) {
+                alert((i18n[currentLang] || i18n.ru).auth_modal_desc_review + ' (Firebase недоступен.)');
+                return;
+            }
+            if (activeUserAuth) {
+                showPublicReviewComposerForm();
+                return;
+            }
+            applyAuthModalConfig('public_review');
+            document.getElementById('auth-modal-overlay').style.display = 'flex';
+            initModalTelegramWidget();
+            if (window.lucide) lucide.createIcons();
+        }
+
+        async function submitPublicReview() {
+            if (!activeUserAuth) {
+                openPublicReviewComposer();
+                return;
+            }
+            let masterId = '';
+            let masterName = '';
+            if (isSoloBookingMode()) {
+                const soloM = resolveSoloFallbackMaster();
+                masterId = soloM.masterId;
+                masterName = soloM.masterName;
+            } else {
+                const sel = document.getElementById('public-review-master');
+                const masters = getMasters().filter(m => m && m.active !== false);
+                if (sel && sel.value) {
+                    const picked = masters.find(m => String(m.id) === String(sel.value));
+                    masterId = String(sel.value);
+                    masterName = picked ? picked.name : 'Мастер';
+                } else if (masters[0]) {
+                    masterId = String(masters[0].id);
+                    masterName = masters[0].name;
+                } else {
+                    const soloM = resolveSoloFallbackMaster();
+                    masterId = soloM.masterId;
+                    masterName = soloM.masterName;
+                }
+            }
+            const textEl = document.getElementById('public-review-text');
+            const comment = textEl ? textEl.value.trim() : '';
+            try {
+                await saveReviewRecord(masterId, masterName, publicRating, comment);
+                const wrap = document.getElementById('public-review-composer');
+                if (wrap) {
+                    wrap.innerHTML = `<div style="text-align:center; padding: 16px; color: var(--success); font-weight:700;">${i18n[currentLang]['review_success']}</div>`;
+                }
+            } catch (err) {
+                alert('Не удалось сохранить отзыв: ' + (err.message || 'попробуйте ещё раз'));
+            }
         }
 
                 // TELEGRAM NOTIFICATION SYSTEM
@@ -1665,23 +1896,25 @@ const i18n = {
         }
 
         function renderPublicReviews() {
-            let reviews = store.reviews;
+            let reviews = Array.isArray(store.reviews) ? store.reviews : [];
             let container = document.getElementById('reviews-list');
             if (!container) return;
             container.innerHTML = '';
-            
+            const esc = (s) => window.escapeHTML ? window.escapeHTML(String(s || '')) : String(s || '');
+
             // Show last 6 reviews
             reviews.slice(-6).reverse().forEach(r => {
+                const rat = Math.min(5, Math.max(1, parseInt(r.rating, 10) || 5));
                 let card = document.createElement('div');
                 card.style = "background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 20px; animation: fadeIn 0.4s ease;";
                 card.innerHTML = `
                     <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                        <strong style="color:var(--accent);">${r.clientName}</strong>
-                        <div style="color:var(--accent); font-size:0.9rem;">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+                        <strong style="color:var(--accent);">${esc(r.clientName || 'Клиент')}</strong>
+                        <div style="color:var(--accent); font-size:0.9rem;">${'★'.repeat(rat)}${'☆'.repeat(5-rat)}</div>
                     </div>
-                    <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">Мастер: ${r.masterName}</div>
-                    <p style="font-size:0.9rem; line-height:1.6; font-style: italic;">"${r.comment || (i18n[currentLang].def_review || 'Стрижка была отличной!')}"</p>
-                    <div style="font-size:0.75rem; color:var(--text-muted); margin-top:15px;">${r.date}</div>
+                    <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">Мастер: ${esc(r.masterName || 'Мастер')}</div>
+                    <p style="font-size:0.9rem; line-height:1.6; font-style: italic;">"${esc(r.comment || (i18n[currentLang].def_review || 'Стрижка была отличной!'))}"</p>
+                    <div style="font-size:0.75rem; color:var(--text-muted); margin-top:15px;">${esc(r.date || '')}</div>
                 `;
                 container.appendChild(card);
             });

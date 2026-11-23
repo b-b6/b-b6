@@ -19,6 +19,7 @@ let soloProfile = {
 };
 
 let soloBookingsCache = [];
+let soloReviewsCache = [];
 let soloServicesCache = [];
 let soloSettingsCache = {};
 let lastSeenPushTs = Date.now();
@@ -46,6 +47,12 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     const tenantId = String(window.appDB ? window.appDB.tenantId : '');
     const savedSession = window.BarberMobileBridge ? window.BarberMobileBridge.getSession() : null;
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasExplicitUrlId = Boolean(urlParams.get('id') || urlParams.get('shop'));
+    if (!hasExplicitUrlId && savedSession && savedSession.role === 'master' && /^\d+$/.test(String(savedSession.tenantId || '')) && String(savedSession.tenantId) !== tenantId) {
+        window.location.replace(`barber.html?id=${encodeURIComponent(savedSession.tenantId)}`);
+        return;
+    }
 
     // STRICT TENANT ISOLATION FOR SOLO MASTER:
     // Verify that this numeric ID was issued in Super Admin and that the current session is authenticated for this exact ID.
@@ -400,13 +407,19 @@ window.shiftScheduleDate = function (daysDelta) {
 async function refreshBookingsAndRender() {
     if (window.appDB) {
         try {
-            soloBookingsCache = (await window.appDB.getBookings()) || [];
+            const [bks, revs] = await Promise.all([
+                window.appDB.getBookings().catch(() => soloBookingsCache),
+                window.appDB.getReviews ? window.appDB.getReviews().catch(() => soloReviewsCache) : Promise.resolve(soloReviewsCache)
+            ]);
+            soloBookingsCache = Array.isArray(bks) ? bks : [];
+            soloReviewsCache = Array.isArray(revs) ? revs : [];
             processBookingsDiff(soloBookingsCache);
         } catch (e) {
             console.warn('refreshBookingsAndRender error:', e);
         }
     }
     renderSoloSchedule();
+    renderSoloReviews();
     checkUpcomingSoloReminders();
 }
 
@@ -421,10 +434,90 @@ function getSoloBookingsForDate(dateStr) {
     });
 }
 
+function renderSoloUpcomingBanner(dateStr, bookingsOnDate) {
+    const bannerEl = document.getElementById('solo-upcoming-banner');
+    if (!bannerEl) return;
+    const esc = (s) => window.escapeHTML ? window.escapeHTML(String(s || '')) : String(s || '');
+    const clientBookingsOnDate = (bookingsOnDate || [])
+        .filter(b => b && !b.isBreak && b.status !== 'cancelled')
+        .sort((a, b) => String(a.time || '').localeCompare(String(b.time || '')));
+
+    if (clientBookingsOnDate.length > 0) {
+        const badges = clientBookingsOnDate.map(b => {
+            const cName = esc(b.name || b.clientName || 'Клиент');
+            const cTime = esc(b.time || '');
+            const cSrv = esc(b.service || b.serviceName || 'Стрижка');
+            const doneTag = b.status === 'completed' ? '✓ ' : '';
+            return `<span style="display:inline-flex; align-items:center; gap:4px; background:#fff; border:1px solid var(--burgundy-line); color:var(--navy); padding:4px 9px; border-radius:8px; font-size:11.5px; font-weight:700;">${doneTag}<b>${cTime}</b> · ${cName} (${cSrv})</span>`;
+        }).join('');
+        bannerEl.style.display = 'block';
+        bannerEl.innerHTML = `<div style="background:var(--burgundy-soft); border:1px solid var(--burgundy-line); border-radius:12px; padding:10px 12px;">
+            <div style="font-size:12px; font-weight:800; color:var(--burgundy); margin-bottom:6px;">📌 Записи на ${esc(dateStr)} (${clientBookingsOnDate.length}):</div>
+            <div style="display:flex; flex-wrap:wrap; gap:6px;">${badges}</div>
+        </div>`;
+        return;
+    }
+
+    const futureBookings = (soloBookingsCache || [])
+        .filter(b => b && !b.isBreak && b.status !== 'cancelled' && b.date && b.date > dateStr)
+        .sort((a, b) => (String(a.date) + ' ' + String(a.time || '')).localeCompare(String(b.date) + ' ' + String(b.time || '')));
+
+    if (futureBookings.length > 0) {
+        const nextB = futureBookings[0];
+        bannerEl.style.display = 'block';
+        bannerEl.innerHTML = `<div style="background:var(--navy-soft); border:1px solid var(--navy-line); border-radius:12px; padding:10px 12px; display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;">
+            <div style="font-size:12px; color:var(--navy); font-weight:700;">📅 На ${esc(dateStr)} записей нет. Ближайшая: <b>${esc(nextB.date)} в ${esc(nextB.time || '')}</b> (${esc(nextB.name || 'Клиент')})</div>
+            <button type="button" class="btn-outline" style="padding:5px 10px; font-size:11.5px;" onclick="jumpToNotifBooking('${esc(nextB.date)}')">Открыть →</button>
+        </div>`;
+        return;
+    }
+
+    bannerEl.style.display = 'none';
+    bannerEl.innerHTML = '';
+}
+
+function renderSoloReviews() {
+    const listEl = document.getElementById('solo-reviews-list');
+    const summaryEl = document.getElementById('solo-reviews-summary');
+    if (!listEl) return;
+    const esc = (s) => window.escapeHTML ? window.escapeHTML(String(s || '')) : String(s || '');
+    const reviews = Array.isArray(soloReviewsCache) ? soloReviewsCache : [];
+
+    if (summaryEl) {
+        if (reviews.length > 0) {
+            const sum = reviews.reduce((acc, r) => acc + (parseInt(r.rating, 10) || 5), 0);
+            const avg = (sum / reviews.length).toFixed(1);
+            summaryEl.className = 'push-status-pill on';
+            summaryEl.textContent = `★ ${avg} · ${reviews.length}`;
+        } else {
+            summaryEl.className = 'push-status-pill off';
+            summaryEl.textContent = 'Пока нет отзывов';
+        }
+    }
+
+    if (reviews.length === 0) {
+        listEl.innerHTML = `<div style="text-align:center; padding:14px; font-size:12.5px; color:var(--text-muted); background:var(--bg-card); border-radius:12px;">Отзывов пока нет — после записи клиент сможет оценить вашу работу.</div>`;
+        return;
+    }
+
+    listEl.innerHTML = reviews.slice(-10).reverse().map(r => {
+        const rat = Math.min(5, Math.max(1, parseInt(r.rating, 10) || 5));
+        return `<div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:12px; padding:12px 14px; margin-bottom:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:4px;">
+                <strong style="font-size:13.5px; color:var(--navy);">${esc(r.clientName || 'Клиент')}</strong>
+                <span style="color:#f59e0b; font-size:13px; font-weight:800;">${'★'.repeat(rat)}${'☆'.repeat(5 - rat)}</span>
+            </div>
+            <div style="font-size:13px; color:var(--text-main); line-height:1.4;">${esc(r.comment || 'Отличная работа!')}</div>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:6px;">${esc(r.date || '')}</div>
+        </div>`;
+    }).join('');
+}
+
 window.renderSoloSchedule = function () {
     const dateInput = document.getElementById('solo-schedule-date');
     const dateStr = (dateInput && dateInput.value) ? dateInput.value : getTodayIso();
     const bookings = getSoloBookingsForDate(dateStr);
+    renderSoloUpcomingBanner(dateStr, bookings);
 
     // Update personal stats & commission auto-calculation
     const activeCurr = window.BarberCurrency ? window.BarberCurrency.getActive() : 'KGS';
@@ -1164,6 +1257,10 @@ function initSubscriptions() {
             window.appDB.subscribe(window.appDB.collections.services, (data) => {
                 soloServicesCache = data || [];
                 renderSoloServices();
+            });
+            window.appDB.subscribe(window.appDB.collections.reviews, (data) => {
+                soloReviewsCache = Array.isArray(data) ? data : [];
+                renderSoloReviews();
             });
         }
         if (window.appDB.subscribeRawDoc) {
