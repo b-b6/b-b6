@@ -2139,17 +2139,27 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             const list = document.getElementById('admin-reviews-list');
             if(!list || !reviews) return;
             list.innerHTML = '';
+            const esc = (s) => window.escapeHTML ? window.escapeHTML(String(s || '')) : String(s || '');
             if(reviews.length === 0) { list.innerHTML = `<p class="empty-state">${adminI18n[currentAdminLang].msg_empty_rev}</p>`; return; }
             reviews.forEach(r => {
+                const isVerified = (window.appDB && window.appDB.isReviewVerifiedVisit)
+                    ? window.appDB.isReviewVerifiedVisit(r, store.bookings, false)
+                    : Boolean(r && r.verifiedVisit);
+                const verifiedBadge = isVerified
+                    ? `<span style="display:inline-flex;align-items:center;gap:3px;background:#dcfce7;color:#15803d;border:1px solid #86efac;padding:2px 8px;border-radius:999px;font-size:0.72rem;font-weight:800;">✓ Подтверждённый визит</span>`
+                    : '';
                 list.innerHTML += `<div class="admin-card" style="margin-bottom:10px;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                        <strong style="color:var(--accent);">${r.clientName || 'Аноним'}</strong>
-                        <small style="color:var(--text-muted);">${r.date || ''}</small>
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;">
+                        <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
+                            <strong style="color:var(--accent);">${esc(r.clientName || 'Аноним')}</strong>
+                            ${verifiedBadge}
+                        </div>
+                        <small style="color:var(--text-muted);">${esc(r.date || '')}</small>
                     </div>
-                    <p style="margin-bottom:8px;font-style:italic;">"${r.comment || ''}"</p>
+                    <p style="margin-bottom:8px;font-style:italic;">"${esc(r.comment || '')}"</p>
                     <div style="display:flex;justify-content:space-between;align-items:center;">
-                        <small style="color:var(--accent);">${'⭐'.repeat(parseInt(r.rating)||0)} (${r.masterName || ''})</small>
-                        <button class="btn-danger" style="padding:4px 10px;" onclick="deleteReview('${r.id}')">Удалить</button>
+                        <small style="color:var(--accent);">${'⭐'.repeat(parseInt(r.rating)||0)} (${esc(r.masterName || '')})</small>
+                        <button class="btn-danger" style="padding:4px 10px;" onclick="deleteReview('${esc(r.id)}')">Удалить</button>
                     </div>
                 </div>`;
             });

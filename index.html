@@ -25,8 +25,8 @@
     <script src="barbershops_uz.js?v=15"></script>
     <script src="barbershops_kz.js?v=14"></script>
     <script src="assets/booking-logic.js?v=9"></script>
-    <script src="assets/db.js?v=15"></script>
-    <script src="assets/mobile-bridge.js?v=17"></script>
+    <script src="assets/db.js?v=16"></script>
+    <script src="assets/mobile-bridge.js?v=18"></script>
 
     <script>
         // If opened as root web entry without parameters, route to the main Role Selection Screen (app.html)
@@ -87,7 +87,7 @@
         })();
     </script>
 
-    <link rel="stylesheet" href="styles/main.css?v=6">
+    <link rel="stylesheet" href="styles/main.css?v=7">
 </head>
 <body>
 
@@ -160,7 +160,10 @@
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
                     <span data-i18n="back_to_map">К карте барбершопов</span>
                 </a>
-                <span class="bm-mode-pill" id="booking-mode-badge-text" data-i18n="mode_online">Онлайн-запись</span>
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <a href="barbermap_kg.html?filter=fav" id="header-fav-link" class="bm-mode-pill" style="display:none; text-decoration:none; color:#be123c; background:#fff1f2; border:1px solid #fecdd3;" title="Мои избранные салоны и мастера">❤️ <span id="header-fav-count">0</span></a>
+                    <span class="bm-mode-pill" id="booking-mode-badge-text" data-i18n="mode_online">Онлайн-запись</span>
+                </div>
             </div>
 
             <div class="sheet-scroll" id="sheet-scroll-container">
@@ -176,6 +179,9 @@
                             <h1 id="shop-main-title" data-i18n="title">Барбершоп</h1>
                             <p id="shop-main-subtitle" data-i18n="subtitle">Барбершоп • Кыргызстан</p>
                         </div>
+                        <button type="button" id="shop-favorite-btn" class="fav-shop-btn" onclick="toggleCurrentShopFavorite()" title="В избранное" aria-label="Добавить в избранное">
+                            <svg id="shop-favorite-svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                        </button>
                     </div>
                 </header>
 
@@ -354,7 +360,10 @@
                 <!-- PUBLIC REVIEWS -->
                 <section id="public-reviews">
                     <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
-                        <h2 data-i18n="reviews_public_title" style="margin:0;">Отзывы наших клиентов</h2>
+                        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                            <h2 data-i18n="reviews_public_title" style="margin:0;">Отзывы наших клиентов</h2>
+                            <span id="reviews-verified-count-pill" class="reviews-verified-summary" style="display:none;"></span>
+                        </div>
                         <button type="button" class="btn btn-outline" id="btn-open-public-review" style="width:auto; margin:0; padding:8px 14px; font-size:0.84rem; font-weight:700;" onclick="openPublicReviewComposer()">✍️ Оставить отзыв</button>
                     </div>
                     <div id="public-review-composer" style="display:none; background: var(--bg-main); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 18px; margin-bottom: 18px; text-align: left;"></div>
@@ -393,7 +402,7 @@
         </form>
     </div>
 
-    <script src="assets/app.js?v=16"></script>
+    <script src="assets/app.js?v=17"></script>
 
     <script>
     if ('serviceWorker' in navigator) {

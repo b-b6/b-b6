@@ -7,6 +7,8 @@ const i18n = {
                 step4_title: "Ваши контакты", label_name: "Ваше имя", placeholder_name: "Иван Иванов", label_phone: "Номер телефона", details: "Детали записи:", btn_submit: "Записаться",
                 success_title: "Вы успешно записаны!", success_desc: "Ждем вас в назначенное время.", btn_home: "На главную", widget_title: "Напоминание о записи", widget_cancel: "Отменить мою запись", widget_close: "Скрыть", any_master: "Любой свободный мастер",
                 review_title: "Оцените работу мастера", review_placeholder: "Ваш отзыв (необязательно)", review_send: "Отправить отзыв", reviews_public_title: "Отзывы наших клиентов", reviews_empty: "Пока нет отзывов. Будьте первым!", review_success: "✅ Спасибо за ваш отзыв!",
+                verified_visit_badge: "✓ Подтверждённый визит", verified_reviews_summary: "подтверждены визитом", verified_you_have_visit: "✓ У вас есть завершённая запись — отзыв получит зелёный бейдж доверия",
+                fav_add_title: "Добавить в избранное", fav_saved_title: "В избранном (нажмите чтобы убрать)", fav_toast_added: "❤️ Добавлено в избранное", fav_toast_removed: "Убрано из избранного",
                 auth_modal_title_booking: "Быстрый вход", auth_modal_desc_booking: "Войдите, чтобы получать бонусы и сохранять историю ваших записей, или продолжите без регистрации.", auth_modal_title_review: "Вход для отзыва", auth_modal_desc_review: "Войдите через Google или Telegram — после этого откроется форма отзыва о мастере.", auth_guest_skip: "Пропустить и записаться", review_auth_later: "Позже", review_auth_gate: "Чтобы оставить отзыв о мастере, войдите через Google или Telegram.", review_auth_btn: "Войти и оставить отзыв",
                 stat_masters: "Мастеров", stat_today: "Сегодня", stat_rating: "Рейтинг", stat_total: "Клиентов",
                 ai_promo_title: "Интеллектуальный подбор", ai_promo_desc: "Глубокий анализ лица и подбор идеального образа с помощью нейросети",
@@ -20,6 +22,8 @@ const i18n = {
                 step4_title: "Your contacts", label_name: "Your name", placeholder_name: "John Doe", label_phone: "Phone number", details: "Booking details:", btn_submit: "Book Appointment",
                 success_title: "Successfully booked!", success_desc: "We look forward to seeing you at the appointed time.", btn_home: "Back to home", widget_title: "Booking Reminder", widget_cancel: "Cancel my booking", widget_close: "Hide", any_master: "Any available barber",
                 review_title: "Rate your Master", review_placeholder: "Your review (optional)", review_send: "Submit Review", reviews_public_title: "Our Client Reviews", reviews_empty: "No reviews yet. Be the first!", review_success: "✅ Thank you for your feedback!",
+                verified_visit_badge: "✓ Verified visit", verified_reviews_summary: "verified visits", verified_you_have_visit: "✓ You have a completed visit — your review will show a Verified badge",
+                fav_add_title: "Add to Favorites", fav_saved_title: "Saved in Favorites (click to remove)", fav_toast_added: "❤️ Added to Favorites", fav_toast_removed: "Removed from Favorites",
                 auth_modal_title_booking: "Quick sign-in", auth_modal_desc_booking: "Sign in for perks and booking history, or continue as a guest.", auth_modal_title_review: "Sign in to review", auth_modal_desc_review: "Use Google or Telegram — then the review form will open.", auth_guest_skip: "Skip and book", review_auth_later: "Not now", review_auth_gate: "To leave a review about your barber, sign in with Google or Telegram.", review_auth_btn: "Sign in and review",
                 stat_masters: "Masters", stat_today: "Today", stat_rating: "Rating", stat_total: "Clients",
                 ai_promo_title: "Smart AI Selection", ai_promo_desc: "Deep facial analysis to find your ideal look using neural networks",
@@ -36,6 +40,8 @@ const i18n = {
                 step4_title: "Kontaktlaringiz", label_name: "Ismingiz", placeholder_name: "Sardor", label_phone: "Telefon raqami", details: "Yozuv tafsilotlari:", btn_submit: "Yozilish",
                 success_title: "Muvaffaqiyatli yozildingiz!", success_desc: "Sizni belgilangan vaqtda kutib qolamiz.", btn_home: "Bosh sahifaga", widget_title: "Eslatma", widget_cancel: "Bekor qilish", widget_close: "Yashirish", any_master: "Istalgan bo'sh usta",
                 review_title: "Ustani baholang", review_placeholder: "Fikringiz (ixtiyoriy)", review_send: "Yuborish", reviews_public_title: "Mijozlarimiz fikrlari", reviews_empty: "Hozircha sharhlar yo'q. Birinchi bo'ling!", review_success: "✅ Sharh uchun rahmat!",
+                verified_visit_badge: "✓ Tasdiqlangan tashrif", verified_reviews_summary: "tasdiqlangan", verified_you_have_visit: "✓ Sizda yakunlangan tashrif bor — sharhingizda tasdiq belgisi chiqadi",
+                fav_add_title: "Saralanganlarga qo'shish", fav_saved_title: "Saralanganlarda", fav_toast_added: "❤️ Saralanganlarga qo'shildi", fav_toast_removed: "Saralanganlardan olib tashlandi",
                 auth_modal_title_booking: "Tezkor kirish", auth_modal_desc_booking: "Bonuslar va tarix uchun kiring yoki mehmon sifatida davom eting.", auth_modal_title_review: "Sharh uchun kirish", auth_modal_desc_review: "Google yoki Telegram orqali kiring — keyin sharh formasi ochiladi.", auth_guest_skip: "Mehmon sifatida yozilish", review_auth_later: "Keyinroq", review_auth_gate: "Usta haqida sharh qoldirish uchun Google yoki Telegram orqali kiring.", review_auth_btn: "Kirish va sharh",
                 stat_masters: "Ustalar", stat_today: "Bugun", stat_rating: "Reyting", stat_total: "Mijozlar",
                 ai_promo_title: "Aqlli sun'iy intellekt tanlovi", ai_promo_desc: "Sun'iy intellekt yordamida yuzingizni chuqur tahlil qilib, mos obrazni tanlash",
@@ -52,6 +58,8 @@ const i18n = {
                 step4_title: "Байланыштарыңыз", label_name: "Атыңыз", placeholder_name: "Азамат", label_phone: "Телефон номери", details: "Жазуунун чоо-жайы:", btn_submit: "Жазылуу",
                 success_title: "Ийгиликтүү жазылдыңыз!", success_desc: "Сизди белгиленген убакытта күтөбүз.", btn_home: "Башкы бетке", widget_title: "Эскертүү", widget_cancel: "Жоюу", widget_close: "Жашыруу", any_master: "Каалаган чебер",
                 review_title: "Чеберге баа бериңиз", review_placeholder: "Сиздин оюңуз (милдеттүү эмес)", review_send: "Жөнөтүү", reviews_public_title: "Кардарларыбыздын сын-пикирлери", reviews_empty: "Азырынча сын-пикирлер жок. Биринчи болуңуз!", review_success: "✅ Пикириңиз үчүн рахмат!",
+                verified_visit_badge: "✓ Тастыкталган баруу", verified_reviews_summary: "тастыкталган", verified_you_have_visit: "✓ Сиздин аяктаган жазууңуз бар — пикириңизде жашыл белги чыгат",
+                fav_add_title: "Тандалмаларга кошуу", fav_saved_title: "Тандалмаларда", fav_toast_added: "❤️ Тандалмаларга кошулду", fav_toast_removed: "Тандалмалардан өчүрүлдү",
                 auth_modal_title_booking: "Тез кирүү", auth_modal_desc_booking: "Бонустар жана тарых үчүн кириңиз же конок катары улантыңыз.", auth_modal_title_review: "Пикир үчүн кирүү", auth_modal_desc_review: "Google же Telegram аркылуу кириңиз — андан кийин пикир формасы ачылат.", auth_guest_skip: "Конок катары жазылуу", review_auth_later: "Кийин", review_auth_gate: "Чебер жөнүндө пикир калтыруу үчүн Google же Telegram аркылуу кириңиз.", review_auth_btn: "Кирүү жана пикир",
                 stat_masters: "Чеберлер", stat_today: "Бүгүн", stat_rating: "Рейтинг", stat_total: "Кардарлар",
                 ai_promo_title: "Акылдуу ЖИ тандоосу", ai_promo_desc: "Бетти терең анализдөө жана жасалма интеллект менен идеалдуу образды тандоо",
@@ -68,6 +76,8 @@ const i18n = {
                 step4_title: "Байланыс деректеріңіз", label_name: "Атыңыз", placeholder_name: "Ерлан", label_phone: "Телефон нөмірі", details: "Жазылу мәліметтері:", btn_submit: "Жазылу",
                 success_title: "Сіз сәтті жазылдыңыз!", success_desc: "Сізді белгіленген уақытта күтеміз.", btn_home: "Басты бетке", widget_title: "Жазылу туралы ескерту", widget_cancel: "Жазылуды болдырмау", widget_close: "Жасыру", any_master: "Кез келген бос шебер",
                 review_title: "Шебердің жұмысын бағалаңыз", review_placeholder: "Пікіріңіз (міндетті емес)", review_send: "Пікір жіберу", reviews_public_title: "Клиенттеріміздің пікірлері", reviews_empty: "Әзірге пікірлер жоқ. Бірінші болыңыз!", review_success: "✅ Пікіріңізге рақмет!",
+                verified_visit_badge: "✓ Расталған сапар", verified_reviews_summary: "расталған", verified_you_have_visit: "✓ Сізде аяқталған жазылу бар — пікіріңізде жасыл белгі шығады",
+                fav_add_title: "Таңдаулыларға қосу", fav_saved_title: "Таңдаулыларда", fav_toast_added: "❤️ Таңдаулыларға қосылды", fav_toast_removed: "Таңдаулылардан алынды",
                 auth_modal_title_booking: "Жылдам кіру", auth_modal_desc_booking: "Бонустар мен жазылу тарихын сақтау үшін кіріңіз немесе тіркеусіз жалғастырыңыз.", auth_modal_title_review: "Пікір қалдыру үшін кіру", auth_modal_desc_review: "Google немесе Telegram арқылы кіріңіз — содан кейін пікір формасы ашылады.", auth_guest_skip: "Тіркеусіз жазылу", review_auth_later: "Кейінірек", review_auth_gate: "Шебер туралы пікір қалдыру үшін Google немесе Telegram арқылы кіріңіз.", review_auth_btn: "Кіру және пікір қалдыру",
                 stat_masters: "Шеберлер", stat_today: "Бүгін", stat_rating: "Рейтинг", stat_total: "Клиенттер",
                 ai_promo_title: "ЖИ арқылы таңдау", ai_promo_desc: "Жасанды интеллект көмегімен бет пішінін талдау және мінсіз шаш үлгісін таңдау",
@@ -583,6 +593,21 @@ const i18n = {
                 if (step3Pill) step3Pill.textContent = '2. Время';
                 if (step4Pill) step4Pill.textContent = '3. Бронь';
                 if (aiWrap) aiWrap.style.display = 'none';
+
+                window._currentShopFavMeta = {
+                    id: (catShop && catShop.id) ? String(catShop.id) : (window.appDB ? String(window.appDB.tenantId) : ''),
+                    targetId: window.appDB ? String(window.appDB.tenantId) : '',
+                    tenantId: window.appDB ? String(window.appDB.tenantId) : '',
+                    name: soloName,
+                    title: soloName,
+                    kind: soloSpec || 'Соло-мастер',
+                    city: st.city || (catShop && catShop.city) || 'Бишкек',
+                    address: st.address || (catShop && catShop.address) || '',
+                    avatar: soloPhoto || '',
+                    isSolo: true,
+                    rating: Number((catShop && catShop.rating) || 5.0),
+                    reviews: Number((catShop && catShop.reviews) || (Array.isArray(store.reviews) ? store.reviews.length : 0))
+                };
             } else {
                 const customName = (window.appDB && window.appDB.tenantId === 'shine_barbershop') ? 'Shine Barbershop' : null;
                 const savedName = (st.shopName && st.shopName !== 'Брутальный Барбершоп') ? st.shopName : null;
@@ -612,12 +637,29 @@ const i18n = {
                     });
                 }
 
+                window._currentShopFavMeta = {
+                    id: (catShop && catShop.id) ? String(catShop.id) : (window.appDB ? String(window.appDB.tenantId) : ''),
+                    targetId: window.appDB ? String(window.appDB.tenantId) : '',
+                    tenantId: window.appDB ? String(window.appDB.tenantId) : '',
+                    name: effectiveName,
+                    title: effectiveName,
+                    kind: 'Барбершоп',
+                    city: st.city || (catShop && catShop.city) || 'Бишкек',
+                    address: st.address || (catShop && catShop.address) || '',
+                    avatar: shopPhoto || '',
+                    isSolo: false,
+                    rating: Number((catShop && catShop.rating) || 5.0),
+                    reviews: Number((catShop && catShop.reviews) || (Array.isArray(store.reviews) ? store.reviews.length : 0))
+                };
+
                 if (step2Pill) step2Pill.style.display = '';
                 if (step1Pill) step1Pill.textContent = '1. Услуга';
                 if (step2Pill) step2Pill.textContent = '2. Мастер';
                 if (step3Pill) step3Pill.textContent = '3. Время';
                 if (step4Pill) step4Pill.textContent = '4. Бронь';
             }
+
+            if (typeof renderFavoritesUI === 'function') renderFavoritesUI();
 
             if (st && st.design) {
                 const des = st.design;
@@ -678,6 +720,7 @@ const i18n = {
                 .then(() => {
                     applySettings(store.settings);
                     renderLiveStats();
+                    renderPublicReviews();
                     if (currentStep === 1) renderServicesUI();
                     if (currentStep === 2) renderMastersUI();
                     if (window.lucide) lucide.createIcons();
@@ -685,7 +728,7 @@ const i18n = {
                 .catch(err => console.warn('Background sync error:', err));
 
             // Подписка на обновления в реальном времени
-            window.appDB.subscribe('barber_bookings', data => { store.bookings = data || []; renderLiveStats(); loadMyBookings(); if(currentStep===3 && bookingData.date) renderTimes(); });
+            window.appDB.subscribe('barber_bookings', data => { store.bookings = data || []; renderLiveStats(); renderPublicReviews(); loadMyBookings(); if(currentStep===3 && bookingData.date) renderTimes(); });
             window.appDB.subscribe('barber_reviews', data => { store.reviews = data || []; renderLiveStats(); renderPublicReviews(); });
             window.appDB.subscribe('barber_masters', data => { if(data && data.length) { store.masters = data; renderLiveStats(); if(currentStep===2) renderMastersUI(); if(currentStep===3) renderDates(); } });
             window.appDB.subscribe('barber_services', data => { if(data && data.length) store.services = data; if(currentStep===1) renderServicesUI(); });
@@ -984,7 +1027,67 @@ const i18n = {
                 name: user.displayName || (user.email ? user.email.split('@')[0] : 'Клиент'),
                 email: user.email || ''
             };
+            if (window.appDB && window.appDB.syncClientFavorites) {
+                window.appDB.syncClientFavorites(user).then(() => {
+                    if (typeof renderFavoritesUI === 'function') renderFavoritesUI();
+                }).catch(() => {});
+            }
             return activeUserAuth;
+        }
+
+        function showFavoriteToast(msg) {
+            let el = document.getElementById('bm-client-fav-toast');
+            if (!el) {
+                el = document.createElement('div');
+                el.id = 'bm-client-fav-toast';
+                el.style.cssText = 'position:fixed;left:50%;top:18px;transform:translate(-50%,-16px);z-index:9999;background:#0c192c;color:#fff;padding:9px 16px;border-radius:999px;font-size:13px;font-weight:700;opacity:0;pointer-events:none;transition:all .22s ease;box-shadow:0 8px 24px rgba(12,25,44,.25);';
+                document.body.appendChild(el);
+            }
+            el.textContent = msg;
+            el.style.opacity = '1';
+            el.style.transform = 'translate(-50%, 0)';
+            clearTimeout(el._t);
+            el._t = setTimeout(() => {
+                el.style.opacity = '0';
+                el.style.transform = 'translate(-50%, -16px)';
+            }, 2200);
+        }
+
+        function renderFavoritesUI() {
+            if (!window.appDB || !window.appDB.getClientFavoritesLocal) return;
+            const L = i18n[currentLang] || i18n.ru;
+            const list = window.appDB.getClientFavoritesLocal();
+            const headerLink = document.getElementById('header-fav-link');
+            const headerCnt = document.getElementById('header-fav-count');
+            if (headerLink && headerCnt) {
+                headerCnt.textContent = String(list.length);
+                headerLink.style.display = list.length > 0 ? 'inline-flex' : 'none';
+            }
+            const btn = document.getElementById('shop-favorite-btn');
+            const svg = document.getElementById('shop-favorite-svg');
+            const meta = window._currentShopFavMeta;
+            if (btn && svg && meta) {
+                const isFav = window.appDB.isClientFavorite(meta, list);
+                btn.classList.toggle('active', isFav);
+                btn.title = isFav ? (L.fav_saved_title || 'В избранном') : (L.fav_add_title || 'В избранное');
+                btn.setAttribute('aria-pressed', isFav ? 'true' : 'false');
+                svg.setAttribute('fill', isFav ? 'currentColor' : 'none');
+            }
+        }
+
+        async function toggleCurrentShopFavorite() {
+            if (!window.appDB || !window.appDB.toggleClientFavorite || !window._currentShopFavMeta) return;
+            const L = i18n[currentLang] || i18n.ru;
+            const res = await window.appDB.toggleClientFavorite(window._currentShopFavMeta);
+            triggerHaptic('selection');
+            renderFavoritesUI();
+            showFavoriteToast(res.added ? (L.fav_toast_added || '❤️ Добавлено в избранное') : (L.fav_toast_removed || 'Убрано из избранного'));
+        }
+
+        if (typeof window.addEventListener === 'function') {
+            window.addEventListener('barber-favorites-changed', () => {
+                renderFavoritesUI();
+            });
         }
 
         function resolveSoloFallbackMaster() {
@@ -1110,7 +1213,9 @@ const i18n = {
             if (!box) return;
             box.style.display = 'block';
             const L = i18n[currentLang] || i18n.ru;
-            box.innerHTML = `<h3 style="margin-bottom: 15px; font-size:1.1rem;" data-i18n="review_title"></h3>
+            const hintHtml = getCompletedVisitHintHtml(bookingData.masterId);
+            box.innerHTML = `<h3 style="margin-bottom: 12px; font-size:1.1rem;" data-i18n="review_title"></h3>
+                ${hintHtml}
                 <div style="display: flex; gap: 10px; margin-bottom: 15px;" id="rating-stars">
                     <span onclick="setRating(1)" style="font-size: 2rem; cursor: pointer; color: var(--accent);">★</span>
                     <span onclick="setRating(2)" style="font-size: 2rem; cursor: pointer; color: var(--accent);">★</span>
@@ -1721,6 +1826,25 @@ const i18n = {
             applyStarPicker('#public-rating-stars span', val);
         }
 
+        function getCompletedVisitHintHtml(masterId) {
+            if (!window.appDB || !window.appDB.findCompletedBookingForReview) return '';
+            const rawPhone = (bookingData && bookingData.phone) || localStorage.getItem('barber_client_phone') || '';
+            const phoneSig = window.appDB.hashPhoneSig ? window.appDB.hashPhoneSig(rawPhone) : '';
+            const uid = (activeUserAuth && activeUserAuth.uid) ? String(activeUserAuth.uid) : '';
+            const hit = window.appDB.findCompletedBookingForReview(store.bookings || [], {
+                bookingId: bookingData && bookingData.id,
+                authUid: uid,
+                phoneDigits: rawPhone,
+                phoneSig,
+                masterId,
+                isSolo: isSoloBookingMode()
+            });
+            if (!hit) return '';
+            const L = i18n[currentLang] || i18n.ru;
+            const esc = (s) => window.escapeHTML ? window.escapeHTML(String(s || '')) : String(s || '');
+            return `<div style="margin-bottom:10px;padding:7px 10px;border-radius:10px;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;font-size:0.78rem;font-weight:700;">${esc(L.verified_you_have_visit || '✓ У вас есть завершённая запись — отзыв получит зелёный бейдж')}</div>`;
+        }
+
         async function saveReviewRecord(masterId, masterName, rating, comment) {
             const existing = (window.appDB && window.appDB.getReviews)
                 ? ((await window.appDB.getReviews()) || store.reviews || [])
@@ -1730,11 +1854,35 @@ const i18n = {
             if (activeUserAuth) {
                 displayName = activeUserAuth.name || activeUserAuth.email || displayName;
             }
+            const rawPhone = (bookingData && bookingData.phone) || localStorage.getItem('barber_client_phone') || '';
+            const phoneSig = (window.appDB && window.appDB.hashPhoneSig) ? window.appDB.hashPhoneSig(rawPhone) : '';
+            const uid = (activeUserAuth && activeUserAuth.uid) ? String(activeUserAuth.uid) : '';
+            const bookingsNow = Array.isArray(store.bookings) && store.bookings.length
+                ? store.bookings
+                : ((window.appDB && window.appDB.getBookings) ? (await window.appDB.getBookings().catch(() => [])) : []);
+            if (Array.isArray(bookingsNow) && bookingsNow.length && (!Array.isArray(store.bookings) || !store.bookings.length)) {
+                store.bookings = bookingsNow;
+            }
+            const matchedCompleted = (window.appDB && window.appDB.findCompletedBookingForReview)
+                ? window.appDB.findCompletedBookingForReview(bookingsNow, {
+                    bookingId: bookingData && bookingData.id,
+                    authUid: uid,
+                    phoneDigits: rawPhone,
+                    phoneSig,
+                    masterId: String(masterId),
+                    isSolo: isSoloBookingMode()
+                })
+                : null;
+
             merged.push({
                 id: Date.now().toString(),
                 masterId: String(masterId),
                 masterName: masterName || 'Мастер',
                 clientName: displayName,
+                authUid: uid,
+                phoneSig: phoneSig,
+                verifiedBookingId: matchedCompleted ? String(matchedCompleted.id) : '',
+                verifiedVisit: Boolean(matchedCompleted),
                 rating: Number(rating) || 5,
                 comment: String(comment || '').trim(),
                 date: new Date().toISOString().split('T')[0]
@@ -1785,10 +1933,12 @@ const i18n = {
                 </div>`;
             }
             wrap.style.display = 'block';
+            const hintHtml = getCompletedVisitHintHtml(solo ? resolveSoloFallbackMaster().masterId : '');
             wrap.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                     <h3 style="margin:0; font-size:1rem; font-weight:700;">${esc(L.review_title || 'Оцените работу мастера')}</h3>
                     <button type="button" onclick="document.getElementById('public-review-composer').style.display='none'" style="background:none; border:none; font-size:1.2rem; color:var(--text-muted); cursor:pointer;">✕</button>
                 </div>
+                ${hintHtml}
                 ${masterSelectHtml}
                 <div style="display: flex; gap: 10px; margin-bottom: 12px;" id="public-rating-stars">
                     <span onclick="setPublicRating(1)" style="font-size: 1.9rem; cursor: pointer; color: var(--accent);">★</span>
@@ -1901,26 +2051,51 @@ const i18n = {
             if (!container) return;
             container.innerHTML = '';
             const esc = (s) => window.escapeHTML ? window.escapeHTML(String(s || '')) : String(s || '');
+            const L = i18n[currentLang] || i18n.ru;
+            const verifiedBadgeText = L.verified_visit_badge || '✓ Подтверждённый визит';
+            const solo = isSoloBookingMode();
 
-            // Show last 6 reviews
-            reviews.slice(-6).reverse().forEach(r => {
+            const checkVerified = (r) => (window.appDB && window.appDB.isReviewVerifiedVisit)
+                ? window.appDB.isReviewVerifiedVisit(r, store.bookings, solo)
+                : Boolean(r && r.verifiedVisit);
+
+            const totalVerifiedCount = reviews.filter(checkVerified).length;
+            const summaryPill = document.getElementById('reviews-verified-count-pill');
+            if (summaryPill) {
+                if (totalVerifiedCount > 0) {
+                    summaryPill.textContent = `✓ ${totalVerifiedCount} ${L.verified_reviews_summary || 'подтверждены визитом'}`;
+                    summaryPill.style.display = 'inline-flex';
+                } else {
+                    summaryPill.style.display = 'none';
+                }
+            }
+
+            // Show last 8 reviews
+            reviews.slice(-8).reverse().forEach(r => {
                 const rat = Math.min(5, Math.max(1, parseInt(r.rating, 10) || 5));
+                const isVerified = checkVerified(r);
+                const verifiedHtml = isVerified
+                    ? `<span class="verified-visit-badge" title="${esc(verifiedBadgeText)}">${esc(verifiedBadgeText)}</span>`
+                    : '';
                 let card = document.createElement('div');
                 card.style = "background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 20px; animation: fadeIn 0.4s ease;";
                 card.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                        <strong style="color:var(--accent);">${esc(r.clientName || 'Клиент')}</strong>
-                        <div style="color:var(--accent); font-size:0.9rem;">${'★'.repeat(rat)}${'☆'.repeat(5-rat)}</div>
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:10px;">
+                        <div style="display:flex; align-items:center; gap:7px; flex-wrap:wrap; min-width:0;">
+                            <strong style="color:var(--accent);">${esc(r.clientName || 'Клиент')}</strong>
+                            ${verifiedHtml}
+                        </div>
+                        <div style="color:var(--accent); font-size:0.9rem; flex-shrink:0;">${'★'.repeat(rat)}${'☆'.repeat(5-rat)}</div>
                     </div>
                     <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">Мастер: ${esc(r.masterName || 'Мастер')}</div>
-                    <p style="font-size:0.9rem; line-height:1.6; font-style: italic;">"${esc(r.comment || (i18n[currentLang].def_review || 'Стрижка была отличной!'))}"</p>
+                    <p style="font-size:0.9rem; line-height:1.6; font-style: italic;">"${esc(r.comment || (L.def_review || 'Стрижка была отличной!'))}"</p>
                     <div style="font-size:0.75rem; color:var(--text-muted); margin-top:15px;">${esc(r.date || '')}</div>
                 `;
                 container.appendChild(card);
             });
 
             if (reviews.length === 0) {
-                container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color:var(--text-muted); padding: 40px;">${i18n[currentLang]['reviews_empty']}</div>`;
+                container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color:var(--text-muted); padding: 40px;">${L.reviews_empty}</div>`;
             }
         }
         

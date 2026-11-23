@@ -95,6 +95,10 @@ a{color:inherit}
 #cityChips .chip.on{border-color:var(--navy);background:var(--navy)}
 #filterChips .chip:hover{border-color:var(--burgundy-line);background:var(--burgundy-soft);color:var(--burgundy)}
 #filterChips .chip.on{background:var(--burgundy);border-color:var(--burgundy);color:#fff;box-shadow:0 3px 10px rgba(122,28,45,.25)}
+#chip-fav.on{background:#be123c;border-color:#be123c;color:#fff}
+.fav-btn{width:32px;height:32px;flex:none;border-radius:999px;border:1px solid var(--line);background:#fff;color:#94a3b8;display:inline-grid;place-items:center;transition:all .15s;cursor:pointer;padding:0}
+.fav-btn:hover{border-color:#fda4af;background:#fff1f2;color:#e11d48}
+.fav-btn.on{border-color:#fda4af;background:#fff1f2;color:#be123c}
 
 /* ---------- Bottom sheet (mobile) ---------- */
 #sheet{position:fixed;z-index:1000;left:0;right:0;bottom:0;height:var(--sheet-h);background:#fff;
@@ -311,6 +315,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
         </select>
       </div>
       <div class="chips filters" id="filterChips">
+        <button class="chip" data-f="fav" id="chip-fav"><span id="chip-fav-lbl">❤️ Избранное</span> <small id="favChipCnt" hidden></small></button>
         <button class="chip" data-f="open" id="chip-open">Открыто сейчас</button>
         <button class="chip" data-f="solo" id="chip-solo">✂️ Соло-мастера</button>
         <button class="chip" data-f="coworking" id="chip-coworking">💺 Аренда кресел</button>
@@ -352,8 +357,8 @@ body.dragging .map-ctrls{transition:opacity .2s}
 <script src="barbershops_kg.js?v=14"></script>
 <script src="barbershops_uz.js?v=15"></script>
 <script src="barbershops_kz.js?v=14"></script>
-<script src="assets/db.js?v=15"></script>
-<script src="assets/mobile-bridge.js?v=17"></script>
+<script src="assets/db.js?v=16"></script>
+<script src="assets/mobile-bridge.js?v=18"></script>
 
 <script>
 (() => {
@@ -370,7 +375,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
       c_all: '🌍 Все страны', c_kg: '🇰🇬 Кыргызстан', c_uz: '🇺🇿 Узбекистан', c_kz: '🇰🇿 Казахстан', all_cities: 'Все города',
       t_all: 'Все страны', t_kg: 'Весь Кыргызстан', t_uz: 'Весь Узбекистан', t_kz: 'Весь Казахстан',
       s_rec: 'Рекомендуемые', s_rating: 'По рейтингу', s_reviews: 'По отзывам', s_near: 'Ближе ко мне',
-      f_open: 'Открыто сейчас', f_solo: '✂️ Соло-мастера', solo_kind: 'Соло-мастер', f_cw: '💺 Аренда кресел', f_top: 'Рейтинг 4.5+', f_pop: '50+ отзывов',
+      f_open: 'Открыто сейчас', f_fav: '❤️ Избранное', fav_added: '❤️ Добавлено в избранное', fav_removed: 'Убрано из избранного', empty_fav_b: 'В избранном пока пусто', empty_fav_d: 'Нажмите сердечко ❤️ на карточке любого барбершопа или мастера, чтобы сохранить сюда.', empty_fav_btn: 'Показать все точки', f_solo: '✂️ Соло-мастера', solo_kind: 'Соло-мастер', f_cw: '💺 Аренда кресел', f_top: 'Рейтинг 4.5+', f_pop: '50+ отзывов',
       w_bs: ['барбершоп', 'барбершопа', 'барбершопов'], w_rv: ['отзыв', 'отзыва', 'отзывов'],
       open_24: 'Круглосуточно', open_to: 'Открыто до', closed_to: 'Закрыто · до',
       online_bk: '⚡ Онлайн-запись', catalog_pill: 'Городской каталог', has_cw: '💺 Есть коворкинг',
@@ -391,7 +396,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
       c_all: '🌍 Бардык өлкөлөр', c_kg: '🇰🇬 Кыргызстан', c_uz: '🇺🇿 Өзбекстан', c_kz: '🇰🇿 Казакстан', all_cities: 'Бардык шаарлар',
       t_all: 'Бардык өлкөлөр', t_kg: 'Бүткүл Кыргызстан', t_uz: 'Бүткүл Өзбекстан', t_kz: 'Бүткүл Казакстан',
       s_rec: 'Сунушталгандар', s_rating: 'Рейтинг боюнча', s_reviews: 'Пикирлер боюнча', s_near: 'Мага жакын',
-      f_open: 'Азыр ачык', f_solo: '✂️ Соло-чеберлер', solo_kind: 'Соло-чебер', f_cw: '💺 Кресло ижарасы', f_top: 'Рейтинг 4.5+', f_pop: '50+ пикир',
+      f_open: 'Азыр ачык', f_fav: '❤️ Тандалмалар', fav_added: '❤️ Тандалмаларга кошулду', fav_removed: 'Тандалмалардан өчүрүлдү', empty_fav_b: 'Тандалмалар азырынча бош', empty_fav_d: 'Сактоо үчүн каалаган барбершоптун же чебердин ❤️ белгисин басыңыз.', empty_fav_btn: 'Бардыгын көрсөтүү', f_solo: '✂️ Соло-чеберлер', solo_kind: 'Соло-чебер', f_cw: '💺 Кресло ижарасы', f_top: 'Рейтинг 4.5+', f_pop: '50+ пикир',
       w_bs: ['барбершоп', 'барбершоп', 'барбершоп'], w_rv: ['пикир', 'пикир', 'пикир'],
       open_24: 'Түнү-күнү ачык', open_to: 'Ачык:', closed_to: 'Жабык · ачылат:',
       online_bk: '⚡ Онлайн-жазылуу', catalog_pill: 'Шаардык каталог', has_cw: '💺 Коворкинг бар',
@@ -412,7 +417,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
       c_all: '🌍 Barcha davlatlar', c_kg: '🇰🇬 Qirg\'iziston', c_uz: '🇺🇿 O\'zbekiston', c_kz: '🇰🇿 Qozog\'iston', all_cities: 'Barcha shaharlar',
       t_all: 'Barcha davlatlar', t_kg: 'Butun Qirg\'iziston', t_uz: 'Butun O\'zbekiston', t_kz: 'Butun Qozog\'iston',
       s_rec: 'Tavsiya etilgan', s_rating: 'Reyting bo\'yicha', s_reviews: 'Sharhlar bo\'yicha', s_near: 'Menga yaqin',
-      f_open: 'Hozir ochiq', f_solo: '✂️ Solo ustalar', solo_kind: 'Solo usta', f_cw: '💺 Kreslo ijarasi', f_top: 'Reyting 4.5+', f_pop: '50+ sharhlar',
+      f_open: 'Hozir ochiq', f_fav: '❤️ Saralanganlar', fav_added: '❤️ Saralanganlarga qo\'shildi', fav_removed: 'Saralanganlardan olib tashlandi', empty_fav_b: 'Saralanganlar hozircha bo\'sh', empty_fav_d: 'Saqlash uchun istalgan barbershop yoki ustadagi ❤️ belgisini bosing.', empty_fav_btn: 'Barchasini ko\'rsatish', f_solo: '✂️ Solo ustalar', solo_kind: 'Solo usta', f_cw: '💺 Kreslo ijarasi', f_top: 'Reyting 4.5+', f_pop: '50+ sharhlar',
       w_bs: ['barbershop', 'barbershop', 'barbershoplar'], w_rv: ['sharh', 'sharh', 'sharhlar'],
       open_24: '24 soat ochiq', open_to: 'Ochiq:', closed_to: 'Yopiq · ochiladi:',
       online_bk: '⚡ Onlayn yozilish', catalog_pill: 'Shahar katalogi', has_cw: '💺 Kovorking bor',
@@ -433,7 +438,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
       c_all: '🌍 Барлық елдер', c_kg: '🇰🇬 Қырғызстан', c_uz: '🇺🇿 Өзбекстан', c_kz: '🇰🇿 Қазақстан', all_cities: 'Барлық қалалар',
       t_all: 'Барлық елдер', t_kg: 'Бүкіл Қырғызстан', t_uz: 'Бүкіл Өзбекстан', t_kz: 'Бүкіл Қазақстан',
       s_rec: 'Ұсынылғандар', s_rating: 'Рейтинг бойынша', s_reviews: 'Пікірлер бойынша', s_near: 'Маған жақын',
-      f_open: 'Қазір ашық', f_solo: '✂️ Соло-шеберлер', solo_kind: 'Соло-шебер', f_cw: '💺 Кресло жалдау', f_top: 'Рейтинг 4.5+', f_pop: '50+ пікір',
+      f_open: 'Қазір ашық', f_fav: '❤️ Таңдаулылар', fav_added: '❤️ Таңдаулыларға қосылды', fav_removed: 'Таңдаулылардан алынды', empty_fav_b: 'Таңдаулылар тізімі бос', empty_fav_d: 'Сақтау үшін кез келген барбершоп немесе шебер картасындағы ❤️ белгісін басыңыз.', empty_fav_btn: 'Барлығын көрсету', f_solo: '✂️ Соло-шеберлер', solo_kind: 'Соло-шебер', f_cw: '💺 Кресло жалдау', f_top: 'Рейтинг 4.5+', f_pop: '50+ пікір',
       w_bs: ['барбершоп', 'барбершоп', 'барбершоп'], w_rv: ['пікір', 'пікір', 'пікір'],
       open_24: 'Тәулік бойы', open_to: 'Ашық:', closed_to: 'Жабық · ашылады:',
       online_bk: '⚡ Онлайн-жазылу', catalog_pill: 'Қалалық каталог', has_cw: '💺 Коворкинг бар',
@@ -454,7 +459,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
       c_all: '🌍 All Countries', c_kg: '🇰🇬 Kyrgyzstan', c_uz: '🇺🇿 Uzbekistan', c_kz: '🇰🇿 Kazakhstan', all_cities: 'All cities',
       t_all: 'All Countries', t_kg: 'All Kyrgyzstan', t_uz: 'All Uzbekistan', t_kz: 'All Kazakhstan',
       s_rec: 'Recommended', s_rating: 'Top Rated', s_reviews: 'Most Reviewed', s_near: 'Nearest to me',
-      f_open: 'Open now', f_solo: '✂️ Solo Barbers', solo_kind: 'Solo Barber', f_cw: '💺 Chair Rental', f_top: 'Rating 4.5+', f_pop: '50+ reviews',
+      f_open: 'Open now', f_fav: '❤️ Favorites', fav_added: '❤️ Added to Favorites', fav_removed: 'Removed from Favorites', empty_fav_b: 'No favorites saved yet', empty_fav_d: 'Tap the ❤️ button on any barbershop or barber card to save it here.', empty_fav_btn: 'Show all shops', f_solo: '✂️ Solo Barbers', solo_kind: 'Solo Barber', f_cw: '💺 Chair Rental', f_top: 'Rating 4.5+', f_pop: '50+ reviews',
       w_bs: ['barbershop', 'barbershops', 'barbershops'], w_rv: ['review', 'reviews', 'reviews'],
       open_24: 'Open 24/7', open_to: 'Open until', closed_to: 'Closed · until',
       online_bk: '⚡ Online Booking', catalog_pill: 'City Directory', has_cw: '💺 Coworking',
@@ -486,7 +491,8 @@ body.dragging .map-ctrls{transition:opacity .2s}
     pin: svg('<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>', 20),
     clock: svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', 20),
     phone: svg('<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>', 20),
-    calendar: svg('<path d="M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zM16 2v4M8 2v4M3 10h18"/>', 16, 2.2)
+    calendar: svg('<path d="M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zM16 2v4M8 2v4M3 10h18"/>', 16, 2.2),
+    heart: (filled, s = 15) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="${filled ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>`
   };
 
   function kindOf(s) {
@@ -799,6 +805,26 @@ body.dragging .map-ctrls{transition:opacity .2s}
   }
 
   /* ================= filter & sort ================= */
+  function isFavShop(b) {
+    if (!b || !window.appDB || !window.appDB.isClientFavorite) return false;
+    const tid = resolveBookingTargetId(b);
+    return window.appDB.isClientFavorite({ id: b.id, targetId: tid, tenantId: b.tenantId || tid });
+  }
+
+  function updateFavChipCount() {
+    const cntEl = $('#favChipCnt');
+    if (!cntEl) return;
+    const favCount = (window.appDB && window.appDB.getClientFavoritesLocal)
+      ? window.appDB.getClientFavoritesLocal().length
+      : 0;
+    if (favCount > 0) {
+      cntEl.textContent = favCount;
+      cntEl.hidden = false;
+    } else {
+      cntEl.hidden = true;
+    }
+  }
+
   function filtered() {
     const q = state.q.trim().toLowerCase();
     const words = q ? q.split(/\s+/).filter(Boolean) : [];
@@ -806,6 +832,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
       if (state.country !== 'all' && b.countryCode !== state.country) return false;
       if (state.city !== 'all' && b.city !== state.city) return false;
       if (words.length && !words.every(w => b.search.includes(w))) return false;
+      if (state.f.has('fav') && !isFavShop(b)) return false;
       if (state.f.has('open')) { const st = statusOf(b); if (!st.open) return false; }
       if (state.f.has('solo') && !b.isSolo) return false;
       if (state.f.has('top') && b.rating < 4.5) return false;
@@ -906,12 +933,17 @@ body.dragging .map-ctrls{transition:opacity .2s}
     const boundT = resolveBoundTenant(b);
     const isSoloTarget = Boolean(b.isSolo || (boundT && boundT.role === 'master'));
     const soloBadge = isSoloTarget ? `<span style="font-size:11px;font-weight:700;color:#7a1c2d;background:#fbf0f2;padding:2px 7px;border-radius:999px;border:1px solid #f0cdd3;">✂️ ${esc(tr('solo_kind'))}</span>` : '';
+    const isFav = isFavShop(b);
     const bookHref = `index.html?id=${encodeURIComponent(targetId)}${isSoloTarget ? '&solo=1' : ''}&shopName=${encodeURIComponent(b.title || b.name || '')}`;
     return `<div class="card" data-id="${esc(b.id)}" role="button" tabindex="0">
       ${renderAvBox(b, st.known && st.open ? '<span class="dot-open"></span>' : '')}
       <div class="card-main">
         <div class="card-top"><span class="card-title">${esc(b.title)}</span>
-          ${b.rating ? `<span class="rate">${ICON.star(12)}${b.rating.toFixed(1)}<em>(${b.reviews})</em></span>` : ''}</div>
+          <div style="display:flex;align-items:center;gap:6px;flex:none;">
+            ${b.rating ? `<span class="rate">${ICON.star(12)}${b.rating.toFixed(1)}<em>(${b.reviews})</em></span>` : ''}
+            <button type="button" class="fav-btn${isFav ? ' on' : ''}" data-fav-id="${esc(b.id)}" title="${esc(tr('f_fav'))}" aria-label="${esc(tr('f_fav'))}">${ICON.heart(isFav, 15)}</button>
+          </div>
+        </div>
         <div class="card-meta">${esc(meta)}</div>
         <div class="card-addr">${esc(b.address)}</div>
         <div class="card-foot">
@@ -930,7 +962,9 @@ body.dragging .map-ctrls{transition:opacity .2s}
   function renderList(list) {
     const el = $('#list');
     if (!list.length) {
-      if (state.f.has('coworking')) {
+      if (state.f.has('fav')) {
+        el.innerHTML = `<div class="empty"><b>${tr('empty_fav_b')}</b>${tr('empty_fav_d')}<br><button class="btn ghost sm" data-act="reset" style="margin-top:8px;">${tr('empty_fav_btn')}</button></div>`;
+      } else if (state.f.has('coworking')) {
         el.innerHTML = `<div class="empty"><b>${tr('empty_cw_b')}</b>${tr('empty_cw_d')}<br><button class="btn ghost sm" data-act="reset" style="margin-top:8px;">${tr('empty_cw_btn')}</button></div>`;
       } else {
         el.innerHTML = `<div class="empty"><b>${tr('empty_b')}</b>${tr('empty_d')}<br><button class="btn ghost sm" data-act="reset">${tr('empty_btn')}</button></div>`;
@@ -1037,7 +1071,10 @@ body.dragging .map-ctrls{transition:opacity .2s}
     $('#detailView').innerHTML = `
       <div class="d-bar" id="dBar">
         <button class="d-back" data-act="back" aria-label="Назад">${ICON.back}<span>${tr('back_list')}</span></button>
-        <button class="icon-btn" data-act="share" aria-label="Поделиться">${ICON.share}</button>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <button type="button" class="fav-btn${isFavShop(b) ? ' on' : ''}" data-act="fav" title="${esc(tr('f_fav'))}" aria-label="${esc(tr('f_fav'))}">${ICON.heart(isFavShop(b), 16)}</button>
+          <button class="icon-btn" data-act="share" aria-label="Поделиться">${ICON.share}</button>
+        </div>
       </div>
       <div class="d-body">
         <div class="d-head">
@@ -1321,7 +1358,43 @@ body.dragging .map-ctrls{transition:opacity .2s}
     state.sort = e.target.value; apply(false);
   });
 
-  const onCardClick = e => {
+  async function handleMapFavToggle(id) {
+    const b = byId.get(String(id));
+    if (!b || !window.appDB || !window.appDB.toggleClientFavorite) return;
+    const tid = resolveBookingTargetId(b);
+    const res = await window.appDB.toggleClientFavorite({
+      id: String(b.id),
+      targetId: String(tid),
+      tenantId: String(b.tenantId || tid),
+      name: b.title || b.name || '',
+      title: b.title || b.name || '',
+      kind: b.kind || '',
+      city: b.city || '',
+      address: b.address || '',
+      avatar: b.avatar || '',
+      isSolo: Boolean(b.isSolo),
+      rating: b.rating || 0,
+      reviews: b.reviews || 0
+    });
+    updateFavChipCount();
+    toast(res.added ? tr('fav_added') : tr('fav_removed'));
+    if (state.sel === String(b.id) && state.view === 'detail') {
+      renderDetail(b);
+    }
+    if (state.f.has('fav')) {
+      apply(false);
+    } else {
+      renderList(current);
+    }
+  }
+
+  const onCardClick = async e => {
+    const favBtn = e.target.closest('button[data-fav-id]');
+    if (favBtn) {
+      e.stopPropagation();
+      await handleMapFavToggle(favBtn.dataset.favId);
+      return;
+    }
     const r = e.target.closest('[data-act="reset"]');
     if (r) { resetAll(); return; }
     if (e.target.closest('a')) return;
@@ -1331,12 +1404,19 @@ body.dragging .map-ctrls{transition:opacity .2s}
   $('#list').addEventListener('click', onCardClick);
   $('#list').addEventListener('keydown', e => { if (e.key === 'Enter') onCardClick(e); });
 
-  $('#detailView').addEventListener('click', e => {
+  $('#detailView').addEventListener('click', async e => {
+    const favBtn = e.target.closest('button[data-fav-id]');
+    if (favBtn) {
+      e.stopPropagation();
+      await handleMapFavToggle(favBtn.dataset.favId);
+      return;
+    }
     const a = e.target.closest('[data-act]');
     const b = byId.get(state.sel);
     if (a && b) {
       const act = a.dataset.act;
       if (act === 'back') closeDetail();
+      else if (act === 'fav') await handleMapFavToggle(b.id);
       else if (act === 'share') share(b);
       else if (act === 'route') openRoute(b);
       else if (act === 'copy') copy(`${b.address}, ${b.city}`, 'Адрес скопирован');
@@ -1435,11 +1515,13 @@ body.dragging .map-ctrls{transition:opacity .2s}
     if ($('#optSortRating')) $('#optSortRating').textContent = tr('s_rating');
     if ($('#optSortReviews')) $('#optSortReviews').textContent = tr('s_reviews');
     if ($('#optSortNear')) $('#optSortNear').textContent = tr('s_near');
+    if ($('#chip-fav-lbl')) $('#chip-fav-lbl').textContent = tr('f_fav');
     if ($('#chip-open')) $('#chip-open').textContent = tr('f_open');
     if ($('#chip-solo')) $('#chip-solo').textContent = tr('f_solo');
     if ($('#chip-coworking')) $('#chip-coworking').textContent = tr('f_cw');
     if ($('#chip-top')) $('#chip-top').textContent = tr('f_top');
     if ($('#chip-popular')) $('#chip-popular').textContent = tr('f_pop');
+    updateFavChipCount();
     if ($('#routeModalTitle')) $('#routeModalTitle').textContent = tr('route_title');
     if ($('#routeClose')) $('#routeClose').textContent = tr('btn_cancel');
     renderCityChips();
@@ -1455,6 +1537,11 @@ body.dragging .map-ctrls{transition:opacity .2s}
 
   // URL Params GPS & filter handlers
   const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('filter') === 'fav') {
+    state.f.add('fav');
+    const chipFav = document.getElementById('chip-fav');
+    if (chipFav) chipFav.classList.add('on');
+  }
   if (urlParams.get('filter') === 'coworking') {
     state.f.add('coworking');
     const chipCoworking = document.getElementById('chip-coworking');
@@ -1495,11 +1582,21 @@ body.dragging .map-ctrls{transition:opacity .2s}
   }
 
   // Sync remote custom map locations and tenant bindings from Firebase in background
+  window.addEventListener('barber-favorites-changed', () => {
+    updateFavChipCount();
+    renderList(current);
+    if (state.sel && state.view === 'detail' && byId.has(state.sel)) renderDetail(byId.get(state.sel));
+  });
+
   (async () => {
     try {
       if (window.appDB) {
         await window.appDB.initPromise;
         await window.appDB.getGlobalTenants();
+        if (window.appDB.syncClientFavorites) {
+          await window.appDB.syncClientFavorites();
+          updateFavChipCount();
+        }
       }
       if (window.BarberMobileBridge && window.BarberMobileBridge.syncRemoteLocationsToMap) {
         await window.BarberMobileBridge.syncRemoteLocationsToMap();

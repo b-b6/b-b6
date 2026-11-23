@@ -532,10 +532,19 @@ function renderSoloReviews() {
 
     listEl.innerHTML = reviews.slice(-10).reverse().map(r => {
         const rat = Math.min(5, Math.max(1, parseInt(r.rating, 10) || 5));
+        const isVerified = (window.appDB && window.appDB.isReviewVerifiedVisit)
+            ? window.appDB.isReviewVerifiedVisit(r, soloBookingsCache, true)
+            : Boolean(r && r.verifiedVisit);
+        const verifiedBadge = isVerified
+            ? `<span style="display:inline-flex;align-items:center;gap:3px;background:#dcfce7;color:#15803d;border:1px solid #86efac;padding:2px 7px;border-radius:999px;font-size:11px;font-weight:800;">✓ Подтверждённый визит</span>`
+            : '';
         return `<div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:12px; padding:12px 14px; margin-bottom:8px;">
             <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:4px;">
-                <strong style="font-size:13.5px; color:var(--navy);">${esc(r.clientName || 'Клиент')}</strong>
-                <span style="color:#f59e0b; font-size:13px; font-weight:800;">${'★'.repeat(rat)}${'☆'.repeat(5 - rat)}</span>
+                <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; min-width:0;">
+                    <strong style="font-size:13.5px; color:var(--navy);">${esc(r.clientName || 'Клиент')}</strong>
+                    ${verifiedBadge}
+                </div>
+                <span style="color:#f59e0b; font-size:13px; font-weight:800; flex-shrink:0;">${'★'.repeat(rat)}${'☆'.repeat(5 - rat)}</span>
             </div>
             <div style="font-size:13px; color:var(--text-main); line-height:1.4;">${esc(r.comment || 'Отличная работа!')}</div>
             <div style="font-size:11px; color:var(--text-muted); margin-top:6px;">${esc(r.date || '')}</div>
@@ -680,6 +689,7 @@ window.markSoloBookingDone = async function (bookingId) {
         await window.appDB.saveBookings(bookings);
         soloBookingsCache = bookings;
         renderSoloSchedule();
+        renderSoloReviews();
         if (window.BarberMobileBridge && window.BarberMobileBridge.cancelSoloMasterReminder) {
             window.BarberMobileBridge.cancelSoloMasterReminder(window.appDB.tenantId, b, soloSettingsCache).catch(() => {});
         }
@@ -1287,6 +1297,7 @@ function initSubscriptions() {
                 soloBookingsCache = data || [];
                 processBookingsDiff(soloBookingsCache);
                 renderSoloSchedule();
+                renderSoloReviews();
                 checkUpcomingSoloReminders();
             });
             window.appDB.subscribe(window.appDB.collections.services, (data) => {

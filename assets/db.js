@@ -778,6 +778,319 @@ class BarberDB {
             console.warn('⚠️ subscribeAccessRequests error:', error.message);
         });
     }
+
+    // ================= VERIFIED VISIT REVIEWS & CLIENT FAVORITES =================
+
+    normalizePhoneTail(rawPhone) {
+        const digits = String(rawPhone || '').replace(/\D/g, '');
+        if (digits.length < 6) return '';
+        return digits.length > 9 ? digits.slice(-9) : digits;
+    }
+
+    hashPhoneSig(rawPhone) {
+        const tail = this.normalizePhoneTail(rawPhone);
+        if (!tail) return '';
+        let h1 = 0x811c9dc5;
+        let h2 = 5381;
+        for (let i = 0; i < tail.length; i++) {
+            const ch = tail.charCodeAt(i);
+            h1 ^= ch;
+            h1 = Math.imul(h1, 0x01000193);
+            h2 = ((h2 << 5) + h2 + ch) | 0;
+        }
+        return 'ps_' + (h1 >>> 0).toString(36) + '_' + (h2 >>> 0).toString(36);
+    }
+
+    _phoneTailMatches(phoneA, phoneB) {
+        const a = this.normalizePhoneTail(phoneA);
+        const b = this.normalizePhoneTail(phoneB);
+        if (!a || !b) return false;
+        if (a === b) return true;
+        const cmpLen = Math.min(a.length, b.length, 7);
+        return cmpLen >= 6 && a.slice(-cmpLen) === b.slice(-cmpLen);
+    }
+
+    findCompletedBookingForReview(bookings, criteria = {}) {
+        const list = Array.isArray(bookings) ? bookings : [];
+        if (list.length === 0) return null;
+
+        const targetMaster = criteria.masterId ? String(criteria.masterId) : '';
+        const targetBookingId = criteria.bookingId ? String(criteria.bookingId) : '';
+        const targetUid = criteria.authUid ? String(criteria.authUid).trim() : '';
+        const targetPhoneSig = criteria.phoneSig ? String(criteria.phoneSig).trim() : '';
+        const targetPhoneDigits = this.normalizePhoneTail(criteria.phoneDigits || '');
+        const isSolo = Boolean(criteria.isSolo);
+
+        const hasIdentity = Boolean(targetBookingId || targetUid || targetPhoneSig || targetPhoneDigits);
+        if (!hasIdentity) return null;
+
+        let exactMasterHit = null;
+        let fallbackHit = null;
+
+        for (const b of list) {
+            if (!b || b.status !== 'completed') continue;
+
+            const bMaster = b.masterId ? String(b.masterId) : '';
+            const sameMaster = targetMaster && bMaster && bMaster === targetMaster;
+            const compatibleMaster = !targetMaster || isSolo || !bMaster || bMaster === 'any' || sameMaster;
+            if (!compatibleMaster) continue;
+
+            const identityMatches =
+                (targetBookingId && String(b.id) === targetBookingId) ||
+                (targetUid && b.authUid && String(b.authUid).trim() === targetUid) ||
+                (targetPhoneSig && this.hashPhoneSig(b.phone) === targetPhoneSig) ||
+                (targetPhoneDigits && this._phoneTailMatches(b.phone, targetPhoneDigits));
+
+            if (!identityMatches) continue;
+            if (sameMaster) {
+                exactMasterHit = b;
+                break;
+            }
+            if (!fallbackHit) fallbackHit = b;
+        }
+
+        return exactMasterHit || fallbackHit;
+    }
+
+    isReviewVerifiedVisit(review, bookings, isSolo = false) {
+        if (!review || typeof review !== 'object') return false;
+        const list = Array.isArray(bookings) ? bookings : null;
+        if (list && list.length > 0) {
+            return Boolean(this.findCompletedBookingForReview(list, {
+                bookingId: review.verifiedBookingId || review.bookingId,
+                authUid: review.authUid,
+                phoneSig: review.phoneSig,
+                masterId: review.masterId,
+                isSolo
+            }));
+        }
+        return Boolean(review.verifiedVisit);
+    }
+
+    _favKeySet(itemOrId) {
+        const keys = new Set();
+        const addKey = (val) => {
+            const s = String(val || '').trim();
+            if (!s) return;
+            keys.add(s);
+            if (s.startsWith('solo_')) keys.add(s.slice(5));
+        };
+        if (itemOrId && typeof itemOrId === 'object') {
+            addKey(itemOrId.id);
+            addKey(itemOrId.targetId);
+            addKey(itemOrId.tenantId);
+        } else {
+            addKey(itemOrId);
+        }
+        return keys;
+    }
+
+    normalizeFavoriteItem(item) {
+        if (!item || typeof item !== 'object') return null;
+        const id = String(item.id || item.targetId || item.tenantId || '').trim();
+        const targetId = String(item.targetId || item.tenantId || item.id || '').trim();
+        if (!id && !targetId) return null;
+        const cleanTarget = targetId.startsWith('solo_') ? targetId.slice(5) : targetId;
+        return {
+            id: id || cleanTarget,
+            targetId: cleanTarget || id,
+            tenantId: String(item.tenantId || cleanTarget || '').replace(/^solo_/, ''),
+            name: String(item.name || item.title || 'Барбершоп').trim(),
+            title: String(item.title || item.name || 'Барбершоп').trim(),
+            kind: String(item.kind || (item.isSolo ? 'Соло-мастер' : 'Барбершоп')),
+            city: String(item.city || ''),
+            address: String(item.address || ''),
+            avatar: String(item.avatar || ''),
+            isSolo: Boolean(item.isSolo),
+            rating: Number(item.rating) || 0,
+            reviews: Number(item.reviews) || 0,
+            savedAt: Number(item.savedAt) || Date.now()
+        };
+    }
+
+    getClientFavoritesLocal() {
+        try {
+            const raw = JSON.parse(localStorage.getItem('barber_client_favorites') || '[]');
+            if (!Array.isArray(raw)) return [];
+            const dedup = [];
+            const seen = new Set();
+            for (const row of raw) {
+                const norm = this.normalizeFavoriteItem(row);
+                if (!norm) continue;
+                const keys = this._favKeySet(norm);
+                let dup = false;
+                for (const k of keys) { if (seen.has(k)) { dup = true; break; } }
+                if (dup) continue;
+                keys.forEach(k => seen.add(k));
+                dedup.push(norm);
+            }
+            return dedup;
+        } catch (e) {
+            return [];
+        }
+    }
+
+    _getClientFavDeletedLocal() {
+        try {
+            const raw = JSON.parse(localStorage.getItem('barber_client_favorites_deleted') || '{}');
+            return (raw && typeof raw === 'object' && !Array.isArray(raw)) ? raw : {};
+        } catch (e) {
+            return {};
+        }
+    }
+
+    _saveClientFavStateLocal(items, deletedMap) {
+        try {
+            localStorage.setItem('barber_client_favorites', JSON.stringify(items || []));
+            if (deletedMap && typeof deletedMap === 'object') {
+                const entries = Object.entries(deletedMap)
+                    .sort((a, b) => Number(b[1]) - Number(a[1]))
+                    .slice(0, 60);
+                localStorage.setItem('barber_client_favorites_deleted', JSON.stringify(Object.fromEntries(entries)));
+            }
+            localStorage.setItem('barber_client_favorites_ts', String(Date.now()));
+        } catch (e) {}
+    }
+
+    isClientFavorite(idOrItem, listOpt) {
+        const list = Array.isArray(listOpt) ? listOpt : this.getClientFavoritesLocal();
+        const targetKeys = this._favKeySet(idOrItem);
+        if (targetKeys.size === 0) return false;
+        return list.some(item => {
+            const itemKeys = this._favKeySet(item);
+            for (const k of targetKeys) {
+                if (itemKeys.has(k)) return true;
+            }
+            return false;
+        });
+    }
+
+    async _pushClientFavsToRemote(user, items, deletedMap) {
+        if (!user || !user.uid || !this.useFirebase || !this.fs || !this.fsTools) return;
+        try {
+            const docRef = this.fsTools.doc(this.fs, 'global', `client_favs_${user.uid}`);
+            await Promise.race([
+                this.fsTools.setDoc(docRef, {
+                    uid: user.uid,
+                    items: Array.isArray(items) ? items : [],
+                    deleted: deletedMap || {},
+                    updatedAt: Date.now()
+                }),
+                new Promise((_, rej) => setTimeout(() => rej(new Error('Favorites sync timeout')), 5000))
+            ]);
+        } catch (e) {
+            console.warn('⚠️ _pushClientFavsToRemote failed:', e.message);
+        }
+    }
+
+    async toggleClientFavorite(itemInput, authUserOpt) {
+        const norm = this.normalizeFavoriteItem(itemInput);
+        if (!norm) return { added: false, items: this.getClientFavoritesLocal() };
+
+        const current = this.getClientFavoritesLocal();
+        const deleted = this._getClientFavDeletedLocal();
+        const keys = this._favKeySet(norm);
+        const exists = this.isClientFavorite(norm, current);
+        const now = Date.now();
+        let nextList;
+
+        if (exists) {
+            nextList = current.filter(row => {
+                const rk = this._favKeySet(row);
+                for (const k of keys) { if (rk.has(k)) return false; }
+                return true;
+            });
+            keys.forEach(k => { deleted[k] = now; });
+        } else {
+            norm.savedAt = now;
+            keys.forEach(k => { delete deleted[k]; });
+            nextList = [norm, ...current];
+        }
+
+        this._saveClientFavStateLocal(nextList, deleted);
+        try {
+            window.dispatchEvent(new CustomEvent('barber-favorites-changed', {
+                detail: { items: nextList, added: !exists, item: norm }
+            }));
+        } catch (_) {}
+
+        const user = authUserOpt || (this.auth && this.auth.currentUser) || null;
+        if (user && user.uid) {
+            this._pushClientFavsToRemote(user, nextList, deleted);
+        }
+        return { added: !exists, items: nextList };
+    }
+
+    async syncClientFavorites(authUserOpt) {
+        await this.initPromise;
+        const localItems = this.getClientFavoritesLocal();
+        const localDeleted = this._getClientFavDeletedLocal();
+        let user = authUserOpt || (this.auth && this.auth.currentUser) || null;
+        if (!user && this.useFirebase) {
+            user = await this.getCurrentAuthUser(1200);
+        }
+        if (!user || !user.uid || !this.useFirebase || !this.fs || !this.fsTools) {
+            return localItems;
+        }
+
+        try {
+            const docRef = this.fsTools.doc(this.fs, 'global', `client_favs_${user.uid}`);
+            const snap = await Promise.race([
+                this.fsTools.getDoc(docRef),
+                new Promise((_, rej) => setTimeout(() => rej(new Error('Favorites fetch timeout')), 5000))
+            ]);
+            const remoteData = snap.exists() ? (snap.data() || {}) : {};
+            const remoteItems = Array.isArray(remoteData.items) ? remoteData.items : [];
+            const remoteDeleted = (remoteData.deleted && typeof remoteData.deleted === 'object') ? remoteData.deleted : {};
+
+            const mergedDeleted = { ...remoteDeleted };
+            for (const [k, ts] of Object.entries(localDeleted)) {
+                mergedDeleted[k] = Math.max(Number(mergedDeleted[k]) || 0, Number(ts) || 0);
+            }
+
+            const combined = [...remoteItems, ...localItems];
+            const bestByCanon = new Map();
+            const aliasToCanon = new Map();
+
+            for (const raw of combined) {
+                const item = this.normalizeFavoriteItem(raw);
+                if (!item) continue;
+                const keys = this._favKeySet(item);
+
+                let maxDelTs = 0;
+                let canon = '';
+                for (const k of keys) {
+                    maxDelTs = Math.max(maxDelTs, Number(mergedDeleted[k]) || 0);
+                    if (!canon && aliasToCanon.has(k)) canon = aliasToCanon.get(k);
+                }
+                if (maxDelTs >= item.savedAt) continue;
+
+                if (!canon) canon = item.targetId || item.id;
+                keys.forEach(k => aliasToCanon.set(k, canon));
+                const prev = bestByCanon.get(canon);
+                if (!prev || item.savedAt > prev.savedAt) {
+                    bestByCanon.set(canon, item);
+                }
+            }
+
+            const mergedList = Array.from(bestByCanon.values()).sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0));
+            this._saveClientFavStateLocal(mergedList, mergedDeleted);
+
+            if (mergedList.length !== remoteItems.length || localItems.length > 0) {
+                await this._pushClientFavsToRemote(user, mergedList, mergedDeleted);
+            }
+
+            try {
+                window.dispatchEvent(new CustomEvent('barber-favorites-changed', {
+                    detail: { items: mergedList, synced: true }
+                }));
+            } catch (_) {}
+            return mergedList;
+        } catch (e) {
+            console.warn('⚠️ syncClientFavorites failed:', e.message);
+            return localItems;
+        }
+    }
 }
 
 const db = new BarberDB();
