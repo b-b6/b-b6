@@ -1,6 +1,8 @@
+"$schema" = "https://open-api.netlify.com/netlify.schema.json"
+
 [build]
-  command = "echo Static site ready"
-  publish = "."
+  command = "rm -rf dist && mkdir -p dist && cp -R *.html barbershops_*.js firebase-messaging-sw.js sw.js site.webmanifest .well-known assets styles dist/"
+  publish = "dist"
 
 [build.environment]
   NODE_ENV = "production"

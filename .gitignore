@@ -1,3 +1,5 @@
 
 mingit/
 mingit.zip
+dist/
+.netlify/
