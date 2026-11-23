@@ -535,6 +535,249 @@ class BarberDB {
             console.warn('⚠️ subscribeRawDoc error for', docName, error.message);
         });
     }
+
+    // ================= PARTNER / ADMIN FIREBASE AUTH & APPROVAL HELPERS =================
+
+    normalizeEmail(email) {
+        return String(email || '').trim().toLowerCase();
+    }
+
+    getSuperAdminEmails() {
+        const base = ['neymff007@gmail.com'];
+        const extra = Array.isArray(this._extraSuperAdminEmails) ? this._extraSuperAdminEmails : [];
+        return Array.from(new Set(base.concat(extra).map(e => this.normalizeEmail(e)).filter(Boolean)));
+    }
+
+    isSuperAdminEmail(email) {
+        const norm = this.normalizeEmail(email);
+        if (!norm) return false;
+        return this.getSuperAdminEmails().includes(norm);
+    }
+
+    matchTenantOwner(tenant, user) {
+        if (!tenant || !user) return false;
+        const uUid = String(user.uid || '').trim();
+        const uEmail = this.normalizeEmail(user.email);
+        if (!uEmail && !uUid) return false;
+        if (this.isSuperAdminEmail(uEmail)) return true;
+        const tUid = String(tenant.ownerUid || '').trim();
+        const tEmail = this.normalizeEmail(tenant.ownerEmail);
+        if (tUid && uUid && tUid === uUid) return true;
+        if (tEmail && uEmail && tEmail.includes('@') && tEmail === uEmail) return true;
+        return false;
+    }
+
+    resolvePartnerTenants(user, tenantsList, preferredRole) {
+        if (!user || !Array.isArray(tenantsList)) return [];
+        const roleNorm = preferredRole ? String(preferredRole).trim() : '';
+        const uUid = String(user.uid || '').trim();
+        const uEmail = this.normalizeEmail(user.email);
+        return tenantsList.filter(t => {
+            if (roleNorm && (t.role || 'owner') !== roleNorm) return false;
+            const tUid = String(t.ownerUid || '').trim();
+            const tEmail = this.normalizeEmail(t.ownerEmail);
+            return (tUid && uUid && tUid === uUid) ||
+                   (tEmail && uEmail && tEmail.includes('@') && tEmail === uEmail);
+        });
+    }
+
+    resolvePartnerTenant(user, tenantsList, preferredRole, preferredTenantId) {
+        if (!user || !Array.isArray(tenantsList)) return null;
+        const roleNorm = preferredRole ? String(preferredRole).trim() : '';
+        const prefId = preferredTenantId ? String(preferredTenantId).trim() : '';
+        const roleMatches = (t) => !roleNorm || (t.role || 'owner') === roleNorm;
+
+        if (prefId) {
+            const exact = tenantsList.find(t => String(t.id) === prefId && roleMatches(t) && this.matchTenantOwner(t, user));
+            if (exact) return exact;
+        }
+        const directMatches = this.resolvePartnerTenants(user, tenantsList, roleNorm);
+        return directMatches.length ? directMatches[0] : null;
+    }
+
+    mapAuthError(err) {
+        const code = String((err && err.code) || '');
+        const map = {
+            'auth/email-already-in-use': 'Этот Email уже зарегистрирован. Нажмите «Войти» или введите пароль от этого аккаунта.',
+            'auth/invalid-credential': 'Неверный Email или пароль. Проверьте данные или нажмите «Забыли пароль?».',
+            'auth/wrong-password': 'Неверный пароль. Попробуйте ещё раз или сбросьте пароль.',
+            'auth/user-not-found': 'Аккаунт с таким Email не найден. Нажмите «Зарегистрироваться и запросить доступ».',
+            'auth/invalid-email': 'Введите корректный Email (например, name@gmail.com).',
+            'auth/weak-password': 'Пароль слишком короткий — минимум 6 символов.',
+            'auth/too-many-requests': 'Слишком много попыток входа. Подождите 1–2 минуты или сбросьте пароль.',
+            'auth/popup-closed-by-user': 'Окно входа Google было закрыто до завершения.',
+            'auth/cancelled-popup-request': 'Предыдущий запрос входа Google был отменён.',
+            'auth/operation-not-allowed': 'Вход по Email и паролю ещё не включён в настройках Firebase.',
+            'auth/network-request-failed': 'Ошибка сети. Проверьте подключение к интернету.'
+        };
+        if (map[code]) return map[code];
+        return (err && err.message) ? err.message : 'Ошибка авторизации. Попробуйте ещё раз.';
+    }
+
+    async _loadAuthSDK() {
+        await this.initPromise;
+        if (!this.app) throw new Error('Firebase ещё не подключён');
+        if (!this._authInitPromise) {
+            this._authInitPromise = (async () => {
+                const authTools = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
+                this.auth = authTools.getAuth(this.app);
+                this.authTools = authTools;
+                return { auth: this.auth, authTools: this.authTools };
+            })();
+        }
+        return this._authInitPromise;
+    }
+
+    async getCurrentAuthUser(timeoutMs = 2500) {
+        try {
+            const { auth, authTools } = await this._loadAuthSDK();
+            if (typeof auth.authStateReady === 'function') {
+                await Promise.race([
+                    auth.authStateReady(),
+                    new Promise(r => setTimeout(r, timeoutMs))
+                ]);
+                return auth.currentUser || null;
+            }
+            return await new Promise((resolve) => {
+                let settled = false;
+                const timer = setTimeout(() => {
+                    if (!settled) { settled = true; resolve(auth.currentUser || null); }
+                }, timeoutMs);
+                const unsub = authTools.onAuthStateChanged(auth, (user) => {
+                    if (!settled) {
+                        settled = true;
+                        clearTimeout(timer);
+                        try { unsub(); } catch (_) {}
+                        resolve(user || null);
+                    }
+                }, () => {
+                    if (!settled) { settled = true; clearTimeout(timer); resolve(null); }
+                });
+            });
+        } catch (e) {
+            console.warn('⚠️ getCurrentAuthUser failed:', e.message);
+            return null;
+        }
+    }
+
+    async signInWithEmail(email, password) {
+        const cleanEmail = this.normalizeEmail(email);
+        if (!cleanEmail || !cleanEmail.includes('@')) throw new Error('Введите корректный Email (например, name@gmail.com).');
+        if (!password || String(password).length < 4) throw new Error('Введите пароль.');
+        const { auth, authTools } = await this._loadAuthSDK();
+        try {
+            const cred = await authTools.signInWithEmailAndPassword(auth, cleanEmail, String(password));
+            return cred.user;
+        } catch (err) {
+            const friendly = new Error(this.mapAuthError(err));
+            friendly.code = err && err.code;
+            throw friendly;
+        }
+    }
+
+    async registerOrSignInWithEmail(email, password) {
+        const cleanEmail = this.normalizeEmail(email);
+        if (!cleanEmail || !cleanEmail.includes('@')) throw new Error('Введите корректный Email (например, name@gmail.com).');
+        if (!password || String(password).length < 6) throw new Error('Придумайте пароль длиной минимум 6 символов.');
+        const { auth, authTools } = await this._loadAuthSDK();
+        try {
+            const cred = await authTools.createUserWithEmailAndPassword(auth, cleanEmail, String(password));
+            return { user: cred.user, created: true };
+        } catch (err) {
+            if (err && err.code === 'auth/email-already-in-use') {
+                try {
+                    const signInCred = await authTools.signInWithEmailAndPassword(auth, cleanEmail, String(password));
+                    return { user: signInCred.user, created: false };
+                } catch (signInErr) {
+                    const wrongPass = signInErr && (signInErr.code === 'auth/wrong-password' || signInErr.code === 'auth/invalid-credential');
+                    const friendly = new Error(wrongPass
+                        ? 'Этот Email уже зарегистрирован с другим паролем. Введите пароль от этого аккаунта или сбросьте его.'
+                        : this.mapAuthError(signInErr));
+                    friendly.code = signInErr && signInErr.code;
+                    throw friendly;
+                }
+            }
+            const friendly = new Error(this.mapAuthError(err));
+            friendly.code = err && err.code;
+            throw friendly;
+        }
+    }
+
+    async sendResetPassword(email) {
+        const cleanEmail = this.normalizeEmail(email);
+        if (!cleanEmail || !cleanEmail.includes('@')) throw new Error('Введите Email, на который нужно отправить письмо для сброса пароля.');
+        const { auth, authTools } = await this._loadAuthSDK();
+        try {
+            await authTools.sendPasswordResetEmail(auth, cleanEmail);
+            return true;
+        } catch (err) {
+            const friendly = new Error(this.mapAuthError(err));
+            friendly.code = err && err.code;
+            throw friendly;
+        }
+    }
+
+    async signInPartnerWithGoogle() {
+        const { auth, authTools } = await this._loadAuthSDK();
+        const provider = new authTools.GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: 'select_account' });
+        try {
+            const cred = await authTools.signInWithPopup(auth, provider);
+            return cred.user;
+        } catch (err) {
+            const friendly = new Error(this.mapAuthError(err));
+            friendly.code = err && err.code;
+            throw friendly;
+        }
+    }
+
+    async signOutAuth() {
+        try {
+            const { auth, authTools } = await this._loadAuthSDK();
+            if (auth && auth.currentUser) {
+                await authTools.signOut(auth);
+            }
+        } catch (e) {
+            console.warn('⚠️ signOutAuth failed:', e.message);
+        }
+    }
+
+    async bindEmailToTenant(tenantId, user, extraFields = {}) {
+        const cleanId = String(tenantId || '').trim();
+        const cleanEmail = this.normalizeEmail((user && user.email) || extraFields.ownerEmail);
+        const uid = String((user && user.uid) || extraFields.ownerUid || '').trim();
+        if (!cleanId || !cleanEmail || !cleanEmail.includes('@')) {
+            throw new Error('Недостаточно данных для привязки Email к кабинету.');
+        }
+        const list = await this.getGlobalTenants();
+        const idx = list.findIndex(t => String(t.id) === cleanId);
+        if (idx === -1) throw new Error(`Кабинет ID ${cleanId} не найден в базе.`);
+        const cur = list[idx];
+        const updated = {
+            ...cur,
+            ownerEmail: cleanEmail,
+            ownerUid: uid || cur.ownerUid || '',
+            email: (cur.email && cur.email !== '—') ? cur.email : cleanEmail,
+            emailBoundAt: new Date().toISOString(),
+            ...extraFields
+        };
+        list[idx] = updated;
+        await this.saveGlobalTenants(list);
+        return updated;
+    }
+
+    async subscribeAccessRequests(callback) {
+        await this.initPromise;
+        if (!this.useFirebase || !this.fsTools || !this.fs) return () => {};
+        const docRef = this.fsTools.doc(this.fs, 'global', 'access_requests');
+        return this.fsTools.onSnapshot(docRef, (snap) => {
+            const data = snap.exists() ? snap.data() : null;
+            const list = (data && Array.isArray(data.requests)) ? data.requests : [];
+            callback(list);
+        }, (error) => {
+            console.warn('⚠️ subscribeAccessRequests error:', error.message);
+        });
+    }
 }
 
 const db = new BarberDB();

@@ -67,6 +67,62 @@
         window.tenants = tenants;
         const avatarColors = ['av-purple', 'av-green', 'av-blue', 'av-red', 'av-orange'];
 
+        function unlockSuperAdminUI(animated) {
+            sessionStorage.setItem('superAuth', 'true');
+            const overlay = document.getElementById('auth-overlay');
+            const mainEl = document.getElementById('main-content');
+            const authCard = document.querySelector('.auth-card');
+            if (animated && authCard) {
+                authCard.style.transform = 'scale(1.1)';
+                authCard.style.opacity = '0';
+                setTimeout(() => {
+                    if (overlay) overlay.style.display = 'none';
+                    if (mainEl) mainEl.style.display = 'block';
+                    initSuperAdmin();
+                }, 300);
+            } else {
+                if (overlay) overlay.style.display = 'none';
+                if (mainEl) mainEl.style.display = 'block';
+                initSuperAdmin();
+            }
+        }
+
+        function showSuperAdminAuthError(msg) {
+            const err = document.getElementById('super-err');
+            if (err) {
+                err.textContent = msg || 'Неверный пароль!';
+                err.style.display = 'block';
+            }
+            const card = document.querySelector('.auth-card');
+            if (card) {
+                card.style.animation = 'none';
+                setTimeout(() => card.style.animation = 'shake 0.4s', 10);
+            }
+        }
+
+        async function signInSuperAdminGoogle() {
+            const btn = document.getElementById('sa-google-btn');
+            const err = document.getElementById('super-err');
+            if (err) err.style.display = 'none';
+            if (btn) btn.disabled = true;
+            try {
+                if (!window.appDB || !window.appDB.signInPartnerWithGoogle) {
+                    throw new Error('Firebase Auth ещё загружается. Подождите секунду.');
+                }
+                const user = await window.appDB.signInPartnerWithGoogle();
+                if (!window.appDB.isSuperAdminEmail(user && user.email)) {
+                    await window.appDB.signOutAuth();
+                    showSuperAdminAuthError(`Доступ запрещён для ${user && user.email ? user.email : 'этого аккаунта'}. Войдите под аккаунтом главного администратора.`);
+                    return;
+                }
+                unlockSuperAdminUI(true);
+            } catch (e) {
+                showSuperAdminAuthError((e && e.message) || 'Не удалось войти через Google.');
+            } finally {
+                if (btn) btn.disabled = false;
+            }
+        }
+
         async function checkSuperPin() {
             const inputVal = document.getElementById('super-pin-input').value;
             const data = new TextEncoder().encode(inputVal);
@@ -74,32 +130,24 @@
             const inputHash = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
 
             if (inputHash === MASTER_HASH || inputVal === '7777') {
-                sessionStorage.setItem('superAuth', 'true');
-                
-                const authCard = document.querySelector('.auth-card');
-                authCard.style.transform = 'scale(1.1)';
-                authCard.style.opacity = '0';
-                
-                setTimeout(() => {
-                    document.getElementById('auth-overlay').style.display = 'none';
-                    document.getElementById('main-content').style.display = 'block';
-                    initSuperAdmin();
-                }, 300);
+                unlockSuperAdminUI(true);
             } else {
-                const err = document.getElementById('super-err');
-                err.style.display = 'block';
                 document.getElementById('super-pin-input').value = '';
-                document.querySelector('.auth-card').style.animation = 'none';
-                setTimeout(() => document.querySelector('.auth-card').style.animation = 'shake 0.4s', 10);
+                showSuperAdminAuthError('Неверный пароль!');
             }
         }
 
-        window.onload = () => {
+        window.onload = async () => {
             lucide.createIcons();
             if (sessionStorage.getItem('superAuth') === 'true') {
-                document.getElementById('auth-overlay').style.display = 'none';
-                document.getElementById('main-content').style.display = 'block';
-                initSuperAdmin();
+                unlockSuperAdminUI(false);
+            } else if (window.appDB && window.appDB.getCurrentAuthUser) {
+                try {
+                    const user = await window.appDB.getCurrentAuthUser(1500);
+                    if (user && window.appDB.isSuperAdminEmail(user.email)) {
+                        unlockSuperAdminUI(false);
+                    }
+                } catch (_) {}
             }
             document.getElementById('super-pin-input').addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') checkSuperPin();
@@ -111,8 +159,15 @@
             document.head.appendChild(style);
         };
 
-        function logout() {
+        async function logout() {
             sessionStorage.removeItem('superAuth');
+            if (typeof _saRequestsUnsub === 'function') {
+                try { _saRequestsUnsub(); } catch (_) {}
+                _saRequestsUnsub = null;
+            }
+            if (window.appDB && window.appDB.signOutAuth) {
+                try { await window.appDB.signOutAuth(); } catch (_) {}
+            }
             document.querySelector('.main-container').style.opacity = '0';
             setTimeout(()=>location.reload(), 300);
         }
@@ -170,12 +225,25 @@
             if (typeof window.renderSABarberList === 'function') window.renderSABarberList();
             if (typeof window.renderSAMarkers === 'function') window.renderSAMarkers(false);
             await loadAndRenderAccessRequests();
+            if (window.appDB && window.appDB.subscribeAccessRequests && !_saRequestsUnsub) {
+                window.appDB.subscribeAccessRequests((reqs) => {
+                    renderAccessRequestsList(reqs);
+                }).then(unsub => {
+                    _saRequestsUnsub = unsub;
+                }).catch(() => {});
+            }
         }
         
         function renderStats() {
             document.getElementById('st-total').innerText = tenants.length;
             const todayStr = new Date().toLocaleDateString('ru-RU');
             document.getElementById('st-today').innerText = tenants.filter(t => t.createdAt === todayStr).length;
+            const readyEl = document.getElementById('st-email-ready');
+            if (readyEl) {
+                const readyCount = tenants.filter(t => t.ownerEmail && String(t.ownerEmail).includes('@')).length;
+                readyEl.innerText = `${readyCount} / ${tenants.length}`;
+                readyEl.style.color = (tenants.length > 0 && readyCount === tenants.length) ? '#00873d' : '';
+            }
         }
 
         let saBindMap = null;
@@ -195,6 +263,8 @@
             if (submitEl) submitEl.innerHTML = 'Создать и выдать доступ <i data-lucide="check" style="width:16px; margin-left:6px; vertical-align:middle;"></i>';
 
             document.getElementById('t_name').value = '';
+            const ownerEmailEl = document.getElementById('t_owner_email');
+            if (ownerEmailEl) ownerEmailEl.value = '';
             document.getElementById('t_email').value = '';
             document.getElementById('t_catalog_search').value = '';
             document.getElementById('t_catalog_id').value = '';
@@ -239,9 +309,11 @@
             if (idEl) { idEl.value = t.id; idEl.disabled = true; }
             if (pinEl) pinEl.value = t.pin || '';
             if (nameEl) nameEl.value = t.shopName || '';
+            const ownerEmailEl = document.getElementById('t_owner_email');
+            if (ownerEmailEl) ownerEmailEl.value = t.ownerEmail || '';
             if (emailEl) emailEl.value = (t.email && t.email !== '—') ? t.email : '';
-            if (titleEl) titleEl.innerHTML = `<i data-lucide="map-pin" style="width:20px;height:20px;color:#7a1c2d;"></i> Привязать кабинет #${t.id} к карте`;
-            if (submitEl) submitEl.innerHTML = '💾 Сохранить привязку к карте';
+            if (titleEl) titleEl.innerHTML = `<i data-lucide="map-pin" style="width:20px;height:20px;color:#7a1c2d;"></i> Карта и Email кабинета #${t.id}`;
+            if (submitEl) submitEl.innerHTML = '💾 Сохранить карту и Email';
 
             document.getElementById('t_catalog_search').value = '';
             document.getElementById('t_catalog_id').value = t.catalogId || '';
@@ -530,6 +602,7 @@
         function renderTenants() {
             const list = document.getElementById('tenants-list');
             list.innerHTML = '';
+            const esc = (s) => window.escapeHTML ? window.escapeHTML(String(s || '')) : String(s || '');
             
             if (tenants.length === 0) {
                 list.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 60px; color:var(--text-muted); font-size: 1rem;">Доступы пока не выданы.<br><span style="font-size:0.88rem; margin-top:8px; display:inline-block;">Нажмите «+ Выдать доступ (Цифровой ID + 4-значный PIN)».</span></td></tr>';
@@ -538,10 +611,19 @@
 
             tenants.forEach((t, i) => {
                 const isMaster = t.role === 'master';
-                const initial = t.shopName ? t.shopName.charAt(0).toUpperCase() : (isMaster ? 'М' : 'Б');
+                const safeName = esc(t.shopName || ('Кабинет #' + t.id));
+                const initial = safeName.charAt(0).toUpperCase() || (isMaster ? 'М' : 'Б');
                 const roleBadge = isMaster
                     ? `<span class="badge-status" style="background:#f0f4f9; color:#0c192c; border:1px solid #d5e2f0;">Мастер (Соло)</span>`
                     : `<span class="badge-status on" style="background:#fbf0f2; color:#7a1c2d; border:1px solid #f0cdd3;">Салон (Владелец)</span>`;
+
+                const hasBoundEmail = Boolean(t.ownerEmail && String(t.ownerEmail).includes('@'));
+                const emailBadge = hasBoundEmail
+                    ? `<div style="display:inline-flex;align-items:center;gap:4px;background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;padding:3px 9px;border-radius:999px;font-size:0.76rem;font-weight:800;margin-bottom:3px;">🔐 ${esc(t.ownerEmail)}</div>`
+                    : `<div style="display:inline-flex;align-items:center;gap:4px;background:#fffbeb;color:#92400e;border:1px solid #fde68a;padding:3px 9px;border-radius:999px;font-size:0.75rem;font-weight:700;margin-bottom:3px;">🔑 Только PIN</div>`;
+                const contactExtra = (t.phone || (t.email && t.email !== '—' && t.email !== t.ownerEmail))
+                    ? `<div style="font-size:0.78rem;color:var(--text-muted);">${esc(t.phone || t.email)}</div>`
+                    : '';
                 
                 list.innerHTML += `
                 <tr data-role="${isMaster ? 'master' : 'owner'}">
@@ -549,7 +631,7 @@
                         <div class="t-user">
                             <div class="t-avatar">${initial}<div class="status-dot dot-on"></div></div>
                             <div>
-                                <div class="t-name">${t.shopName || ('Кабинет #' + t.id)}</div>
+                                <div class="t-name">${safeName}</div>
                                 <div class="t-sub">${isMaster ? 'Личный кабинет мастера' : 'Админ-панель салона'}</div>
                             </div>
                         </div>
@@ -557,28 +639,28 @@
                     <td>${roleBadge}</td>
                     <td>
                         <span style="display:inline-block; background:#0c192c; color:#ffffff; padding:5px 12px; border-radius:8px; font-family:monospace; font-size:1rem; font-weight:800; letter-spacing:1px;">
-                            ${t.id}
+                            ${esc(t.id)}
                         </span>
                     </td>
                     <td>
                         <span style="display:inline-block; background:#fbf0f2; color:#7a1c2d; border:1px solid #f0cdd3; padding:5px 12px; border-radius:8px; font-family:monospace; font-size:1rem; font-weight:800; letter-spacing:2px;">
-                            ${t.pin}
+                            ${esc(t.pin)}
                         </span>
                     </td>
-                    <td class="link-text">${t.email || '—'}</td>
-                    <td style="color: var(--text-muted);">${t.createdAt || '-'}</td>
+                    <td class="link-text">${emailBadge}${contactExtra}</td>
+                    <td style="color: var(--text-muted);">${esc(t.createdAt || '-')}</td>
                     <td style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
-                        <button class="btn-link" onclick="copyCredentialsForClient('${t.id}', '${t.pin}', '${(t.shopName || '').replace(/'/g, '')}', '${isMaster ? 'master' : 'owner'}')" title="Скопировать ID и PIN для отправки в WhatsApp">
+                        <button class="btn-link" onclick="copyCredentialsForClient('${esc(t.id)}', '${esc(t.pin)}', '${esc((t.shopName || '').replace(/'/g, ''))}', '${isMaster ? 'master' : 'owner'}')" title="Скопировать ID и PIN для отправки в WhatsApp">
                             <i data-lucide="copy" style="width:13px;height:13px;"></i> Доступ
                         </button>
-                        <button class="btn-link" style="background:#0c192c; color:#fff;" onclick="loginAsTenantFromSA('${t.id}', '${(t.shopName || '').replace(/'/g, '')}', '${isMaster ? 'master' : 'owner'}')" title="Войти в этот кабинет">
+                        <button class="btn-link" style="background:#0c192c; color:#fff;" onclick="loginAsTenantFromSA('${esc(t.id)}', '${esc((t.shopName || '').replace(/'/g, ''))}', '${isMaster ? 'master' : 'owner'}')" title="Войти в этот кабинет">
                             <i data-lucide="log-in" style="width:13px;height:13px;"></i> Войти
                         </button>
-                        <button class="btn-link" style="background:${(t.catalogId || t.customLat) ? '#e7f6ed' : '#f0f4f9'}; color:${(t.catalogId || t.customLat) ? '#00873d' : '#0c192c'}; border:1px solid ${(t.catalogId || t.customLat) ? 'rgba(0,135,61,0.35)' : '#d5e2f0'};" onclick="openBindTenantToMapModal('${t.id}')" title="Привязать этот кабинет к точке на карте">
-                            <i data-lucide="map-pin" style="width:13px;height:13px;"></i> ${(t.catalogId || t.customLat) ? 'На карте ✓' : 'На карту'}
+                        <button class="btn-link" style="background:${(t.catalogId || t.customLat) ? '#e7f6ed' : '#f0f4f9'}; color:${(t.catalogId || t.customLat) ? '#00873d' : '#0c192c'}; border:1px solid ${(t.catalogId || t.customLat) ? 'rgba(0,135,61,0.35)' : '#d5e2f0'};" onclick="openBindTenantToMapModal('${esc(t.id)}')" title="Привязать Email и точку на карте">
+                            <i data-lucide="map-pin" style="width:13px;height:13px;"></i> ${(t.catalogId || t.customLat) ? 'Карта ✓ / Email' : 'Карта / Email'}
                         </button>
-                        <button class="btn-block" style="background:#f0f4f9; color:#0c192c; border-color:#d5e2f0;" onclick="openTenantSettings('${t.id}')"><i data-lucide="settings" style="width:14px;height:14px;"></i></button>
-                        <button class="btn-block" onclick="deleteTenant('${t.id}')"><i data-lucide="trash-2" style="width:13px;height:13px;"></i> Забрать доступ</button>
+                        <button class="btn-block" style="background:#f0f4f9; color:#0c192c; border-color:#d5e2f0;" onclick="openTenantSettings('${esc(t.id)}')"><i data-lucide="settings" style="width:14px;height:14px;"></i></button>
+                        <button class="btn-block" onclick="deleteTenant('${esc(t.id)}')"><i data-lucide="trash-2" style="width:13px;height:13px;"></i> Забрать доступ</button>
                     </td>
                 </tr>`;
             });
@@ -610,6 +692,10 @@
 
         async function addTenant() {
             const role = document.getElementById('t_role') ? document.getElementById('t_role').value : 'owner';
+            const ownerEmailRaw = (document.getElementById('t_owner_email')?.value || '').trim();
+            const ownerEmail = ownerEmailRaw
+                ? (window.appDB ? window.appDB.normalizeEmail(ownerEmailRaw) : ownerEmailRaw.toLowerCase())
+                : '';
             const email = document.getElementById('t_email').value.trim();
             const pin = document.getElementById('t_pin').value.trim().replace(/\D/g, '');
             const id = document.getElementById('t_id').value.trim().replace(/\D/g, '');
@@ -619,6 +705,7 @@
             const customLon = parseFloat(document.getElementById('t_custom_lon')?.value || '');
 
             if (!name) return alert('Укажите название барбершопа или имя мастера!');
+            if (ownerEmail && !ownerEmail.includes('@')) return alert('Введите корректный Email для входа (например: name@gmail.com)!');
             if (!/^\d+$/.test(id)) return alert('Цифровой ID должен состоять ТОЛЬКО из цифр (например: 1001)!');
             if (!/^\d{4}$/.test(pin)) return alert('PIN-пароль должен состоять ровно из 4 цифр (например: 4829)!');
             if (!saBindTargetTenantId && tenants.find(t => String(t.id) === String(id))) {
@@ -629,9 +716,14 @@
             const resolvedCatalogId = catalogId || ((!isNaN(customLat) && !isNaN(customLon)) ? String(id) : (existingTarget ? (existingTarget.catalogId || '') : ''));
 
             if (existingTarget) {
+                const prevOwnerEmail = window.appDB ? window.appDB.normalizeEmail(existingTarget.ownerEmail) : String(existingTarget.ownerEmail || '').trim().toLowerCase();
                 existingTarget.pin = String(pin);
                 existingTarget.shopName = name;
-                existingTarget.email = email || existingTarget.email || '—';
+                existingTarget.email = email || ownerEmail || existingTarget.email || '—';
+                existingTarget.ownerEmail = ownerEmail;
+                if (ownerEmail !== prevOwnerEmail) {
+                    existingTarget.ownerUid = '';
+                }
                 existingTarget.catalogId = resolvedCatalogId;
                 if (!isNaN(customLat) && !isNaN(customLon)) {
                     existingTarget.customLat = customLat;
@@ -643,7 +735,9 @@
                     pin: String(pin),
                     role: role,
                     shopName: name,
-                    email: email || '—',
+                    ownerEmail: ownerEmail,
+                    ownerUid: '',
+                    email: email || ownerEmail || '—',
                     catalogId: resolvedCatalogId,
                     createdAt: new Date().toLocaleDateString('ru-RU')
                 };
@@ -720,6 +814,8 @@
             if (typeof window.renderSABarberList === 'function') window.renderSABarberList();
             if (typeof window.renderSAMarkers === 'function') window.renderSAMarkers(false);
             
+            const ownerEmailClearEl = document.getElementById('t_owner_email');
+            if (ownerEmailClearEl) ownerEmailClearEl.value = '';
             document.getElementById('t_email').value = '';
             document.getElementById('t_pin').value = '';
             document.getElementById('t_id').value = '';
@@ -795,20 +891,27 @@
             }, 2000);
         }
 
-        // ═══ ACCESS REQUESTS ("Попросить доступ у Админа") ═══
+        // ═══ ACCESS REQUESTS ("Попросить доступ / Регистрация у Админа") ═══
         let accessRequests = [];
+        let _saRequestsUnsub = null;
 
         async function loadAndRenderAccessRequests() {
+            let loaded = [];
             try {
-                accessRequests = window.appDB && window.appDB.getAccessRequests
+                loaded = window.appDB && window.appDB.getAccessRequests
                     ? await window.appDB.getAccessRequests()
                     : JSON.parse(localStorage.getItem('global_access_requests') || '[]');
             } catch (e) {
-                accessRequests = [];
+                loaded = [];
             }
-            if (!Array.isArray(accessRequests)) accessRequests = [];
+            renderAccessRequestsList(loaded);
+        }
 
-            const pendingCount = accessRequests.filter(r => r.status === 'pending').length;
+        function renderAccessRequestsList(listInput) {
+            accessRequests = Array.isArray(listInput) ? listInput : [];
+            const esc = (s) => window.escapeHTML ? window.escapeHTML(String(s || '')) : String(s || '');
+
+            const pendingCount = accessRequests.filter(r => !r.status || r.status === 'pending').length;
             const badge = document.getElementById('sa-req-badge');
             const banner = document.getElementById('sa-pending-requests-banner');
             const bannerTitle = document.getElementById('sa-pending-banner-title');
@@ -820,7 +923,7 @@
             if (banner) {
                 banner.style.display = pendingCount > 0 ? 'flex' : 'none';
                 if (bannerTitle) {
-                    bannerTitle.textContent = `🔔 Новые заявки на получение ID и пароля (${pendingCount})!`;
+                    bannerTitle.textContent = `🔔 Новые заявки на регистрацию и одобрение (${pendingCount})!`;
                 }
             }
 
@@ -830,20 +933,24 @@
             if (accessRequests.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:50px 20px; color:var(--text-muted);">
                     Пока нет новых заявок на доступ.<br>
-                    <span style="font-size:0.85rem;">Когда владелец салона или мастер нажмёт «Попросить доступ у Админа» в окне входа, заявка появится здесь.</span>
+                    <span style="font-size:0.85rem;">Когда владелец салона или мастер регистрируется и запрашивает одобрение, заявка сразу появляется здесь.</span>
                 </td></tr>`;
                 return;
             }
 
             tbody.innerHTML = accessRequests.map(r => {
                 const isMaster = r.role === 'master';
+                const isPending = !r.status || r.status === 'pending';
                 const roleBadge = isMaster
                     ? `<span class="badge-status" style="background:#f0f4f9; color:#0c192c; border:1px solid #d5e2f0;">✂️ Мастер</span>`
                     : `<span class="badge-status on" style="background:#fbf0f2; color:#7a1c2d; border:1px solid #f0cdd3;">💈 Салон</span>`;
 
-                const statusHtml = r.status === 'approved'
-                    ? `<div style="font-weight:800; color:#00873d; font-size:0.85rem;">✅ Одобрено<br><span style="font-family:monospace; color:#0c192c;">ID: ${r.issuedId} • PIN: ${r.issuedPin}</span></div>`
-                    : `<span style="background:#fff4e6; color:#b86b14; padding:4px 10px; border-radius:999px; font-size:0.78rem; font-weight:800;">⏳ Ждёт вашего решения</span>`;
+                let statusHtml = `<span style="background:#fff4e6; color:#b86b14; padding:4px 10px; border-radius:999px; font-size:0.78rem; font-weight:800;">⏳ Ждёт вашего решения</span>`;
+                if (r.status === 'approved') {
+                    statusHtml = `<div style="font-weight:800; color:#00873d; font-size:0.85rem;">✅ Одобрено<br><span style="font-family:monospace; color:#0c192c;">ID: ${esc(r.issuedId)} • PIN: ${esc(r.issuedPin)}</span></div>`;
+                } else if (r.status === 'rejected') {
+                    statusHtml = `<span style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; padding:4px 10px; border-radius:999px; font-size:0.78rem; font-weight:800;">❌ Отклонено</span>`;
+                }
 
                 let cleanPhone = (r.phone || '').replace(/\D/g, '');
                 if (cleanPhone.startsWith('0') && cleanPhone.length === 10) cleanPhone = '996' + cleanPhone.slice(1);
@@ -851,34 +958,41 @@
                 else if (cleanPhone.length === 9) cleanPhone = '996' + cleanPhone;
                 const baseUrl = window.location.origin + window.location.pathname.replace('super_admin.html', '') + 'app.html';
                 const waMsg = encodeURIComponent(
-                    `✂️ BarberMap KG — Ваш доступ открыт!\n🏢 ${r.name}\n\n🔢 Ваш цифровой ID: ${r.issuedId || ''}\n🔑 Ваш 4-значный пароль: ${r.issuedPin || ''}\n🌐 Вход в кабинет: ${baseUrl}`
+                    `✂️ BarberMap KG — Ваш доступ одобрен!\n🏢 ${r.name || ''}\n` +
+                    (r.email ? `\n📧 Вход по Email: ${r.email}\n` : '') +
+                    `\n🔢 Цифровой ID: ${r.issuedId || ''}\n🔑 PIN: ${r.issuedPin || ''}\n🌐 Вход в кабинет: ${baseUrl}`
                 );
 
                 const instaHandleClean = (r.shopInsta || '').replace(/^@/, '');
                 const instaHtml = instaHandleClean
-                    ? `<div style="margin-top:3px;"><a href="https://instagram.com/${instaHandleClean}" target="_blank" rel="noopener" style="font-size:0.78rem; color:#bc1888; font-weight:700; text-decoration:none;">📸 @${instaHandleClean}</a></div>`
+                    ? `<div style="margin-top:3px;"><a href="https://instagram.com/${encodeURIComponent(instaHandleClean)}" target="_blank" rel="noopener" style="font-size:0.78rem; color:#bc1888; font-weight:700; text-decoration:none;">📸 @${esc(instaHandleClean)}</a></div>`
+                    : '';
+
+                const emailHtml = r.email
+                    ? `<div style="font-weight:800; color:#065f46; font-size:0.82rem; margin-bottom:2px;">📧 ${esc(r.email)} ${r.authUid ? '<span style="font-size:0.72rem;background:#d1fae5;padding:1px 6px;border-radius:999px;">Аккаунт ✓</span>' : ''}</div>`
                     : '';
 
                 return `<tr>
                     <td>
-                        <div style="font-weight:800; color:#0c192c;">${r.name || '—'}</div>
+                        <div style="font-weight:800; color:#0c192c;">${esc(r.name || '—')}</div>
                         ${instaHtml}
                     </td>
                     <td>${roleBadge}</td>
-                    <td style="font-weight:700;">${r.phone || '—'}</td>
-                    <td style="color:var(--text-muted); font-size:0.84rem;">${r.address || 'Бишкек'}${r.catalogId ? ' <span style="color:#00873d;font-weight:700;">(📍 С карты)</span>' : ''}</td>
-                    <td style="color:var(--text-muted); font-size:0.82rem;">${r.createdAt || '—'}</td>
+                    <td>${emailHtml}<div style="font-weight:700; font-size:0.84rem;">${esc(r.phone || '—')}</div></td>
+                    <td style="color:var(--text-muted); font-size:0.84rem;">${esc(r.address || 'Бишкек')}${r.catalogId ? ' <span style="color:#00873d;font-weight:700;">(📍 С карты)</span>' : ''}</td>
+                    <td style="color:var(--text-muted); font-size:0.82rem;">${esc(r.createdAt || '—')}</td>
                     <td>${statusHtml}</td>
                     <td style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
-                        ${r.status === 'pending'
-                            ? `<button class="btn-link" style="background:#00873d; color:#fff;" onclick="approveAccessRequest('${r.reqId}')">✅ Одобрить (Выдать ID+PIN)</button>`
+                        ${isPending
+                            ? `<button class="btn-link" style="background:#00873d; color:#fff;" onclick="approveAccessRequest('${esc(r.reqId)}')">✅ Одобрить</button>
+                               <button class="btn-block" style="background:#fef2f2; color:#b91c1c; border-color:#fecaca;" onclick="rejectAccessRequest('${esc(r.reqId)}')">❌ Отклонить</button>`
                             : `
-                                <button class="btn-link" onclick="copyCredentialsForClient('${r.issuedId}', '${r.issuedPin}', '${(r.name || '').replace(/'/g, '')}', '${isMaster ? 'master' : 'owner'}')" style="background:#f0f4f9; color:#0c192c; border:1px solid #d5e2f0;">📋 Скопировать</button>
+                                <button class="btn-link" onclick="copyCredentialsForClient('${esc(r.issuedId)}', '${esc(r.issuedPin)}', '${esc((r.name || '').replace(/'/g, ''))}', '${isMaster ? 'master' : 'owner'}')" style="background:#f0f4f9; color:#0c192c; border:1px solid #d5e2f0;">📋 Скопировать</button>
                                 <a class="btn-link" href="https://www.instagram.com/tu1anow/" target="_blank" rel="noopener" style="background:linear-gradient(45deg, #f09433, #dc2743, #bc1888); color:#fff; text-decoration:none;">📸 Direct @tu1anow</a>
                                 ${cleanPhone ? `<a class="btn-link" href="https://wa.me/${cleanPhone}?text=${waMsg}" target="_blank" rel="noopener" style="background:#00873d; color:#fff; text-decoration:none;">💬 WhatsApp</a>` : ''}
                               `
                         }
-                        <button class="btn-block" onclick="deleteAccessRequest('${r.reqId}')" title="Удалить заявку">🗑</button>
+                        <button class="btn-block" onclick="deleteAccessRequest('${esc(r.reqId)}')" title="Удалить заявку">🗑</button>
                     </td>
                 </tr>`;
             }).join('');
@@ -887,28 +1001,52 @@
 
         async function approveAccessRequest(reqId) {
             const req = accessRequests.find(r => r.reqId === reqId);
-            if (!req) return;
+            if (!req || req.status === 'approved') return;
 
             const isMaster = req.role === 'master';
-            const prefixStart = isMaster ? 2001 : 1001;
-            let nextId = prefixStart;
-            const existingIds = new Set(tenants.map(t => String(t.id)));
-            while (existingIds.has(String(nextId))) {
-                nextId++;
+            const reqEmail = req.email
+                ? (window.appDB ? window.appDB.normalizeEmail(req.email) : String(req.email).trim().toLowerCase())
+                : '';
+            const reqUid = String(req.authUid || '').trim();
+
+            // Reuse existing tenant if this same authUid or email+role was already bound before
+            let targetTenant = tenants.find(t =>
+                ((t.role || 'owner') === (isMaster ? 'master' : 'owner')) &&
+                ((reqUid && String(t.ownerUid || '').trim() === reqUid) ||
+                 (reqEmail && (window.appDB ? window.appDB.normalizeEmail(t.ownerEmail) : String(t.ownerEmail || '').toLowerCase()) === reqEmail))
+            );
+
+            let nextId, generatedPin;
+            if (targetTenant) {
+                nextId = targetTenant.id;
+                generatedPin = targetTenant.pin || String(Math.floor(1000 + Math.random() * 9000));
+                if (reqEmail) targetTenant.ownerEmail = reqEmail;
+                if (reqUid) targetTenant.ownerUid = reqUid;
+                if (req.catalogId && !targetTenant.catalogId) targetTenant.catalogId = req.catalogId;
+            } else {
+                const prefixStart = isMaster ? 2001 : 1001;
+                nextId = prefixStart;
+                const existingIds = new Set(tenants.map(t => String(t.id)));
+                while (existingIds.has(String(nextId))) {
+                    nextId++;
+                }
+                generatedPin = String(Math.floor(1000 + Math.random() * 9000));
+
+                targetTenant = {
+                    id: String(nextId),
+                    pin: generatedPin,
+                    role: isMaster ? 'master' : 'owner',
+                    shopName: req.name,
+                    ownerEmail: reqEmail,
+                    ownerUid: reqUid,
+                    email: reqEmail || req.phone || '—',
+                    phone: req.phone || '',
+                    catalogId: req.catalogId || '',
+                    createdAt: new Date().toLocaleDateString('ru-RU')
+                };
+                tenants.push(targetTenant);
             }
-            const generatedPin = String(Math.floor(1000 + Math.random() * 9000));
 
-            const newT = {
-                id: String(nextId),
-                pin: generatedPin,
-                role: isMaster ? 'master' : 'owner',
-                shopName: req.name,
-                email: req.phone || '—',
-                catalogId: req.catalogId || '',
-                createdAt: new Date().toLocaleDateString('ru-RU')
-            };
-
-            tenants.push(newT);
             window.tenants = tenants;
             if (window.appDB) await window.appDB.saveGlobalTenants(tenants);
 
@@ -916,7 +1054,7 @@
             try {
                 const cur = JSON.parse(localStorage.getItem(sKey) || '{}');
                 cur.shopName = req.name;
-                cur.phone = req.phone || '';
+                cur.phone = req.phone || cur.phone || '';
                 if (isMaster) {
                     cur.soloMode = true;
                     cur.soloMasterName = req.name;
@@ -937,6 +1075,7 @@
             } catch (e) {}
 
             req.status = 'approved';
+            req.approvedAt = new Date().toISOString();
             req.issuedId = String(nextId);
             req.issuedPin = generatedPin;
 
@@ -948,9 +1087,23 @@
 
             renderStats();
             renderTenants();
-            await loadAndRenderAccessRequests();
+            renderAccessRequestsList(accessRequests);
 
             copyCredentialsForClient(String(nextId), generatedPin, req.name, isMaster ? 'master' : 'owner');
+        }
+
+        async function rejectAccessRequest(reqId) {
+            const req = accessRequests.find(r => r.reqId === reqId);
+            if (!req) return;
+            if (!confirm(`Отклонить заявку от «${req.name || req.email || req.phone}»?`)) return;
+            req.status = 'rejected';
+            req.rejectedAt = new Date().toISOString();
+            if (window.appDB && window.appDB.saveAccessRequests) {
+                await window.appDB.saveAccessRequests(accessRequests);
+            } else {
+                localStorage.setItem('global_access_requests', JSON.stringify(accessRequests));
+            }
+            renderAccessRequestsList(accessRequests);
         }
 
         async function deleteAccessRequest(reqId) {
@@ -960,7 +1113,7 @@
             } else {
                 localStorage.setItem('global_access_requests', JSON.stringify(accessRequests));
             }
-            await loadAndRenderAccessRequests();
+            renderAccessRequestsList(accessRequests);
         }
 
         // ═══ TENANT SETTINGS ═══

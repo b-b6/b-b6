@@ -744,6 +744,127 @@
                 }
                 new Notification(safeTitle, notifOpts);
             } catch (e) {}
+        },
+
+        /**
+         * Shared Stage-1 Partner Email Binding Banner & Modal for legacy PIN-only tenants.
+         * Used on admin.html (owner) and barber.html (master) without duplicating markup/logic.
+         */
+        mountPartnerEmailBindBanner(opts) {
+            const cfg = opts || {};
+            const tenant = cfg.tenantRecord;
+            if (!tenant || !tenant.id) return null;
+            const boundEmail = window.appDB && window.appDB.normalizeEmail
+                ? window.appDB.normalizeEmail(tenant.ownerEmail)
+                : String(tenant.ownerEmail || '').trim().toLowerCase();
+            if (boundEmail && boundEmail.includes('@')) return null;
+
+            const existingBanner = document.getElementById('partner-bind-email-banner');
+            if (existingBanner) existingBanner.remove();
+
+            const esc = (s) => window.escapeHTML ? window.escapeHTML(String(s || '')) : String(s || '');
+            const shopLabel = esc(tenant.shopName || ((cfg.role === 'master') ? `Мастер #${tenant.id}` : `Салон #${tenant.id}`));
+
+            const banner = document.createElement('div');
+            banner.id = 'partner-bind-email-banner';
+            banner.style.cssText = 'background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%);border:1.5px solid #f59e0b;border-radius:16px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;box-shadow:0 4px 14px rgba(245,158,11,0.12);';
+            banner.innerHTML = `
+                <div style="display:flex;align-items:center;gap:12px;min-width:230px;flex:1;">
+                    <div style="width:40px;height:40px;border-radius:12px;background:#fef08a;color:#92400e;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🔐</div>
+                    <div>
+                        <div style="font-size:13.5px;font-weight:800;color:#78350f;margin-bottom:2px;">Привяжите Email и пароль к «${shopLabel}»</div>
+                        <div style="font-size:12px;color:#92400e;line-height:1.35;">Скоро вход по старому 4-значному PIN будет закрыт. Привяжите Gmail за 10 секунд, чтобы защитить свой кабинет.</div>
+                    </div>
+                </div>
+                <button type="button" id="partner-bind-email-open-btn" style="background:#0c192c;color:#ffffff;border:none;border-radius:11px;padding:10px 16px;font-size:12.5px;font-weight:800;cursor:pointer;white-space:nowrap;box-shadow:0 4px 10px rgba(12,25,44,0.18);">
+                    Привязать Email →
+                </button>
+            `;
+
+            const beforeEl = cfg.insertBeforeSelector ? document.querySelector(cfg.insertBeforeSelector) : null;
+            const hostEl = cfg.mountTargetSelector ? document.querySelector(cfg.mountTargetSelector) : null;
+            if (beforeEl && beforeEl.parentNode) {
+                beforeEl.parentNode.insertBefore(banner, beforeEl);
+            } else if (hostEl) {
+                hostEl.prepend(banner);
+            } else {
+                document.body.prepend(banner);
+            }
+
+            let modal = document.getElementById('partner-bind-email-modal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'partner-bind-email-modal';
+                modal.style.cssText = 'position:fixed;inset:0;background:rgba(12,25,44,0.68);backdrop-filter:blur(4px);z-index:10050;display:none;align-items:center;justify-content:center;padding:16px;';
+                modal.innerHTML = `
+                    <div style="background:#ffffff;border-radius:20px;max-width:420px;width:100%;padding:24px;box-shadow:0 20px 50px rgba(12,25,44,0.28);position:relative;">
+                        <button type="button" id="pb-close-btn" aria-label="Закрыть" style="position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:999px;border:1px solid #e2e8f0;background:#f8fafc;color:#475569;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+                        <div style="width:46px;height:46px;border-radius:14px;background:#fef3c7;color:#92400e;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:12px;">🔐</div>
+                        <h3 style="margin:0 0 6px;font-size:18px;font-weight:800;color:#0c192c;">Защита кабинета по Email</h3>
+                        <p style="margin:0 0 14px;font-size:13px;color:#475569;line-height:1.45;">Укажите ваш рабочий <b>Gmail</b> и придумайте пароль (минимум 6 символов). Сразу после сохранения вы сможете входить по ним.</p>
+                        <label style="display:block;font-size:12px;font-weight:700;color:#334155;margin-bottom:4px;">Ваш Email (Gmail)</label>
+                        <input type="email" id="pb-email-input" placeholder="barber@gmail.com" autocomplete="email" style="width:100%;box-sizing:border-box;padding:11px 13px;border-radius:11px;border:1.5px solid #cbd5e1;font-size:14px;margin-bottom:10px;outline:none;">
+                        <label style="display:block;font-size:12px;font-weight:700;color:#334155;margin-bottom:4px;">Пароль (мин. 6 знаков)</label>
+                        <input type="password" id="pb-pass-input" placeholder="Минимум 6 символов" autocomplete="new-password" style="width:100%;box-sizing:border-box;padding:11px 13px;border-radius:11px;border:1.5px solid #cbd5e1;font-size:14px;margin-bottom:12px;outline:none;">
+                        <p id="pb-err" style="display:none;margin:0 0 10px;padding:9px 11px;border-radius:10px;background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;font-size:12.5px;font-weight:700;"></p>
+                        <button type="button" id="pb-submit-btn" style="width:100%;padding:12px 16px;border-radius:12px;border:none;background:#0c192c;color:#ffffff;font-size:14px;font-weight:800;cursor:pointer;">Сохранить и привязать Email</button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                const closeModal = () => { modal.style.display = 'none'; };
+                modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+                modal.querySelector('#pb-close-btn').addEventListener('click', closeModal);
+            }
+
+            const openBtn = banner.querySelector('#partner-bind-email-open-btn');
+            const emailEl = modal.querySelector('#pb-email-input');
+            const passEl = modal.querySelector('#pb-pass-input');
+            const errEl = modal.querySelector('#pb-err');
+            const submitBtn = modal.querySelector('#pb-submit-btn');
+
+            openBtn.addEventListener('click', () => {
+                errEl.style.display = 'none';
+                if (!emailEl.value && tenant.email && String(tenant.email).includes('@')) {
+                    emailEl.value = String(tenant.email).trim();
+                }
+                modal.style.display = 'flex';
+            });
+
+            submitBtn.onclick = async () => {
+                errEl.style.display = 'none';
+                const email = (emailEl.value || '').trim();
+                const pass = passEl.value || '';
+                if (!window.appDB || !window.appDB.registerOrSignInWithEmail) {
+                    errEl.textContent = 'Модуль авторизации ещё загружается. Повторите через 2 секунды.';
+                    errEl.style.display = 'block';
+                    return;
+                }
+                submitBtn.disabled = true;
+                const oldLabel = submitBtn.textContent;
+                submitBtn.textContent = '⏳ Привязываем Email...';
+                try {
+                    const { user } = await window.appDB.registerOrSignInWithEmail(email, pass);
+                    const updated = await window.appDB.bindEmailToTenant(tenant.id, user);
+                    await this.saveSession({
+                        role: cfg.role || tenant.role || 'owner',
+                        tenantId: String(tenant.id),
+                        shopName: updated.shopName || tenant.shopName || '',
+                        ownerEmail: updated.ownerEmail,
+                        ownerUid: updated.ownerUid
+                    });
+                    modal.style.display = 'none';
+                    banner.remove();
+                    if (typeof cfg.onBound === 'function') cfg.onBound(updated);
+                    alert(`✅ Email ${updated.ownerEmail} привязан к кабинету #${tenant.id}!\n\nТеперь вы можете входить по Email и паролю с любого устройства.`);
+                } catch (err) {
+                    errEl.textContent = (err && err.message) ? err.message : 'Не удалось привязать Email.';
+                    errEl.style.display = 'block';
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = oldLabel;
+                }
+            };
+            return banner;
         }
     };
 

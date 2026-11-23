@@ -69,11 +69,30 @@ window.addEventListener('DOMContentLoaded', async () => {
         ];
     }
 
-    const masterRecord = tenants.find(t => String(t.id) === tenantId && t.role === 'master');
+    const authUser = (window.appDB && window.appDB.getCurrentAuthUser)
+        ? await window.appDB.getCurrentAuthUser(1800)
+        : null;
+
+    let masterRecord = tenants.find(t => String(t.id) === tenantId && t.role === 'master');
+    if (!masterRecord && authUser && window.appDB && window.appDB.resolvePartnerTenant) {
+        const resolvedMaster = window.appDB.resolvePartnerTenant(authUser, tenants, 'master', tenantId);
+        if (resolvedMaster && String(resolvedMaster.id) !== tenantId) {
+            window.location.replace(`barber.html?id=${encodeURIComponent(resolvedMaster.id)}`);
+            return;
+        }
+        masterRecord = resolvedMaster;
+    }
+
+    const matchedMasterAuth = Boolean(
+        authUser && masterRecord && window.appDB && window.appDB.matchTenantOwner &&
+        window.appDB.matchTenantOwner(masterRecord, authUser)
+    );
+
     const isAuthedForThisMaster = Boolean(
         masterRecord &&
         /^\d+$/.test(tenantId) &&
         (
+            matchedMasterAuth ||
             (sessionStorage.getItem('barberSoloAuth') === 'true' && sessionStorage.getItem('barberSoloAuthTenantId') === tenantId) ||
             (savedSession && savedSession.role === 'master' && String(savedSession.tenantId) === tenantId)
         )
@@ -88,6 +107,17 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     sessionStorage.setItem('barberSoloAuth', 'true');
     sessionStorage.setItem('barberSoloAuthTenantId', tenantId);
+    if (matchedMasterAuth && authUser && !masterRecord.ownerUid && authUser.uid && window.appDB.bindEmailToTenant) {
+        try { masterRecord = await window.appDB.bindEmailToTenant(masterRecord.id, authUser); } catch (_) {}
+    }
+
+    if (window.BarberMobileBridge && window.BarberMobileBridge.mountPartnerEmailBindBanner) {
+        window.BarberMobileBridge.mountPartnerEmailBindBanner({
+            tenantRecord: masterRecord,
+            role: 'master',
+            mountTargetSelector: 'main.container'
+        });
+    }
 
     const badge = document.getElementById('master-tenant-badge');
     if (badge) badge.textContent = `ID: ${tenantId}`;
@@ -983,9 +1013,14 @@ window.switchSoloTab = function (tabId, btnEl) {
     }
 };
 
-window.logoutMasterSession = function () {
+window.logoutMasterSession = async function () {
+    sessionStorage.removeItem('barberSoloAuth');
+    sessionStorage.removeItem('barberSoloAuthTenantId');
+    if (window.appDB && window.appDB.signOutAuth) {
+        try { await window.appDB.signOutAuth(); } catch (_) {}
+    }
     if (window.BarberMobileBridge) {
-        window.BarberMobileBridge.logout();
+        await window.BarberMobileBridge.logout();
     } else {
         window.location.href = 'app.html?switch_role=1';
     }

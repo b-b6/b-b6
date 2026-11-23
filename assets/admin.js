@@ -205,6 +205,9 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             const urlParams = new URLSearchParams(window.location.search);
             const urlTenantId = urlParams.get('id') || urlParams.get('shop');
             const savedSession = window.BarberMobileBridge ? window.BarberMobileBridge.getSession() : null;
+            const authUser = (window.appDB && window.appDB.getCurrentAuthUser)
+                ? await window.appDB.getCurrentAuthUser(1800)
+                : null;
 
             if (urlTenantId) {
                 localStorage.setItem('tenant_id', urlTenantId);
@@ -214,16 +217,31 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                 window.appDB.tenantId = savedSession.tenantId;
             }
 
-            const activeTenantId = String(window.appDB.tenantId || '');
+            let activeTenantId = String(window.appDB.tenantId || '');
             const tenants = await getVerifiedGlobalTenants();
-            const tenantRecord = tenants.find(t => String(t.id) === activeTenantId && (t.role || 'owner') === 'owner');
+            let tenantRecord = tenants.find(t => String(t.id) === activeTenantId && (t.role || 'owner') === 'owner');
 
-            // STRICT TENANT ISOLATION:
-            // Must exist in Super Admin's issued tenants list AND be authenticated specifically for this exact numeric ID!
+            if (!tenantRecord && authUser && window.appDB && window.appDB.resolvePartnerTenant) {
+                const resolvedByEmail = window.appDB.resolvePartnerTenant(authUser, tenants, 'owner', urlTenantId);
+                if (resolvedByEmail) {
+                    tenantRecord = resolvedByEmail;
+                    activeTenantId = String(resolvedByEmail.id);
+                    localStorage.setItem('tenant_id', activeTenantId);
+                    window.appDB.tenantId = activeTenantId;
+                }
+            }
+
+            const matchedByFirebaseAuth = Boolean(
+                authUser && tenantRecord && window.appDB && window.appDB.matchTenantOwner &&
+                window.appDB.matchTenantOwner(tenantRecord, authUser)
+            );
+
+            // STRICT TENANT ISOLATION (Stage 1 supports BOTH Firebase Email/UID & legacy PIN session):
             const isAuthedForThisTenant = Boolean(
                 tenantRecord &&
                 /^\d+$/.test(activeTenantId) &&
                 (
+                    matchedByFirebaseAuth ||
                     (sessionStorage.getItem('adminAuth') === 'true' && sessionStorage.getItem('adminAuthTenantId') === activeTenantId) ||
                     (savedSession && savedSession.role === 'owner' && String(savedSession.tenantId) === activeTenantId)
                 )
@@ -242,11 +260,27 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
                     const emIn = document.getElementById('email-input');
                     if (emIn && !emIn.value) emIn.value = urlTenantId;
                 }
+                const savedEmail = localStorage.getItem('last_partner_email') || '';
+                const emailLoginIn = document.getElementById('admin-email-login-input');
+                if (emailLoginIn && savedEmail && !emailLoginIn.value) emailLoginIn.value = savedEmail;
+                if (tenantRecord && (!tenantRecord.ownerEmail || !String(tenantRecord.ownerEmail).includes('@'))) {
+                    switchAdminOverlayMode('pin');
+                }
                 return;
             } else {
                 sessionStorage.setItem('adminAuth', 'true');
                 sessionStorage.setItem('adminAuthTenantId', activeTenantId);
+                if (matchedByFirebaseAuth && authUser && !tenantRecord.ownerUid && authUser.uid && window.appDB.bindEmailToTenant) {
+                    try { tenantRecord = await window.appDB.bindEmailToTenant(tenantRecord.id, authUser); } catch (_) {}
+                }
                 document.getElementById('auth-overlay').style.display = 'none';
+                if (window.BarberMobileBridge && window.BarberMobileBridge.mountPartnerEmailBindBanner) {
+                    window.BarberMobileBridge.mountPartnerEmailBindBanner({
+                        tenantRecord: tenantRecord,
+                        role: 'owner',
+                        mountTargetSelector: 'main.admin-container'
+                    });
+                }
                 let set = await window.appDB.getSettings();
                 Object.assign(store.settings, set);
                 if (window.BarberCurrency) {
@@ -288,6 +322,85 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             fetchAndRender();
         }
 
+        function switchAdminOverlayMode(mode) {
+            const isPin = mode === 'pin';
+            const emailPane = document.getElementById('admin-email-pane');
+            const pinPane = document.getElementById('admin-pin-pane');
+            const tabEmail = document.getElementById('admin-tab-email');
+            const tabPin = document.getElementById('admin-tab-pin');
+            const errEl = document.getElementById('pin-error');
+            if (emailPane) emailPane.style.display = isPin ? 'none' : 'block';
+            if (pinPane) pinPane.style.display = isPin ? 'block' : 'none';
+            if (tabEmail) {
+                tabEmail.style.background = isPin ? 'transparent' : '#0c192c';
+                tabEmail.style.color = isPin ? '#475569' : '#ffffff';
+                tabEmail.style.fontWeight = isPin ? '700' : '800';
+            }
+            if (tabPin) {
+                tabPin.style.background = isPin ? '#0c192c' : 'transparent';
+                tabPin.style.color = isPin ? '#ffffff' : '#475569';
+                tabPin.style.fontWeight = isPin ? '800' : '700';
+            }
+            if (errEl) errEl.style.display = 'none';
+        }
+
+        async function completeAdminOverlayLogin(t, user) {
+            localStorage.setItem('tenant_id', t.id);
+            sessionStorage.setItem('adminAuth', 'true');
+            sessionStorage.setItem('adminAuthTenantId', String(t.id));
+            if (user && user.email) localStorage.setItem('last_partner_email', user.email);
+            if (window.BarberMobileBridge) {
+                await window.BarberMobileBridge.saveSession({
+                    role: 'owner',
+                    tenantId: String(t.id),
+                    shopName: t.shopName || `Салон #${t.id}`,
+                    ownerEmail: (user && user.email) || t.ownerEmail || '',
+                    ownerUid: (user && user.uid) || t.ownerUid || ''
+                });
+            }
+            window.location.href = `admin.html?id=${encodeURIComponent(t.id)}`;
+        }
+
+        async function checkAdminEmailLogin() {
+            const email = (document.getElementById('admin-email-login-input')?.value || '').trim();
+            const pass = document.getElementById('admin-pass-login-input')?.value || '';
+            const errEl = document.getElementById('pin-error');
+            const btn = document.getElementById('admin-email-login-btn');
+            if (errEl) errEl.style.display = 'none';
+            if (!email || !email.includes('@') || !pass) {
+                if (errEl) {
+                    errEl.textContent = 'Введите привязанный Gmail и пароль!';
+                    errEl.style.display = 'block';
+                }
+                return;
+            }
+            if (btn) { btn.disabled = true; btn.textContent = '⏳ Проверяем...'; }
+            try {
+                const user = await window.appDB.signInWithEmail(email, pass);
+                const tenants = await getVerifiedGlobalTenants();
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlTid = urlParams.get('id') || urlParams.get('shop');
+                let matched = window.appDB.resolvePartnerTenant(user, tenants, 'owner', urlTid);
+                if (!matched && window.appDB.isSuperAdminEmail(user.email) && urlTid) {
+                    matched = tenants.find(x => String(x.id) === String(urlTid) && (x.role || 'owner') === 'owner');
+                }
+                if (!matched) {
+                    throw new Error('К этому Email ещё не привязан кабинет салона (или заявка ждёт одобрения админа).');
+                }
+                if (!matched.ownerUid && user.uid && window.appDB.bindEmailToTenant && !window.appDB.isSuperAdminEmail(user.email)) {
+                    try { matched = await window.appDB.bindEmailToTenant(matched.id, user); } catch (_) {}
+                }
+                await completeAdminOverlayLogin(matched, user);
+            } catch (e) {
+                if (errEl) {
+                    errEl.textContent = (e && e.message) || 'Неверный Email или пароль.';
+                    errEl.style.display = 'block';
+                }
+            } finally {
+                if (btn) { btn.disabled = false; btn.textContent = 'Войти по Email →'; }
+            }
+        }
+
         async function checkPin() {
             const rawId = document.getElementById('email-input').value.replace(/\D/g, '').trim();
             const pin = document.getElementById('pin-input').value.replace(/\D/g, '').trim();
@@ -307,17 +420,7 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
             );
 
             if (t) {
-                localStorage.setItem('tenant_id', t.id);
-                sessionStorage.setItem('adminAuth', 'true');
-                sessionStorage.setItem('adminAuthTenantId', String(t.id));
-                if (window.BarberMobileBridge) {
-                    await window.BarberMobileBridge.saveSession({
-                        role: 'owner',
-                        tenantId: String(t.id),
-                        shopName: t.shopName || `Салон #${t.id}`
-                    });
-                }
-                window.location.href = `admin.html?id=${encodeURIComponent(t.id)}`;
+                await completeAdminOverlayLogin(t, null);
             } else {
                 errEl.textContent = 'Доступ запрещён: неверный цифровой ID или 4-значный пароль. Обратитесь к главному администратору.';
                 errEl.style.display = 'block';
@@ -850,6 +953,10 @@ const DB_DISABLED_DATES = 'barber_disabled_dates';
 
         window.logoutOwnerAccount = async function () {
             sessionStorage.removeItem('adminAuth');
+            sessionStorage.removeItem('adminAuthTenantId');
+            if (window.appDB && window.appDB.signOutAuth) {
+                try { await window.appDB.signOutAuth(); } catch (_) {}
+            }
             if (window.BarberMobileBridge) {
                 await window.BarberMobileBridge.logout();
             } else {

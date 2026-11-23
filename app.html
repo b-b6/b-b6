@@ -12,8 +12,8 @@
     <title>BarberMap KG — Выбор роли</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="assets/db.js?v=9"></script>
-    <script src="assets/mobile-bridge.js?v=9"></script>
+    <script src="assets/db.js?v=15"></script>
+    <script src="assets/mobile-bridge.js?v=18"></script>
     <script src="barbershops_kg.js" defer></script>
     <script src="barbershops_uz.js" defer></script>
     <script src="barbershops_kz.js" defer></script>
@@ -543,7 +543,7 @@
         <div class="gps-status-toast" id="gps-toast"></div>
     </div>
 
-    <!-- ══════════ MODAL 1: ВХОД ВЛАДЕЛЬЦА САЛОНА (СТРОГО ПО ЦИФРОВОМУ ID И 4-ЗНАЧНОМУ PIN) ══════════ -->
+    <!-- ══════════ MODAL 1: ВХОД ВЛАДЕЛЬЦА САЛОНА (EMAIL + ПАРОЛЬ ИЛИ ID + PIN) ══════════ -->
     <div class="modal-overlay" id="owner-modal">
         <div class="modal-box">
             <div class="modal-top">
@@ -551,8 +551,46 @@
                 <button type="button" class="close-btn" onclick="closeRoleModals()"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
             </div>
 
-            <!-- Блок входа по выданным ID и PIN -->
-            <div id="owner-login-view">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f1f5f9; padding:4px; border-radius:12px; margin-bottom:14px;">
+                <button type="button" id="owner-tab-email" onclick="switchPartnerLoginMode('owner','email')" style="border:none; border-radius:9px; padding:9px 8px; font-size:12.5px; font-weight:800; cursor:pointer; background:#0c192c; color:#ffffff;">📧 Email и пароль</button>
+                <button type="button" id="owner-tab-pin" onclick="switchPartnerLoginMode('owner','pin')" style="border:none; border-radius:9px; padding:9px 8px; font-size:12.5px; font-weight:700; cursor:pointer; background:transparent; color:#475569;">🔑 ID и PIN (старый)</button>
+            </div>
+
+            <!-- Блок входа по Email и паролю -->
+            <div id="owner-email-pane">
+                <div style="background:var(--navy-soft); border:1px solid var(--navy-line); border-radius:14px; padding:10px 12px; margin-bottom:14px; font-size:12px; color:var(--navy); font-weight:600; line-height:1.45;">
+                    🔐 <b>Вход в кабинет салона:</b> введите ваш привязанный <b>Gmail</b> и пароль, или подайте заявку на регистрацию салона.
+                </div>
+
+                <div class="form-group">
+                    <label style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>1. Ваш Email (Gmail)</span>
+                        <button type="button" onclick="openRequestAccessModal('owner')" style="background:none; border:none; color:var(--burgundy); font-size:11.5px; font-weight:800; cursor:pointer; text-decoration:underline;">Регистрация →</button>
+                    </label>
+                    <input type="email" id="owner-email-input" class="inp" placeholder="salon@gmail.com" autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>2. Пароль</span>
+                        <button type="button" onclick="resetPartnerPassword('owner')" style="background:none; border:none; color:#475569; font-size:11.5px; font-weight:700; cursor:pointer; text-decoration:underline;">Забыли пароль?</button>
+                    </label>
+                    <input type="password" id="owner-pass-input" class="inp" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')submitPartnerEmailLogin('owner')">
+                </div>
+
+                <div id="owner-email-status" style="display:none; border-radius:14px; padding:12px; margin-bottom:12px; font-size:12.5px; line-height:1.45;"></div>
+
+                <button type="button" class="btn-gold" id="owner-email-login-btn" onclick="submitPartnerEmailLogin('owner')">
+                    <span>Войти в кабинет салона</span> <i data-lucide="arrow-right" style="width:18px;height:18px;"></i>
+                </button>
+
+                <button type="button" onclick="openRequestAccessModal('owner')" style="width:100%; margin-top:10px; padding:11px 14px; border-radius:14px; border:1.5px dashed var(--burgundy-line); background:var(--burgundy-soft); color:var(--burgundy); font-family:var(--font-sans); font-size:13px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+                    📝 Нет аккаунта? Зарегистрироваться и запросить одобрение
+                </button>
+            </div>
+
+            <!-- Блок старого входа по выданным ID и PIN -->
+            <div id="owner-pin-pane" style="display:none;">
                 <div style="background:var(--navy-soft); border:1px solid var(--navy-line); border-radius:14px; padding:10px 12px; margin-bottom:14px; font-size:12px; color:var(--navy); font-weight:600; line-height:1.45;" data-i18n="owner_lock_note">
                     🔒 <b>Закрытый доступ:</b> у каждого салона строго своя админка. Введите ваш <b>цифровой ID</b> и <b>4-значный пароль</b>, выданные главным администратором.
                 </div>
@@ -580,13 +618,13 @@
                 <button type="button" onclick="openRequestAccessModal('owner')" style="width:100%; margin-top:10px; padding:11px 14px; border-radius:14px; border:1.5px dashed var(--burgundy-line); background:var(--burgundy-soft); color:var(--burgundy); font-family:var(--font-sans); font-size:13px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;" data-i18n="no_creds_btn">
                     🔑 Нет ID и пароля? Попросить доступ у Админа
                 </button>
-
-                <div class="err-msg" id="owner-err" data-i18n="owner_err_msg">Неверный цифровой ID или 4-значный пароль</div>
             </div>
+
+            <div class="err-msg" id="owner-err" data-i18n="owner_err_msg">Неверный Email или пароль</div>
         </div>
     </div>
 
-    <!-- ══════════ MODAL 2: ВХОД СОЛО-МАСТЕРА (СТРОГО ПО ЦИФРОВОМУ ID И 4-ЗНАЧНОМУ PIN) ══════════ -->
+    <!-- ══════════ MODAL 2: ВХОД СОЛО-МАСТЕРА (EMAIL + ПАРОЛЬ ИЛИ ID + PIN) ══════════ -->
     <div class="modal-overlay" id="master-modal">
         <div class="modal-box">
             <div class="modal-top">
@@ -594,49 +632,90 @@
                 <button type="button" class="close-btn" onclick="closeRoleModals()"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
             </div>
 
-            <div style="background:var(--navy-soft); border:1px solid var(--navy-line); border-radius:14px; padding:10px 12px; margin-bottom:14px; font-size:12px; color:var(--navy); font-weight:600; line-height:1.45;" data-i18n="master_lock_note">
-                🔒 <b>Личный кабинет мастера:</b> доступ выдаётся только главным администратором. Введите ваш <b>цифровой ID</b> и <b>4-значный пароль</b>.
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f1f5f9; padding:4px; border-radius:12px; margin-bottom:14px;">
+                <button type="button" id="master-tab-email" onclick="switchPartnerLoginMode('master','email')" style="border:none; border-radius:9px; padding:9px 8px; font-size:12.5px; font-weight:800; cursor:pointer; background:#0c192c; color:#ffffff;">📧 Email и пароль</button>
+                <button type="button" id="master-tab-pin" onclick="switchPartnerLoginMode('master','pin')" style="border:none; border-radius:9px; padding:9px 8px; font-size:12.5px; font-weight:700; cursor:pointer; background:transparent; color:#475569;">🔑 ID и PIN (старый)</button>
             </div>
 
-            <div class="form-group">
-                <label style="display:flex; justify-content:space-between; align-items:center;">
-                    <span data-i18n="master_id_lbl">1. Цифровой ID мастера (только цифры)</span>
-                    <button type="button" onclick="openRequestAccessModal('master')" style="background:none; border:none; color:var(--burgundy); font-size:11.5px; font-weight:800; cursor:pointer; text-decoration:underline;" data-i18n="ask_admin_btn">Попросить у админа →</button>
-                </label>
-                <input type="text" id="solo-id-input" class="inp" inputmode="numeric" pattern="[0-9]*" placeholder="Например: 2001" oninput="this.value=this.value.replace(/\D/g,'')">
+            <!-- Блок входа по Email и паролю -->
+            <div id="master-email-pane">
+                <div style="background:var(--navy-soft); border:1px solid var(--navy-line); border-radius:14px; padding:10px 12px; margin-bottom:14px; font-size:12px; color:var(--navy); font-weight:600; line-height:1.45;">
+                    🔐 <b>Личный соло-кабинет:</b> войдите по привязанному <b>Gmail</b> и паролю, или зарегистрируйтесь и отправьте заявку на одобрение.
+                </div>
+
+                <div class="form-group">
+                    <label style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>1. Ваш Email (Gmail)</span>
+                        <button type="button" onclick="openRequestAccessModal('master')" style="background:none; border:none; color:var(--burgundy); font-size:11.5px; font-weight:800; cursor:pointer; text-decoration:underline;">Регистрация →</button>
+                    </label>
+                    <input type="email" id="master-email-input" class="inp" placeholder="barber@gmail.com" autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>2. Пароль</span>
+                        <button type="button" onclick="resetPartnerPassword('master')" style="background:none; border:none; color:#475569; font-size:11.5px; font-weight:700; cursor:pointer; text-decoration:underline;">Забыли пароль?</button>
+                    </label>
+                    <input type="password" id="master-pass-input" class="inp" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')submitPartnerEmailLogin('master')">
+                </div>
+
+                <div id="master-email-status" style="display:none; border-radius:14px; padding:12px; margin-bottom:12px; font-size:12.5px; line-height:1.45;"></div>
+
+                <button type="button" class="btn-gold" id="master-email-login-btn" onclick="submitPartnerEmailLogin('master')">
+                    <span>Войти в кабинет мастера</span> <i data-lucide="arrow-right" style="width:18px;height:18px;"></i>
+                </button>
+
+                <button type="button" onclick="openRequestAccessModal('master')" style="width:100%; margin-top:10px; padding:11px 14px; border-radius:14px; border:1.5px dashed var(--burgundy-line); background:var(--burgundy-soft); color:var(--burgundy); font-family:var(--font-sans); font-size:13px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+                    📝 Нет аккаунта? Зарегистрироваться и запросить одобрение
+                </button>
             </div>
 
-            <div class="form-group">
-                <label style="display:flex; justify-content:space-between; align-items:center;">
-                    <span data-i18n="owner_pin_lbl">2. Четырёхзначный пароль (4 цифры)</span>
-                    <button type="button" onclick="openRequestAccessModal('master')" style="background:none; border:none; color:var(--burgundy); font-size:11.5px; font-weight:800; cursor:pointer; text-decoration:underline;" data-i18n="no_pin_btn">Нет пароля?</button>
-                </label>
-                <input type="password" id="solo-pin-input" class="inp" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="•••• (4 цифры)" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)">
+            <!-- Блок старого входа по выданным ID и PIN -->
+            <div id="master-pin-pane" style="display:none;">
+                <div style="background:var(--navy-soft); border:1px solid var(--navy-line); border-radius:14px; padding:10px 12px; margin-bottom:14px; font-size:12px; color:var(--navy); font-weight:600; line-height:1.45;" data-i18n="master_lock_note">
+                    🔒 <b>Личный кабинет мастера:</b> доступ выдаётся только главным администратором. Введите ваш <b>цифровой ID</b> и <b>4-значный пароль</b>.
+                </div>
+
+                <div class="form-group">
+                    <label style="display:flex; justify-content:space-between; align-items:center;">
+                        <span data-i18n="master_id_lbl">1. Цифровой ID мастера (только цифры)</span>
+                        <button type="button" onclick="openRequestAccessModal('master')" style="background:none; border:none; color:var(--burgundy); font-size:11.5px; font-weight:800; cursor:pointer; text-decoration:underline;" data-i18n="ask_admin_btn">Попросить у админа →</button>
+                    </label>
+                    <input type="text" id="solo-id-input" class="inp" inputmode="numeric" pattern="[0-9]*" placeholder="Например: 2001" oninput="this.value=this.value.replace(/\D/g,'')">
+                </div>
+
+                <div class="form-group">
+                    <label style="display:flex; justify-content:space-between; align-items:center;">
+                        <span data-i18n="owner_pin_lbl">2. Четырёхзначный пароль (4 цифры)</span>
+                        <button type="button" onclick="openRequestAccessModal('master')" style="background:none; border:none; color:var(--burgundy); font-size:11.5px; font-weight:800; cursor:pointer; text-decoration:underline;" data-i18n="no_pin_btn">Нет пароля?</button>
+                    </label>
+                    <input type="password" id="solo-pin-input" class="inp" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="•••• (4 цифры)" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)">
+                </div>
+
+                <button type="button" class="btn-gold" onclick="submitMasterLogin()">
+                    <span data-i18n="master_login_btn">Войти в кабинет мастера</span> <i data-lucide="arrow-right" style="width:18px;height:18px;"></i>
+                </button>
+
+                <button type="button" onclick="openRequestAccessModal('master')" style="width:100%; margin-top:10px; padding:11px 14px; border-radius:14px; border:1.5px dashed var(--burgundy-line); background:var(--burgundy-soft); color:var(--burgundy); font-family:var(--font-sans); font-size:13px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;" data-i18n="no_creds_btn">
+                    🔑 Нет ID и пароля? Попросить доступ у Админа
+                </button>
             </div>
 
-            <button type="button" class="btn-gold" onclick="submitMasterLogin()">
-                <span data-i18n="master_login_btn">Войти в кабинет мастера</span> <i data-lucide="arrow-right" style="width:18px;height:18px;"></i>
-            </button>
-
-            <button type="button" onclick="openRequestAccessModal('master')" style="width:100%; margin-top:10px; padding:11px 14px; border-radius:14px; border:1.5px dashed var(--burgundy-line); background:var(--burgundy-soft); color:var(--burgundy); font-family:var(--font-sans); font-size:13px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;" data-i18n="no_creds_btn">
-                🔑 Нет ID и пароля? Попросить доступ у Админа
-            </button>
-
-            <div class="err-msg" id="solo-err" data-i18n="owner_err_msg">Неверный цифровой ID или 4-значный пароль</div>
+            <div class="err-msg" id="solo-err" data-i18n="owner_err_msg">Неверный Email или пароль</div>
         </div>
     </div>
 
-    <!-- ══════════ MODAL 3: ЗАПРОСИТЬ ДОСТУП У ГЛАВНОГО АДМИНА (ID + 4-ЗНАЧНЫЙ ПАРОЛЬ) ══════════ -->
+    <!-- ══════════ MODAL 3: РЕГИСТРАЦИЯ И ЗАПРОС ОДОБРЕНИЯ У ГЛАВНОГО АДМИНА ══════════ -->
     <div class="modal-overlay" id="request-access-modal">
         <div class="modal-box">
             <div class="modal-top">
-                <h2 id="req-modal-title"><i data-lucide="key-round" style="width:22px;height:22px;"></i> <span data-i18n="req_modal_title">Запросить ID и пароль</span></h2>
+                <h2 id="req-modal-title"><i data-lucide="key-round" style="width:22px;height:22px;"></i> <span data-i18n="req_modal_title">Регистрация и доступ</span></h2>
                 <button type="button" class="close-btn" onclick="closeRoleModals()"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
             </div>
 
-            <div style="background:linear-gradient(135deg, rgba(240,148,51,0.08) 0%, rgba(220,39,67,0.08) 100%); border:1.5px solid rgba(220,39,67,0.25); border-radius:14px; padding:12px 14px; margin-bottom:14px; font-size:12px; color:var(--navy); font-weight:600; line-height:1.45;" data-i18n="req_ig_note">
-                🛡 <b>Верификация владельца через Instagram @tu1anow</b><br>
-                Чтобы никто посторонний не мог привязать чужой барбершоп, верификация проходит через Instagram администратора <b>@tu1anow</b>. Нажмите кнопку внизу: готовый текст запроса скопируется, и откроется Direct Instagram. Отправьте сообщение с официального аккаунта вашего салона, и администратор моментально выдаст вам цифровой ID и PIN.
+            <div style="background:linear-gradient(135deg, rgba(12,25,44,0.04) 0%, rgba(220,39,67,0.06) 100%); border:1.5px solid rgba(12,25,44,0.16); border-radius:14px; padding:12px 14px; margin-bottom:14px; font-size:12px; color:var(--navy); font-weight:600; line-height:1.45;">
+                🛡 <b>Регистрация с одобрением главного админа:</b><br>
+                Укажите ваш <b>Gmail</b>, придумайте пароль и выберите ваш барбершоп на карте (если он уже там есть). Как только админ нажмёт <b>«Одобрить»</b> в своей панели, здесь сразу появится кнопка входа в ваш кабинет!
             </div>
 
             <input type="hidden" id="req-role-input" value="owner">
@@ -649,73 +728,84 @@
             </div>
 
             <div class="form-group">
-                <label id="req-name-label" data-i18n="req_name_lbl">1. Название вашего барбершопа *</label>
+                <label>Ваш Gmail (Email для входа) *</label>
+                <input type="email" id="req-email-input" class="inp" placeholder="yourname@gmail.com" autocomplete="email" oninput="onReqEmailInputChange(this.value)">
+            </div>
+
+            <div class="form-group" id="req-password-wrap">
+                <label>Придумайте пароль для входа (мин. 6 символов) *</label>
+                <input type="password" id="req-password-input" class="inp" placeholder="Минимум 6 символов" autocomplete="new-password">
+            </div>
+
+            <div class="form-group">
+                <label id="req-name-label" data-i18n="req_name_lbl">Название вашего барбершопа *</label>
                 <input type="text" id="req-name-input" class="inp" placeholder="Например: Shine Barbershop">
             </div>
 
             <div class="form-group">
-                <label data-i18n="req_phone_lbl">2. Ваш номер телефона (WhatsApp для получения ID и PIN) *</label>
+                <label data-i18n="req_phone_lbl">Ваш номер телефона (WhatsApp) *</label>
                 <input type="tel" id="req-phone-input" class="inp" placeholder="+996 555 00-00-00" oninput="checkExistingRequestStatus(this.value)">
             </div>
 
             <div class="form-group">
-                <label data-i18n="req_addr_lbl">3. Город / Адрес (необязательно)</label>
+                <label data-i18n="req_addr_lbl">Город / Адрес (необязательно)</label>
                 <input type="text" id="req-address-input" class="inp" placeholder="Бишкек, ул. Киевская...">
             </div>
 
             <div class="form-group">
-                <label data-i18n="req_insta_lbl">4. Instagram вашего салона / мастера (для быстрой сверки)</label>
+                <label data-i18n="req_insta_lbl">Instagram вашего салона / мастера (для сверки)</label>
                 <div style="position:relative;">
                     <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); font-weight:700; color:var(--muted); font-size:13px;">@</span>
                     <input type="text" id="req-insta-input" class="inp" placeholder="shine_barbershop" style="padding-left:28px;">
                 </div>
             </div>
 
-            <!-- Статус, если заявка уже одобрена админом -->
+            <!-- Статус, если заявка одобрена админом (живое уведомление прямо в окне) -->
             <div id="req-approved-box" style="display:none; background:var(--green-bg); border:1.5px solid rgba(0,135,61,0.35); border-radius:16px; padding:14px; margin-bottom:12px; text-align:center;">
-                <div style="font-size:13px; font-weight:800; color:var(--green); margin-bottom:6px;">🎉 Администратор одобрил ваш доступ!</div>
-                <div style="font-size:14px; color:var(--navy); font-weight:800; margin-bottom:8px;" id="req-approved-creds">ID: — • PIN: —</div>
-                <button type="button" id="req-approved-login-btn" style="background:var(--green); color:#fff; border:none; padding:8px 16px; border-radius:999px; font-size:12.5px; font-weight:800; cursor:pointer;">
+                <div style="font-size:14px; font-weight:800; color:var(--green); margin-bottom:6px;">🎉 Администратор одобрил ваш запрос!</div>
+                <div style="font-size:13px; color:var(--navy); font-weight:700; margin-bottom:10px;" id="req-approved-creds">Кабинет привязан и готов к работе</div>
+                <button type="button" id="req-approved-login-btn" style="background:var(--green); color:#fff; border:none; width:100%; padding:11px 16px; border-radius:12px; font-size:13.5px; font-weight:800; cursor:pointer;">
                     Войти в кабинет прямо сейчас →
                 </button>
             </div>
 
-            <!-- Подтверждение после отправки заявки -->
-            <div id="req-success-box" style="display:none; background:linear-gradient(135deg, rgba(240,148,51,0.06) 0%, rgba(220,39,67,0.06) 100%); border:1.5px solid rgba(220,39,67,0.3); border-radius:16px; padding:16px; margin-bottom:14px;">
-                <div style="display:flex; align-items:center; gap:8px; font-size:14px; font-weight:800; color:var(--navy); margin-bottom:6px;">
-                    <span style="font-size:18px;">📋</span> Текст заявки скопирован в буфер!
+            <!-- Подтверждение после отправки заявки + живое ожидание одобрения -->
+            <div id="req-success-box" style="display:none; background:linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border:1.5px solid #f59e0b; border-radius:16px; padding:16px; margin-bottom:14px;">
+                <div id="req-live-wait-status" style="display:flex; align-items:flex-start; gap:8px; font-size:13.5px; font-weight:800; color:#78350f; margin-bottom:8px;">
+                    <span style="font-size:18px;">⏳</span>
+                    <span>Заявка отправлена администратору! Не закрывайте это окно — как только её одобрят, здесь сразу появится кнопка входа.</span>
                 </div>
-                <div style="font-size:12px; color:var(--muted); line-height:1.45; margin-bottom:10px;">
-                    Вставьте скопированный текст в Direct <b>@tu1anow</b> (желательно с профиля вашего барбершопа). Администратор сразу сверит точку и пришлёт цифровой ID и 4-значный PIN.
+                <div style="font-size:12px; color:#92400e; line-height:1.45; margin-bottom:10px;">
+                    Для быстрой сверки вашего салона можете также написать администратору <b>@tu1anow</b> в Instagram (готовый текст заявки скопирован):
                 </div>
 
                 <div style="position:relative; margin-bottom:12px;">
                     <textarea id="req-preview-text" readonly style="width:100%; height:95px; background:#fff; border:1px solid #d5e2f0; border-radius:10px; padding:8px 10px; font-size:11.5px; font-family:monospace; line-height:1.4; color:#0c192c; resize:none;"></textarea>
                     <button type="button" onclick="copyRequestTextAgain()" style="position:absolute; right:8px; bottom:8px; background:#0c192c; color:#fff; border:none; border-radius:6px; padding:4px 8px; font-size:11px; font-weight:700; cursor:pointer;">
-                        📋 Скопировать ещё раз
+                        📋 Скопировать текст
                     </button>
                 </div>
 
                 <div style="display:flex; flex-direction:column; gap:8px;">
-                    <a id="req-ig-direct-btn" href="https://www.instagram.com/tu1anow/" target="_blank" rel="noopener" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:12px 14px; border-radius:12px; background:linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color:#ffffff; font-size:13.5px; font-weight:800; text-decoration:none; box-shadow:0 4px 14px rgba(220,39,67,0.3);">
-                        <i data-lucide="instagram" style="width:18px;height:18px;"></i> Открыть Direct Instagram @tu1anow
+                    <a id="req-ig-direct-btn" href="https://www.instagram.com/tu1anow/" target="_blank" rel="noopener" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:11px 14px; border-radius:12px; background:linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color:#ffffff; font-size:13px; font-weight:800; text-decoration:none; box-shadow:0 4px 12px rgba(220,39,67,0.24);">
+                        <i data-lucide="instagram" style="width:17px;height:17px;"></i> Подтвердить в Direct @tu1anow
                     </a>
                     <a id="req-wa-btn" href="#" target="_blank" rel="noopener" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:10px 14px; border-radius:12px; background:#00873d; color:#ffffff; font-size:12.5px; font-weight:800; text-decoration:none;">
-                        💬 Или отправить в WhatsApp
+                        💬 Или написать в WhatsApp
                     </a>
                 </div>
             </div>
 
             <div id="req-submit-actions">
-                <button type="button" id="req-submit-btn" onclick="submitAccessRequestFromApp('ig')" style="background:linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color:#ffffff; width:100%; border:none; padding:13px 16px; border-radius:14px; font-weight:800; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 6px 18px rgba(220,39,67,0.3); transition:transform 0.15s ease;">
-                    <i data-lucide="instagram" style="width:19px;height:19px;"></i> <span data-i18n="req_ig_btn">Написать в Instagram @tu1anow</span>
+                <button type="button" id="req-submit-btn" onclick="submitAccessRequestFromApp('watch')" style="background:linear-gradient(135deg, #0c192c 0%, #1e3a5f 100%); color:#ffffff; width:100%; border:none; padding:13px 16px; border-radius:14px; font-weight:800; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 6px 18px rgba(12,25,44,0.22); transition:transform 0.15s ease;">
+                    📝 Зарегистрироваться и запросить одобрение
                 </button>
-                <button type="button" onclick="submitAccessRequestFromApp('wa')" style="background:transparent; border:1px solid #d5e2f0; color:#0c192c; width:100%; padding:10px 14px; border-radius:12px; font-weight:700; font-size:12.5px; cursor:pointer; margin-top:8px; display:flex; align-items:center; justify-content:center; gap:6px;" data-i18n="req_wa_btn">
-                    💬 Или отправить запрос в WhatsApp
+                <button type="button" onclick="submitAccessRequestFromApp('ig')" style="background:transparent; border:1px solid #d5e2f0; color:#0c192c; width:100%; padding:10px 14px; border-radius:12px; font-weight:700; font-size:12.5px; cursor:pointer; margin-top:8px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                    <i data-lucide="instagram" style="width:16px;height:16px;color:#dc2743;"></i> Отправить заявку и сразу открыть @tu1anow
                 </button>
             </div>
 
-            <div class="err-msg" id="req-err" data-i18n="req_err_msg">Укажите название и ваш номер телефона</div>
+            <div class="err-msg" id="req-err" data-i18n="req_err_msg">Укажите Email, пароль, название и номер телефона</div>
         </div>
     </div>
 
@@ -985,6 +1075,16 @@
                 return;
             }
 
+            // B2. Check if opened with ?open=owner or master
+            const openRole = params.get('open');
+            if (openRole === 'owner' || openRole === 'master') {
+                window.addEventListener('DOMContentLoaded', () => {
+                    if (openRole === 'master') openMasterModal();
+                    else openOwnerModal();
+                });
+                return;
+            }
+
             // C. Check Saved Owner / Master Session (only if numeric ID exists in Super Admin list)
             if (!params.get('logged_out') && !params.get('switch_role')) {
                 const session = window.BarberMobileBridge.getSession();
@@ -1017,27 +1117,81 @@
             });
         }
 
-        // 3. STRICT NUMERIC ID + 4-DIGIT PIN LOGIN (ISSUED ONLY VIA SUPER ADMIN)
-        function openOwnerModal() {
-            closeRoleModals();
-            document.getElementById('owner-modal').classList.add('active');
-            document.getElementById('owner-err').style.display = 'none';
-            setTimeout(() => document.getElementById('owner-id-input').focus(), 60);
+        // 3. PARTNER LOGIN MODALS (EMAIL + PASSWORD PRIMARY, NUMERIC ID + PIN LEGACY FALLBACK)
+        let partnerPendingUnsub = null;
+        let preSignedInPartnerUser = null;
+
+        function stopPartnerPendingWatch() {
+            if (typeof partnerPendingUnsub === 'function') {
+                try { partnerPendingUnsub(); } catch (_) {}
+            }
+            partnerPendingUnsub = null;
         }
 
-        function openMasterModal() {
-            closeRoleModals();
-            document.getElementById('master-modal').classList.add('active');
-            document.getElementById('solo-err').style.display = 'none';
-            setTimeout(() => document.getElementById('solo-id-input').focus(), 60);
+        function switchPartnerLoginMode(role, mode) {
+            const r = role === 'master' ? 'master' : 'owner';
+            const isPin = mode === 'pin';
+            const emailPane = document.getElementById(`${r}-email-pane`);
+            const pinPane = document.getElementById(`${r}-pin-pane`);
+            const tabEmail = document.getElementById(`${r}-tab-email`);
+            const tabPin = document.getElementById(`${r}-tab-pin`);
+            const errEl = document.getElementById(r === 'master' ? 'solo-err' : 'owner-err');
+
+            if (emailPane) emailPane.style.display = isPin ? 'none' : 'block';
+            if (pinPane) pinPane.style.display = isPin ? 'block' : 'none';
+            if (tabEmail) {
+                tabEmail.style.background = isPin ? 'transparent' : '#0c192c';
+                tabEmail.style.color = isPin ? '#475569' : '#ffffff';
+                tabEmail.style.fontWeight = isPin ? '700' : '800';
+            }
+            if (tabPin) {
+                tabPin.style.background = isPin ? '#0c192c' : 'transparent';
+                tabPin.style.color = isPin ? '#ffffff' : '#475569';
+                tabPin.style.fontWeight = isPin ? '800' : '700';
+            }
+            if (errEl) errEl.style.display = 'none';
         }
+
+        function openRoleLoginModal(role) {
+            const r = role === 'master' ? 'master' : 'owner';
+            closeRoleModals();
+            const modalId = r === 'master' ? 'master-modal' : 'owner-modal';
+            const errEl = document.getElementById(r === 'master' ? 'solo-err' : 'owner-err');
+            const statusEl = document.getElementById(`${r}-email-status`);
+            if (errEl) errEl.style.display = 'none';
+            if (statusEl) statusEl.style.display = 'none';
+            switchPartnerLoginMode(r, 'email');
+            document.getElementById(modalId).classList.add('active');
+            const savedEmail = localStorage.getItem('last_partner_email') || '';
+            const emailInp = document.getElementById(`${r}-email-input`);
+            if (emailInp && savedEmail && !emailInp.value) emailInp.value = savedEmail;
+            setTimeout(() => {
+                if (emailInp) emailInp.focus();
+            }, 60);
+        }
+
+        function openOwnerModal() { openRoleLoginModal('owner'); }
+        function openMasterModal() { openRoleLoginModal('master'); }
 
         function closeRoleModals() {
+            stopPartnerPendingWatch();
             document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
         }
 
-        // 4. REQUEST ACCESS FROM SUPER ADMIN (FOR SALON OWNER OR SOLO MASTER)
-        function openRequestAccessModal(role) {
+        function onReqEmailInputChange(val) {
+            const passWrap = document.getElementById('req-password-wrap');
+            if (!passWrap) return;
+            const norm = window.appDB && window.appDB.normalizeEmail
+                ? window.appDB.normalizeEmail(val)
+                : String(val || '').trim().toLowerCase();
+            const signedNorm = (preSignedInPartnerUser && preSignedInPartnerUser.email)
+                ? (window.appDB ? window.appDB.normalizeEmail(preSignedInPartnerUser.email) : String(preSignedInPartnerUser.email).trim().toLowerCase())
+                : '';
+            passWrap.style.display = (signedNorm && norm === signedNorm) ? 'none' : 'block';
+        }
+
+        // 4. REQUEST ACCESS / REGISTER FROM SUPER ADMIN (FOR SALON OWNER OR SOLO MASTER)
+        async function openRequestAccessModal(role) {
             closeRoleModals();
             const r = role === 'master' ? 'master' : 'owner';
             document.getElementById('req-role-input').value = r;
@@ -1047,6 +1201,8 @@
             document.getElementById('req-err').style.display = 'none';
             document.getElementById('req-success-box').style.display = 'none';
             document.getElementById('req-approved-box').style.display = 'none';
+            const submitActions = document.getElementById('req-submit-actions');
+            if (submitActions) submitActions.style.display = 'block';
             document.getElementById('req-submit-btn').style.display = 'flex';
 
             const shopWrap = document.getElementById('req-shop-search-wrap');
@@ -1056,23 +1212,40 @@
 
             if (r === 'master') {
                 shopWrap.style.display = 'none';
-                nameLbl.textContent = '1. Ваше имя и специализация (Мастер) *';
+                nameLbl.textContent = 'Ваше имя и специализация (Мастер) *';
                 nameInp.placeholder = 'Например: Азамат (Top Barber)';
-                titleEl.innerHTML = '✂️ Запросить ID и пароль Мастера';
+                titleEl.innerHTML = '✂️ Регистрация и доступ Мастера';
             } else {
                 shopWrap.style.display = 'block';
-                nameLbl.textContent = '1. Название вашего барбершопа *';
+                nameLbl.textContent = 'Название вашего барбершопа *';
                 nameInp.placeholder = 'Например: Shine Barbershop';
-                titleEl.innerHTML = '🏢 Запросить ID и пароль Салона';
+                titleEl.innerHTML = '🏢 Регистрация и доступ Салона';
             }
+
+            preSignedInPartnerUser = null;
+            const emailInp = document.getElementById('req-email-input');
+            if (window.appDB && window.appDB.getCurrentAuthUser) {
+                try {
+                    const cur = await window.appDB.getCurrentAuthUser(800);
+                    if (cur && cur.email) {
+                        preSignedInPartnerUser = cur;
+                        if (emailInp) emailInp.value = cur.email;
+                    }
+                } catch (_) {}
+            }
+            if (emailInp && !emailInp.value) {
+                emailInp.value = localStorage.getItem('last_partner_email') || '';
+            }
+            onReqEmailInputChange(emailInp ? emailInp.value : '');
 
             const savedPhone = localStorage.getItem('last_req_phone') || '';
             if (savedPhone) {
                 document.getElementById('req-phone-input').value = savedPhone;
-                checkExistingRequestStatus(savedPhone);
             }
+            checkExistingRequestStatus(savedPhone);
 
             document.getElementById('request-access-modal').classList.add('active');
+            lucide.createIcons();
         }
 
         function searchCatalogForRequest(query) {
@@ -1150,10 +1323,180 @@
             document.getElementById('req-catalog-results').style.display = 'none';
         }
 
+        function matchAccessRequestRecord(req, criteria) {
+            if (!req) return false;
+            if (criteria.reqId && String(req.reqId) === String(criteria.reqId)) return true;
+            const norm = (v) => window.appDB && window.appDB.normalizeEmail
+                ? window.appDB.normalizeEmail(v)
+                : String(v || '').trim().toLowerCase();
+            const targetEmail = norm(criteria.email);
+            const targetUid = String(criteria.authUid || '').trim();
+            const targetRole = criteria.role ? String(criteria.role) : '';
+            if (targetRole && req.role && String(req.role) !== targetRole) return false;
+            if (targetUid && req.authUid && String(req.authUid) === targetUid) return true;
+            if (targetEmail && req.email && norm(req.email) === targetEmail) return true;
+            const digits = String(criteria.phone || '').replace(/\D/g, '');
+            if (digits.length >= 6 && (req.phone || '').replace(/\D/g, '').includes(digits.slice(-6))) return true;
+            return false;
+        }
+
+        async function enterPartnerCabinet(role, matchedTenant, authUser) {
+            if (!matchedTenant || !matchedTenant.id) return;
+            stopPartnerPendingWatch();
+            const tid = String(matchedTenant.id);
+            const r = (role === 'master' || matchedTenant.role === 'master') ? 'master' : 'owner';
+            const shopName = matchedTenant.shopName || (r === 'master' ? `Мастер #${tid}` : `Салон #${tid}`);
+            const ownerEmail = (authUser && authUser.email) || matchedTenant.ownerEmail || '';
+            const ownerUid = (authUser && authUser.uid) || matchedTenant.ownerUid || '';
+
+            localStorage.setItem('tenant_id', tid);
+            if (ownerEmail) localStorage.setItem('last_partner_email', ownerEmail);
+
+            if (r === 'master') {
+                sessionStorage.setItem('barberSoloAuth', 'true');
+                sessionStorage.setItem('barberSoloAuthTenantId', tid);
+                await window.BarberMobileBridge.saveSession({
+                    role: 'master',
+                    tenantId: tid,
+                    masterId: tid,
+                    masterName: shopName,
+                    shopName: shopName,
+                    ownerEmail,
+                    ownerUid
+                });
+                window.location.href = `barber.html?id=${encodeURIComponent(tid)}`;
+            } else {
+                sessionStorage.setItem('adminAuth', 'true');
+                sessionStorage.setItem('adminAuthTenantId', tid);
+                await window.BarberMobileBridge.saveSession({
+                    role: 'owner',
+                    tenantId: tid,
+                    shopName: shopName,
+                    ownerEmail,
+                    ownerUid
+                });
+                window.location.href = `admin.html?id=${encodeURIComponent(tid)}`;
+            }
+        }
+
+        async function resolveTenantForApprovedRequest(foundReq, authUser) {
+            const tenants = await getVerifiedTenantsList();
+            if (foundReq.issuedId) {
+                const byId = tenants.find(t => String(t.id) === String(foundReq.issuedId));
+                if (byId) return byId;
+            }
+            if (authUser && window.appDB && window.appDB.resolvePartnerTenant) {
+                return window.appDB.resolvePartnerTenant(authUser, tenants, foundReq.role);
+            }
+            return null;
+        }
+
+        function watchPartnerPendingStatus(opts) {
+            stopPartnerPendingWatch();
+            const esc = (s) => window.escapeHTML ? window.escapeHTML(String(s || '')) : String(s || '');
+            let notifiedApproval = false;
+
+            const handleRequestsSnapshot = async (reqs) => {
+                if (!Array.isArray(reqs)) return;
+                const found = reqs.find(r => matchAccessRequestRecord(r, opts));
+                if (!found) return;
+
+                if (found.status === 'approved') {
+                    const matchedTenant = await resolveTenantForApprovedRequest(found, opts.authUser || null);
+                    const credsText = found.email
+                        ? `Email: ${found.email}${found.issuedId ? ` • ID: ${found.issuedId}` : ''}`
+                        : `Цифровой ID: ${found.issuedId || '—'} • PIN: ${found.issuedPin || '—'}`;
+
+                    if (!notifiedApproval) {
+                        notifiedApproval = true;
+                        try {
+                            if (window.BarberMobileBridge && window.BarberMobileBridge.playNotificationSound) {
+                                window.BarberMobileBridge.playNotificationSound();
+                            }
+                            if (window.BarberMobileBridge && window.BarberMobileBridge.showLocalNotification) {
+                                window.BarberMobileBridge.showLocalNotification('🎉 Доступ одобрен!', `Кабинет «${found.name || ''}» открыт. Нажмите, чтобы войти.`);
+                            }
+                        } catch (_) {}
+                    }
+
+                    if (opts.mode === 'request') {
+                        const waitBox = document.getElementById('req-success-box');
+                        const approvedBox = document.getElementById('req-approved-box');
+                        const credsEl = document.getElementById('req-approved-creds');
+                        const loginBtn = document.getElementById('req-approved-login-btn');
+                        if (waitBox) waitBox.style.display = 'none';
+                        if (credsEl) credsEl.textContent = credsText;
+                        if (approvedBox) approvedBox.style.display = 'block';
+                        if (loginBtn) {
+                            loginBtn.onclick = async () => {
+                                const tenantNow = matchedTenant || await resolveTenantForApprovedRequest(found, opts.authUser || null);
+                                if (tenantNow) {
+                                    await enterPartnerCabinet(found.role, tenantNow, opts.authUser || { email: found.email, uid: found.authUid });
+                                }
+                            };
+                        }
+                    } else if (opts.statusBoxId) {
+                        const box = document.getElementById(opts.statusBoxId);
+                        if (box) {
+                            box.style.background = '#ecfdf5';
+                            box.style.border = '1.5px solid #10b981';
+                            box.style.color = '#065f46';
+                            box.innerHTML = `<div style="font-weight:800;margin-bottom:6px;">🎉 Администратор одобрил ваш запрос!</div>
+                                <div style="font-size:12px;margin-bottom:8px;">${esc(credsText)}</div>
+                                <button type="button" id="${opts.statusBoxId}-enter" style="width:100%;padding:10px 12px;border:none;border-radius:10px;background:#00873d;color:#fff;font-weight:800;cursor:pointer;">Войти в кабинет прямо сейчас →</button>`;
+                            box.style.display = 'block';
+                            const btn = document.getElementById(`${opts.statusBoxId}-enter`);
+                            if (btn) {
+                                btn.onclick = async () => {
+                                    const tenantNow = matchedTenant || await resolveTenantForApprovedRequest(found, opts.authUser || null);
+                                    if (tenantNow) {
+                                        await enterPartnerCabinet(found.role, tenantNow, opts.authUser || { email: found.email, uid: found.authUid });
+                                    }
+                                };
+                            }
+                        }
+                    }
+                    stopPartnerPendingWatch();
+                } else if (found.status === 'rejected') {
+                    const rejectHtml = `<b>❌ Заявка отклонена администратором.</b><div style="margin-top:4px;">Свяжитесь с <b>@tu1anow</b> в Instagram или отправьте заявку повторно с корректными данными салона.</div>`;
+                    if (opts.mode === 'request') {
+                        const waitStatus = document.getElementById('req-live-wait-status');
+                        const waitBox = document.getElementById('req-success-box');
+                        if (waitBox) {
+                            waitBox.style.background = '#fef2f2';
+                            waitBox.style.borderColor = '#fecaca';
+                        }
+                        if (waitStatus) {
+                            waitStatus.style.color = '#991b1b';
+                            waitStatus.innerHTML = `<span>❌</span><span>${rejectHtml}</span>`;
+                        }
+                    } else if (opts.statusBoxId) {
+                        const box = document.getElementById(opts.statusBoxId);
+                        if (box) {
+                            box.style.background = '#fef2f2';
+                            box.style.border = '1.5px solid #fecaca';
+                            box.style.color = '#991b1b';
+                            box.innerHTML = rejectHtml;
+                            box.style.display = 'block';
+                        }
+                    }
+                    stopPartnerPendingWatch();
+                }
+            };
+
+            if (window.appDB && window.appDB.subscribeAccessRequests) {
+                window.appDB.subscribeAccessRequests(handleRequestsSnapshot).then(unsub => {
+                    partnerPendingUnsub = unsub;
+                }).catch(() => {});
+            }
+        }
+
         async function checkExistingRequestStatus(phoneVal) {
             const digits = (phoneVal || '').replace(/\D/g, '');
+            const emailVal = (document.getElementById('req-email-input')?.value || '').trim();
+            const roleVal = document.getElementById('req-role-input')?.value || 'owner';
             const approvedBox = document.getElementById('req-approved-box');
-            if (digits.length < 6) {
+            if (digits.length < 6 && !emailVal.includes('@')) {
                 approvedBox.style.display = 'none';
                 return;
             }
@@ -1163,24 +1506,18 @@
                     : JSON.parse(localStorage.getItem('global_access_requests') || '[]');
                 const found = (reqs || []).find(r =>
                     r.status === 'approved' &&
-                    r.issuedId &&
-                    r.issuedPin &&
-                    (r.phone || '').replace(/\D/g, '').includes(digits.slice(-6))
+                    matchAccessRequestRecord(r, { email: emailVal, phone: phoneVal, role: roleVal })
                 );
                 if (found) {
-                    document.getElementById('req-approved-creds').textContent = `Цифровой ID: ${found.issuedId} • Пароль: ${found.issuedPin}`;
+                    const credsText = found.email
+                        ? `Email: ${found.email}${found.issuedId ? ` • ID: ${found.issuedId}` : ''}`
+                        : `Цифровой ID: ${found.issuedId || '—'} • Пароль: ${found.issuedPin || '—'}`;
+                    document.getElementById('req-approved-creds').textContent = credsText;
                     const btn = document.getElementById('req-approved-login-btn');
-                    btn.onclick = () => {
-                        if (found.role === 'master') {
-                            openMasterModal();
-                            document.getElementById('solo-id-input').value = found.issuedId;
-                            document.getElementById('solo-pin-input').value = found.issuedPin;
-                            submitMasterLogin();
-                        } else {
-                            openOwnerModal();
-                            document.getElementById('owner-id-input').value = found.issuedId;
-                            document.getElementById('owner-pin-input').value = found.issuedPin;
-                            submitOwnerLogin();
+                    btn.onclick = async () => {
+                        const t = await resolveTenantForApprovedRequest(found, preSignedInPartnerUser);
+                        if (t) {
+                            await enterPartnerCabinet(found.role, t, preSignedInPartnerUser || { email: found.email, uid: found.authUid });
                         }
                     };
                     approvedBox.style.display = 'block';
@@ -1220,26 +1557,87 @@
             }
         }
 
-        async function submitAccessRequestFromApp(channel = 'ig') {
+        async function submitAccessRequestFromApp(channel = 'watch') {
             const role = document.getElementById('req-role-input').value || 'owner';
             const catalogId = document.getElementById('req-catalog-id-input').value.trim();
+            const email = (document.getElementById('req-email-input')?.value || '').trim();
+            const password = document.getElementById('req-password-input')?.value || '';
             const name = document.getElementById('req-name-input').value.trim();
             const phone = document.getElementById('req-phone-input').value.trim();
             const address = document.getElementById('req-address-input').value.trim();
             const shopInsta = (document.getElementById('req-insta-input')?.value || '').trim();
             const errEl = document.getElementById('req-err');
+            const submitBtn = document.getElementById('req-submit-btn');
 
+            if (!email || !email.includes('@')) {
+                errEl.textContent = 'Введите корректный Gmail (Email для входа)!';
+                errEl.style.display = 'block';
+                return;
+            }
+            const normEmail = window.appDB ? window.appDB.normalizeEmail(email) : email.toLowerCase();
+            const alreadyAuthedSame = preSignedInPartnerUser &&
+                ((window.appDB ? window.appDB.normalizeEmail(preSignedInPartnerUser.email) : String(preSignedInPartnerUser.email || '').toLowerCase()) === normEmail);
+
+            if (!alreadyAuthedSame && (!password || password.length < 6)) {
+                errEl.textContent = 'Придумайте пароль для входа длиной минимум 6 символов!';
+                errEl.style.display = 'block';
+                return;
+            }
             if (!name || phone.replace(/\D/g, '').length < 6) {
                 errEl.textContent = 'Пожалуйста, укажите название/имя и ваш рабочий номер телефона!';
                 errEl.style.display = 'block';
                 return;
             }
             errEl.style.display = 'none';
-            localStorage.setItem('last_req_phone', phone);
 
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.dataset.prevText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '⏳ Создаём аккаунт и отправляем заявку...';
+            }
+
+            let authUser = alreadyAuthedSame ? preSignedInPartnerUser : null;
+            try {
+                if (!authUser && window.appDB && window.appDB.registerOrSignInWithEmail) {
+                    const res = await window.appDB.registerOrSignInWithEmail(normEmail, password);
+                    authUser = res.user;
+                    preSignedInPartnerUser = authUser;
+                }
+            } catch (authErr) {
+                errEl.textContent = (authErr && authErr.message) || 'Не удалось зарегистрировать Email и пароль.';
+                errEl.style.display = 'block';
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = submitBtn.dataset.prevText || '📝 Зарегистрироваться и запросить одобрение';
+                }
+                return;
+            }
+
+            localStorage.setItem('last_req_phone', phone);
+            localStorage.setItem('last_partner_email', normEmail);
+
+            // Check if this email already owns an approved tenant of that role
+            try {
+                const existingTenants = await getVerifiedTenantsList();
+                const alreadyOwned = authUser && window.appDB
+                    ? window.appDB.resolvePartnerTenant(authUser, existingTenants, role)
+                    : null;
+                if (alreadyOwned) {
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = submitBtn.dataset.prevText || '📝 Зарегистрироваться и запросить одобрение';
+                    }
+                    await enterPartnerCabinet(role, alreadyOwned, authUser);
+                    return;
+                }
+            } catch (_) {}
+
+            const reqId = 'req_' + Date.now();
             const newReq = {
-                reqId: 'req_' + Date.now(),
+                reqId,
                 role: role,
+                email: normEmail,
+                authUid: authUser ? authUser.uid : '',
                 name: name,
                 phone: phone,
                 address: address || 'Бишкек',
@@ -1257,7 +1655,10 @@
             } catch (e) {}
             if (!Array.isArray(reqs)) reqs = [];
 
-            reqs = reqs.filter(r => !(r.name === name && r.phone === phone));
+            reqs = reqs.filter(r => !(
+                (r.email && window.appDB && window.appDB.normalizeEmail(r.email) === normEmail && (r.role || 'owner') === role && r.status === 'pending') ||
+                (r.name === name && r.phone === phone && r.status === 'pending')
+            ));
             reqs.unshift(newReq);
             if (window.appDB && window.appDB.saveAccessRequests) {
                 await window.appDB.saveAccessRequests(reqs);
@@ -1265,19 +1666,25 @@
                 localStorage.setItem('global_access_requests', JSON.stringify(reqs));
             }
 
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = submitBtn.dataset.prevText || '📝 Зарегистрироваться и запросить одобрение';
+            }
+
             const roleLabel = role === 'master' ? '✂️ Мастер (Соло-кабинет)' : '🏢 Владелец барбершопа (Салон)';
             const cleanInsta = shopInsta ? (shopInsta.startsWith('@') ? shopInsta : '@' + shopInsta) : 'не указан';
 
             const rawMessage = 
-`Здравствуйте! Прошу выдать цифровой ID и PIN для входа в кабинет BarberMap KG.
+`Здравствуйте! Я зарегистрировался в BarberMap KG и прошу одобрить доступ в кабинет.
 
+📧 Email для входа: ${normEmail}
 👤 Роль: ${roleLabel}
 🏢 Название: ${name}
 📍 Город / Адрес: ${address || 'Кыргызстан'}
 📞 Контактный номер: ${phone}
-📸 Instagram нашего салона: ${cleanInsta}${catalogId ? `\n🆔 ID точки на карте: ${catalogId}` : ''}
+📸 Instagram: ${cleanInsta}${catalogId ? `\n🆔 ID точки на карте: ${catalogId}` : ''}
 
-Пишу с официального профиля для подтверждения владения. Жду цифровой ID и 4-значный пароль!`;
+Жду нажатия «Одобрить» в Супер-админке!`;
 
             copyTextToClipboard(rawMessage);
 
@@ -1285,9 +1692,7 @@
             if (previewEl) previewEl.value = rawMessage;
 
             const igBtn = document.getElementById('req-ig-direct-btn');
-            if (igBtn) {
-                igBtn.href = 'https://www.instagram.com/tu1anow/';
-            }
+            if (igBtn) igBtn.href = 'https://www.instagram.com/tu1anow/';
 
             let adminPhone = '';
             try {
@@ -1305,24 +1710,199 @@
 
             const submitActions = document.getElementById('req-submit-actions');
             if (submitActions) submitActions.style.display = 'none';
-            document.getElementById('req-success-box').style.display = 'block';
+            const successBox = document.getElementById('req-success-box');
+            successBox.style.background = 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)';
+            successBox.style.borderColor = '#f59e0b';
+            successBox.style.display = 'block';
+            const waitStatus = document.getElementById('req-live-wait-status');
+            if (waitStatus) {
+                waitStatus.style.color = '#78350f';
+                waitStatus.innerHTML = '<span>⏳</span><span>Заявка отправлена администратору! Не закрывайте это окно — как только её одобрят, здесь сразу появится кнопка входа.</span>';
+            }
+
+            watchPartnerPendingStatus({
+                mode: 'request',
+                reqId,
+                email: normEmail,
+                authUid: authUser ? authUser.uid : '',
+                phone,
+                role,
+                authUser
+            });
 
             if (channel === 'ig') {
                 window.open('https://www.instagram.com/tu1anow/', '_blank');
-            } else {
+            } else if (channel === 'wa') {
                 const waText = encodeURIComponent(rawMessage);
                 const url = adminPhone ? `https://wa.me/${adminPhone}?text=${waText}` : `https://wa.me/?text=${waText}`;
                 window.open(url, '_blank');
             }
         }
 
-        async function submitOwnerLogin() {
-            const rawId = document.getElementById('owner-id-input').value.replace(/\D/g, '').trim();
-            const pin = document.getElementById('owner-pin-input').value.replace(/\D/g, '').trim();
-            const errEl = document.getElementById('owner-err');
+        async function submitPartnerEmailLogin(role) {
+            const r = role === 'master' ? 'master' : 'owner';
+            const email = (document.getElementById(`${r}-email-input`)?.value || '').trim();
+            const pass = document.getElementById(`${r}-pass-input`)?.value || '';
+            const errEl = document.getElementById(r === 'master' ? 'solo-err' : 'owner-err');
+            const statusBox = document.getElementById(`${r}-email-status`);
+            const loginBtn = document.getElementById(`${r}-email-login-btn`);
+            const esc = (s) => window.escapeHTML ? window.escapeHTML(String(s || '')) : String(s || '');
+
+            if (errEl) errEl.style.display = 'none';
+            if (statusBox) statusBox.style.display = 'none';
+
+            if (!email || !email.includes('@') || !pass) {
+                if (errEl) {
+                    errEl.textContent = 'Введите ваш Email (Gmail) и пароль!';
+                    errEl.style.display = 'block';
+                }
+                return;
+            }
+
+            if (loginBtn) {
+                loginBtn.disabled = true;
+                loginBtn.dataset.prevHtml = loginBtn.innerHTML;
+                loginBtn.innerHTML = '⏳ Проверяем доступ...';
+            }
+
+            try {
+                const user = await window.appDB.signInWithEmail(email, pass);
+                localStorage.setItem('last_partner_email', user.email || email);
+                const tenants = await getVerifiedTenantsList();
+                let matched = window.appDB.resolvePartnerTenant(user, tenants, r);
+
+                if (matched) {
+                    if (!matched.ownerUid && user.uid && window.appDB.bindEmailToTenant) {
+                        try { matched = await window.appDB.bindEmailToTenant(matched.id, user); } catch (_) {}
+                    }
+                    await enterPartnerCabinet(r, matched, user);
+                    return;
+                }
+
+                // Not matched directly in tenants: check pending / approved access_requests
+                const reqs = window.appDB && window.appDB.getAccessRequests ? await window.appDB.getAccessRequests() : [];
+                const req = (reqs || []).find(item => matchAccessRequestRecord(item, {
+                    email: user.email,
+                    authUid: user.uid,
+                    role: r
+                }));
+
+                if (req && req.status === 'approved') {
+                    const refreshedTenants = await getVerifiedTenantsList();
+                    const reqTenant = await resolveTenantForApprovedRequest(req, user) ||
+                        window.appDB.resolvePartnerTenant(user, refreshedTenants, r);
+                    if (reqTenant) {
+                        await enterPartnerCabinet(r, reqTenant, user);
+                        return;
+                    }
+                }
+
+                if (req && (!req.status || req.status === 'pending')) {
+                    if (statusBox) {
+                        statusBox.style.background = '#fffbeb';
+                        statusBox.style.border = '1.5px solid #f59e0b';
+                        statusBox.style.color = '#78350f';
+                        statusBox.innerHTML = `<b>⏳ Заявка на проверке у главного администратора</b>
+                            <div style="margin-top:4px;">Салон/имя: <b>${esc(req.name || '')}</b> (${esc(user.email)}). Не закрывайте окно — вход откроется автоматически сразу после одобрения!</div>`;
+                        statusBox.style.display = 'block';
+                    }
+                    watchPartnerPendingStatus({
+                        mode: 'login',
+                        reqId: req.reqId,
+                        email: user.email,
+                        authUid: user.uid,
+                        phone: req.phone,
+                        role: r,
+                        statusBoxId: `${r}-email-status`,
+                        authUser: user
+                    });
+                    return;
+                }
+
+                if (req && req.status === 'rejected') {
+                    if (statusBox) {
+                        statusBox.style.background = '#fef2f2';
+                        statusBox.style.border = '1.5px solid #fecaca';
+                        statusBox.style.color = '#991b1b';
+                        statusBox.innerHTML = `<b>❌ Заявка была отклонена администратором.</b><div style="margin-top:4px;">Нажмите «Регистрация →» и отправьте заявку заново с корректными данными.</div>`;
+                        statusBox.style.display = 'block';
+                    }
+                    return;
+                }
+
+                // Account exists in Firebase Auth, but has no bound cabinet yet
+                if (window.appDB.isSuperAdminEmail && window.appDB.isSuperAdminEmail(user.email)) {
+                    if (statusBox) {
+                        statusBox.style.background = '#eff6ff';
+                        statusBox.style.border = '1.5px solid #93c5fd';
+                        statusBox.style.color = '#1e3a8a';
+                        statusBox.innerHTML = `<b>🛡 Вы вошли как Супер-Админ (${esc(user.email)})</b>
+                            <div style="margin-top:6px;"><a href="super_admin.html" style="display:inline-block;padding:8px 12px;border-radius:9px;background:#0c192c;color:#fff;font-weight:800;text-decoration:none;">Открыть Супер-Админку →</a></div>`;
+                        statusBox.style.display = 'block';
+                    }
+                    return;
+                }
+
+                if (statusBox) {
+                    statusBox.style.background = '#f8fafc';
+                    statusBox.style.border = '1.5px solid #cbd5e1';
+                    statusBox.style.color = '#334155';
+                    statusBox.innerHTML = `<b>✅ Email ${esc(user.email)} подтверждён, но кабинет ещё не привязан.</b>
+                        <div style="margin-top:6px;">Выберите свой барбершоп и отправьте заявку администратору — после одобрения вход откроется автоматически.</div>
+                        <button type="button" onclick="openRequestAccessModal('${r}')" style="margin-top:8px;width:100%;padding:9px 12px;border:none;border-radius:9px;background:#7a1c2d;color:#fff;font-weight:800;cursor:pointer;">Выбрать салон и отправить заявку →</button>`;
+                    statusBox.style.display = 'block';
+                }
+            } catch (authErr) {
+                if (errEl) {
+                    errEl.textContent = (authErr && authErr.message) || 'Неверный Email или пароль.';
+                    errEl.style.display = 'block';
+                }
+            } finally {
+                if (loginBtn) {
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = loginBtn.dataset.prevHtml || '<span>Войти</span>';
+                }
+            }
+        }
+
+        async function resetPartnerPassword(role) {
+            const r = role === 'master' ? 'master' : 'owner';
+            const email = (document.getElementById(`${r}-email-input`)?.value || '').trim();
+            const errEl = document.getElementById(r === 'master' ? 'solo-err' : 'owner-err');
+            const statusBox = document.getElementById(`${r}-email-status`);
+            const esc = (s) => window.escapeHTML ? window.escapeHTML(String(s || '')) : String(s || '');
+            if (errEl) errEl.style.display = 'none';
+            if (statusBox) statusBox.style.display = 'none';
+
+            try {
+                await window.appDB.sendResetPassword(email);
+                if (statusBox) {
+                    statusBox.style.background = '#ecfdf5';
+                    statusBox.style.border = '1.5px solid #10b981';
+                    statusBox.style.color = '#065f46';
+                    statusBox.innerHTML = `✉️ Письмо для сброса пароля отправлено на <b>${esc(email)}</b> (проверьте папку «Спам», если не видно во входящих).`;
+                    statusBox.style.display = 'block';
+                }
+            } catch (err) {
+                if (errEl) {
+                    errEl.textContent = (err && err.message) || 'Не удалось отправить письмо для сброса пароля.';
+                    errEl.style.display = 'block';
+                }
+            }
+        }
+
+        async function submitPartnerPinLogin(role) {
+            const isMaster = role === 'master';
+            const idInput = document.getElementById(isMaster ? 'solo-id-input' : 'owner-id-input');
+            const pinInput = document.getElementById(isMaster ? 'solo-pin-input' : 'owner-pin-input');
+            const errEl = document.getElementById(isMaster ? 'solo-err' : 'owner-err');
+            const rawId = (idInput ? idInput.value : '').replace(/\D/g, '').trim();
+            const pin = (pinInput ? pinInput.value : '').replace(/\D/g, '').trim();
 
             if (!/^\d+$/.test(rawId) || !/^\d{4}$/.test(pin)) {
-                errEl.textContent = 'Введите цифровой ID (только цифры) и 4-значный пароль!';
+                errEl.textContent = isMaster
+                    ? 'Введите цифровой ID мастера (только цифры) и 4-значный пароль!'
+                    : 'Введите цифровой ID (только цифры) и 4-значный пароль!';
                 errEl.style.display = 'block';
                 return;
             }
@@ -1331,68 +1911,22 @@
             const matched = tenants.find(t =>
                 String(t.id) === rawId &&
                 String(t.pin) === pin &&
-                (t.role || 'owner') === 'owner'
+                (t.role || 'owner') === (isMaster ? 'master' : 'owner')
             );
 
             if (!matched) {
-                errEl.textContent = 'Доступ запрещён: неверный цифровой ID или 4-значный пароль. Обратитесь к главному администратору.';
+                errEl.textContent = isMaster
+                    ? 'Доступ запрещён: неверный цифровой ID мастера или 4-значный пароль. Обратитесь к главному администратору.'
+                    : 'Доступ запрещён: неверный цифровой ID или 4-значный пароль. Обратитесь к главному администратору.';
                 errEl.style.display = 'block';
                 return;
             }
 
-            const finalShopName = matched.shopName || `Салон #${rawId}`;
-            localStorage.setItem('tenant_id', rawId);
-            sessionStorage.setItem('adminAuth', 'true');
-            sessionStorage.setItem('adminAuthTenantId', rawId);
-
-            await window.BarberMobileBridge.saveSession({
-                role: 'owner',
-                tenantId: rawId,
-                shopName: finalShopName
-            });
-
-            window.location.href = `admin.html?id=${encodeURIComponent(rawId)}`;
+            await enterPartnerCabinet(role, matched, null);
         }
 
-        async function submitMasterLogin() {
-            const rawId = document.getElementById('solo-id-input').value.replace(/\D/g, '').trim();
-            const pin = document.getElementById('solo-pin-input').value.replace(/\D/g, '').trim();
-            const errEl = document.getElementById('solo-err');
-
-            if (!/^\d+$/.test(rawId) || !/^\d{4}$/.test(pin)) {
-                errEl.textContent = 'Введите цифровой ID мастера (только цифры) и 4-значный пароль!';
-                errEl.style.display = 'block';
-                return;
-            }
-
-            const tenants = await getVerifiedTenantsList();
-            const matched = tenants.find(t =>
-                String(t.id) === rawId &&
-                String(t.pin) === pin &&
-                t.role === 'master'
-            );
-
-            if (!matched) {
-                errEl.textContent = 'Доступ запрещён: неверный цифровой ID мастера или 4-значный пароль. Обратитесь к главному администратору.';
-                errEl.style.display = 'block';
-                return;
-            }
-
-            const masterName = matched.shopName || `Мастер #${rawId}`;
-            localStorage.setItem('tenant_id', rawId);
-            sessionStorage.setItem('barberSoloAuth', 'true');
-            sessionStorage.setItem('barberSoloAuthTenantId', rawId);
-
-            await window.BarberMobileBridge.saveSession({
-                role: 'master',
-                tenantId: rawId,
-                masterId: rawId,
-                masterName: masterName,
-                shopName: masterName
-            });
-
-            window.location.href = `barber.html?id=${encodeURIComponent(rawId)}`;
-        }
+        function submitOwnerLogin() { return submitPartnerPinLogin('owner'); }
+        function submitMasterLogin() { return submitPartnerPinLogin('master'); }
 
         // Auto-open claim request modal if navigated from map with claimId
         (function checkClaimParam() {
