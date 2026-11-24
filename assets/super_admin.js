@@ -713,6 +713,7 @@
             }
 
             const existingTarget = saBindTargetTenantId ? tenants.find(t => String(t.id) === String(saBindTargetTenantId)) : null;
+            const prevCatalogId = existingTarget ? String(existingTarget.catalogId || '') : '';
             const resolvedCatalogId = catalogId || ((!isNaN(customLat) && !isNaN(customLon)) ? String(id) : (existingTarget ? (existingTarget.catalogId || '') : ''));
 
             if (existingTarget) {
@@ -773,11 +774,13 @@
                         : (window.BARBERSHOPS_DATA || []);
                     const catShop = fullCat.find(b => String(b.id) === String(catalogId));
                     if (catShop) {
-                        cur.city = catShop.city || 'Бишкек';
-                        cur.address = catShop.address || '';
+                        const catalogChanged = !existingTarget || prevCatalogId !== String(catalogId);
+                        const hasCustomAddr = Boolean(cur.address && cur.address !== 'Адрес указан на карте' && cur.address !== 'Точка с карты Super Admin');
+                        if (catalogChanged || !cur.city) cur.city = catShop.city || 'Бишкек';
+                        if (catalogChanged || !hasCustomAddr) cur.address = catShop.address || '';
                         cur.phone = cur.phone || catShop.phone || email || '';
-                        cur.lat = catShop.lat;
-                        cur.lon = catShop.lon != null ? catShop.lon : catShop.lng;
+                        if (catalogChanged || !isFinite(Number(cur.lat))) cur.lat = catShop.lat;
+                        if (catalogChanged || !isFinite(Number(cur.lon))) cur.lon = catShop.lon != null ? catShop.lon : catShop.lng;
                         if (role === 'master') cur.soloMapVisible = true;
                     }
                 } else if (!isNaN(customLat) && !isNaN(customLon)) {

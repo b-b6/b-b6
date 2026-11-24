@@ -354,7 +354,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
 <!-- Scripts -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-<script src="barbershops_kg.js?v=14"></script>
+<script src="barbershops_kg.js?v=15"></script>
 <script src="barbershops_uz.js?v=15"></script>
 <script src="barbershops_kz.js?v=14"></script>
 <script src="assets/db.js?v=16"></script>
@@ -367,6 +367,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
   /* ================= helpers & i18n ================= */
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const normSearch = s => String(s || '').toLowerCase().replace(/[ё]/g, 'е').replace(/[ө]/g, 'о').replace(/[ү]/g, 'у').replace(/[ң]/g, 'н').replace(/[қ]/g, 'к').replace(/[ғ]/g, 'г');
   const plural = (n, f) => { const a = Math.abs(n) % 100, b = a % 10; return f[(a > 10 && a < 20) ? 2 : b === 1 ? 0 : (b >= 2 && b <= 4) ? 1 : 2]; };
   let mapLang = localStorage.getItem('barber_lang') || localStorage.getItem('adminLang') || 'ru';
   const MAP_I18N = {
@@ -651,7 +652,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
           kind: b.isSolo ? (b.spec ? `${tr('solo_kind')} · ${b.spec}` : tr('solo_kind')) : n.kind,
           h: parseHours(b.hours ?? b.working_hours),
           letter: ((n.title || '').match(/[A-Za-zА-Яа-яЁё0-9]/) || ['B'])[0].toUpperCase(),
-          search: `${b.name} ${b.spec || ''} ${b.address} ${b.city} ${country} ${b.isSolo ? 'мастер соло barber solo' : ''}`.toLowerCase(),
+          search: normSearch(`${b.name} ${b.spec || ''} ${b.address} ${b.city} ${country} ${b.isSolo ? 'мастер соло barber solo' : ''}`) + ' ' + `${b.name} ${b.spec || ''} ${b.address} ${b.city} ${country}`.toLowerCase(),
           score: (rating * reviews + 4.4 * 8) / (reviews + 8),
         };
       });
@@ -826,7 +827,7 @@ body.dragging .map-ctrls{transition:opacity .2s}
   }
 
   function filtered() {
-    const q = state.q.trim().toLowerCase();
+    const q = normSearch(state.q.trim());
     const words = q ? q.split(/\s+/).filter(Boolean) : [];
     return DATA.filter(b => {
       if (state.country !== 'all' && b.countryCode !== state.country) return false;
